@@ -33,7 +33,7 @@ export class Login extends Component {
     const { location } = this.props;
     const { from } = location.state || { from: { pathname: '/' } };
     const { redirectToReferrer } = this.state;
-    if (redirectToReferrer) return <Redirect to="dashboard/123" />;
+    if (redirectToReferrer) return <Redirect to="/user/123/dashboard" />;
     return (
       <div>
         <div className="pa4 black-80">

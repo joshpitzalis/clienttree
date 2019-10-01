@@ -20,7 +20,7 @@ export const AuthButton = withRouter(({ history }) =>
     <p className="f6 dib  bg-animate hover-bg-white hover-black no-underline pv2 ph4 br-pill ba b--white-20">
       <button
         type="button"
-        className="pointer"
+        className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
         onClick={() => {
           fakeAuth.signout(() => history.push('/'));
         }}
@@ -29,7 +29,10 @@ export const AuthButton = withRouter(({ history }) =>
       </button>
     </p>
   ) : (
-    <p className="f6 dib  bg-animate hover-bg-white hover-black no-underline pv2 ph4 br-pill ba b--white-20">
+    <p
+      className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
+      // className="f6 dib  bg-animate hover-bg-white hover-black no-underline pv2 ph4 br-pill ba b--white-20"
+    >
       You are not logged in.
     </p>
   )
