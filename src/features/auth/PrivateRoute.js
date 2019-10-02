@@ -2,17 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import { Route, Redirect } from 'react-router-dom';
-import fakeAuth from './features/auth/Navbar';
 
 const propTypes = {
-  component: PropTypes.element,
-  location: ReactRouterPropTypes.location.isRequired,
+  component: PropTypes.func.isRequired,
+  location: ReactRouterPropTypes.location,
+  authStatus: PropTypes.bool,
 };
-export const PrivateRoute = ({ component: Component, ...rest }) => (
+
+const defaultProps = { authStatus: false };
+
+export const PrivateRoute = ({ component: Component, authStatus, ...rest }) => (
   <Route
     {...rest}
     render={props =>
-      fakeAuth.isAuthenticated ? (
+      authStatus ? (
         <Component {...props} />
       ) : (
         <Redirect
@@ -26,3 +29,4 @@ export const PrivateRoute = ({ component: Component, ...rest }) => (
   />
 );
 PrivateRoute.propTypes = propTypes;
+PrivateRoute.defaultProps = defaultProps;

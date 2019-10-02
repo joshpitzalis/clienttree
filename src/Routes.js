@@ -5,18 +5,52 @@ import Banner from './features/notifications/toast';
 import { Navbar } from './features/auth/Navbar';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
-import { PrivateRoute } from './PrivateRoute';
+import { PrivateRoute } from './features/auth/PrivateRoute';
+import firebase from './utils/firebase';
 
-const App = () => (
-  <BrowserRouter>
-    <main>
-      <Banner />
-      <Navbar />
-      <Route exact path="/" component={Login} />
-      <Route exact path="/login" component={Login} />
-      <PrivateRoute path="/user/:uid" component={Dashboard} />
-    </main>
-  </BrowserRouter>
-);
+const App = () => {
+  const [authStatus, setAuthStatus] = React.useState(false);
+  const [userId, setUid] = React.useState('');
+  React.useEffect(() => {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        const { uid } = user;
+        setUid(uid);
+        setAuthStatus(true);
+      } else {
+        setAuthStatus(false);
+        setUid('');
+      }
+    });
+  }, []);
+
+  return (
+    <BrowserRouter>
+      <main>
+        <Banner />
+        <Navbar authStatus={authStatus} />
+        <Route
+          exact
+          path="/"
+          render={props => (
+            <Login {...props} authStatus={authStatus} userId={userId} />
+          )}
+        />
+        <Route
+          exact
+          path="/login"
+          render={props => (
+            <Login {...props} authStatus={authStatus} userId={userId} />
+          )}
+        />
+        <PrivateRoute
+          path="/user/:uid"
+          authStatus={false || authStatus}
+          component={Dashboard}
+        />
+      </main>
+    </BrowserRouter>
+  );
+};
 
 export default App;

@@ -1,43 +1,64 @@
 import React, { Component } from 'react';
-import ReactRouterPropTypes from 'react-router-prop-types';
+// import ReactRouterPropTypes from 'react-router-prop-types';
+import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import { toast$ } from '../features/notifications/toast';
-import fakeAuth from '../features/auth/Navbar';
+import firebase from '../utils/firebase';
 
 const loginPropTypes = {
-  location: ReactRouterPropTypes.location.isRequired,
+  // location: ReactRouterPropTypes.location.isRequired,
+  authStatus: PropTypes.bool.isRequired,
+  userId: PropTypes.string.isRequired,
 };
 export class Login extends Component {
-  state = { redirectToReferrer: false };
+  state = { redirectToDashboard: false, email: '', password: '' };
 
-  componentDidMount() {
-    const { location } = this.props;
-    toast$.next({
-      type: 'ERROR',
-      message: `You must log in to view the page at ${(location &&
-        location.state &&
-        location.state.pathname &&
-        location.state.pathname) ||
-        '/'}`,
-    });
-  }
+  // componentDidMount() {
+  //   const { location } = this.props;
+  //   toast$.next({
+  //     type: 'ERROR',
+  //     message: `You must log in to view the page at ${(location &&
+  //       location.state &&
+  //       location.state.pathname &&
+  //       location.state.pathname) ||
+  //       '/'}`,
+  //   });
+  // }
 
-  login = e => {
+  login = (email, password) => async e => {
     e.preventDefault();
-    fakeAuth.authenticate(() => {
-      this.setState({ redirectToReferrer: true });
-    });
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(({ uid }) => this.setState({ uid }))
+      .then(() => this.setState({ redirectToDashboard: true }))
+      .catch(error =>
+        toast$.next({
+          type: 'ERROR',
+          message: error.message || error,
+        })
+      );
   };
 
   render() {
-    const { location } = this.props;
-    const { from } = location.state || { from: { pathname: '/' } };
-    const { redirectToReferrer } = this.state;
-    if (redirectToReferrer) return <Redirect to="/user/123/dashboard" />;
+    const { redirectToDashboard, email, password, uid } = this.state;
+    const { authStatus, userId } = this.props;
+
+    console.log({ authStatus, userId });
+
+    if (authStatus) {
+      return <Redirect to={`/user/${userId}/dashboard`} />;
+    }
+    if (redirectToDashboard) {
+      return <Redirect to={`/user/${uid}/dashboard`} />;
+    }
     return (
       <div>
         <div className="pa4 black-80">
-          <form className="measure center" onSubmit={this.login}>
+          <form
+            className="measure center"
+            onSubmit={this.login(email, password)}
+          >
             <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
               <legend className="f4 fw6 ph0 mh0">
                 Client Tree is currently invite only.
@@ -53,6 +74,8 @@ export class Login extends Component {
                     type="email"
                     name="email-address"
                     id="email-address"
+                    value={email}
+                    onChange={e => this.setState({ email: e.target.value })}
                   />
                 </label>
               </div>
@@ -64,6 +87,8 @@ export class Login extends Component {
                     type="password"
                     name="password"
                     id="password"
+                    value={password}
+                    onChange={e => this.setState({ password: e.target.value })}
                   />
                 </label>
               </div>

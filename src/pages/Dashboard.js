@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Route } from 'react-router-dom';
-import { PrivateRoute } from '../PrivateRoute';
+import { PrivateRoute } from '../features/auth/PrivateRoute';
 import { Network } from '../features/network/Network';
 import { Profile } from '../features/profile/Profile';
 import { CRM } from '../features/crm/CRM';
