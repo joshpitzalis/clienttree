@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import produce from 'immer';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { confetti$ } from '../onboarding/confetti';
 
 export const curriedReducer = produce((draft, action) => {
@@ -34,11 +34,12 @@ export const initialState = {
 const propTypes = {
   setSubmitted: PropTypes.func.isRequired,
   submitted: PropTypes.bool.isRequired,
+  uid: PropTypes.string.isRequired,
 };
 const defaultProps = {};
 
 export function Services(props) {
-  const { setSubmitted, submitted } = props;
+  const { setSubmitted, submitted, uid } = props;
   const [state, dispatch] = React.useReducer(curriedReducer, initialState);
   const [firstTime, completeFirstTime] = React.useState(false);
   if (firstTime) return <Redirect to="/user/123/dashboard" />;
@@ -57,9 +58,14 @@ export function Services(props) {
           <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
             <legend className="f4 fw6 ph0 mh0">Services</legend>
 
-            <p className=" black-60 mb5">
+            <p className=" black-60 ">
               A little introduction to what productizing services even means.
             </p>
+
+            <br />
+            <Link className="blue db mb5" to={`/refer/${uid}`}>
+              Go To Your Public Referral Page
+            </Link>
           </fieldset>
 
           {state.services &&
@@ -105,11 +111,11 @@ export default function IndividualService({
 }) {
   return (
     <div className="mb5 pt4 bt b--light-gray ">
-      <div className=" mb4">
+      <div className="mb4">
         <label className="db fw6 lh-copy f6" htmlFor="password">
           Service Name
           <input
-            className="db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
+            className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
             type="text"
             name="password"
             id="password"
@@ -132,7 +138,7 @@ export default function IndividualService({
             rows="10"
             id="comment"
             name="comment"
-            className="db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
+            className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
             aria-describedby="comment-desc"
             placeholder="My ideal clients..."
             value={description}
@@ -155,7 +161,7 @@ export default function IndividualService({
         <label className="db fw6 lh-copy f6" htmlFor="email-address">
           Price
           <input
-            className="db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
+            className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
             type="text"
             name="email-address"
             id="email-address"
@@ -175,7 +181,7 @@ export default function IndividualService({
         <label className="db fw6 lh-copy f6" htmlFor="email-address">
           Link
           <input
-            className="db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
+            className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
             type="text"
             name="email-address"
             id="email-address"

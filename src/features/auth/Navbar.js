@@ -33,12 +33,14 @@ const propTypes = {
 };
 export function Navbar({ authStatus }) {
   return (
-    <nav className="flex justify-between bb b--white-10">
-      <Tree classNames="ml4 pl2 b hover-white no-underline flex items-center pa3" />
-      <div className="flex-grow pa3 flex items-center">
-        <AuthButton authStatus={authStatus} />
-      </div>
-    </nav>
+    authStatus && (
+      <nav className="flex justify-between bb b--white-10">
+        <Tree classNames="ml4 pl2 b hover-white no-underline flex items-center pa3" />
+        <div className="flex-grow pa3 flex items-center">
+          <AuthButton authStatus={authStatus} />
+        </div>
+      </nav>
+    )
   );
 }
 

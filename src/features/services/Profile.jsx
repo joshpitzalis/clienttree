@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import produce from 'immer';
 import { Redirect } from 'react-router-dom';
+import ReactRouterPropTypes from 'react-router-prop-types';
 import { confetti$ } from '../onboarding/confetti';
 import { Services } from './Services';
 
@@ -43,6 +44,7 @@ export const initialState = {
 const propTypes = {
   setSubmitted: PropTypes.func.isRequired,
   submitted: PropTypes.bool.isRequired,
+  match: ReactRouterPropTypes.match.isRequired,
 };
 const defaultProps = {};
 // const sticky = {
@@ -52,7 +54,14 @@ const defaultProps = {};
 //   backdropFilter: 'blur(2px)',
 // };
 export function Profile(props) {
-  const { setSubmitted, submitted } = props;
+  const {
+    setSubmitted,
+    submitted,
+    match: {
+      params: { uid },
+    },
+  } = props;
+
   const [state, dispatch] = React.useReducer(curriedReducer, initialState);
   const [firstTime, completeFirstTime] = React.useState(false);
   if (firstTime) return <Redirect to="/user/123/dashboard" />;
@@ -63,8 +72,7 @@ export function Profile(props) {
           className="measure "
           onSubmit={e => {
             e.preventDefault();
-            console.log({ submitted });
-            // validity check goes here
+            // tk validity check goes here
             if (!submitted) {
               setSubmitted(true);
               completeFirstTime(true);
@@ -224,7 +232,7 @@ export function Profile(props) {
             How to use this as your email signature.
           </small>
         </div>
-        <Services />
+        <Services uid={uid} />
       </main>
     </div>
   );
