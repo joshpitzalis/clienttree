@@ -44,8 +44,6 @@ export class Login extends Component {
     const { redirectToDashboard, email, password, uid } = this.state;
     const { authStatus, userId } = this.props;
 
-    console.log({ authStatus, userId });
-
     if (authStatus) {
       return <Redirect to={`/user/${userId}/dashboard`} />;
     }
@@ -76,6 +74,7 @@ export class Login extends Component {
                     id="email-address"
                     value={email}
                     onChange={e => this.setState({ email: e.target.value })}
+                    placeholder="Your email..."
                   />
                 </label>
               </div>
@@ -83,12 +82,13 @@ export class Login extends Component {
                 <label className="db fw6 lh-copy f6" htmlFor="password">
                   Password
                   <input
-                    className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                    className=" pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                     type="password"
                     name="password"
                     id="password"
                     value={password}
                     onChange={e => this.setState({ password: e.target.value })}
+                    placeholder="Your password..."
                   />
                 </label>
               </div>

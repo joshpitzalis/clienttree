@@ -38,11 +38,11 @@ export function Onboarding({ submitted }) {
             />
             {submitted ? (
               <span className="strike">
-                Ask for a referral in your email signature
+                Create a referrable email signature by completing your profile.
               </span>
             ) : (
               <Link to="/user/123/profile" className="f6 link dim mr3 mr4-ns">
-                Ask for a referral in your email signature
+                Create a referrable email signature by completing your profile.
               </Link>
             )}
           </label>

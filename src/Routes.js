@@ -9,7 +9,7 @@ import { PrivateRoute } from './features/auth/PrivateRoute';
 import firebase from './utils/firebase';
 
 const App = () => {
-  const [authStatus, setAuthStatus] = React.useState(false);
+  const [authStatus, setAuthStatus] = React.useState(true);
   const [userId, setUid] = React.useState('');
   React.useEffect(() => {
     firebase.auth().onAuthStateChanged(user => {

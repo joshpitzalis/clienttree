@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import produce from 'immer';
 import { Redirect } from 'react-router-dom';
 import { confetti$ } from '../onboarding/confetti';
+import { Services } from './Services';
 
 export const curriedReducer = produce((draft, action) => {
   if (action.type === 'NAME_CHANGED') {
@@ -44,12 +45,12 @@ const propTypes = {
   submitted: PropTypes.bool.isRequired,
 };
 const defaultProps = {};
-const sticky = {
-  position: 'sticky',
-  top: 0,
-  backgroundColor: 'rgba(255, 255, 255, .85)',
-  backdropFilter: 'blur(2px)',
-};
+// const sticky = {
+//   position: 'sticky',
+//   top: 0,
+//   backgroundColor: 'rgba(255, 255, 255, .85)',
+//   backdropFilter: 'blur(2px)',
+// };
 export function Profile(props) {
   const { setSubmitted, submitted } = props;
   const [state, dispatch] = React.useReducer(curriedReducer, initialState);
@@ -58,37 +59,8 @@ export function Profile(props) {
   return (
     <div>
       <main className="pa4 pl0 pt0 black-80">
-        <div className=" pv4  " style={sticky}>
-          <article className="mw5 mw6-ns hidden ba b--light-gray mb3 br3 bg-near-white">
-            <div className="pa3 ">
-              <h1 className="f4 gray">{state.name || 'Your Name'}</h1>
-              <h2 className="f5 fw4 gray mt0 i">
-                {state.designation || 'Your Designation'}
-              </h2>
-
-              <p className="lh-copy measure center f6 gray dib">
-                Do you know any{' '}
-                <span className={!state.client && 'b'}>
-                  {state.client || 'of my ideal clients'}
-                </span>{' '}
-                that need help with{' '}
-                <span className={!state.service && 'b'}>
-                  {state.service || 'the thing I help with'}
-                </span>
-                ?{' '}
-                {state.website && (
-                  <a className="blue dib underline">Please Refer Me</a>
-                )}
-              </p>
-            </div>
-          </article>
-          <small className="pt4 f6 black-60 mb4 pt3 tc blue underline o-50 i">
-            How to use this as your email signature.
-          </small>
-        </div>
-
         <form
-          className="measure mt5"
+          className="measure "
           onSubmit={e => {
             e.preventDefault();
             console.log({ submitted });
@@ -222,6 +194,37 @@ export function Profile(props) {
             />
           </div>
         </form>
+        <div className=" pv4  ">
+          <article className="mw5 mw6-ns hidden ba b--light-gray mb3 br3 bg-near-white">
+            <div className="pa3 ">
+              <h1 className="f4 gray">{state.name || 'Your Name'}</h1>
+              <h2 className="f5 fw4 gray mt0 i">
+                {state.designation || 'Your Designation'}
+              </h2>
+
+              <p className="lh-copy measure center f6 gray dib">
+                Do you know any{' '}
+                <span className={!state.client && 'b'}>
+                  {state.client || 'of my ideal clients'}
+                </span>{' '}
+                that need help with{' '}
+                <span className={!state.service && 'b'}>
+                  {state.service || 'the thing I help with'}
+                </span>{' '}
+                ?{' '}
+                {state.website ? (
+                  <a className="blue dib underline">Please Refer Me</a>
+                ) : (
+                  <small className="dib">Please Refer Me</small>
+                )}
+              </p>
+            </div>
+          </article>
+          <small className="pt4 f6 black-60 mb4 pt3 tc blue underline o-50 i">
+            How to use this as your email signature.
+          </small>
+        </div>
+        <Services />
       </main>
     </div>
   );
