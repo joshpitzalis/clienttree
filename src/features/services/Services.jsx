@@ -29,16 +29,7 @@ export const curriedReducer = produce((draft, action) => {
 });
 
 export const initialState = {
-  services: {
-    // 123: {
-    //   id: 123,
-    //   order: 0,
-    //   name: 'test',
-    //   description: 'test',
-    //   price: '23',
-    //   link: 'www.sumsum.com',
-    // },
-  },
+  services: {},
 };
 
 const propTypes = {
@@ -58,13 +49,9 @@ const Services = props => {
       .pipe(
         debounceTime(1000),
         tap(({ payload }) =>
-          handleFirebaseUpdate(payload)
-            .then(() =>
-              toast$.next({ type: 'SUCCESS', message: 'successfully added!' })
-            )
-            .catch(error =>
-              toast$.next({ type: 'ERROR', message: error.message || error })
-            )
+          handleFirebaseUpdate(payload).catch(error =>
+            toast$.next({ type: 'ERROR', message: error.message || error })
+          )
         )
       )
       .subscribe();
@@ -108,6 +95,7 @@ const Services = props => {
                   {...service}
                   dispatch={dispatch}
                   key={service.id}
+                  userId={uid}
                 />
               ))}
 
@@ -136,6 +124,7 @@ const sericePropTypes = {
   description: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
   link: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
 };
 
 const serviceDefaultProps = {};
@@ -147,6 +136,7 @@ const IndividualService = ({
   description,
   price,
   link,
+  userId,
 }) => (
   <div className="mb5 pt4 bt b--light-gray" data-testid="serviceBox">
     <div className="mb4">
@@ -168,13 +158,12 @@ const IndividualService = ({
               },
             });
             serviceFormUpdate$.next({
-              type: 'INPUT_FIELD_UPDATED',
+              type: 'SERVICES_FORM_UPDATED',
               payload: {
+                userId,
                 id,
-                name: e.target.value,
-                description,
-                price,
-                link,
+                field: 'name',
+                value: e.target.value,
               },
             });
           }}

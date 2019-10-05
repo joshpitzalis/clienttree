@@ -56,7 +56,11 @@ const App = () => {
           authStatus={false || authStatus}
           component={Dashboard}
         />
-        <Route exact path="/refer/:uid" component={Refer} />
+        <Route
+          exact
+          path="/refer/:uid"
+          render={referProps => <Refer {...referProps} userId={userId} />}
+        />
       </main>
     </BrowserRouter>
   );

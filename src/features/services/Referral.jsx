@@ -1,11 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { toast$ } from '../notifications/toast';
+import { fetchUserData } from './serviceAPI';
 
-const propTypes = {};
+const propTypes = {
+  userId: PropTypes.string.isRequired,
+};
 
 const defaultProps = {};
 
-export default function Referral() {
+export default function Referral({ userId }) {
+  React.useEffect(() => {
+    if (userId) {
+      fetchUserData(userId)
+        .then(data => console.log({ data }))
+        .catch(error =>
+          toast$.next({ type: 'ERROR', message: error.message || error })
+        );
+    }
+  }, [userId]);
   return (
     <article className="pa3 pa5-ns">
       <h1 className="f3 f1-m f-headline-l">Josh Pitzalis</h1>

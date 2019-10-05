@@ -20,12 +20,12 @@ describe('services', () => {
       .type(53)
       .findByPlaceholderText(/How do I find out more/i)
       .type('example link')
+      .findByText(/example title/i)
       .findByText(/Go To Your Public Referral Page/i)
-      // assert they show up on page first
       .click()
       .url()
       .should('include', 'refer')
-      // assert they show up on referal page
+      .findByText(/example title/i)
       .findByText(/sign out/i)
       .click();
   });
