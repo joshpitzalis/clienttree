@@ -4,7 +4,7 @@ import produce from 'immer';
 import { Redirect } from 'react-router-dom';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import { confetti$ } from '../onboarding/confetti';
-import { Services } from './Services';
+import Services from './Services';
 
 export const curriedReducer = produce((draft, action) => {
   if (action.type === 'NAME_CHANGED') {
@@ -221,41 +221,39 @@ const sigPropTypes = {
 };
 const sigDefaultProps = {};
 
-function SignatureCard({ state }) {
-  return (
-    <div className=" pv4" data-testid="signatureCard">
-      <article className="mw5 mw6-ns hidden ba b--light-gray mb3 br3 bg-near-white">
-        <div className="pa3 ">
-          <h1 className="f4 gray">{state.name || 'Your Name'}</h1>
-          <h2 className="f5 fw4 gray mt0 i">
-            {state.designation || 'Your Designation'}
-          </h2>
+const SignatureCard = ({ state }) => (
+  <div className=" pv4" data-testid="signatureCard">
+    <article className="mw5 mw6-ns hidden ba b--light-gray mb3 br3 bg-near-white">
+      <div className="pa3 ">
+        <h1 className="f4 gray">{state.name || 'Your Name'}</h1>
+        <h2 className="f5 fw4 gray mt0 i">
+          {state.designation || 'Your Designation'}
+        </h2>
 
-          <p className="lh-copy measure center f6 gray dib">
-            Do you know any{' '}
-            <span className={!state.clients && 'b'}>
-              {state.clients || 'of my ideal clients'}
-            </span>{' '}
-            that need help with{' '}
-            <span className={!state.service && 'b'}>
-              {state.service || 'the thing I help with'}
-            </span>{' '}
-            ?{' '}
-            {state.website ? (
-              <a className="blue dib underline">Please Refer Me</a>
-            ) : (
-              <small className="dib">Please Refer Me</small>
-            )}
-          </p>
-        </div>
-      </article>
-      {/* tk */}
-      {/* <small className="pt4 f6 black-60 mb4 pt3 tc blue underline o-50 i">
+        <p className="lh-copy measure center f6 gray dib">
+          Do you know any{' '}
+          <span className={!state.clients && 'b'}>
+            {state.clients || 'of my ideal clients'}
+          </span>{' '}
+          that need help with{' '}
+          <span className={!state.service && 'b'}>
+            {state.service || 'the thing I help with'}
+          </span>{' '}
+          ?{' '}
+          {state.website ? (
+            <a className="blue dib underline">Please Refer Me</a>
+          ) : (
+            <small className="dib">Please Refer Me</small>
+          )}
+        </p>
+      </div>
+    </article>
+    {/* tk */}
+    {/* <small className="pt4 f6 black-60 mb4 pt3 tc blue underline o-50 i">
         How to use this as your email signature.
       </small> */}
-    </div>
-  );
-}
+  </div>
+);
 
 SignatureCard.propTypes = sigPropTypes;
 SignatureCard.defaultProps = sigDefaultProps;

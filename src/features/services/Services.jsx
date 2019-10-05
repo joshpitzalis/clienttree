@@ -2,19 +2,29 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import produce from 'immer';
 import { Redirect, Link } from 'react-router-dom';
-import { confetti$ } from '../onboarding/confetti';
+import { Subject } from 'rxjs';
+import { tap, debounceTime } from 'rxjs/operators';
+import { handleFirebaseUpdate } from './serviceAPI';
+import { toast$ } from '../notifications/toast';
+
+export const serviceFormUpdate$ = new Subject();
 
 export const curriedReducer = produce((draft, action) => {
   if (action.type === 'SERVICE_ADDED') {
     const newId = +new Date();
-    draft.services[newId] = {
-      id: newId,
+    const newIdString = newId.toString();
+    draft.services[newIdString] = {
+      id: newIdString,
       order: Object.values(draft.services).length,
       name: '',
       description: '',
       price: '',
       link: '',
     };
+  }
+
+  if (action.type === 'SERVICE_NAME_CHANGED') {
+    draft.services[action.payload.serviceId].name = action.payload.value;
   }
 });
 
@@ -38,11 +48,31 @@ const propTypes = {
 };
 const defaultProps = {};
 
-export function Services(props) {
+const Services = props => {
   const { setSubmitted, submitted, uid } = props;
   const [state, dispatch] = React.useReducer(curriedReducer, initialState);
   const [firstTime, completeFirstTime] = React.useState(false);
+
+  React.useEffect(() => {
+    const updates = serviceFormUpdate$
+      .pipe(
+        debounceTime(1000),
+        tap(({ payload }) =>
+          handleFirebaseUpdate(payload)
+            .then(() =>
+              toast$.next({ type: 'SUCCESS', message: 'successfully added!' })
+            )
+            .catch(error =>
+              toast$.next({ type: 'ERROR', message: error.message || error })
+            )
+        )
+      )
+      .subscribe();
+    return () => updates.unsubscribe();
+  }, []);
+
   if (firstTime) return <Redirect to="/user/123/dashboard" />;
+
   return (
     <div>
       <main className="pa4 pl0 pt0 black-80">
@@ -74,7 +104,11 @@ export function Services(props) {
             Object.values(state.services)
               .sort((a, b) => a.order - b.order)
               .map(service => (
-                <IndividualService {...service} dispatch={dispatch} />
+                <IndividualService
+                  {...service}
+                  dispatch={dispatch}
+                  key={service.id}
+                />
               ))}
 
           <div className="mt3">
@@ -88,14 +122,16 @@ export function Services(props) {
       </main>
     </div>
   );
-}
+};
+
 Services.propTypes = propTypes;
 Services.defaultProps = defaultProps;
 
+export default Services;
+
 const sericePropTypes = {
   dispatch: PropTypes.func.isRequired,
-  id: PropTypes.number.isRequired,
-  order: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
@@ -104,106 +140,116 @@ const sericePropTypes = {
 
 const serviceDefaultProps = {};
 
-export default function IndividualService({
+const IndividualService = ({
   dispatch,
   id,
-  order,
   name,
   description,
   price,
   link,
-}) {
-  return (
-    <div className="mb5 pt4 bt b--light-gray" data-testid="serviceBox">
-      <div className="mb4">
-        <label className="db fw6 lh-copy f6" htmlFor="password">
-          Service Name
-          <input
-            className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
-            type="text"
-            name="password"
-            id="password"
-            placeholder="What should people ask for?"
-            value={name}
-            onChange={e =>
-              dispatch({
-                type: 'DESIGNATION_CHANGED',
-                payload: e.target.value,
-              })
-            }
-          />
-        </label>
-      </div>
+}) => (
+  <div className="mb5 pt4 bt b--light-gray" data-testid="serviceBox">
+    <div className="mb4">
+      <label className="db fw6 lh-copy f6" htmlFor="serviceName">
+        Service Name
+        <input
+          className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
+          type="text"
+          name="serviceName"
+          id="serviceName"
+          placeholder="What should people ask for?"
+          value={name}
+          onChange={e => {
+            dispatch({
+              type: 'SERVICE_NAME_CHANGED',
+              payload: {
+                serviceId: id,
+                value: e.target.value,
+              },
+            });
+            serviceFormUpdate$.next({
+              type: 'INPUT_FIELD_UPDATED',
+              payload: {
+                id,
+                name: e.target.value,
+                description,
+                price,
+                link,
+              },
+            });
+          }}
+        />
+      </label>
+    </div>
 
-      <div className="mb4">
-        <label htmlFor="comment" className="f6 b db mb2">
-          Service Description
-          <textarea
-            rows="10"
-            id="comment"
-            name="comment"
-            className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
-            aria-describedby="comment-desc"
-            placeholder="What do people get?"
-            value={description}
-            onChange={e =>
-              dispatch({
-                type: 'CLIENT_CHANGED',
-                payload: e.target.value,
-              })
-            }
-          ></textarea>
-        </label>
-        {/* tk */}
-        {/* <small id="comment-desc" className="f6 black-60">
+    <div className="mb4">
+      <label htmlFor="comment" className="f6 b db mb2">
+        Service Description
+        <textarea
+          rows="10"
+          id="comment"
+          name="comment"
+          className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
+          aria-describedby="comment-desc"
+          placeholder="What do people get?"
+          value={description}
+          onChange={e =>
+            dispatch({
+              type: 'CLIENT_CHANGED',
+              payload: e.target.value,
+            })
+          }
+        ></textarea>
+      </label>
+      {/* tk */}
+      {/* <small id="comment-desc" className="f6 black-60">
           If you have never thought about who your ideal clients are here is{' '}
           <a className="blue dib underline">a useful article</a> to help get you
           in the right mindet.
         </small> */}
-      </div>
-
-      <div className="mt3 mb4">
-        <label className="db fw6 lh-copy f6" htmlFor="email-address">
-          Price
-          <input
-            className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
-            type="text"
-            name="email-address"
-            id="email-address"
-            placeholder="How much?"
-            value={price}
-            onChange={e =>
-              dispatch({
-                type: 'NAME_CHANGED',
-                payload: e.target.value,
-              })
-            }
-          />
-        </label>
-      </div>
-
-      <div className="mt3 mb4">
-        <label className="db fw6 lh-copy f6" htmlFor="email-address">
-          Link
-          <input
-            className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
-            type="text"
-            name="email-address"
-            id="email-address"
-            placeholder="How do I find out more?"
-            value={link}
-            onChange={e =>
-              dispatch({
-                type: 'NAME_CHANGED',
-                payload: e.target.value,
-              })
-            }
-          />
-        </label>
-      </div>
     </div>
-  );
-}
+
+    <div className="mt3 mb4">
+      <label className="db fw6 lh-copy f6" htmlFor="email-address">
+        Price
+        <input
+          className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
+          type="text"
+          name="email-address"
+          id="email-address"
+          placeholder="How much?"
+          value={price}
+          onChange={e =>
+            dispatch({
+              type: 'NAME_CHANGED',
+              payload: e.target.value,
+            })
+          }
+        />
+      </label>
+    </div>
+
+    <div className="mt3 mb4">
+      <label className="db fw6 lh-copy f6" htmlFor="email-address">
+        Link
+        <input
+          className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
+          type="text"
+          name="email-address"
+          id="email-address"
+          placeholder="How do I find out more?"
+          value={link}
+          onChange={e =>
+            dispatch({
+              type: 'NAME_CHANGED',
+              payload: e.target.value,
+            })
+          }
+        />
+      </label>
+    </div>
+  </div>
+);
 
 IndividualService.propTypes = sericePropTypes;
 IndividualService.defaultProps = serviceDefaultProps;
