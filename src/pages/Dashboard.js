@@ -50,7 +50,7 @@ export function Dashboard() {
 function Navigation() {
   return (
     <ul className="flex-col">
-      <li className="list mt3">
+      <li className="list ">
         <NavLink
           activeClassName="b underline"
           to="/user/123/dashboard"
@@ -59,7 +59,7 @@ function Navigation() {
           Dashboard
         </NavLink>
       </li>
-      <li className="list">
+      <li className="list mt3">
         <NavLink
           to="/user/123/profile"
           activeClassName="b underline"

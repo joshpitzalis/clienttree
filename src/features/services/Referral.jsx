@@ -78,25 +78,6 @@ function Service() {
       </p>
 
       <p className="measure lh-copy blue">Learn More...</p>
-      <div className="pa4 pv5 pl0">
-        <blockquote className="athelas ml0 mt0 pl4 black-90 bl bw2 b--blue">
-          <p className="f5 f4-m f3-l lh-copy measure mt0">
-            Discipline in typography is a prime virtue. Individuality must be
-            secured by means that are rational. Distinction needs to be won by
-            simplicity and restraint. It is equally true that these qualities
-            need to be infused wiht a certain spirit and vitality, or they
-            degenerate into dullness and mediocrity.
-          </p>
-          <cite className="f6 ttu tracked fs-normal flex items-center">
-            <img
-              alt="someone face"
-              src="http://mrmrs.github.io/photos/p/3.jpg"
-              className=" ba b--black-10 db br-100 w2  h2 mr3 "
-            />
-            ―Stanley Morison
-          </cite>
-        </blockquote>
-      </div>
     </div>
   );
 }

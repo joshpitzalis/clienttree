@@ -20,7 +20,7 @@ export const curriedReducer = produce((draft, action) => {
   }
 
   if (action.type === 'CLIENT_CHANGED') {
-    draft.client = action.payload;
+    draft.clients = action.payload;
   }
 
   if (action.type === 'SERVICE_CHANGED') {
@@ -47,12 +47,7 @@ const propTypes = {
   match: ReactRouterPropTypes.match.isRequired,
 };
 const defaultProps = {};
-// const sticky = {
-//   position: 'sticky',
-//   top: 0,
-//   backgroundColor: 'rgba(255, 255, 255, .85)',
-//   backdropFilter: 'blur(2px)',
-// };
+
 export function Profile(props) {
   const {
     setSubmitted,
@@ -154,6 +149,7 @@ export function Profile(props) {
                   className="db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
                   aria-describedby="comment-desc"
                   placeholder="My ideal clients..."
+                  value={state.clients}
                   onChange={e =>
                     dispatch({
                       type: 'CLIENT_CHANGED',
@@ -162,11 +158,12 @@ export function Profile(props) {
                   }
                 ></textarea>
               </label>
-              <small id="comment-desc" className="f6 black-60">
+              {/* tk */}
+              {/* <small id="comment-desc" className="f6 black-60">
                 If you have never thought about who your ideal clients are here
                 is <a className="blue dib underline">a useful article</a> to
                 help get you in the right mindet.
-              </small>
+              </small> */}
             </div>
 
             <div className="mb4">
@@ -178,6 +175,7 @@ export function Profile(props) {
                   className="db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
                   aria-describedby="comment-desc"
                   placeholder="The thing I help with..."
+                  value={state.services}
                   onChange={e =>
                     dispatch({
                       type: 'SERVICE_CHANGED',
@@ -186,12 +184,13 @@ export function Profile(props) {
                   }
                 ></textarea>
               </label>
-              <small id="comment-desc" className="f6 black-60">
+              {/* tk */}
+              {/* <small id="comment-desc" className="f6 black-60">
                 If you don't have a specialisation{' '}
                 <a className="blue dib underline">I recommend this article</a>{' '}
                 to help you start thinking about focusing in on what youd on
                 best.
-              </small>
+              </small> */}
             </div>
           </fieldset>
           <div className="mt3">
@@ -202,36 +201,7 @@ export function Profile(props) {
             />
           </div>
         </form>
-        <div className=" pv4  ">
-          <article className="mw5 mw6-ns hidden ba b--light-gray mb3 br3 bg-near-white">
-            <div className="pa3 ">
-              <h1 className="f4 gray">{state.name || 'Your Name'}</h1>
-              <h2 className="f5 fw4 gray mt0 i">
-                {state.designation || 'Your Designation'}
-              </h2>
-
-              <p className="lh-copy measure center f6 gray dib">
-                Do you know any{' '}
-                <span className={!state.client && 'b'}>
-                  {state.client || 'of my ideal clients'}
-                </span>{' '}
-                that need help with{' '}
-                <span className={!state.service && 'b'}>
-                  {state.service || 'the thing I help with'}
-                </span>{' '}
-                ?{' '}
-                {state.website ? (
-                  <a className="blue dib underline">Please Refer Me</a>
-                ) : (
-                  <small className="dib">Please Refer Me</small>
-                )}
-              </p>
-            </div>
-          </article>
-          <small className="pt4 f6 black-60 mb4 pt3 tc blue underline o-50 i">
-            How to use this as your email signature.
-          </small>
-        </div>
+        <SignatureCard state={state} />
         <Services uid={uid} />
       </main>
     </div>
@@ -239,3 +209,53 @@ export function Profile(props) {
 }
 Profile.propTypes = propTypes;
 Profile.defaultProps = defaultProps;
+
+const sigPropTypes = {
+  state: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    designation: PropTypes.string.isRequired,
+    website: PropTypes.string.isRequired,
+    clients: PropTypes.string.isRequired,
+    service: PropTypes.string.isRequired,
+  }).isRequired,
+};
+const sigDefaultProps = {};
+
+function SignatureCard({ state }) {
+  return (
+    <div className=" pv4" data-testid="signatureCard">
+      <article className="mw5 mw6-ns hidden ba b--light-gray mb3 br3 bg-near-white">
+        <div className="pa3 ">
+          <h1 className="f4 gray">{state.name || 'Your Name'}</h1>
+          <h2 className="f5 fw4 gray mt0 i">
+            {state.designation || 'Your Designation'}
+          </h2>
+
+          <p className="lh-copy measure center f6 gray dib">
+            Do you know any{' '}
+            <span className={!state.clients && 'b'}>
+              {state.clients || 'of my ideal clients'}
+            </span>{' '}
+            that need help with{' '}
+            <span className={!state.service && 'b'}>
+              {state.service || 'the thing I help with'}
+            </span>{' '}
+            ?{' '}
+            {state.website ? (
+              <a className="blue dib underline">Please Refer Me</a>
+            ) : (
+              <small className="dib">Please Refer Me</small>
+            )}
+          </p>
+        </div>
+      </article>
+      {/* tk */}
+      {/* <small className="pt4 f6 black-60 mb4 pt3 tc blue underline o-50 i">
+        How to use this as your email signature.
+      </small> */}
+    </div>
+  );
+}
+
+SignatureCard.propTypes = sigPropTypes;
+SignatureCard.defaultProps = sigDefaultProps;

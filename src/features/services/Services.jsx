@@ -20,14 +20,14 @@ export const curriedReducer = produce((draft, action) => {
 
 export const initialState = {
   services: {
-    123: {
-      id: 123,
-      order: 0,
-      name: 'test',
-      description: 'test',
-      price: '23',
-      link: 'www.sumsum.com',
-    },
+    // 123: {
+    //   id: 123,
+    //   order: 0,
+    //   name: 'test',
+    //   description: 'test',
+    //   price: '23',
+    //   link: 'www.sumsum.com',
+    // },
   },
 };
 
@@ -56,7 +56,9 @@ export function Services(props) {
           }}
         >
           <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
-            <legend className="f4 fw6 ph0 mh0">Services</legend>
+            <legend className="f4 fw6 ph0 mh0" data-testid="services">
+              Services
+            </legend>
 
             <p className=" black-60 ">
               A little introduction to what productizing services even means.
@@ -71,7 +73,9 @@ export function Services(props) {
           {state.services &&
             Object.values(state.services)
               .sort((a, b) => a.order - b.order)
-              .map(service => <IndividualService {...service} />)}
+              .map(service => (
+                <IndividualService {...service} dispatch={dispatch} />
+              ))}
 
           <div className="mt3">
             <input
@@ -110,7 +114,7 @@ export default function IndividualService({
   link,
 }) {
   return (
-    <div className="mb5 pt4 bt b--light-gray ">
+    <div className="mb5 pt4 bt b--light-gray" data-testid="serviceBox">
       <div className="mb4">
         <label className="db fw6 lh-copy f6" htmlFor="password">
           Service Name
@@ -119,7 +123,7 @@ export default function IndividualService({
             type="text"
             name="password"
             id="password"
-            placeholder="Professional Pickle Peeler"
+            placeholder="What should people ask for?"
             value={name}
             onChange={e =>
               dispatch({
@@ -140,7 +144,7 @@ export default function IndividualService({
             name="comment"
             className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
             aria-describedby="comment-desc"
-            placeholder="My ideal clients..."
+            placeholder="What do people get?"
             value={description}
             onChange={e =>
               dispatch({
@@ -150,11 +154,12 @@ export default function IndividualService({
             }
           ></textarea>
         </label>
-        <small id="comment-desc" className="f6 black-60">
+        {/* tk */}
+        {/* <small id="comment-desc" className="f6 black-60">
           If you have never thought about who your ideal clients are here is{' '}
           <a className="blue dib underline">a useful article</a> to help get you
           in the right mindet.
-        </small>
+        </small> */}
       </div>
 
       <div className="mt3 mb4">
@@ -165,7 +170,7 @@ export default function IndividualService({
             type="text"
             name="email-address"
             id="email-address"
-            placeholder="Your name..."
+            placeholder="How much?"
             value={price}
             onChange={e =>
               dispatch({
@@ -185,7 +190,7 @@ export default function IndividualService({
             type="text"
             name="email-address"
             id="email-address"
-            placeholder="Your name..."
+            placeholder="How do I find out more?"
             value={link}
             onChange={e =>
               dispatch({

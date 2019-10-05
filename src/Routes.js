@@ -15,8 +15,8 @@ const propTypes = {
   // location: ReactRouterPropTypes.location.isRequired,
 };
 
-const App = props => {
-  const [authStatus, setAuthStatus] = React.useState(true);
+const App = () => {
+  const [authStatus, setAuthStatus] = React.useState(false);
   const [userId, setUid] = React.useState('');
 
   React.useEffect(() => {
