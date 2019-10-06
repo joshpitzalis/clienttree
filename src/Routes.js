@@ -7,7 +7,7 @@ import Banner from './features/notifications/toast';
 import { Navbar } from './features/auth/Navbar';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
-import { PrivateRoute } from './features/auth/PrivateRoute';
+// import { PrivateRoute } from './features/auth/PrivateRoute';
 import firebase from './utils/firebase';
 import Refer from './features/services/Referral';
 
@@ -26,6 +26,7 @@ const App = () => {
         setUid(uid);
         setAuthStatus(true);
       } else {
+        // tk redirect to login here
         setAuthStatus(false);
         setUid('');
       }
@@ -51,10 +52,11 @@ const App = () => {
             <Login {...loginProps} authStatus={authStatus} userId={userId} />
           )}
         />
-        <PrivateRoute
+        <Route
           path="/user/:uid"
-          authStatus={false || authStatus}
-          component={Dashboard}
+          render={dashProps => (
+            <Dashboard {...dashProps} userId={userId} authStatus={authStatus} />
+          )}
         />
         <Route
           exact

@@ -1,7 +1,35 @@
 import firebase from '../../utils/firebase';
 
+export const handleFirebaseDelete = ({ payload }) => {
+  const { id, userId } = payload;
+  return firebase
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .set(
+      {
+        services: {
+          [id]: firebase.firestore.FieldValue.delete(),
+        },
+      },
+      { merge: true }
+    );
+};
+
+export const handleFirebaseProfileUpdate = payload => {
+  const { userId, name, designation, website, clients, service } = payload;
+  return firebase
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .set(
+      { name, designation, website, clients, service, userId },
+      { merge: true }
+    );
+};
+
 export const handleFirebaseUpdate = payload => {
-  const { id, field, value, userId } = payload;
+  const { id, userId, name, description, price, link } = payload;
   return firebase
     .firestore()
     .collection('users')
@@ -10,7 +38,11 @@ export const handleFirebaseUpdate = payload => {
       {
         services: {
           [id]: {
-            [field]: value,
+            id,
+            name,
+            description,
+            price,
+            link,
           },
         },
       },
@@ -18,12 +50,10 @@ export const handleFirebaseUpdate = payload => {
     );
 };
 
-export const fetchUserData = uid => {
-  console.log({ uid });
-  return firebase
+export const fetchUserData = uid =>
+  firebase
     .firestore()
     .collection('users')
     .doc(uid)
     .get()
     .then(doc => doc.data());
-};

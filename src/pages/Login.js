@@ -11,19 +11,7 @@ const loginPropTypes = {
   userId: PropTypes.string.isRequired,
 };
 export class Login extends Component {
-  state = { redirectToDashboard: false, email: '', password: '' };
-
-  // componentDidMount() {
-  //   const { location } = this.props;
-  //   toast$.next({
-  //     type: 'ERROR',
-  //     message: `You must log in to view the page at ${(location &&
-  //       location.state &&
-  //       location.state.pathname &&
-  //       location.state.pathname) ||
-  //       '/'}`,
-  //   });
-  // }
+  state = { loggedInSuccessfully: false, email: '', password: '' };
 
   login = (email, password) => async e => {
     e.preventDefault();
@@ -31,7 +19,7 @@ export class Login extends Component {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(({ uid }) => this.setState({ uid }))
-      .then(() => this.setState({ redirectToDashboard: true }))
+      .then(() => this.setState({ loggedInSuccessfully: true }))
       .catch(error =>
         toast$.next({
           type: 'ERROR',
@@ -41,13 +29,15 @@ export class Login extends Component {
   };
 
   render() {
-    const { redirectToDashboard, email, password, uid } = this.state;
+    const { loggedInSuccessfully, email, password, uid } = this.state;
     const { authStatus, userId } = this.props;
+
+    console.log({ authStatuslogin: authStatus });
 
     if (authStatus) {
       return <Redirect to={`/user/${userId}/dashboard`} />;
     }
-    if (redirectToDashboard) {
+    if (loggedInSuccessfully) {
       return <Redirect to={`/user/${uid}/dashboard`} />;
     }
     return (

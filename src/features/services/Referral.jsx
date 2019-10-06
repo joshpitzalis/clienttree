@@ -10,34 +10,44 @@ const propTypes = {
 const defaultProps = {};
 
 export default function Referral({ userId }) {
+  const [profileData, setProfileData] = React.useState({});
   React.useEffect(() => {
     if (userId) {
       fetchUserData(userId)
-        .then(data => console.log({ data }))
+        .then(data => setProfileData(data))
         .catch(error =>
           toast$.next({ type: 'ERROR', message: error.message || error })
         );
     }
   }, [userId]);
+
   return (
     <article className="pa3 pa5-ns">
-      <h1 className="f3 f1-m f-headline-l">Josh Pitzalis</h1>
+      <h1 className="f3 f1-m f-headline-l">
+        {profileData.name && profileData.name}
+      </h1>
 
-      <p className="measure lh-copy b">Freelance Web Developer</p>
-      <p className="measure lh-copy  gray">Next Available February 2020</p>
-      <p className="measure lh-copy">
-        I specialise in building web apps that help people learn things. If you
-        have an idea for a learning-oriented digital platform I can help you
-        turn it into a simple, fast and reliable web application.
+      <p className="measure lh-copy b i">
+        {profileData.designation && profileData.designation}
       </p>
-      <button
+      {/* <p className="measure lh-copy  gray">Next Available February 2020</p> */}
+      <p className="lh-copy measure">
+        {`I specialise in helping
+        ${profileData.clients && profileData.clients}
+        with
+        ${profileData.service && profileData.service}
+        .`}
+      </p>
+      <a
         type="button"
-        className="mb4 mt3 b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
-        onClick={() => {}}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mb4 black link mt3 b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
+        href={profileData.website && profileData.website}
       >
         Contact
-      </button>
-      <div className="pa4 pv5 pl0">
+      </a>
+      {/* <div className="pa4 pv5 pl0">
         <blockquote className="athelas ml0 mt0 pl4 black-90 bl bw2 b--blue">
           <p className="f5 f4-m f3-l lh-copy measure mt0">
             Discipline in typography is a prime virtue. Individuality must be
@@ -55,44 +65,42 @@ export default function Referral({ userId }) {
             ―Stanley Morison
           </cite>
         </blockquote>
-      </div>
-      <Service />
-      <Service />
-      <Service />
-      <Service />
-      <Service />
+      </div> */}
+
+      {profileData &&
+        profileData.services &&
+        Object.values(profileData.services).map(service => (
+          <Service {...service} />
+        ))}
     </article>
-  );
-}
-
-function Service() {
-  return (
-    <div>
-      <h3 className="f3 f2-m f1-l">Consultation</h3>
-      <p className="measure lh-copy">
-        Have an idea for a digital product but not sure how to bring it to life?
-        Planning your next big startup idea and need technical advice? Don’t
-        know how to approach adding a new feature to an existing app?
-      </p>
-      <p className="measure lh-copy">
-        If you want someone to take a fresh look at your web app, determine
-        potential flaws, and put together an actionable plan for improvement
-        then I can help. I’ll review your current situation and figure out a
-        brief roadmap for solving the problem.
-      </p>
-
-      <p className="measure lh-copy b mt5">Deliverables & Pricing</p>
-      <p className="measure lh-copy ">
-        A 60-Minute consultation call costs $250.
-      </p>
-      <p className="measure lh-copy">
-        You’ll receive a video recording of the call and a brief written recap
-        of key points.
-      </p>
-
-      <p className="measure lh-copy blue">Learn More...</p>
-    </div>
   );
 }
 Referral.propTypes = propTypes;
 Referral.defaultProps = defaultProps;
+
+const servicePropTypes = {
+  name: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  price: PropTypes.string.isRequired,
+  link: PropTypes.string.isRequired,
+};
+
+const serviceDefaultProps = {};
+
+function Service({ name, description, price, link }) {
+  return (
+    <div>
+      <h3 className="f3 f2-m f1-l">{name}</h3>
+      <p className="measure lh-copy">{description}</p>
+
+      <p className="measure lh-copy ">{price}</p>
+
+      <a href={link} className="measure lh-copy blue">
+        Learn More...
+      </a>
+    </div>
+  );
+}
+
+Service.propTypes = servicePropTypes;
+Service.defaultProps = serviceDefaultProps;

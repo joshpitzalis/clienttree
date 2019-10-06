@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 
 const propTypes = {
   submitted: PropTypes.bool.isRequired,
+  uid: PropTypes.string.isRequired,
 };
 const defaultProps = {};
 
-export function Onboarding({ submitted }) {
+export function Onboarding({ submitted, uid }) {
   return (
     <form className="pa4">
       <fieldset id="favorite_movies" className="bn">
@@ -41,7 +42,10 @@ export function Onboarding({ submitted }) {
                 Create a referrable email signature by completing your profile.
               </span>
             ) : (
-              <Link to="/user/123/profile" className="f6 link dim mr3 mr4-ns">
+              <Link
+                to={`/user/${uid}/profile`}
+                className="f6 link dim mr3 mr4-ns"
+              >
                 Create a referrable email signature by completing your profile.
               </Link>
             )}
@@ -56,7 +60,10 @@ export function Onboarding({ submitted }) {
               value="spacejam"
             />
 
-            <Link to="/user/123/profile" className="f6 link dim mr3 mr4-ns">
+            <Link
+              to={`/user/${uid}/profile`}
+              className="f6 link dim mr3 mr4-ns"
+            >
               Actually add the signature to your email account
             </Link>
           </label>

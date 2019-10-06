@@ -3,8 +3,14 @@ import PropTypes from 'prop-types';
 import produce from 'immer';
 import { Redirect } from 'react-router-dom';
 import ReactRouterPropTypes from 'react-router-prop-types';
+import { tap, debounceTime } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { confetti$ } from '../onboarding/confetti';
 import Services from './Services';
+import { handleFirebaseProfileUpdate, fetchUserData } from './serviceAPI';
+import { toast$ } from '../notifications/toast';
+
+export const profileFormUpdate$ = new Subject();
 
 export const curriedReducer = produce((draft, action) => {
   if (action.type === 'NAME_CHANGED') {
@@ -29,6 +35,15 @@ export const curriedReducer = produce((draft, action) => {
 
   if (action.type === 'FORM_SUBMITTED') {
     draft.submitted = true;
+  }
+
+  if (action.type === 'HYDRATE_PROFILE') {
+    const { name, designation, website, clients, service } = action.payload;
+    draft.name = name;
+    draft.designation = designation;
+    draft.website = website;
+    draft.clients = clients;
+    draft.service = service;
   }
 });
 
@@ -59,7 +74,39 @@ export function Profile(props) {
 
   const [state, dispatch] = React.useReducer(curriedReducer, initialState);
   const [firstTime, completeFirstTime] = React.useState(false);
-  if (firstTime) return <Redirect to="/user/123/dashboard" />;
+
+  React.useEffect(() => {
+    if (uid) {
+      fetchUserData(uid)
+        .then(data => {
+          if (data) {
+            dispatch({
+              type: 'HYDRATE_PROFILE',
+              payload: data,
+            });
+          }
+        })
+        .catch(error =>
+          toast$.next({ type: 'ERROR', message: error.message || error })
+        );
+    }
+  }, [uid]);
+
+  React.useEffect(() => {
+    const updates = profileFormUpdate$
+      .pipe(
+        debounceTime(1000),
+        tap(({ payload }) => {
+          handleFirebaseProfileUpdate(payload).catch(error =>
+            toast$.next({ type: 'ERROR', message: error.message || error })
+          );
+        })
+      )
+      .subscribe();
+    return () => updates.unsubscribe();
+  }, []);
+
+  if (firstTime) return <Redirect to={`/user/${uid}/dashboard`} />;
   return (
     <div>
       <main className="pa4 pl0 pt0 black-80">
@@ -82,60 +129,99 @@ export function Profile(props) {
           <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
             <legend className="f4 fw6 ph0 mh0">Profile</legend>
             <div className="mt3 mb4">
-              <label className="db fw6 lh-copy f6" htmlFor="email-address">
+              <label className="db fw6 lh-copy f6" htmlFor="name">
                 Your Name
                 <input
                   className="db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
                   type="text"
-                  name="email-address"
-                  id="email-address"
+                  name="name"
+                  id="name"
                   placeholder="Your name..."
                   value={state.name}
-                  onChange={e =>
+                  onChange={e => {
+                    const { designation, website, clients, service } = state;
                     dispatch({
                       type: 'NAME_CHANGED',
                       payload: e.target.value,
-                    })
-                  }
+                    });
+                    profileFormUpdate$.next({
+                      type: 'PROFILE_FORM_UPDATED',
+                      payload: {
+                        userId: uid,
+                        name: e.target.value,
+                        designation,
+                        website,
+                        clients,
+                        service,
+                      },
+                    });
+                  }}
                 />
               </label>
             </div>
             <div className=" mb4">
-              <label className="db fw6 lh-copy f6" htmlFor="password">
+              <label className="db fw6 lh-copy f6" htmlFor="designation">
                 Designation
                 <input
                   className="db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
                   type="text"
-                  name="password"
-                  id="password"
+                  name="designation"
+                  id="designation"
                   placeholder="Professional Pickle Peeler"
                   value={state.designation}
-                  onChange={e =>
+                  onChange={e => {
                     dispatch({
                       type: 'DESIGNATION_CHANGED',
                       payload: e.target.value,
-                    })
-                  }
+                    });
+                    const { name, website, clients, service } = state;
+
+                    profileFormUpdate$.next({
+                      type: 'DESIGNATION_CHANGED',
+                      payload: {
+                        userId: uid,
+                        name,
+                        designation: e.target.value,
+                        website,
+                        clients,
+                        service,
+                      },
+                    });
+                  }}
                 />
               </label>
             </div>
 
             <div className=" mb5">
-              <label className="db fw6 lh-copy f6" htmlFor="password">
+              <label className="db fw6 lh-copy f6" htmlFor="website">
                 Website URL
                 <input
                   className="db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
                   type="text"
-                  name="password"
-                  id="password"
+                  name="website"
+                  id="website"
                   placeholder="www.something.com"
                   value={state.website}
-                  onChange={e =>
+                  onChange={e => {
                     dispatch({
                       type: 'WEBSITE_CHANGED',
                       payload: e.target.value,
-                    })
-                  }
+                    });
+
+                    const { name, designation, clients, service } = state;
+
+                    profileFormUpdate$.next({
+                      type: 'WEBSITE_CHANGED',
+                      payload: {
+                        userId: uid,
+                        name,
+                        designation,
+                        website: e.target.value,
+                        clients,
+                        service,
+                      },
+                    });
+                  }}
                 />
               </label>
             </div>
@@ -150,12 +236,26 @@ export function Profile(props) {
                   aria-describedby="comment-desc"
                   placeholder="My ideal clients..."
                   value={state.clients}
-                  onChange={e =>
+                  onChange={e => {
                     dispatch({
                       type: 'CLIENT_CHANGED',
                       payload: e.target.value,
-                    })
-                  }
+                    });
+
+                    const { name, designation, website, service } = state;
+
+                    profileFormUpdate$.next({
+                      type: 'CLIENT_CHANGED',
+                      payload: {
+                        userId: uid,
+                        name,
+                        designation,
+                        website,
+                        clients: e.target.value,
+                        service,
+                      },
+                    });
+                  }}
                 ></textarea>
               </label>
               {/* tk */}
@@ -175,13 +275,26 @@ export function Profile(props) {
                   className="db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
                   aria-describedby="comment-desc"
                   placeholder="The thing I help with..."
-                  value={state.services}
-                  onChange={e =>
+                  value={state.service}
+                  onChange={e => {
                     dispatch({
                       type: 'SERVICE_CHANGED',
                       payload: e.target.value,
-                    })
-                  }
+                    });
+                    const { name, designation, website, clients } = state;
+
+                    profileFormUpdate$.next({
+                      type: 'SERVICE_CHANGED',
+                      payload: {
+                        userId: uid,
+                        name,
+                        designation,
+                        website,
+                        clients,
+                        service: e.target.value,
+                      },
+                    });
+                  }}
                 ></textarea>
               </label>
               {/* tk */}
