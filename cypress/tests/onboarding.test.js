@@ -59,7 +59,6 @@ describe('onboarding', () => {
       .findByText(fakeData.name)
       .findByText(fakeData.designation)
       .findByText('I specialise in helping bears with traps .')
-
       .findByText(/sign out/i)
       .click();
   });

@@ -14,6 +14,7 @@ const defaultProps = {};
 
 export function Dashboard({ userId }) {
   const [submitted, setSubmitted] = React.useState(false);
+
   const [welcomeMessage, setWelcomeMessage] = React.useState({
     header: 'Welcome!',
     byline: '',
@@ -43,7 +44,11 @@ export function Dashboard({ userId }) {
             />
           )}
         />
-        <PrivateRoute exact path="/user/:uid/network" component={Network} />
+        <Route
+          exact
+          path="/user/:uid/network"
+          render={props => <Network {...props} uid={userId} />}
+        />
       </div>
       <div className="w-25">
         <Onboarding submitted={submitted} uid={userId} />
@@ -61,7 +66,6 @@ const navigationPropTypes = {
 const navigationDefaultProps = {};
 
 function Navigation({ uid }) {
-  console.log({ uid });
   return (
     <ul className="flex-col">
       <li className="list ">

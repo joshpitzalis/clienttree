@@ -32,8 +32,6 @@ export class Login extends Component {
     const { loggedInSuccessfully, email, password, uid } = this.state;
     const { authStatus, userId } = this.props;
 
-    console.log({ authStatuslogin: authStatus });
-
     if (authStatus) {
       return <Redirect to={`/user/${userId}/dashboard`} />;
     }
