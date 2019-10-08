@@ -1,4 +1,7 @@
+import { collection } from 'rxfire/firestore';
+import { map, catchError } from 'rxjs/operators';
 import firebase from '../../utils/firebase';
+import { toast$ } from '../notifications/toast';
 
 export const setFirebaseContactUpdate = payload => {
   const { userId, contactId, name, summary } = payload;
@@ -8,7 +11,6 @@ export const setFirebaseContactUpdate = payload => {
     .doc(userId)
     .collection('contacts')
     .doc();
-  console.log({ newDoc });
 
   const contactUid = contactId || newDoc.id;
 
@@ -21,11 +23,21 @@ export const setFirebaseContactUpdate = payload => {
     .set({ name, summary, uid: contactUid }, { merge: true });
 };
 
-export const getFirebaseContacts = uid =>
-  firebase
-    .firestore()
-    .collection('users')
-    .doc(uid)
-    .collection('contacts')
-    .get()
-    .then(collection => collection.docs.map(doc => doc.data()));
+// export const getFirebaseContacts = uid =>
+//   collection(
+//     firebase
+//       .firestore()
+//       .collection('users')
+//       .doc(uid)
+//       .collection('contacts')
+//   )
+//     .pipe(
+//       map(docs => docs.map(d => d.data())),
+//       catchError(error =>
+//         toast$.next({
+//           type: 'ERROR',
+//           message: error.message || error,
+//         })
+//       )
+//     )
+//     .subscribe(network => setContacts(network));

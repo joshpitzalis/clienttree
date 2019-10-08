@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import { collectionData } from 'rxfire/firestore';
+// import { map, catchError } from 'rxjs/operators';
+import { setFirebaseContactUpdate } from './networkAPI';
+import firebase from '../../utils/firebase';
 import { toast$ } from '../notifications/toast';
-import { setFirebaseContactUpdate, getFirebaseContacts } from './networkAPI';
 
 const NetworkContext = React.createContext();
 
@@ -17,16 +19,18 @@ const NetworkProvider = ({ children, uid }) => {
   const [contacts, setContacts] = React.useState([]);
 
   React.useEffect(() => {
-    if (uid) {
-      getFirebaseContacts(uid)
-        .then(network => setContacts(network))
-        .catch(error =>
-          toast$.next({
-            type: 'ERROR',
-            message: error.message || error,
-          })
-        );
-    }
+    collectionData(
+      firebase
+        .firestore()
+        .collection('users')
+        .doc(uid || '  ')
+        .collection('contacts')
+    ).subscribe(network => {
+      console.log({ network, uid });
+      if (network && network.length) {
+        setContacts(network);
+      }
+    });
   }, [uid]);
 
   const setContact = contact =>
