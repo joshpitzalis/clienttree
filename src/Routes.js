@@ -10,6 +10,7 @@ import { Dashboard } from './pages/Dashboard';
 // import { PrivateRoute } from './features/auth/PrivateRoute';
 import firebase from './utils/firebase';
 import Refer from './features/services/Referral';
+import { UserContext } from './features/auth/UserContext';
 
 const propTypes = {
   // location: ReactRouterPropTypes.location.isRequired,
@@ -36,33 +37,39 @@ const App = () => {
   return (
     <BrowserRouter>
       <main>
-        <Banner />
-        <Navbar authStatus={authStatus} />
-        <Route
-          exact
-          path="/"
-          render={routeProps => (
-            <Login {...routeProps} authStatus={authStatus} userId={userId} />
-          )}
-        />
-        <Route
-          exact
-          path="/login"
-          render={loginProps => (
-            <Login {...loginProps} authStatus={authStatus} userId={userId} />
-          )}
-        />
-        <Route
-          path="/user/:uid"
-          render={dashProps => (
-            <Dashboard {...dashProps} userId={userId} authStatus={authStatus} />
-          )}
-        />
-        <Route
-          exact
-          path="/refer/:uid"
-          render={referProps => <Refer {...referProps} userId={userId} />}
-        />
+        <UserContext.Provider value={authStatus}>
+          <Banner />
+          <Navbar authStatus={authStatus} />
+          <Route
+            exact
+            path="/"
+            render={routeProps => (
+              <Login {...routeProps} authStatus={authStatus} userId={userId} />
+            )}
+          />
+          <Route
+            exact
+            path="/login"
+            render={loginProps => (
+              <Login {...loginProps} authStatus={authStatus} userId={userId} />
+            )}
+          />
+          <Route
+            path="/user/:uid"
+            render={dashProps => (
+              <Dashboard
+                {...dashProps}
+                userId={userId}
+                authStatus={authStatus}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/refer/:uid"
+            render={referProps => <Refer {...referProps} userId={userId} />}
+          />
+        </UserContext.Provider>
       </main>
     </BrowserRouter>
   );
