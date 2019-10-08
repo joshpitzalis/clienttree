@@ -38,18 +38,18 @@ export default class Portal extends Component {
         role="button"
         tabIndex={-1}
       >
-        <article className="w-50 center pa3 tc br2 bg-white ma3">
+        <article className="w-50 center pa3 tc br2 bg-white ma3 flex flex-column justify-center">
           <button
             type="button"
             onClick={onClose}
-            className="fr bn link bg-transparent pointer "
+            className="fr bn link bg-transparent pointer self-end"
           >
             <Close />
           </button>
-          <div className="clear"></div>
+
           <div
             role="button"
-            className="center"
+            className="center w-100"
             tabIndex={-1}
             onClick={e => e.stopPropagation()}
             onKeyPress={e => e.stopPropagation()}
