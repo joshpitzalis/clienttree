@@ -9,6 +9,8 @@ const modalPropTypes = {
     name: PropTypes.string.isRequired,
     summary: PropTypes.string.isRequired,
     uid: PropTypes.string.isRequired,
+    lastContacted: PropTypes.string.isRequired,
+    photoURL: PropTypes.string.isRequired,
   }),
   onClose: PropTypes.func.isRequired,
 };
@@ -19,10 +21,15 @@ export function Modal({ uid, selectedUser, onClose }) {
     userId: uid,
     name: selectedUser.name || '',
     summary: selectedUser.summary || '',
+    lastContacted: selectedUser.lastContacted || '',
     contactId: selectedUser.uid || '',
+    photoURL: selectedUser.photoURL || '',
+    imgString: '',
   });
 
   const { setContact } = React.useContext(NetworkContext);
+
+  const avatarRef = React.useRef(null);
 
   return (
     <form
@@ -30,13 +37,30 @@ export function Modal({ uid, selectedUser, onClose }) {
       onSubmit={async e => {
         e.preventDefault();
         // tk validity check goes here
+        if (!state.photoURL) {
+          const imgString = await avatarRef.current.getImageData();
+
+          await setContact({ ...state, imgString });
+          onClose();
+          return;
+        }
         await setContact(state);
         onClose();
       }}
     >
       <fieldset id="contact" className="ba b--transparent ph0 mh0 tl">
         <legend className="f4 fw6 ph0 mh0 dn">Profile</legend>
-        <CustomAvatarGenerator />
+        <div className="w-100 tc">
+          {state.photoURL ? (
+            <img
+              alt={state.name}
+              className="w2 h2 w3-ns h3-ns br-100"
+              src={state.photoURL}
+            />
+          ) : (
+            <AvatarGenerator ref={avatarRef} height="100" width="100" />
+          )}
+        </div>
         <div className="mt3 mb4">
           <label className="db fw6 lh-copy f6" htmlFor="name">
             Name
@@ -48,6 +72,23 @@ export function Modal({ uid, selectedUser, onClose }) {
               placeholder="Your name..."
               value={state.name}
               onChange={e => setState({ ...state, name: e.target.value })}
+            />
+          </label>
+        </div>
+
+        <div className="mt3 mb4">
+          <label className="db fw6 lh-copy f6" htmlFor="name">
+            Last Contacted
+            <input
+              className="db border-box hover-black w-100 measure-wide ba b--black-20 pa2 br2 mb2"
+              type="text"
+              name="lastContacted"
+              id="lastContacted"
+              placeholder="Last contacted..."
+              value={state.lastContacted}
+              onChange={e =>
+                setState({ ...state, lastContacted: e.target.value })
+              }
             />
           </label>
         </div>
@@ -79,29 +120,3 @@ export function Modal({ uid, selectedUser, onClose }) {
 }
 Modal.propTypes = modalPropTypes;
 Modal.defaultProps = modalDefaultProps;
-
-class CustomAvatarGenerator extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.avatarGenerator = React.createRef();
-  }
-
-  render() {
-    return (
-      <div className="w-100 tc">
-        {/* <button
-          type="button"
-          onClick={() => {
-            const img = this.avatarGenerator.current.getImageData();
-            console.log({ img });
-            // https://firebase.google.com/docs/reference/js/firebase.storage.Reference.html#putstring
-          }}
-        >
-          Image
-        </button> */}
-        <AvatarGenerator ref={this.avatarGenerator} height="100" width="100" />
-      </div>
-    );
-  }
-}

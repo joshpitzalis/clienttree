@@ -26,7 +26,6 @@ const NetworkProvider = ({ children, uid }) => {
         .doc(uid || '  ')
         .collection('contacts')
     ).subscribe(network => {
-      console.log({ network, uid });
       if (network && network.length) {
         setContacts(network);
       }

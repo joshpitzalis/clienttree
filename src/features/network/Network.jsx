@@ -52,38 +52,44 @@ export function Network({ uid }) {
       </div>
       <ul className="list pl0 mt0">
         {contacts &&
-          contacts.map(contact => (
-            <li key={contact.uid}>
-              <div
-                className="flex items-center lh-copy pa3 ph0-l bb b--black-10"
-                tabIndex={-1}
-                role="button"
-                onClick={() => {
-                  setSelectedUser(contact);
-                  setVisibility(true);
-                }}
-                onKeyPress={() => {
-                  setSelectedUser(contact);
-                  setVisibility(true);
-                }}
-              >
-                <img
-                  alt=""
-                  className="w2 h2 w3-ns h3-ns br-100"
-                  src="http://tachyons.io/img/avatar-mrmrs.jpg"
-                />
-                <div className="pl3 flex-auto">
-                  <span className="f6 db black-70">{contact.name}</span>
-                  <span className="f6 db black-70">{contact.summary}</span>
+          contacts.map(contact => {
+            console.log(contact.photoURL);
+            return (
+              <li key={contact.uid}>
+                <div
+                  className="flex items-center lh-copy pa3 ph0-l bb b--black-10 pointer"
+                  tabIndex={-1}
+                  role="button"
+                  onClick={() => {
+                    setSelectedUser(contact);
+                    setVisibility(true);
+                  }}
+                  onKeyPress={() => {
+                    setSelectedUser(contact);
+                    setVisibility(true);
+                  }}
+                >
+                  <img
+                    alt={contact.name}
+                    className="w2 h2 w3-ns h3-ns br-100"
+                    src={contact.photoURL}
+                  />
+                  <div className="pl3 flex-auto">
+                    <span className="f6 db black-70 b">{contact.name}</span>
+                    <span className="f6 db black-70 i">
+                      {contact.lastContacted &&
+                        `Last contacted ${contact.lastContacted}`}
+                    </span>
+                  </div>
+                  <div>
+                    <div className="taskStyle bg-blue"></div>
+                    <div className="taskStyle bg-light-red"></div>
+                    <div className="taskStyle bg-green"></div>
+                  </div>
                 </div>
-                <div>
-                  <a href="tel:" className="f6 link blue hover-dark-gray">
-                    +1 (999) 555-5555
-                  </a>
-                </div>
-              </div>
-            </li>
-          ))}
+              </li>
+            );
+          })}
       </ul>
     </>
   );

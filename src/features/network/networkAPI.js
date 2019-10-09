@@ -3,8 +3,16 @@ import { map, catchError } from 'rxjs/operators';
 import firebase from '../../utils/firebase';
 import { toast$ } from '../notifications/toast';
 
-export const setFirebaseContactUpdate = payload => {
-  const { userId, contactId, name, summary } = payload;
+export const setFirebaseContactUpdate = async payload => {
+  const {
+    userId,
+    contactId,
+    name,
+    summary,
+    lastContacted,
+    photoURL,
+    imgString,
+  } = payload;
   const newDoc = firebase
     .firestore()
     .collection('users')
@@ -13,6 +21,16 @@ export const setFirebaseContactUpdate = payload => {
     .doc();
 
   const contactUid = contactId || newDoc.id;
+  let downloadURL;
+  if (imgString) {
+    // upload the base 64 string to get an image url
+    downloadURL = await firebase
+      .storage()
+      .ref()
+      .child(`contacts/${contactUid}.png`)
+      .putString(imgString, 'data_url', { contentType: 'image/png' })
+      .then(({ ref }) => ref.getDownloadURL());
+  }
 
   return firebase
     .firestore()
@@ -20,7 +38,16 @@ export const setFirebaseContactUpdate = payload => {
     .doc(userId)
     .collection('contacts')
     .doc(contactUid)
-    .set({ name, summary, uid: contactUid }, { merge: true });
+    .set(
+      {
+        name,
+        summary,
+        uid: contactUid,
+        lastContacted,
+        photoURL: photoURL || downloadURL,
+      },
+      { merge: true }
+    );
 };
 
 // export const getFirebaseContacts = uid =>
