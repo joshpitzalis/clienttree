@@ -22,6 +22,7 @@ export const setFirebaseContactUpdate = async payload => {
 
   const contactUid = contactId || newDoc.id;
   let downloadURL;
+
   if (imgString) {
     // upload the base 64 string to get an image url
     downloadURL = await firebase

@@ -34,6 +34,7 @@ export function Modal({ uid, selectedUser, onClose }) {
   return (
     <form
       className="measure"
+      data-testid="contactModal"
       onSubmit={async e => {
         e.preventDefault();
         // tk validity check goes here
@@ -101,7 +102,7 @@ export function Modal({ uid, selectedUser, onClose }) {
               name="comment"
               className="db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
               aria-describedby="comment-desc"
-              placeholder="The thing I help with..."
+              placeholder="Notes..."
               value={state.summary}
               onChange={e => setState({ ...state, summary: e.target.value })}
             ></textarea>
