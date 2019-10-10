@@ -33,7 +33,7 @@ export function Modal({ uid, selectedUser, onClose }) {
 
   return (
     <form
-      className="measure"
+      className="measure center"
       data-testid="contactModal"
       onSubmit={async e => {
         e.preventDefault();
@@ -62,11 +62,11 @@ export function Modal({ uid, selectedUser, onClose }) {
             <AvatarGenerator ref={avatarRef} height="100" width="100" />
           )}
         </div>
-        <div className="mt3 mb4">
-          <label className="db fw6 lh-copy f6" htmlFor="name">
+        <div className="mt3 mb4 ">
+          <label className="db fw6 lh-copy f6 " htmlFor="name">
             Name
             <input
-              className="db border-box hover-black w-100 measure-wide ba b--black-20 pa2 br2 mb2"
+              className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2"
               type="text"
               name="name"
               id="name"
@@ -78,10 +78,10 @@ export function Modal({ uid, selectedUser, onClose }) {
         </div>
 
         <div className="mt3 mb4">
-          <label className="db fw6 lh-copy f6" htmlFor="name">
+          <label className="db fw6 lh-copy f6" htmlFor="lastContacted">
             Last Contacted
             <input
-              className="db border-box hover-black w-100 measure-wide ba b--black-20 pa2 br2 mb2"
+              className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2"
               type="text"
               name="lastContacted"
               id="lastContacted"
@@ -100,7 +100,8 @@ export function Modal({ uid, selectedUser, onClose }) {
             <textarea
               id="comment"
               name="comment"
-              className="db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
+              rows="5"
+              className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2"
               aria-describedby="comment-desc"
               placeholder="Notes..."
               value={state.summary}
