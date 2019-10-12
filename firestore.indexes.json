@@ -1,0 +1,19 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "helpfulTasks",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "connectedTo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "dateCompleted",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
