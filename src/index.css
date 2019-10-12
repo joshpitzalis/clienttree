@@ -13,3 +13,26 @@ body {
 }
 
 
+
+.taskStyle {
+  -webkit-font-smoothing: antialiased;
+
+cursor: pointer;
+
+box-sizing: border-box;
+border-radius: 15px;
+display: inline-block;
+
+height: 20px;
+
+outline: none;
+overflow: hidden;
+padding: 0 6px;
+margin: 0 2px;
+transition: box-shadow 150ms cubic-bezier(.2, .6, .6, 1), opacity 150ms cubic-bezier(.2, .6, .6, 1);
+vertical-align: middle;
+white-space: nowrap;
+
+background-color: #808080;
+
+}
