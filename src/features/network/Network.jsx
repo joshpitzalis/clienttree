@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { collectionData } from 'rxfire/firestore';
+
 import Portal from '../../utils/Portal';
 import Plus from '../../images/Plus';
 import { Modal } from './ContactModal';
@@ -86,7 +86,12 @@ export function Network({ uid }) {
                   {contact.activeTaskCount &&
                     Array(contact.activeTaskCount)
                       .fill(null)
-                      .map(() => <div className="taskStyle " />)}
+                      .map((count, index) => (
+                        <div
+                          key={`${index}+${+new Date()}`}
+                          className="taskStyle "
+                        />
+                      ))}
                 </div>
               </div>
             </li>

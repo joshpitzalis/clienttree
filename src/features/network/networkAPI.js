@@ -86,6 +86,7 @@ export const handleAddTask = (task, _myUid, _theirUid) => {
         name: task,
         dateCreated: new Date(),
         dateCompleted: null,
+        connectedTo: _myUid,
       },
       { merge: true }
     );
