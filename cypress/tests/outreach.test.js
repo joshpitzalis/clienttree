@@ -29,7 +29,7 @@ describe('outreach', () => {
       .findByText(fakeData.name);
   });
 
-  it.only('lets you update a contact', () => {
+  it('lets you update a contact', () => {
     cy.visit('/')
       .findByText(/Welcome/i)
       .findByText(/outreach/i)
@@ -51,14 +51,34 @@ describe('outreach', () => {
   });
 
   it('lets you delete a contact', () => {
+    cy.visit('/')
+      .findByText(/Welcome/i)
+      .findByText(/outreach/i)
+      .click()
+      .findByTestId(/outreachPage/i)
+      .findByText(fakeData.updatedName)
+      .click()
+      .findByTestId(/contactModal/i)
+      .findByText(/delete/i)
+      .click()
+      .findByText(/confirm delete/i)
+      .click()
+      .wait(5000)
+      .queryByTestId(/contactModal/i)
+      .should('not.exist')
+      .queryByText(fakeData.updatedName)
+      .should('not.exist');
+  });
+
+  it.skip('delete buttons only show up for existing users', () => {
     cy.visit('/').login();
   });
 
-  it('creates a task', () => {
+  it.only('creates a task', () => {
     cy.visit('/').login();
   });
 
-  it('updates a task', () => {
+  it('shows the number of active tasks on the network page', () => {
     cy.visit('/').login();
   });
 

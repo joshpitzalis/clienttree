@@ -183,159 +183,191 @@ const IndividualService = ({
   price,
   link,
   userId,
-}) => {
+}) => (
+  <div className="mb5 pt4 bt b--light-gray" data-testid="serviceBox">
+    <div className="mb4">
+      <label className="db fw6 lh-copy f6" htmlFor="serviceName">
+        Service Name
+        <input
+          className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
+          type="text"
+          name="serviceName"
+          id="serviceName"
+          placeholder="What should people ask for?"
+          value={name}
+          onChange={e => {
+            dispatch({
+              type: 'SERVICE_NAME_CHANGED',
+              payload: {
+                serviceId: id,
+                value: e.target.value,
+              },
+            });
+            serviceFormUpdate$.next({
+              type: 'SERVICES_FORM_UPDATED',
+              payload: {
+                userId,
+                id,
+                name: e.target.value,
+                description,
+                price,
+                link,
+              },
+            });
+          }}
+        />
+      </label>
+    </div>
+
+    <div className="mb4">
+      <label htmlFor="comment" className="f6 b db mb2">
+        Service Description
+        <textarea
+          rows="10"
+          id="comment"
+          name="comment"
+          className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
+          aria-describedby="comment-desc"
+          placeholder="What do people get?"
+          value={description}
+          onChange={e => {
+            dispatch({
+              type: 'SERVICE_DESCRIPTION_CHANGED',
+              payload: {
+                serviceId: id,
+                value: e.target.value,
+              },
+            });
+            serviceFormUpdate$.next({
+              type: 'SERVICES_FORM_UPDATED',
+              payload: {
+                userId,
+                id,
+                name,
+                description: e.target.value,
+                price,
+                link,
+              },
+            });
+          }}
+        ></textarea>
+      </label>
+      {/* tk */}
+      {/* <small id="comment-desc" className="f6 black-60">
+          If you have never thought about who your ideal clients are here is{' '}
+          <a className="blue dib underline">a useful article</a> to help get you
+          in the right mindet.
+        </small> */}
+    </div>
+
+    <div className="mb4">
+      <label htmlFor="comment" className="f6 b db mb2">
+        Price & Duration
+        <textarea
+          rows="5"
+          id="comment"
+          name="comment"
+          className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
+          aria-describedby="comment-desc"
+          value={price}
+          placeholder="How much?"
+          onChange={e => {
+            dispatch({
+              type: 'SERVICE_PRICE_CHANGED',
+              payload: {
+                serviceId: id,
+                value: e.target.value,
+              },
+            });
+            serviceFormUpdate$.next({
+              type: 'SERVICES_FORM_UPDATED',
+              payload: {
+                userId,
+                id,
+                name,
+                description,
+                price: e.target.value,
+                link,
+              },
+            });
+          }}
+        ></textarea>
+      </label>
+      {/* tk */}
+      {/* <small id="comment-desc" className="f6 black-60">
+          If you have never thought about who your ideal clients are here is{' '}
+          <a className="blue dib underline">a useful article</a> to help get you
+          in the right mindet.
+        </small> */}
+    </div>
+
+    <div className="mt3 mb4">
+      <label className="db fw6 lh-copy f6" htmlFor="email-address">
+        Link
+        <input
+          className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
+          type="text"
+          name="email-address"
+          id="email-address"
+          placeholder="How do I find out more?"
+          value={link}
+          onChange={e => {
+            dispatch({
+              type: 'SERVICE_LINK_CHANGED',
+              payload: {
+                serviceId: id,
+                value: e.target.value,
+              },
+            });
+            serviceFormUpdate$.next({
+              type: 'SERVICES_FORM_UPDATED',
+              payload: {
+                userId,
+                id,
+                name,
+                description,
+                price,
+                link: e.target.value,
+              },
+            });
+          }}
+        />
+      </label>
+    </div>
+    <ConfirmDelete
+      handleDelete={() => {
+        dispatch({
+          type: 'SERVICE_DELETED',
+          payload: {
+            serviceId: id,
+          },
+        });
+        serviceFormUpdate$.next({
+          type: 'SERVICES_DELETED',
+          payload: {
+            userId,
+            id,
+          },
+        });
+      }}
+      title={name}
+    />
+  </div>
+);
+
+IndividualService.propTypes = sericePropTypes;
+IndividualService.defaultProps = serviceDefaultProps;
+
+const confirmDeletePropTypes = {
+  handleDelete: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+};
+const confirmDeleteDefaultProps = {};
+
+export const ConfirmDelete = ({ handleDelete, title }) => {
   const [confirmDelete, setConfirmDelete] = React.useState(false);
   return (
-    <div className="mb5 pt4 bt b--light-gray" data-testid="serviceBox">
-      <div className="mb4">
-        <label className="db fw6 lh-copy f6" htmlFor="serviceName">
-          Service Name
-          <input
-            className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
-            type="text"
-            name="serviceName"
-            id="serviceName"
-            placeholder="What should people ask for?"
-            value={name}
-            onChange={e => {
-              dispatch({
-                type: 'SERVICE_NAME_CHANGED',
-                payload: {
-                  serviceId: id,
-                  value: e.target.value,
-                },
-              });
-              serviceFormUpdate$.next({
-                type: 'SERVICES_FORM_UPDATED',
-                payload: {
-                  userId,
-                  id,
-                  name: e.target.value,
-                  description,
-                  price,
-                  link,
-                },
-              });
-            }}
-          />
-        </label>
-      </div>
-
-      <div className="mb4">
-        <label htmlFor="comment" className="f6 b db mb2">
-          Service Description
-          <textarea
-            rows="10"
-            id="comment"
-            name="comment"
-            className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
-            aria-describedby="comment-desc"
-            placeholder="What do people get?"
-            value={description}
-            onChange={e => {
-              dispatch({
-                type: 'SERVICE_DESCRIPTION_CHANGED',
-                payload: {
-                  serviceId: id,
-                  value: e.target.value,
-                },
-              });
-              serviceFormUpdate$.next({
-                type: 'SERVICES_FORM_UPDATED',
-                payload: {
-                  userId,
-                  id,
-                  name,
-                  description: e.target.value,
-                  price,
-                  link,
-                },
-              });
-            }}
-          ></textarea>
-        </label>
-        {/* tk */}
-        {/* <small id="comment-desc" className="f6 black-60">
-          If you have never thought about who your ideal clients are here is{' '}
-          <a className="blue dib underline">a useful article</a> to help get you
-          in the right mindet.
-        </small> */}
-      </div>
-
-      <div className="mb4">
-        <label htmlFor="comment" className="f6 b db mb2">
-          Price & Duration
-          <textarea
-            rows="5"
-            id="comment"
-            name="comment"
-            className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
-            aria-describedby="comment-desc"
-            value={price}
-            placeholder="How much?"
-            onChange={e => {
-              dispatch({
-                type: 'SERVICE_PRICE_CHANGED',
-                payload: {
-                  serviceId: id,
-                  value: e.target.value,
-                },
-              });
-              serviceFormUpdate$.next({
-                type: 'SERVICES_FORM_UPDATED',
-                payload: {
-                  userId,
-                  id,
-                  name,
-                  description,
-                  price: e.target.value,
-                  link,
-                },
-              });
-            }}
-          ></textarea>
-        </label>
-        {/* tk */}
-        {/* <small id="comment-desc" className="f6 black-60">
-          If you have never thought about who your ideal clients are here is{' '}
-          <a className="blue dib underline">a useful article</a> to help get you
-          in the right mindet.
-        </small> */}
-      </div>
-
-      <div className="mt3 mb4">
-        <label className="db fw6 lh-copy f6" htmlFor="email-address">
-          Link
-          <input
-            className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
-            type="text"
-            name="email-address"
-            id="email-address"
-            placeholder="How do I find out more?"
-            value={link}
-            onChange={e => {
-              dispatch({
-                type: 'SERVICE_LINK_CHANGED',
-                payload: {
-                  serviceId: id,
-                  value: e.target.value,
-                },
-              });
-              serviceFormUpdate$.next({
-                type: 'SERVICES_FORM_UPDATED',
-                payload: {
-                  userId,
-                  id,
-                  name,
-                  description,
-                  price,
-                  link: e.target.value,
-                },
-              });
-            }}
-          />
-        </label>
-      </div>
+    <div>
       {confirmDelete ? (
         <div>
           <small className="f6 black-70 small-caps">
@@ -345,28 +377,14 @@ const IndividualService = ({
             <button
               className="f6 red small-caps pointer link dim ba bw1 ph3 pv2 mb2 dib b--red"
               type="button"
-              onClick={() => {
-                dispatch({
-                  type: 'SERVICE_DELETED',
-                  payload: {
-                    serviceId: id,
-                  },
-                });
-                serviceFormUpdate$.next({
-                  type: 'SERVICES_DELETED',
-                  payload: {
-                    userId,
-                    id,
-                  },
-                });
-              }}
+              onClick={handleDelete}
             >
-              {`Delete ${name}`}
+              {`Delete ${title}`}
             </button>
             <button
               className="f6 small-caps bn pointer ml3 black-70"
               type="button"
-              onClick={() => setConfirmDelete(true)}
+              onClick={() => setConfirmDelete(false)}
             >
               Nevermind
             </button>
@@ -378,12 +396,12 @@ const IndividualService = ({
           type="button"
           onClick={() => setConfirmDelete(true)}
         >
-          {`Delete ${name}`}
+          {`Delete ${title}`}
         </button>
       )}
     </div>
   );
 };
 
-IndividualService.propTypes = sericePropTypes;
-IndividualService.defaultProps = serviceDefaultProps;
+ConfirmDelete.propTypes = confirmDeletePropTypes;
+ConfirmDelete.defaultProps = confirmDeleteDefaultProps;

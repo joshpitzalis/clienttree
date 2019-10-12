@@ -76,7 +76,7 @@ export function Onboarding({ submitted, uid }) {
               id="spacejam"
               value="spacejam"
             />
-            <span className="">Create a referral page</span>
+            <small className="">Create a referral page</small>
           </label>
         </div>
         <div className="flex items-center mb2">
@@ -87,9 +87,9 @@ export function Onboarding({ submitted, uid }) {
               id="spacejam"
               value="spacejam"
             />
-            <span className="">
-              Add the name of a past client to your professional network
-            </span>
+            <small className="">
+              Add one past client to your professional network
+            </small>
           </label>
         </div>
       </fieldset>
