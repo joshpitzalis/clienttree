@@ -31,8 +31,6 @@ const useNotification = notificationStream$ => {
 const Banner = () => {
   const [message, clear, type] = useNotification(toast$);
 
-  // type === 'SUCCESS' && type === 'ERROR'
-
   return (
     <>
       {message && (
@@ -40,7 +38,9 @@ const Banner = () => {
           type="button"
           onClick={() => clear()}
           className={`w-100 bn flex items-center justify-center pa4 pointer
-${type === 'ERROR' ? 'bg-light-red' : 'bg-lightest-blue navy'}`}
+${(type === 'ERROR' && 'bg-light-red') ||
+  (type === 'SUCCESS' && 'bg-light-green') ||
+  'bg-lightest-blue navy'}`}
         >
           <span className="lh-title ml3">{message}</span>
         </button>
