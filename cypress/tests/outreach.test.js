@@ -78,11 +78,31 @@ describe('outreach', () => {
     cy.visit('/').login();
   });
 
+  it('ensures that when a contact is added the first task is created by default', () => {
+    cy.visit('/').login();
+  });
+
+  it('ensures default tasks show up in network page task nibs and in universal task list', () => {
+    cy.visit('/').login();
+  });
+
   it('shows the number of active tasks on the network page', () => {
     cy.visit('/').login();
   });
 
+  it('shows my helpful tasks in universal task list', () => {
+    cy.visit('/').login();
+  });
+
+  it('only shows my helpful tasks in universal task list, not everyones', () => {
+    cy.visit('/').login();
+  });
+
   it('completes a task', () => {
+    cy.visit('/').login();
+  });
+
+  it('completes a task from the universal task list', () => {
     cy.visit('/').login();
   });
 
@@ -91,6 +111,10 @@ describe('outreach', () => {
   });
 
   it('forces you to enter the next task', () => {
+    cy.visit('/').login();
+  });
+
+  it('forces you to enter the next task from teh universal task list', () => {
     cy.visit('/').login();
   });
 });

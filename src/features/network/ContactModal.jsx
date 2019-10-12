@@ -60,6 +60,7 @@ export function Modal({ uid, selectedUser, onClose }) {
       toast$.next({ type: 'ERROR', message: error.message || error })
     );
   };
+
   return (
     <form
       className="measure center"
@@ -70,11 +71,15 @@ export function Modal({ uid, selectedUser, onClose }) {
         if (!state.photoURL) {
           const imgString = await avatarRef.current.getImageData();
 
-          await setContact({ ...state, imgString });
+          await setContact({ ...state, imgString }).catch(error =>
+            toast$.next({ type: 'ERROR', message: error.message || error })
+          );
           onClose();
           return;
         }
-        await setContact(state);
+        await setContact(state).catch(error =>
+          toast$.next({ type: 'ERROR', message: error.message || error })
+        );
         onClose();
       }}
     >
@@ -259,8 +264,6 @@ const useFetchCollection = (
         const newActiveTaskCount = tasks.filter(task => !task.dateCompleted)
           .length;
 
-        console.log({ newActiveTaskCount });
-
         if (activeTaskCount !== newActiveTaskCount) {
           _setActiveTaskCount(myUid, theirUid, newActiveTaskCount);
         }
@@ -303,7 +306,7 @@ const ToDoList = ({
         onSubmit={e => {
           e.stopPropagation();
           e.preventDefault();
-          console.log({ task });
+
           handleAddingTask(task, myUid, theirUid);
           setTask('');
         }}
@@ -330,6 +333,7 @@ const ToDoList = ({
       {helpfulTasks &&
         helpfulTasks.map(({ name, taskId, dateCompleted }) => (
           <HelpfulTask
+            key={taskId}
             taskId={taskId}
             name={name}
             dateCompleted={dateCompleted}
@@ -368,7 +372,7 @@ function HelpfulTask({
 }) {
   const [confirmDelete, setConfirmDelete] = React.useState(false);
   return (
-    <div className="flex items-center mb2" key={taskId}>
+    <div className="flex items-center mb2">
       <label htmlFor={name} className="lh-copy">
         <input
           className="mr2"
