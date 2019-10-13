@@ -14,7 +14,7 @@ export function CRM({ welcomeMessage }) {
   const { stageOrder } = state;
 
   const onDragEnd = result => {
-    const { source, destination, draggableId } = result;
+    const { source, destination, draggableId, type } = result;
 
     // error handling
     if (!destination) {
@@ -27,6 +27,18 @@ export function CRM({ welcomeMessage }) {
       destination.index === source.index
     ) {
       // if they dropped in the same place they started
+      return;
+    }
+
+    if (type === 'stages') {
+      const newStageOrder = Array.from(state.stageOrder);
+      newStageOrder.splice(source.index, 1);
+      newStageOrder.splice(destination.index, 0, draggableId);
+      const newState = {
+        ...state,
+        stageOrder: newStageOrder,
+      };
+      setState(newState);
       return;
     }
 
@@ -131,7 +143,11 @@ function Stages({ stageId, index, people, stage }) {
   return (
     <Draggable draggableId={stageId} index={index}>
       {provided => (
-        <div {...provided.draggableProps} ref={provided.innerRef}>
+        <div
+          {...provided.draggableProps}
+          ref={provided.innerRef}
+          className="bg-white-80 br3"
+        >
           <Droppable droppableId={stageId} direction="horizontal" type="people">
             {({ droppableProps, innerRef }, snapshot) => (
               <li
