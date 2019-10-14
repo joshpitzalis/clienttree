@@ -22,7 +22,11 @@ describe('cms', () => {
   });
 
   it('delete someone from  a stage', () => {
-    
+    ✅
+  });
+
+  it('delete someone from  any stage, not just the first one', () => {
+    ✅
   });
 
 

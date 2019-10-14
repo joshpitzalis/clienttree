@@ -22,7 +22,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <main>
-        <>
+        <div className="">
           <Banner />
           <Navbar authStatus={authStatus} />
           <Route
@@ -58,7 +58,8 @@ const App = () => {
             path="/refer/:uid"
             render={referProps => <Refer {...referProps} userId={userId} />}
           />
-        </>
+          <p className="tc f6">Version 0.0.3</p>
+        </div>
       </main>
     </BrowserRouter>
   );
