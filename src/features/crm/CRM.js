@@ -117,6 +117,9 @@ export function CRM({ welcomeMessage, userId = '' }) {
     };
 
     setState(newMultiState);
+    setStateToDB(userId, newMultiState).catch(error =>
+      toast$.next({ type: 'ERROR', message: error.message || error })
+    );
   };
   return (
     <div>
