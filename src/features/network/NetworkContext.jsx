@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { collectionData } from 'rxfire/firestore';
-// import { map, catchError } from 'rxjs/operators';
+import { collection } from 'rxfire/firestore';
+import { map, catchError } from 'rxjs/operators';
 import { setFirebaseContactUpdate } from './networkAPI';
 import firebase from '../../utils/firebase';
 import { toast$ } from '../notifications/toast';
@@ -19,17 +19,21 @@ const NetworkProvider = ({ children, uid }) => {
   const [contacts, setContacts] = React.useState([]);
 
   React.useEffect(() => {
-    collectionData(
+    const subscription = collection(
       firebase
         .firestore()
         .collection('users')
-        .doc(uid || '  ')
+        .doc(uid)
         .collection('contacts')
-    ).subscribe(network => {
-      if (network && network.length) {
-        setContacts(network);
-      }
-    });
+    )
+      .pipe(
+        map(docs => docs.map(d => d.data())),
+        catchError(error =>
+          toast$.next({ type: 'ERROR', message: error.message || error })
+        )
+      )
+      .subscribe(network => setContacts(network));
+    return () => subscription.unsubscribe();
   }, [uid]);
 
   const setContact = contact =>

@@ -13,24 +13,27 @@ const networkDefaultProps = {};
 
 export function Network({ uid }) {
   const [visible, setVisibility] = React.useState(false);
+
   const { contacts } = React.useContext(NetworkContext);
-  const [selectedUser, setSelectedUser] = React.useState({});
+
+  const [selectedUser, setSelectedUser] = React.useState('');
+
   return (
     <>
       {visible && (
         <Portal
           onClose={() => {
             setVisibility(false);
-            setSelectedUser({});
+            setSelectedUser('');
           }}
         >
           <Modal
             setVisibility={setVisibility}
             uid={uid}
-            selectedUser={selectedUser}
+            selectedUserUid={selectedUser}
             onClose={() => {
               setVisibility(false);
-              setSelectedUser({});
+              setSelectedUser('');
             }}
           />
         </Portal>
@@ -62,11 +65,11 @@ export function Network({ uid }) {
                 tabIndex={-1}
                 role="button"
                 onClick={() => {
-                  setSelectedUser(contact);
+                  setSelectedUser(contact.uid);
                   setVisibility(true);
                 }}
                 onKeyPress={() => {
-                  setSelectedUser(contact);
+                  setSelectedUser(contact.uid);
                   setVisibility(true);
                 }}
               >

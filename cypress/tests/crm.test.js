@@ -3,15 +3,23 @@ describe('cms', () => {
     ✅
   });
 
-  it('move people between stages', () => {});
+  it('move people between stages', () => {
+    ✅
+  });
 
-  it('move  stages around', () => {});
+  it('move  stages around', () => {
+    ✅
+  });
+
+
 
   it('add people to a stage', () => {});
 
   it('update someone in a stage', () => {});
 
   it('delete someone from  a stage', () => {});
+
+
 
   it('add a new stage', () => {});
 
