@@ -39,6 +39,7 @@ export const setFirebaseContactUpdate = async payload => {
   const {
     userId,
     contactId,
+    uid,
     name,
     summary,
     lastContacted,
@@ -53,7 +54,7 @@ export const setFirebaseContactUpdate = async payload => {
     .collection('contacts')
     .doc();
 
-  const contactUid = contactId || newDoc.id;
+  const contactUid = contactId || uid || newDoc.id;
   let downloadURL;
 
   if (imgString) {

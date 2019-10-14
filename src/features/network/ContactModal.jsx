@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import AvatarGenerator from 'react-avatar-generator';
-import { collectionData } from 'rxfire/firestore';
+import { collectionData, doc } from 'rxfire/firestore';
+// import { map, catchError } from 'rxjs/operators';
 import { NetworkContext } from './NetworkContext';
 import { toast$ } from '../notifications/toast';
 import {
@@ -15,28 +16,34 @@ import firebase from '../../utils/firebase';
 
 const modalPropTypes = {
   uid: PropTypes.string.isRequired,
-  selectedUser: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    summary: PropTypes.string.isRequired,
-    uid: PropTypes.string.isRequired,
-    lastContacted: PropTypes.string.isRequired,
-    photoURL: PropTypes.string.isRequired,
-    activeTaskCount: PropTypes.number.isRequired,
-  }),
+  selectedUserUid: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 const modalDefaultProps = {};
 
-export function Modal({ uid, selectedUser, onClose }) {
+export function Modal({ uid, selectedUserUid, onClose }) {
   const [state, setState] = React.useState({
     userId: uid,
-    name: selectedUser.name || '',
-    summary: selectedUser.summary || '',
-    lastContacted: selectedUser.lastContacted || '',
-    contactId: selectedUser.uid || '',
-    photoURL: selectedUser.photoURL || '',
+    name: '',
+    summary: '',
+    tracked: false,
+    lastContacted: '',
+    contactId: '',
+    photoURL: '',
     imgString: '',
   });
+
+  React.useEffect(() => {
+    const subscription = doc(
+      firebase
+        .firestore()
+        .collection('users')
+        .doc(uid)
+        .collection('contacts')
+        .doc(selectedUserUid)
+    ).subscribe(user => setState({ ...user.data() }));
+    return () => subscription.unsubscribe();
+  }, [selectedUserUid, uid]);
 
   const { setContact } = React.useContext(NetworkContext);
 
@@ -61,6 +68,92 @@ export function Modal({ uid, selectedUser, onClose }) {
     );
   };
 
+  const handleTracking = async (checked, userId, contactId, name, photoURL) => {
+    const updateSelectedUser = (_userId, _contactId, tracked) => {
+      firebase
+        .firestore()
+        .collection('users')
+        .doc(_userId)
+        .collection('contacts')
+        .doc(_contactId)
+        .set(
+          {
+            tracked,
+          },
+          { merge: true }
+        );
+    };
+
+    const updateDashboardState = async (
+      _userId,
+      tracked,
+      _contactId,
+      _name,
+      _photoURL
+    ) => {
+      const dashboardState = await firebase
+        .firestore()
+        .collection('users')
+        .doc(_userId)
+        .get()
+        .then(data => data.data().dashboard);
+
+      const newState = { ...dashboardState };
+
+      if (tracked) {
+        newState.people = {
+          ...newState.people,
+          [_contactId]: {
+            id: _contactId,
+            name: _name,
+            photoURL: _photoURL,
+          },
+        };
+
+        newState.stages.stage1.people = [
+          ...newState.stages.stage1.people,
+          _contactId,
+        ];
+      }
+
+      if (!tracked) {
+        delete newState.people[_contactId];
+
+        newState.stages = Object.entries(newState.stages).reduce(
+          (a, [k, stage]) => ({
+            ...a,
+            [k]: {
+              ...stage,
+              people:
+                stage.people && stage.people.length
+                  ? stage.people.filter(person => person !== _contactId)
+                  : [],
+            },
+          }),
+          {}
+        );
+      }
+
+      firebase
+        .firestore()
+        .collection('users')
+        .doc(_userId)
+        .set(
+          {
+            dashboard: newState,
+          },
+          { merge: true }
+        );
+    };
+
+    try {
+      await updateDashboardState(userId, checked, contactId, name, photoURL);
+      updateSelectedUser(userId, contactId, checked);
+    } catch (error) {
+      toast$.next({ type: 'ERROR', message: error.message || error });
+    }
+  };
+
   return (
     <form
       className="measure center"
@@ -71,16 +164,18 @@ export function Modal({ uid, selectedUser, onClose }) {
         if (!state.photoURL) {
           const imgString = await avatarRef.current.getImageData();
 
-          await setContact({ ...state, imgString }).catch(error =>
+          await setContact({ ...state, imgString, userId: uid }).catch(error =>
             toast$.next({ type: 'ERROR', message: error.message || error })
           );
           onClose();
           return;
         }
-        await setContact(state).catch(error =>
-          toast$.next({ type: 'ERROR', message: error.message || error })
-        );
-        onClose();
+        try {
+          await setContact({ ...state, userId: uid });
+          onClose();
+        } catch (error) {
+          toast$.next({ type: 'ERROR', message: error.message || error });
+        }
       }}
     >
       <fieldset id="contact" className="ba b--transparent ph0 mh0 tl">
@@ -147,15 +242,33 @@ export function Modal({ uid, selectedUser, onClose }) {
                 ></textarea>
               </label>
             </div>
+            <label className="pa0 ma0 lh-copy f6 pointer" htmlFor="tracked">
+              <input
+                type="checkbox"
+                id="tracked"
+                className="mr1"
+                checked={state.tracked}
+                onChange={e =>
+                  handleTracking(
+                    e.target.checked,
+                    uid,
+                    selectedUserUid,
+                    state.name,
+                    state.photoURL
+                  )
+                }
+              />
+              Tracked on the Dashboard
+            </label>
           </div>
 
           <div className="w-50">
-            {!!Object.values(selectedUser).length && (
+            {selectedUserUid && (
               <ToDoList
                 myUid={uid}
-                theirUid={selectedUser.uid}
+                theirUid={selectedUserUid}
                 handleAddingTask={handleAddingTask}
-                activeTaskCount={selectedUser.activeTaskCount}
+                activeTaskCount={state.activeTaskCount}
                 _setActiveTaskCount={setActiveTaskCount}
               />
             )}
@@ -169,11 +282,9 @@ export function Modal({ uid, selectedUser, onClose }) {
           value="Save"
         />
 
-        {!!Object.values(selectedUser).length && (
+        {selectedUserUid && (
           <ConfirmDelete
-            handleDelete={() =>
-              handleDelete(selectedUser.name, selectedUser.uid, uid)
-            }
+            handleDelete={() => handleDelete(state.name, state.uid, uid)}
             title={state.name}
           />
         )}
@@ -373,7 +484,7 @@ function HelpfulTask({
   const [confirmDelete, setConfirmDelete] = React.useState(false);
   return (
     <div className="flex items-center mb2">
-      <label htmlFor={name} className="lh-copy">
+      <label htmlFor={name} className="lh-copy dib">
         <input
           className="mr2"
           type="checkbox"
