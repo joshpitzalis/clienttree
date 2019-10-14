@@ -42,6 +42,7 @@ export function Network({ uid }) {
         className="flex items-center lh-copy pa3 ph0-l bb b--black-10 "
         data-testid="outreachPage"
       >
+        <div id="viz1"></div>
         <button
           className=" flex items-center pointer link bn"
           type="button"

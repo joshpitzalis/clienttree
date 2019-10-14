@@ -22,8 +22,6 @@ const modalPropTypes = {
 const modalDefaultProps = {};
 
 export function Modal({ uid, selectedUserUid, onClose }) {
-  // const [selectedUser, setSelectedUser] = React.useState([]);
-
   const [state, setState] = React.useState({
     userId: uid,
     name: '',
@@ -70,7 +68,7 @@ export function Modal({ uid, selectedUserUid, onClose }) {
     );
   };
 
-  const handleTracking = (userId, contactId) => async e => {
+  const handleTracking = async (checked, userId, contactId, name, photoURL) => {
     const updateSelectedUser = (_userId, _contactId, tracked) => {
       firebase
         .firestore()
@@ -86,11 +84,55 @@ export function Modal({ uid, selectedUserUid, onClose }) {
         );
     };
 
-    const updateDashboardState = () => {};
+    const updateDashboardState = async (
+      _userId,
+      tracked,
+      _contactId,
+      _name,
+      _photoURL
+    ) => {
+      const dashboardState = await firebase
+        .firestore()
+        .collection('users')
+        .doc(_userId)
+        .get()
+        .then(data => data.data().dashboard);
+
+      const newState = { ...dashboardState };
+
+      console.log({ newState });
+
+      if (tracked) {
+        newState.people = {
+          ...newState.people,
+          [_contactId]: {
+            id: _contactId,
+            name: _name,
+            photoURL: _photoURL,
+          },
+        };
+
+        newState.stages.stage1.people = [
+          ...newState.stages.stage1.people,
+          _contactId,
+        ];
+      }
+
+      firebase
+        .firestore()
+        .collection('users')
+        .doc(_userId)
+        .set(
+          {
+            dashboard: newState,
+          },
+          { merge: true }
+        );
+    };
 
     try {
-      await updateSelectedUser(userId, contactId, e.target.checked);
-      updateDashboardState();
+      await updateDashboardState(userId, checked, contactId, name, photoURL);
+      updateSelectedUser(userId, contactId, checked);
     } catch (error) {
       toast$.next({ type: 'ERROR', message: error.message || error });
     }
@@ -188,7 +230,15 @@ export function Modal({ uid, selectedUserUid, onClose }) {
                 id="tracked"
                 className="mr1"
                 checked={state.tracked}
-                onChange={handleTracking(uid, selectedUserUid)}
+                onChange={e =>
+                  handleTracking(
+                    e.target.checked,
+                    uid,
+                    selectedUserUid,
+                    state.name,
+                    state.photoURL
+                  )
+                }
               />
               Tracked on the Dashboard
             </label>

@@ -1,8 +1,7 @@
 import firebase from '../../utils/firebase';
 
-export const setStateToDB = (userId, state) => {
-  console.log({ userId });
-  return firebase
+export const setStateToDB = (userId, state) =>
+  firebase
     .firestore()
     .collection('users')
     .doc(userId)
@@ -12,4 +11,3 @@ export const setStateToDB = (userId, state) => {
       },
       { merge: true }
     );
-};

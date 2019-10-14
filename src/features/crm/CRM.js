@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { doc } from 'rxfire/firestore';
 import { catchError } from 'rxjs/operators';
-
+// import { initialData } from './initialData';
 import { setStateToDB } from './crmAPI';
 import { toast$ } from '../notifications/toast';
 import firebase from '../../utils/firebase';
@@ -36,8 +36,6 @@ export function CRM({ welcomeMessage, userId = '' }) {
 
     return () => subscription.unsubscribe();
   }, [userId]);
-
-  const { stageOrder } = state;
 
   const onDragEnd = result => {
     const { source, destination, draggableId, type } = result;
@@ -130,8 +128,9 @@ export function CRM({ welcomeMessage, userId = '' }) {
           {({ droppableProps, innerRef, placeholder }) => (
             <div ref={innerRef} {...droppableProps}>
               <ul className="list pl0" ref={innerRef} {...droppableProps}>
-                {stageOrder &&
-                  stageOrder.map((stageId, index) => {
+                {state &&
+                  state.stageOrder &&
+                  state.stageOrder.map((stageId, index) => {
                     const stage = state.stages[stageId];
                     const people = stage.people.map(
                       personId => state.people[personId]
