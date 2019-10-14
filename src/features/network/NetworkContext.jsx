@@ -36,10 +36,13 @@ const NetworkProvider = ({ children, uid }) => {
     return () => subscription.unsubscribe();
   }, [uid]);
 
-  const setContact = contact =>
-    setFirebaseContactUpdate(contact).catch(error =>
-      toast$.next({ type: 'ERROR', message: error.message || error })
-    );
+  const setContact = contact => {
+    try {
+      setFirebaseContactUpdate(contact);
+    } catch (error) {
+      toast$.next({ type: 'ERROR', message: error.message || error });
+    }
+  };
 
   return (
     <NetworkContext.Provider

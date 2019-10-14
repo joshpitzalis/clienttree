@@ -7,6 +7,8 @@ import { catchError } from 'rxjs/operators';
 import { setStateToDB } from './crmAPI';
 import { toast$ } from '../notifications/toast';
 import firebase from '../../utils/firebase';
+import Portal from '../../utils/Portal';
+import { Modal } from '../network/ContactModal';
 
 const crmPropTypes = {
   welcomeMessage: PropTypes.shape({
@@ -119,8 +121,32 @@ export function CRM({ welcomeMessage, userId = '' }) {
       toast$.next({ type: 'ERROR', message: error.message || error })
     );
   };
+
+  const [visible, setVisibility] = React.useState(false);
+
+  const [selectedUser, setSelectedUser] = React.useState('');
+
   return (
     <div>
+      {visible && (
+        <Portal
+          onClose={() => {
+            setVisibility(false);
+            setSelectedUser('');
+          }}
+        >
+          <Modal
+            setVisibility={setVisibility}
+            uid={userId}
+            selectedUserUid={selectedUser}
+            onClose={() => {
+              setVisibility(false);
+              setSelectedUser('');
+            }}
+          />
+        </Portal>
+      )}
+
       <h1 className="mt0 tc">{welcomeMessage.header}</h1>
       <h3 className="mt0 tc gray">{welcomeMessage.byline}</h3>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -142,6 +168,8 @@ export function CRM({ welcomeMessage, userId = '' }) {
                         people={people}
                         stage={stage}
                         key={stageId}
+                        setSelectedUser={setSelectedUser}
+                        setVisibility={setVisibility}
                       />
                     );
                   })}
@@ -160,6 +188,8 @@ CRM.defaultProps = crmDefaultProps;
 const stagesPropTypes = {
   stageId: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
+  setSelectedUser: PropTypes.func.isRequired,
+  setVisibility: PropTypes.func.isRequired,
   people: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -174,7 +204,14 @@ const stagesPropTypes = {
 };
 const stagesDefaultProps = {};
 
-function Stages({ stageId, index, people, stage }) {
+function Stages({
+  stageId,
+  index,
+  people,
+  stage,
+  setSelectedUser,
+  setVisibility,
+}) {
   return (
     <Draggable draggableId={stageId} index={index}>
       {provided => (
@@ -193,7 +230,7 @@ function Stages({ stageId, index, people, stage }) {
                 <b className="db f3 mb1" {...provided.dragHandleProps}>
                   {stage.title}
                 </b>
-                <small className="f5 db lh-copy measure o-50">
+                <small className="f5 db lh-copy measure gray">
                   {stage.subtitle}
                 </small>
 
@@ -213,6 +250,8 @@ function Stages({ stageId, index, people, stage }) {
                         photoURL={photoURL}
                         name={name}
                         placeholder={placeholder}
+                        setSelectedUser={setSelectedUser}
+                        setVisibility={setVisibility}
                       />
                     ))}
                 </div>
@@ -233,11 +272,19 @@ const peoplesPropTypes = {
   index: PropTypes.number.isRequired,
   photoURL: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  // placeholder: PropTypes.element,
+  setSelectedUser: PropTypes.func.isRequired,
+  setVisibility: PropTypes.func.isRequired,
 };
 const peoplesDefaultProps = {};
 
-function Peoples({ id, index, photoURL, name }) {
+function Peoples({
+  id,
+  index,
+  photoURL,
+  name,
+  setSelectedUser,
+  setVisibility,
+}) {
   return (
     <Draggable draggableId={id} index={index}>
       {(provided, snapshot) => (
@@ -253,6 +300,10 @@ function Peoples({ id, index, photoURL, name }) {
               'ba bg-white-70 bw3'} dib ba b--black-10 db br-100 w2 w3-ns h2 h3-ns mv3 mr3 pointer`}
             title={name}
             alt={name}
+            onDoubleClick={() => {
+              setVisibility(true);
+              setSelectedUser(id);
+            }}
           />
           {/* <h1 className="f3 mb2">{name}</h1>
       <h2 className="f5 fw4 gray mt0">{name}</h2> */}

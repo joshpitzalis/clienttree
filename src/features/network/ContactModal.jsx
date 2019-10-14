@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AvatarGenerator from 'react-avatar-generator';
 import { collectionData, doc } from 'rxfire/firestore';
-import { map, catchError } from 'rxjs/operators';
+// import { map, catchError } from 'rxjs/operators';
 import { NetworkContext } from './NetworkContext';
 import { toast$ } from '../notifications/toast';
 import {
@@ -148,16 +148,18 @@ export function Modal({ uid, selectedUserUid, onClose }) {
         if (!state.photoURL) {
           const imgString = await avatarRef.current.getImageData();
 
-          await setContact({ ...state, imgString }).catch(error =>
+          await setContact({ ...state, imgString, userId: uid }).catch(error =>
             toast$.next({ type: 'ERROR', message: error.message || error })
           );
           onClose();
           return;
         }
-        await setContact(state).catch(error =>
-          toast$.next({ type: 'ERROR', message: error.message || error })
-        );
-        onClose();
+        try {
+          await setContact({ ...state, userId: uid });
+          onClose();
+        } catch (error) {
+          toast$.next({ type: 'ERROR', message: error.message || error });
+        }
       }}
     >
       <fieldset id="contact" className="ba b--transparent ph0 mh0 tl">

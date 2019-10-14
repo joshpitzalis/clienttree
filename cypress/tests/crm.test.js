@@ -13,11 +13,17 @@ describe('cms', () => {
 
 
 
-  it('add people to a stage', () => {});
+  it('add people to a stage', () => {
+    ✅
+  });
 
-  it('update someone in a stage', () => {});
+  it('update someone in a stage', () => {
+    ✅
+  });
 
-  it('delete someone from  a stage', () => {});
+  it('delete someone from  a stage', () => {
+    
+  });
 
 
 

@@ -38,7 +38,7 @@ export default class Portal extends Component {
         role="button"
         tabIndex={-1}
       >
-        <article className="w-50 center pa3 tc br2 bg-white ma3 flex flex-column justify-center">
+        <article className=" w-50 center pa3 tc br2 bg-white ma3 flex flex-column justify-center">
           <button
             type="button"
             onClick={onClose}
