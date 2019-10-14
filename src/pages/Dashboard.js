@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink, Route } from 'react-router-dom';
-import { PrivateRoute } from '../features/auth/PrivateRoute';
+// import { PrivateRoute } from '../features/auth/PrivateRoute';
 import { Network } from '../features/network/Network';
 import { Profile } from '../features/services/Profile';
 import { CRM } from '../features/crm/CRM';
@@ -28,11 +28,15 @@ export function Dashboard({ userId }) {
       </div>
 
       <div className="w-50">
-        <Route
-          exact
-          path="/user/:uid/dashboard"
-          render={props => <CRM {...props} welcomeMessage={welcomeMessage} />}
-        />
+        {userId && (
+          <Route
+            exact
+            path="/user/:uid/dashboard"
+            render={props => (
+              <CRM {...props} welcomeMessage={welcomeMessage} userId={userId} />
+            )}
+          />
+        )}
         <Route
           exact
           path="/user/:uid/profile"

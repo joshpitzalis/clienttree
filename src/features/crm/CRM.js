@@ -1,15 +1,41 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { initialData } from './initialData';
+import { doc } from 'rxfire/firestore';
+import { catchError } from 'rxjs/operators';
+
+import { setStateToDB } from './crmAPI';
+import { toast$ } from '../notifications/toast';
+import firebase from '../../utils/firebase';
 
 const crmPropTypes = {
-  welcomeMessage: PropTypes.string.isRequired,
+  welcomeMessage: PropTypes.shape({
+    header: PropTypes.string,
+    byline: PropTypes.string,
+  }).isRequired,
+  userId: PropTypes.string.isRequired,
 };
 const crmDefaultProps = {};
 
-export function CRM({ welcomeMessage }) {
-  const [state, setState] = React.useState(initialData);
+export function CRM({ welcomeMessage, userId = '' }) {
+  const [state, setState] = React.useState({});
+
+  React.useEffect(() => {
+    const subscription = doc(
+      firebase
+        .firestore()
+        .collection('users')
+        .doc(userId)
+    )
+      .pipe(
+        catchError(error =>
+          toast$.next({ type: 'ERROR', message: error.message || error })
+        )
+      )
+      .subscribe(data => setState(data.data().dashboard));
+
+    return () => subscription.unsubscribe();
+  }, [userId]);
 
   const { stageOrder } = state;
 
@@ -39,6 +65,10 @@ export function CRM({ welcomeMessage }) {
         stageOrder: newStageOrder,
       };
       setState(newState);
+      console.log({ newState });
+      setStateToDB(userId, newState).catch(error =>
+        toast$.next({ type: 'ERROR', message: error.message || error })
+      );
       return;
     }
 
@@ -60,8 +90,10 @@ export function CRM({ welcomeMessage }) {
           [newStage.id]: newStage,
         },
       };
-
       setState(newState);
+      setStateToDB(userId, newState).catch(error =>
+        toast$.next({ type: 'ERROR', message: error.message || error })
+      );
       return;
     }
 
@@ -93,26 +125,27 @@ export function CRM({ welcomeMessage }) {
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="allStages" type="stages">
           {({ droppableProps, innerRef, placeholder }) => (
-            <ul className="list pl0" ref={innerRef} {...droppableProps}>
-              {stageOrder &&
-                stageOrder.map((stageId, index) => {
-                  const stage = state.stages[stageId];
-                  const people = stage.people.map(
-                    personId => state.people[personId]
-                  );
-                  return (
-                    <div ref={innerRef} {...droppableProps} key={stageId}>
+            <div ref={innerRef} {...droppableProps}>
+              <ul className="list pl0" ref={innerRef} {...droppableProps}>
+                {stageOrder &&
+                  stageOrder.map((stageId, index) => {
+                    const stage = state.stages[stageId];
+                    const people = stage.people.map(
+                      personId => state.people[personId]
+                    );
+                    return (
                       <Stages
                         stageId={stageId}
                         index={index}
                         people={people}
                         stage={stage}
+                        key={stageId}
                       />
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+              </ul>
               {placeholder}
-            </ul>
+            </div>
           )}
         </Droppable>
       </DragDropContext>
@@ -127,7 +160,7 @@ const stagesPropTypes = {
   index: PropTypes.number.isRequired,
   people: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.number.isRequired,
+      id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       photoURL: PropTypes.string.isRequired,
     })
@@ -149,7 +182,7 @@ function Stages({ stageId, index, people, stage }) {
           className="bg-white-80 br3"
         >
           <Droppable droppableId={stageId} direction="horizontal" type="people">
-            {({ droppableProps, innerRef }, snapshot) => (
+            {({ droppableProps, innerRef, placeholder }, snapshot) => (
               <li
                 className="pa3 pa4-ns bb b--black-10"
                 ref={innerRef}
@@ -173,9 +206,11 @@ function Stages({ stageId, index, people, stage }) {
                     people.map(({ id, name, photoURL }, _index) => (
                       <Peoples
                         id={id}
+                        key={id}
                         index={_index}
                         photoURL={photoURL}
                         name={name}
+                        placeholder={placeholder}
                       />
                     ))}
                 </div>
@@ -196,12 +231,13 @@ const peoplesPropTypes = {
   index: PropTypes.number.isRequired,
   photoURL: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+  // placeholder: PropTypes.element,
 };
 const peoplesDefaultProps = {};
 
 function Peoples({ id, index, photoURL, name }) {
   return (
-    <Draggable draggableId={id} key={id} index={index}>
+    <Draggable draggableId={id} index={index}>
       {(provided, snapshot) => (
         <div
           className="tc "
