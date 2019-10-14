@@ -100,8 +100,6 @@ export function Modal({ uid, selectedUserUid, onClose }) {
 
       const newState = { ...dashboardState };
 
-      console.log({ newState });
-
       if (tracked) {
         newState.people = {
           ...newState.people,
@@ -116,6 +114,24 @@ export function Modal({ uid, selectedUserUid, onClose }) {
           ...newState.stages.stage1.people,
           _contactId,
         ];
+      }
+
+      if (!tracked) {
+        delete newState.people[_contactId];
+
+        newState.stages = Object.entries(newState.stages).reduce(
+          (a, [k, stage]) => ({
+            ...a,
+            [k]: {
+              ...stage,
+              people:
+                stage.people && stage.people.length
+                  ? stage.people.filter(person => person !== _contactId)
+                  : [],
+            },
+          }),
+          {}
+        );
       }
 
       firebase

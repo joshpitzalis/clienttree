@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { doc } from 'rxfire/firestore';
 import { catchError } from 'rxjs/operators';
-// import { initialData } from './initialData';
+import { initialData } from './initialData';
 import { setStateToDB } from './crmAPI';
 import { toast$ } from '../notifications/toast';
 import firebase from '../../utils/firebase';
@@ -20,7 +20,7 @@ const crmPropTypes = {
 const crmDefaultProps = {};
 
 export function CRM({ welcomeMessage, userId = '' }) {
-  const [state, setState] = React.useState({});
+  const [state, setState] = React.useState();
 
   React.useEffect(() => {
     const subscription = doc(
@@ -158,9 +158,9 @@ export function CRM({ welcomeMessage, userId = '' }) {
                   state.stageOrder &&
                   state.stageOrder.map((stageId, index) => {
                     const stage = state.stages[stageId];
-                    const people = stage.people.map(
-                      personId => state.people[personId]
-                    );
+                    const people =
+                      stage.people &&
+                      stage.people.map(personId => state.people[personId]);
                     return (
                       <Stages
                         stageId={stageId}
