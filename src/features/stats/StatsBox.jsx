@@ -15,19 +15,25 @@ export default function StatsBox() {
       </div>
 
       <dl className="db mr5   ">
-        <dd className="f6 f5-ns b ml0">Projects (3:1)</dd>
+        <dd className="f6 f5-ns b ml0">
+          Projects <span className="fw4">(3:1)</span>
+        </dd>
         <dd className="f3 f2-ns b ml0">12 </dd>
       </dl>
       <dl className="db mr5 mt3">
-        <dd className="f6 f5-ns b ml0">Proposals (3:1)</dd>
+        <dd className="f6 f5-ns b ml0">
+          Proposals <span className="fw4">(3:1)</span>
+        </dd>
         <dd className="f3 f2-ns b ml0">26 </dd>
       </dl>
       <dl className="db mr5 mt3">
-        <dd className="f6 f5-ns b ml0">Leads (5:1)</dd>
-        <dd className="f3 f2-ns b ml0">70 </dd>
+        <dd className="f6 f5-ns b ml0">
+          Leads <span className="fw4">(5:1)</span>
+        </dd>
+        <dd className="f3 f2-ns b ml0 ">70 </dd>
       </dl>
       <dl className="db mr5 mt3">
-        <dd className="f6 f5-ns b ml0 fw4">326 Activities</dd>
+        <dd className="f6 f5-ns b ml0 fw4">326 Activities left</dd>
         {/* <dd className="f3 f2-ns b ml0">326 </dd> */}
       </dl>
 

@@ -7,7 +7,7 @@ import { Profile } from '../features/services/Profile';
 import { CRM } from '../features/crm/CRM';
 import { ConfettiBanner } from '../features/onboarding/confetti';
 import { Onboarding } from '../features/onboarding/GettingStarted';
-import StatsBox from '../features/stats/StatsBox';
+// import StatsBox from '../features/stats/StatsBox';
 
 const propTypes = { userId: PropTypes.string.isRequired };
 
@@ -26,7 +26,7 @@ export function Dashboard({ userId }) {
       <ConfettiBanner setWelcomeMessage={setWelcomeMessage} />
       <div className="w-25">
         <Navigation uid={userId} />
-        <StatsBox />
+        {/* <StatsBox /> */}
       </div>
 
       <div className="w-50">

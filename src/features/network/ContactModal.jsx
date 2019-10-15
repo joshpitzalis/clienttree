@@ -1,18 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import AvatarGenerator from 'react-avatar-generator';
-import { collectionData, doc } from 'rxfire/firestore';
-// import { map, catchError } from 'rxjs/operators';
+import { doc } from 'rxfire/firestore';
 import { NetworkContext } from './NetworkContext';
 import { toast$ } from '../notifications/toast';
 import {
   handleContactDelete,
   handleAddTask,
-  handleDeleteTask,
-  handleCompleteTask,
   setActiveTaskCount,
 } from './networkAPI';
 import firebase from '../../utils/firebase';
+import { ToDoList } from './ToDoList';
 
 const modalPropTypes = {
   uid: PropTypes.string.isRequired,
@@ -41,7 +39,9 @@ export function Modal({ uid, selectedUserUid, onClose }) {
         .doc(uid)
         .collection('contacts')
         .doc(selectedUserUid)
-    ).subscribe(user => setState({ ...user.data() }));
+    ).subscribe(user => {
+      setState({ ...user.data() });
+    });
     return () => subscription.unsubscribe();
   }, [selectedUserUid, uid]);
 
@@ -342,181 +342,3 @@ export const ConfirmDelete = ({ handleDelete, title }) => {
 
 ConfirmDelete.propTypes = confirmDeletePropTypes;
 ConfirmDelete.defaultProps = confirmDeleteDefaultProps;
-
-const propTypes = {
-  myUid: PropTypes.string.isRequired,
-  theirUid: PropTypes.string.isRequired,
-  handleAddingTask: PropTypes.func.isRequired,
-  activeTaskCount: PropTypes.number.isRequired,
-  _setActiveTaskCount: PropTypes.func.isRequired,
-};
-
-const defaultProps = {};
-
-const useFetchCollection = (
-  myUid,
-  theirUid,
-  activeTaskCount,
-  _setActiveTaskCount
-) => {
-  const [helpfulTasks, setHelpfulTasks] = React.useState([]);
-
-  React.useEffect(() => {
-    const subscription = collectionData(
-      firebase
-        .firestore()
-        .collection('users')
-        .doc(myUid)
-        .collection('contacts')
-        .doc(theirUid)
-        .collection('helpfulTasks')
-    ).subscribe(tasks => {
-      if (tasks && tasks.length) {
-        const newActiveTaskCount = tasks.filter(task => !task.dateCompleted)
-          .length;
-
-        if (activeTaskCount !== newActiveTaskCount) {
-          _setActiveTaskCount(myUid, theirUid, newActiveTaskCount);
-        }
-
-        setHelpfulTasks(tasks);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [activeTaskCount, myUid, _setActiveTaskCount, theirUid]);
-
-  return helpfulTasks;
-};
-
-const ToDoList = ({
-  myUid,
-  theirUid,
-  handleAddingTask,
-  activeTaskCount,
-  _setActiveTaskCount,
-}) => {
-  const [task, setTask] = React.useState('');
-
-  const helpfulTasks = useFetchCollection(
-    myUid,
-    theirUid,
-    activeTaskCount,
-    _setActiveTaskCount
-  );
-
-  const markComplete = (taskId, _myUid, _theirUid) => {
-    handleCompleteTask(taskId, _myUid, _theirUid).catch(error =>
-      toast$.next({ type: 'ERROR', message: error.message || error })
-    );
-  };
-
-  return (
-    <div className="center pl4 pt2">
-      <form
-        className=""
-        onSubmit={e => {
-          e.stopPropagation();
-          e.preventDefault();
-
-          handleAddingTask(task, myUid, theirUid);
-          setTask('');
-        }}
-      >
-        <fieldset id="help" className="ba b--transparent ph0 mh0">
-          <legend className="ph0 mh0 fw6 clip"></legend>
-          <div className="mb3">
-            <label className="db fw4 lh-copy f6 " htmlFor="task">
-              <span className="b">Ways you can help</span>
-              <input
-                className="b pa2 input-reset ba bg-transparent center br2 b--black-20"
-                placeholder="Add a new task..."
-                type="text"
-                name="task"
-                id="task"
-                value={task}
-                onChange={e => setTask(e.target.value)}
-              />
-            </label>
-          </div>
-        </fieldset>
-      </form>
-
-      {helpfulTasks &&
-        helpfulTasks.map(({ name, taskId, dateCompleted }) => (
-          <HelpfulTask
-            key={taskId}
-            taskId={taskId}
-            name={name}
-            dateCompleted={dateCompleted}
-            markComplete={markComplete}
-            myUid={myUid}
-            theirUid={theirUid}
-            _handleDeleteTask={handleDeleteTask}
-          />
-        ))}
-    </div>
-  );
-};
-
-ToDoList.propTypes = propTypes;
-ToDoList.defaultProps = defaultProps;
-
-const helpfulTaskPropTypes = {
-  taskId: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  dateCompleted: PropTypes.string.isRequired,
-  markComplete: PropTypes.func.isRequired,
-  myUid: PropTypes.string.isRequired,
-  theirUid: PropTypes.string.isRequired,
-  _handleDeleteTask: PropTypes.func.isRequired,
-};
-const helpfulTaskDefaultProps = {};
-
-function HelpfulTask({
-  taskId,
-  name,
-  dateCompleted,
-  markComplete,
-  myUid,
-  theirUid,
-  _handleDeleteTask,
-}) {
-  const [confirmDelete, setConfirmDelete] = React.useState(false);
-  return (
-    <div className="flex items-center mb2">
-      <label htmlFor={name} className="lh-copy dib">
-        <input
-          className="mr2"
-          type="checkbox"
-          id={name}
-          value={name}
-          checked={!!dateCompleted}
-          onChange={() => markComplete(taskId, myUid, theirUid)}
-        />
-        <span className={!!dateCompleted && 'strike'}>{name}</span>{' '}
-      </label>
-      <span className="dib">
-        {confirmDelete ? (
-          <button
-            className="f6 underline small-caps bn pointer red"
-            type="button"
-            onClick={() => _handleDeleteTask(taskId, myUid, theirUid)}
-          >
-            Confirm Delete
-          </button>
-        ) : (
-          <button
-            className="f6 underline small-caps bn pointer black-70"
-            type="button"
-            onClick={() => setConfirmDelete(true)}
-          >
-            (Delete)
-          </button>
-        )}
-      </span>
-    </div>
-  );
-}
-
-HelpfulTask.propTypes = helpfulTaskPropTypes;
-HelpfulTask.defaultProps = helpfulTaskDefaultProps;
