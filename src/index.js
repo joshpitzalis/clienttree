@@ -1,14 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import { Provider } from 'react-redux';
 import Routes from './Routes';
 import * as serviceWorker from './serviceWorker';
 import { UserProvider } from './features/auth/UserContext';
+import store from './utils/store';
 
 ReactDOM.render(
-  <UserProvider>
-    <Routes />
-  </UserProvider>,
+  <Provider store={store}>
+    <UserProvider>
+      <Routes />
+    </UserProvider>
+  </Provider>,
   document.getElementById('root')
 );
 

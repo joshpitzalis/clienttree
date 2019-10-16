@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import Portal from '../../utils/Portal';
 import Plus from '../../images/Plus';
-import { Modal } from './ContactModal';
+import { Modal } from './components/ContactModal';
 import { NetworkContext } from './NetworkContext';
 
 const networkPropTypes = {
@@ -90,7 +89,7 @@ export function Network({ uid }) {
                       </span>
                     </div>
                     <div>
-                      {contact.activeTaskCount &&
+                      {!!contact.activeTaskCount &&
                         Array(contact.activeTaskCount)
                           .fill(null)
                           .map((count, index) => (

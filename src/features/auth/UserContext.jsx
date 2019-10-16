@@ -18,7 +18,11 @@ const UserProvider = ({ children }) => {
   React.useEffect(() => {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        const { uid } = user;
+        const { analytics } = window;
+        const { uid, email } = user;
+        analytics.identify(uid, {
+          email,
+        });
         setUid(uid);
         setAuthStatus(true);
       } else {

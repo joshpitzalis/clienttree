@@ -30,6 +30,7 @@ export const handleAddTask = (task, _myUid, _theirUid) => {
         dateCreated: new Date(),
         dateCompleted: null,
         connectedTo: _myUid,
+        completedFor: _theirUid,
       },
       { merge: true }
     );
@@ -187,8 +188,15 @@ export const handleDeleteTask = (taskId, myUid, theirUid) =>
     .doc(taskId)
     .delete();
 
-export const handleCompleteTask = (taskId, myUid, theirUid) =>
-  firebase
+export const handleCompleteTask = (taskId, myUid, theirUid) => {
+  console.log({ taskId, myUid, theirUid });
+
+  // if modal not open
+  // open modal
+
+  // update active count
+
+  return firebase
     .firestore()
     .collection('users')
     .doc(myUid)
@@ -202,6 +210,7 @@ export const handleCompleteTask = (taskId, myUid, theirUid) =>
       },
       { merge: true }
     );
+};
 
 export const setActiveTaskCount = (myUid, theirUid, newActiveTaskCount) => {
   firebase
@@ -217,6 +226,20 @@ export const setActiveTaskCount = (myUid, theirUid, newActiveTaskCount) => {
       { merge: true }
     );
 };
+
+export const getActivitiesLeft = (myUid, completedFor) =>
+  firebase
+    .firestore()
+    .collection('users')
+    .doc(myUid)
+    .collection('contacts')
+    .doc(completedFor)
+    .collection('helpfulTasks')
+    .get()
+    .then(coll => coll.docs.map(doc => doc.data()))
+    .then(coll => coll.filter(task => !task.dateCompleted))
+    .then(coll => coll.length);
+
 // export const getFirebaseContacts = uid =>
 //   collection(
 //     firebase
