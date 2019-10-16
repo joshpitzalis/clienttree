@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import Portal from '../../utils/Portal';
 import Plus from '../../images/Plus';
 import { Modal } from './components/ContactModal';

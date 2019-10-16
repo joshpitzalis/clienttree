@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AvatarGenerator from 'react-avatar-generator';
 import { doc } from 'rxfire/firestore';
+
 import { NetworkContext } from '../NetworkContext';
 import { toast$ } from '../../notifications/toast';
 import {

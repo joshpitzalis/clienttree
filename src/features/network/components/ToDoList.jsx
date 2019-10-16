@@ -57,16 +57,15 @@ export const ToDoList = ({
   ]);
   const helpfulTasks = useSelector(state => state.tasks[theirUid]);
 
-  const markComplete = (taskId, _myUid, _theirUid) => {
-    handleCompleteTask(taskId, _myUid, _theirUid)
-      .then(() => {
-        const { analytics } = window;
-        analytics.track('Helped Someone');
-      })
-      .catch(error =>
-        toast$.next({ type: 'ERROR', message: error.message || error })
-      );
-  };
+  // const markComplete = (taskId, _myUid, _theirUid) => {
+  //   handleCompleteTask(taskId, _myUid, _theirUid)
+  //     .then(() => {
+
+  //     })
+  //     .catch(error =>
+  //       toast$.next({ type: 'ERROR', message: error.message || error })
+  //     );
+  // };
 
   return (
     <div className="center pl4 pt2">
@@ -114,7 +113,7 @@ export const ToDoList = ({
             taskId={taskId}
             name={name}
             dateCompleted={dateCompleted}
-            markComplete={markComplete}
+            // markComplete={markComplete}
             myUid={myUid}
             theirUid={theirUid}
             _handleDeleteTask={handleDeleteTask}

@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { ACTIVITY_COMPLETED } from '../networkConstants';
 
 const helpfulTaskPropTypes = {
   taskId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   dateCompleted: PropTypes.string.isRequired,
-  markComplete: PropTypes.func.isRequired,
+
   myUid: PropTypes.string.isRequired,
   theirUid: PropTypes.string.isRequired,
   _handleDeleteTask: PropTypes.func.isRequired,
@@ -15,12 +17,13 @@ export function HelpfulTask({
   taskId,
   name,
   dateCompleted,
-  markComplete,
+
   myUid,
   theirUid,
   _handleDeleteTask,
 }) {
   const [confirmDelete, setConfirmDelete] = React.useState(false);
+  const dispatch = useDispatch();
   return (
     <div className="flex items-center mb2">
       <label htmlFor={name} className="lh-copy dib">
@@ -30,7 +33,17 @@ export function HelpfulTask({
           id={name}
           value={name}
           checked={!!dateCompleted}
-          onChange={() => markComplete(taskId, myUid, theirUid)}
+          onChange={() =>
+            // markComplete(taskId, myUid, theirUid)
+            dispatch({
+              type: ACTIVITY_COMPLETED,
+              payload: {
+                taskId,
+                myUid,
+                completedFor: theirUid,
+              },
+            })
+          }
         />
         <span className={!!dateCompleted && 'strike'}>{name}</span>{' '}
       </label>

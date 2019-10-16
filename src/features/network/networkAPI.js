@@ -226,6 +226,20 @@ export const setActiveTaskCount = (myUid, theirUid, newActiveTaskCount) => {
       { merge: true }
     );
 };
+
+export const getActivitiesLeft = (myUid, completedFor) =>
+  firebase
+    .firestore()
+    .collection('users')
+    .doc(myUid)
+    .collection('contacts')
+    .doc(completedFor)
+    .collection('helpfulTasks')
+    .get()
+    .then(coll => coll.docs.map(doc => doc.data()))
+    .then(coll => coll.filter(task => !task.dateCompleted))
+    .then(coll => coll.length);
+
 // export const getFirebaseContacts = uid =>
 //   collection(
 //     firebase

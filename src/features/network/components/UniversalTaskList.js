@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { collection } from 'rxfire/firestore';
 import { map } from 'rxjs/operators';
-
-import { handleCompleteTask } from '../networkAPI';
+import { useDispatch } from 'react-redux';
+import { ACTIVITY_COMPLETED } from '../networkConstants';
 import firebase from '../../../utils/firebase';
 import { Modal } from './ContactModal';
 import Portal from '../../../utils/Portal';
@@ -15,6 +15,7 @@ const helpfulDefaultProps = {};
 
 export const HelpfulTaskList = ({ myUid }) => {
   const [helpfulTasks, setHelpfulTasks] = React.useState([]);
+
   React.useEffect(() => {
     const subscription = collection(
       firebase
@@ -59,7 +60,6 @@ export const HelpfulTaskList = ({ myUid }) => {
             taskId={taskId}
             name={name}
             dateCompleted={dateCompleted}
-            handleCompleteTask={handleCompleteTask}
             myUid={myUid}
             completedFor={completedFor}
             setSelectedUser={setSelectedUser}
@@ -93,6 +93,7 @@ function TaskDetails({
   setSelectedUser,
   setVisibility,
 }) {
+  const dispatch = useDispatch();
   return (
     <div className="flex items-center mb2" key={taskId}>
       <label htmlFor={name} className="lh-copy">
@@ -102,26 +103,38 @@ function TaskDetails({
           id={name}
           value={name}
           checked={dateCompleted}
-          onChange={async () => {
-            const numberofActiveTasks = await firebase
-              .firestore()
-              .collection('users')
-              .doc(myUid)
-              .collection('contacts')
-              .doc(completedFor)
-              .collection('helpfulTasks')
-              .get()
-              .then(coll => coll.docs.map(doc => doc.data()))
-              .then(coll => coll.filter(task => !task.dateCompleted))
-              .then(coll => coll.length);
+          onChange={() =>
+            dispatch({
+              type: ACTIVITY_COMPLETED,
+              payload: {
+                taskId,
+                myUid,
+                completedFor,
+                setSelectedUser,
+                setVisibility,
+              },
+            })
+          }
+          // onChange={async () => {
+          //   const numberofActiveTasks = await firebase
+          //     .firestore()
+          //     .collection('users')
+          //     .doc(myUid)
+          //     .collection('contacts')
+          //     .doc(completedFor)
+          //     .collection('helpfulTasks')
+          //     .get()
+          //     .then(coll => coll.docs.map(doc => doc.data()))
+          //     .then(coll => coll.filter(task => !task.dateCompleted))
+          //     .then(coll => coll.length);
 
-            handleCompleteTask(taskId, myUid, completedFor);
+          //   handleCompleteTask(taskId, myUid, completedFor);
 
-            if (numberofActiveTasks === 1) {
-              setSelectedUser(completedFor);
-              setVisibility(true);
-            }
-          }}
+          //   if (numberofActiveTasks === 1) {
+          //     setSelectedUser(completedFor);
+          //     setVisibility(true);
+          //   }
+          // }}
         />
         <small className={dateCompleted && 'strike'}>{name}</small>
       </label>
