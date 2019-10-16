@@ -130,9 +130,15 @@ describe('outreach', () => {
     
 
     it('pops up when you complete in universal task list', () => {
-      cy.visit('/').login();
+      ✅
     });
 
-    // ensure task count updates when task is completed from universal task list
+    it('pops up when you complete in universal task list, only if there is no active tasks left', () => {
+      ✅
+    });
+
+    it('ensure task count updates when task is completed from universal task list', () => {
+      ✅
+    });
   });
 });

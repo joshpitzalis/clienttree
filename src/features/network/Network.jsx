@@ -90,7 +90,7 @@ export function Network({ uid }) {
                       </span>
                     </div>
                     <div>
-                      {contact.activeTaskCount &&
+                      {!!contact.activeTaskCount &&
                         Array(contact.activeTaskCount)
                           .fill(null)
                           .map((count, index) => (
