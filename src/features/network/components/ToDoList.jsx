@@ -2,51 +2,11 @@ import React from 'react';
 import { collectionData } from 'rxfire/firestore';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { toast$ } from '../notifications/toast';
-import { handleDeleteTask, handleCompleteTask } from './networkAPI';
-import firebase from '../../utils/firebase';
-import { taskSlice } from './taskSlice';
+import { toast$ } from '../../notifications/toast';
+import { handleDeleteTask, handleCompleteTask } from '../networkAPI';
+import firebase from '../../../utils/firebase';
+import { taskSlice } from '../taskSlice';
 import { HelpfulTask } from './HelpfulTask';
-// const useFetchCollection = (
-//   myUid,
-//   theirUid,
-//   activeTaskCount,
-//   _setActiveTaskCount,
-//   dispatch,
-//   setTasks
-// ) => {
-//   const [helpfulTasks, setHelpfulTasks] = React.useState([]);
-//   React.useEffect(() => {
-//     const subscription = collectionData(
-//       firebase
-//         .firestore()
-//         .collection('users')
-//         .doc(myUid)
-//         .collection('contacts')
-//         .doc(theirUid)
-//         .collection('helpfulTasks')
-//     ).subscribe(tasks => {
-//       if (tasks && tasks.length) {
-//         const newActiveTaskCount = tasks.filter(task => !task.dateCompleted)
-//           .length;
-//         if (activeTaskCount !== newActiveTaskCount) {
-//           _setActiveTaskCount(myUid, theirUid, newActiveTaskCount);
-//         }
-//         dispatch(setTasks({ tasks, theirUid }));
-//         setHelpfulTasks(tasks);
-//       }
-//     });
-//     return () => subscription.unsubscribe();
-//   }, [
-//     activeTaskCount,
-//     myUid,
-//     _setActiveTaskCount,
-//     theirUid,
-//     dispatch,
-//     setTasks,
-//   ]);
-//   return helpfulTasks;
-// };
 
 export const propTypes = {
   myUid: PropTypes.string.isRequired,
@@ -68,14 +28,7 @@ export const ToDoList = ({
   const { actions } = taskSlice;
   const { setTasks } = actions;
   const dispatch = useDispatch();
-  // const helpfulTasks = useFetchCollection(
-  //   myUid,
-  //   theirUid,
-  //   activeTaskCount,
-  //   _setActiveTaskCount,
-  //   dispatch,
-  //   setTasks
-  // );
+
   React.useEffect(() => {
     const subscription = collectionData(
       firebase
@@ -86,14 +39,12 @@ export const ToDoList = ({
         .doc(theirUid)
         .collection('helpfulTasks')
     ).subscribe(tasks => {
-      if (tasks && tasks.length) {
-        const newActiveTaskCount = tasks.filter(_task => !_task.dateCompleted)
-          .length;
-        if (activeTaskCount !== newActiveTaskCount) {
-          _setActiveTaskCount(myUid, theirUid, newActiveTaskCount);
-        }
-        dispatch(setTasks({ tasks, theirUid }));
+      const newActiveTaskCount = tasks.filter(_task => !_task.dateCompleted)
+        .length;
+      if (activeTaskCount !== newActiveTaskCount) {
+        _setActiveTaskCount(myUid, theirUid, newActiveTaskCount);
       }
+      dispatch(setTasks({ tasks, theirUid }));
     });
     return () => subscription.unsubscribe();
   }, [
@@ -144,6 +95,15 @@ export const ToDoList = ({
           </div>
         </fieldset>
       </form>
+      {console.log({ helpfulTasks })}
+      {helpfulTasks &&
+        !helpfulTasks.filter(_task => !_task.dateCompleted).length && (
+          <small className="red">
+            We recommend always having atleast one active task per contact. That
+            way there is always some small way to move forward. Please add a
+            task before closing.
+          </small>
+        )}
 
       {helpfulTasks &&
         helpfulTasks.map(({ name, taskId, dateCompleted }) => (

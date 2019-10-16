@@ -10,7 +10,9 @@ import {
   setActiveTaskCount,
 } from './networkAPI';
 import firebase from '../../utils/firebase';
-import { ToDoList } from './ToDoList';
+import { ToDoList } from './components/ToDoList';
+import { ConfirmDelete } from './components/ConfirmDelete';
+import { Input } from './components/Input';
 
 const modalPropTypes = {
   uid: PropTypes.string.isRequired,
@@ -32,17 +34,20 @@ export function Modal({ uid, selectedUserUid, onClose }) {
   });
 
   React.useEffect(() => {
-    const subscription = doc(
-      firebase
-        .firestore()
-        .collection('users')
-        .doc(uid)
-        .collection('contacts')
-        .doc(selectedUserUid)
-    ).subscribe(user => {
-      setState({ ...user.data() });
-    });
-    return () => subscription.unsubscribe();
+    if (selectedUserUid) {
+      const subscription = doc(
+        firebase
+          .firestore()
+          .collection('users')
+          .doc(uid)
+          .collection('contacts')
+          .doc(selectedUserUid)
+      ).subscribe(user => {
+        setState({ ...user.data() });
+      });
+      return () => subscription.unsubscribe();
+    }
+    console.log('Creating a new user...');
   }, [selectedUserUid, uid]);
 
   const { setContact } = React.useContext(NetworkContext);
@@ -154,29 +159,34 @@ export function Modal({ uid, selectedUserUid, onClose }) {
     }
   };
 
+  const handleUpdateUser = async e => {
+    e.preventDefault();
+
+    // tk validity check goes here
+
+    try {
+      const newUser = !state.photoURL;
+
+      if (newUser) {
+        const imgString = await avatarRef.current.getImageData();
+
+        await setContact({ ...state, imgString, userId: uid });
+        onClose();
+        return;
+      }
+
+      await setContact({ ...state, userId: uid });
+      onClose();
+    } catch (error) {
+      toast$.next({ type: 'ERROR', message: error.message || error });
+    }
+  };
+
   return (
     <form
       className="measure center"
       data-testid="contactModal"
-      onSubmit={async e => {
-        e.preventDefault();
-        // tk validity check goes here
-        if (!state.photoURL) {
-          const imgString = await avatarRef.current.getImageData();
-
-          await setContact({ ...state, imgString, userId: uid }).catch(error =>
-            toast$.next({ type: 'ERROR', message: error.message || error })
-          );
-          onClose();
-          return;
-        }
-        try {
-          await setContact({ ...state, userId: uid });
-          onClose();
-        } catch (error) {
-          toast$.next({ type: 'ERROR', message: error.message || error });
-        }
-      }}
+      onSubmit={handleUpdateUser}
     >
       <fieldset id="contact" className="ba b--transparent ph0 mh0 tl">
         <div className="w-100 tc">
@@ -191,57 +201,33 @@ export function Modal({ uid, selectedUserUid, onClose }) {
           )}
         </div>
         <legend className="f4 fw6 ph0 mh0 dn">Profile</legend>
-        <div className="flex">
-          <div className="w-50 ">
-            <div className="mt3 mb4 ">
-              <label className="db fw6 lh-copy f6 " htmlFor="name">
-                Name
-                <input
-                  className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2"
-                  type="text"
-                  name="name"
-                  id="name"
-                  placeholder="Your name..."
-                  value={state.name}
-                  onChange={e => setState({ ...state, name: e.target.value })}
-                />
-              </label>
-            </div>
+        <div className="flex justify-center">
+          <div className="w-50">
+            <Input
+              setState={setState}
+              state={state}
+              value={state.name}
+              name="name"
+              placeholder="Their name..."
+            />
 
-            <div className="mt3 mb4">
-              <label className="db fw6 lh-copy f6" htmlFor="lastContacted">
-                Last Contacted
-                <input
-                  className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2"
-                  type="text"
-                  name="lastContacted"
-                  id="lastContacted"
-                  placeholder="Last contacted..."
-                  value={state.lastContacted}
-                  onChange={e =>
-                    setState({ ...state, lastContacted: e.target.value })
-                  }
-                />
-              </label>
-            </div>
+            <Input
+              setState={setState}
+              state={state}
+              value={state.lastContacted}
+              name="Last Contacted"
+              placeholder="Last contacted..."
+            />
 
-            <div className="mb4">
-              <label htmlFor="comment" className="f6 b db mb2">
-                Summary
-                <textarea
-                  id="comment"
-                  name="comment"
-                  rows="5"
-                  className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2"
-                  aria-describedby="comment-desc"
-                  placeholder="Notes..."
-                  value={state.summary}
-                  onChange={e =>
-                    setState({ ...state, summary: e.target.value })
-                  }
-                ></textarea>
-              </label>
-            </div>
+            <Input
+              setState={setState}
+              state={state}
+              value={state.lastContacted}
+              name="Summary"
+              placeholder="Notes..."
+              type="textarea"
+            />
+
             <label className="pa0 ma0 lh-copy f6 pointer" htmlFor="tracked">
               <input
                 type="checkbox"
@@ -262,8 +248,8 @@ export function Modal({ uid, selectedUserUid, onClose }) {
             </label>
           </div>
 
-          <div className="w-50">
-            {selectedUserUid && (
+          {selectedUserUid && (
+            <div className="w-50">
               <ToDoList
                 myUid={uid}
                 theirUid={selectedUserUid}
@@ -271,8 +257,8 @@ export function Modal({ uid, selectedUserUid, onClose }) {
                 activeTaskCount={state.activeTaskCount}
                 _setActiveTaskCount={setActiveTaskCount}
               />
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </fieldset>
       <div className="mt3 flex justify-around items-center">
@@ -294,51 +280,3 @@ export function Modal({ uid, selectedUserUid, onClose }) {
 }
 Modal.propTypes = modalPropTypes;
 Modal.defaultProps = modalDefaultProps;
-
-const confirmDeletePropTypes = {
-  handleDelete: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-};
-const confirmDeleteDefaultProps = {};
-
-export const ConfirmDelete = ({ handleDelete, title }) => {
-  const [confirmDelete, setConfirmDelete] = React.useState(false);
-  return (
-    <div>
-      {confirmDelete ? (
-        <div>
-          <small className="f6 black-70 small-caps">
-            {`Are you sure you want to delete ${title} ?`}
-          </small>
-          <div className="mv3">
-            <button
-              className="f6 red small-caps pointer link dim ba bw1 ph3 pv2 mb2 dib b--red"
-              type="button"
-              onClick={handleDelete}
-            >
-              {`Confirm Delete ${title}`}
-            </button>
-            <button
-              className="f6 small-caps bn pointer ml3 black-70"
-              type="button"
-              onClick={() => setConfirmDelete(false)}
-            >
-              Nevermind
-            </button>
-          </div>
-        </div>
-      ) : (
-        <button
-          className="f6  small-caps bn pointer"
-          type="button"
-          onClick={() => setConfirmDelete(true)}
-        >
-          {`Delete ${title}`}
-        </button>
-      )}
-    </div>
-  );
-};
-
-ConfirmDelete.propTypes = confirmDeletePropTypes;
-ConfirmDelete.defaultProps = confirmDeleteDefaultProps;

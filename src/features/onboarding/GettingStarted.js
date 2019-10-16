@@ -19,7 +19,7 @@ export function Onboarding({ submitted, uid }) {
           Getting Started {1 + (submitted ? 1 : 0)}/5
         </legend> */}
 
-        <legend className="fw7 mb2">Ways to Get Referrals</legend>
+        <legend className="fw7 mb2">Activities</legend>
         <div className="flex items-center mb2">
           <label htmlFor="spacejam" className="lh-copy">
             <input

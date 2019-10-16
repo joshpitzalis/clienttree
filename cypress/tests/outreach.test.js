@@ -117,4 +117,20 @@ describe('outreach', () => {
   it('forces you to enter the next task from teh universal task list', () => {
     cy.visit('/').login();
   });
+
+  context('task modal', () => {
+    it('encourages you to always leave a next task', () => {
+      ✅
+    });
+
+    it('encourages you to always leave a next task if there are completed tasks, just not active tasks', () => {
+      ✅
+    });
+
+    
+
+    it('pops up when you complete in universal task list', () => {
+      cy.visit('/').login();
+    });
+  });
 });
