@@ -1,14 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export const propTypes = {
-  myUid: PropTypes.string.isRequired,
-  theirUid: PropTypes.string.isRequired,
-  handleAddingTask: PropTypes.func.isRequired,
-  activeTaskCount: PropTypes.number.isRequired,
-  _setActiveTaskCount: PropTypes.func.isRequired,
-};
-export const defaultProps = {};
 const helpfulTaskPropTypes = {
   taskId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,

@@ -7,11 +7,25 @@ export const taskSlice = createSlice({
   reducers: {
     setTasks(state, action) {
       const { payload } = action;
-      const { theirUid, tasks } = payload;
-      state[theirUid] = tasks;
+      const { theirUid, tasks: dbTasks } = payload;
+      state[theirUid] = dbTasks;
     },
   },
 });
+
+// export function loadData(state, payload) {
+//   // Create a Redux-ORM session from our entities "database tables" object
+//   const session = orm.session(state);
+//   // Get a reference to the correct version of the Pilots class for this Session
+//   const {Pilot} = session;
+
+//   const {pilots} = payload;
+//   // Insert the Pilot entries into the Session
+//   pilots.forEach(pilot => Pilot.parse(pilot));
+
+//   // return a new version of the entities state object with the inserted entries
+//   return session.state;
+// }
 
 // export const fetchTasks = (userId, contactId) => async dispatch => {
 //   try {
