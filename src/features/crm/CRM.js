@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { doc } from 'rxfire/firestore';
 import { catchError } from 'rxjs/operators';
-import { initialData } from './initialData';
+// import { initialData } from './initialData';
 import { setStateToDB } from './crmAPI';
 import { toast$ } from '../notifications/toast';
 import firebase from '../../utils/firebase';
 import Portal from '../../utils/Portal';
-import { Modal } from '../network/ContactModal';
+import { Modal } from '../network/components/ContactModal';
 
 const crmPropTypes = {
   welcomeMessage: PropTypes.shape({

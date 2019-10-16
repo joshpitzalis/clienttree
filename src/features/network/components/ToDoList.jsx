@@ -56,6 +56,7 @@ export const ToDoList = ({
     setTasks,
   ]);
   const helpfulTasks = useSelector(state => state.tasks[theirUid]);
+
   const markComplete = (taskId, _myUid, _theirUid) => {
     handleCompleteTask(taskId, _myUid, _theirUid)
       .then(() => {
@@ -66,6 +67,7 @@ export const ToDoList = ({
         toast$.next({ type: 'ERROR', message: error.message || error })
       );
   };
+
   return (
     <div className="center pl4 pt2">
       <form

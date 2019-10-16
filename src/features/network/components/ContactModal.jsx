@@ -2,17 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AvatarGenerator from 'react-avatar-generator';
 import { doc } from 'rxfire/firestore';
-import { NetworkContext } from './NetworkContext';
-import { toast$ } from '../notifications/toast';
+import { NetworkContext } from '../NetworkContext';
+import { toast$ } from '../../notifications/toast';
 import {
   handleContactDelete,
   handleAddTask,
   setActiveTaskCount,
-} from './networkAPI';
-import firebase from '../../utils/firebase';
-import { ToDoList } from './components/ToDoList';
-import { ConfirmDelete } from './components/ConfirmDelete';
-import { Input } from './components/Input';
+} from '../networkAPI';
+import firebase from '../../../utils/firebase';
+import { ToDoList } from './ToDoList';
+import { ConfirmDelete } from './ConfirmDelete';
+import { Input } from './Input';
 
 const modalPropTypes = {
   uid: PropTypes.string.isRequired,
@@ -47,7 +47,6 @@ export function Modal({ uid, selectedUserUid, onClose }) {
       });
       return () => subscription.unsubscribe();
     }
-    console.log('Creating a new user...');
   }, [selectedUserUid, uid]);
 
   const { setContact } = React.useContext(NetworkContext);

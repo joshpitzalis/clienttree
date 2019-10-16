@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import Portal from '../../utils/Portal';
 import Plus from '../../images/Plus';
-import { Modal } from './ContactModal';
+import { Modal } from './components/ContactModal';
 import { NetworkContext } from './NetworkContext';
 
 const networkPropTypes = {

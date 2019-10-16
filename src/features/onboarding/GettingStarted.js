@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { collectionData } from 'rxfire/firestore';
-import { filter } from 'rxjs/operators';
-import firebase from '../../utils/firebase';
+// import { filter } from 'rxjs/operators';
+import { HelpfulTaskList } from '../network/components/UniversalTaskList';
 
 const propTypes = {
   submitted: PropTypes.bool.isRequired,
@@ -105,51 +104,3 @@ export function Onboarding({ submitted, uid }) {
 
 Onboarding.propTypes = propTypes;
 Onboarding.defaultProps = defaultProps;
-
-const helpfulPropTypes = {
-  myUid: PropTypes.string.isRequired,
-};
-
-const helpfulDefaultProps = {};
-
-const HelpfulTaskList = ({ myUid }) => {
-  const [helpfulTasks, setHelpfulTasks] = React.useState([]);
-
-  React.useEffect(() => {
-    const subscription = collectionData(
-      firebase
-        .firestore()
-        .collectionGroup('helpfulTasks')
-        .where('connectedTo', '==', myUid)
-        .where('dateCompleted', '==', null)
-    ).subscribe(tasks => {
-      if (tasks && tasks.length) {
-        setHelpfulTasks(tasks);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [myUid]);
-
-  return (
-    <React.Fragment>
-      {helpfulTasks &&
-        helpfulTasks.map(({ taskId, name, dateCompleted }) => (
-          <div className="flex items-center mb2" key={taskId}>
-            <label htmlFor={name} className="lh-copy">
-              <input
-                className="mr2"
-                type="checkbox"
-                id={name}
-                value={name}
-                checked={dateCompleted}
-              />
-              <small className="">{name}</small>
-            </label>
-          </div>
-        ))}
-    </React.Fragment>
-  );
-};
-
-HelpfulTaskList.propTypes = helpfulPropTypes;
-HelpfulTaskList.defaultProps = helpfulDefaultProps;
