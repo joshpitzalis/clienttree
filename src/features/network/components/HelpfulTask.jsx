@@ -17,7 +17,6 @@ export function HelpfulTask({
   taskId,
   name,
   dateCompleted,
-
   myUid,
   theirUid,
   _handleDeleteTask,

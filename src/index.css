@@ -42,3 +42,8 @@ background-color: #808080;
 .bg-client-green {
   background-color: #758659;
 }
+
+.react-date-picker__wrapper {
+  border: none !important;
+  width: 100%;
+}
