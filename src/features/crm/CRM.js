@@ -65,10 +65,11 @@ export function CRM({ welcomeMessage, userId = '' }) {
         stageOrder: newStageOrder,
       };
       setState(newState);
-      console.log({ newState });
+
       setStateToDB(userId, newState).catch(error =>
         toast$.next({ type: 'ERROR', message: error.message || error })
       );
+
       return;
     }
 
@@ -115,6 +116,12 @@ export function CRM({ welcomeMessage, userId = '' }) {
         [newEndStage.id]: newEndStage,
       },
     };
+
+    // track event in amplitude
+    const { analytics } = window;
+    analytics.track('CRM Updated', {
+      movedTo: newEndStage.title,
+    });
 
     setState(newMultiState);
     setStateToDB(userId, newMultiState).catch(error =>

@@ -97,9 +97,15 @@ export function Profile(props) {
       .pipe(
         debounceTime(1000),
         tap(({ payload }) => {
-          handleFirebaseProfileUpdate(payload).catch(error =>
-            toast$.next({ type: 'ERROR', message: error.message || error })
-          );
+          handleFirebaseProfileUpdate(payload)
+            .then(() => {
+              // track event in amplitude
+              const { analytics } = window;
+              analytics.track('Profile Updated');
+            })
+            .catch(error =>
+              toast$.next({ type: 'ERROR', message: error.message || error })
+            );
         })
       )
       .subscribe();

@@ -154,6 +154,13 @@ export function Modal({ uid, selectedUserUid, onClose }) {
     try {
       await updateDashboardState(userId, checked, contactId, name, photoURL);
       updateSelectedUser(userId, contactId, checked);
+      if (checked) {
+        // track event in amplitude
+        const { analytics } = window;
+        analytics.track('CRM Updated', {
+          movedTo: 'Leads',
+        });
+      }
     } catch (error) {
       toast$.next({ type: 'ERROR', message: error.message || error });
     }

@@ -95,9 +95,15 @@ const Services = props => {
             return;
           }
 
-          handleFirebaseUpdate(payload).catch(error =>
-            toast$.next({ type: 'ERROR', message: error.message || error })
-          );
+          handleFirebaseUpdate(payload)
+            .then(() => {
+              // track event in amplitude
+              const { analytics } = window;
+              analytics.track('Services Updated');
+            })
+            .catch(error =>
+              toast$.next({ type: 'ERROR', message: error.message || error })
+            );
         })
       )
       .subscribe();
@@ -113,6 +119,7 @@ const Services = props => {
           className="measure mt5"
           onSubmit={e => {
             e.preventDefault();
+
             dispatch({
               type: 'SERVICE_ADDED',
             });
