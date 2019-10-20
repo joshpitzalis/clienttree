@@ -51,18 +51,19 @@ export default function StatsBox({ userId }) {
         </div>
 
         <>
+          <small className="fw5 small-caps">You need...</small>
           <dl className="db mr5">
-            <dd className="f6 f5-ns b ml0">Projects</dd>
+            <dd className="f6 f5-ns  ml0">Projects</dd>
             <dd className="f3 f2-ns b ml0">{projectCount}</dd>
           </dl>
 
           <dl className="db mr5 mt3">
-            <dd className="f6 f5-ns b ml0">Leads</dd>
+            <dd className="f6 f5-ns  ml0">Leads</dd>
             <dd className="f3 f2-ns b ml0 ">{projectCount * 3}</dd>
           </dl>
 
           <dl className="db mr5 mt3">
-            <dd className="f6 f5-ns b ml0">Activities</dd>
+            <dd className="f6 f5-ns  ml0">Activities</dd>
             <dd className="f3 f2-ns b ml0">{projectCount * 3 * 10} </dd>
           </dl>
         </>

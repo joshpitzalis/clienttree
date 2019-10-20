@@ -7,6 +7,7 @@ import { ACTIVITY_COMPLETED } from '../networkConstants';
 import firebase from '../../../utils/firebase';
 import { Modal } from './ContactModal';
 import Portal from '../../../utils/Portal';
+import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
 
 const helpfulPropTypes = {
   myUid: PropTypes.string.isRequired,
@@ -103,7 +104,7 @@ function TaskDetails({
           id={name}
           value={name}
           checked={dateCompleted}
-          onChange={() =>
+          onChange={() => {
             dispatch({
               type: ACTIVITY_COMPLETED,
               payload: {
@@ -113,8 +114,15 @@ function TaskDetails({
                 setSelectedUser,
                 setVisibility,
               },
-            })
-          }
+            });
+            dispatch({
+              type: ONBOARDING_STEP_COMPLETED,
+              payload: {
+                userId: myUid,
+                onboardingStep: 'helpedSomeone',
+              },
+            });
+          }}
           // onChange={async () => {
           //   const numberofActiveTasks = await firebase
           //     .firestore()

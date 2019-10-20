@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import AvatarGenerator from 'react-avatar-generator';
 import { doc } from 'rxfire/firestore';
-
+import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
 import { NetworkContext } from '../NetworkContext';
 import { toast$ } from '../../notifications/toast';
 import {
@@ -23,6 +24,8 @@ const modalPropTypes = {
 const modalDefaultProps = {};
 
 export function Modal({ uid, selectedUserUid, onClose }) {
+  const dispatch = useDispatch();
+
   const [state, setState] = React.useState({
     userId: uid,
     name: '',
@@ -176,6 +179,11 @@ export function Modal({ uid, selectedUserUid, onClose }) {
 
       if (newUser) {
         const imgString = await avatarRef.current.getImageData();
+
+        dispatch({
+          type: ONBOARDING_STEP_COMPLETED,
+          payload: { userId: uid, onboardingStep: 'addedSomeone' },
+        });
 
         await setContact({ ...state, imgString, userId: uid });
         onClose();

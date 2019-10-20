@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { ACTIVITY_COMPLETED } from '../networkConstants';
+import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
 
 const helpfulTaskPropTypes = {
   taskId: PropTypes.string.isRequired,
@@ -32,8 +33,7 @@ export function HelpfulTask({
           id={name}
           value={name}
           checked={!!dateCompleted}
-          onChange={() =>
-            // markComplete(taskId, myUid, theirUid)
+          onChange={() => {
             dispatch({
               type: ACTIVITY_COMPLETED,
               payload: {
@@ -41,8 +41,16 @@ export function HelpfulTask({
                 myUid,
                 completedFor: theirUid,
               },
-            })
-          }
+            });
+
+            dispatch({
+              type: ONBOARDING_STEP_COMPLETED,
+              payload: {
+                userId: myUid,
+                onboardingStep: 'helpedSomeone',
+              },
+            });
+          }}
         />
         <span className={!!dateCompleted && 'strike'}>{name}</span>{' '}
       </label>

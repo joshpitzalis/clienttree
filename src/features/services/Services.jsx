@@ -4,12 +4,14 @@ import produce from 'immer';
 import { Redirect, Link } from 'react-router-dom';
 import { Subject } from 'rxjs';
 import { tap, debounceTime } from 'rxjs/operators';
+import { useDispatch } from 'react-redux';
 import {
   handleFirebaseUpdate,
   fetchUserData,
   handleFirebaseDelete,
 } from './serviceAPI';
 import { toast$ } from '../notifications/toast';
+import { ONBOARDING_STEP_COMPLETED } from '../onboarding/onboardingConstants';
 
 export const serviceFormUpdate$ = new Subject();
 
@@ -67,7 +69,7 @@ const Services = props => {
   const { setSubmitted, submitted, uid } = props;
   const [state, dispatch] = React.useReducer(curriedReducer, initialState);
   const [firstTime, completeFirstTime] = React.useState(false);
-
+  const reduxDispatch = useDispatch();
   // const [profileData, setProfileData] = React.useState({});
   React.useEffect(() => {
     if (uid) {
@@ -122,6 +124,10 @@ const Services = props => {
 
             dispatch({
               type: 'SERVICE_ADDED',
+            });
+            reduxDispatch({
+              type: ONBOARDING_STEP_COMPLETED,
+              payload: { userId: uid, onboardingStep: 'referralPageCreated' },
             });
           }}
         >

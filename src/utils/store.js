@@ -5,10 +5,15 @@ import { taskSlice } from '../features/network/taskSlice';
 import { updateUserDetails } from '../features/stats/statsEpic';
 import { markActivityComplete } from '../features/network/networkEpics';
 import { userSlice } from '../pages/Dashboard';
+import { onboardingEpic } from '../features/onboarding/onboardingEpics';
 
-const rootEpic = combineEpics(markActivityComplete, updateUserDetails);
+export const rootEpic = combineEpics(
+  markActivityComplete,
+  updateUserDetails,
+  onboardingEpic
+);
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   tasks: taskSlice.reducer,
   user: userSlice.reducer,
 });
