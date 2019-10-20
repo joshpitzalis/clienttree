@@ -30,6 +30,10 @@ describe('cms', () => {
   });
 
 
+  it('add a resource to a stage', () => {});
+
+  it('delete a resource from a stage', () => {});
+
 
   it('add a new stage', () => {});
 

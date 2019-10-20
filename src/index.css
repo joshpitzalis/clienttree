@@ -47,3 +47,7 @@ background-color: #808080;
   border: none !important;
   width: 100%;
 }
+
+/* details summary::-webkit-details-marker {
+  display:none;
+} */

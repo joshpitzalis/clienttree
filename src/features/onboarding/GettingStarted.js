@@ -20,7 +20,9 @@ export const GettingStarted = ({ uid }) => {
 
   React.useEffect(() => {
     const completeCount =
-      onboarding && Object.values(onboarding).filter(x => true).length;
+      onboarding && Object.values(onboarding).filter(_x => !!_x).length;
+    console.log({ completeCount });
+
     if (completeCount >= 6) {
       dispatch({
         type: ONBOARDING_STEP_COMPLETED,
@@ -31,6 +33,7 @@ export const GettingStarted = ({ uid }) => {
       });
     }
   }, [dispatch, onboarding, uid]);
+
   if (onboarding && onboarding.complete === true) {
     // if all the onboarding staeps are complete there is no reason to show this module
     return null;

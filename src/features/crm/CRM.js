@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { doc } from 'rxfire/firestore';
 import { catchError } from 'rxjs/operators';
 // import { initialData } from './initialData';
@@ -9,6 +9,7 @@ import { toast$ } from '../notifications/toast';
 import firebase from '../../utils/firebase';
 import Portal from '../../utils/Portal';
 import { Modal } from '../network/components/ContactModal';
+import { Stages } from './Stages';
 
 const crmPropTypes = {
   welcomeMessage: PropTypes.shape({
@@ -168,6 +169,7 @@ export function CRM({ welcomeMessage, userId = '' }) {
                     const people =
                       stage.people &&
                       stage.people.map(personId => state.people[personId]);
+                    const { challenges } = stage;
                     return (
                       <Stages
                         stageId={stageId}
@@ -177,6 +179,8 @@ export function CRM({ welcomeMessage, userId = '' }) {
                         key={stageId}
                         setSelectedUser={setSelectedUser}
                         setVisibility={setVisibility}
+                        challenges={challenges}
+                        userId={userId}
                       />
                     );
                   })}
@@ -191,134 +195,3 @@ export function CRM({ welcomeMessage, userId = '' }) {
 }
 CRM.propTypes = crmPropTypes;
 CRM.defaultProps = crmDefaultProps;
-
-const stagesPropTypes = {
-  stageId: PropTypes.string.isRequired,
-  index: PropTypes.number.isRequired,
-  setSelectedUser: PropTypes.func.isRequired,
-  setVisibility: PropTypes.func.isRequired,
-  people: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      photoURL: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-  stage: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    subtitle: PropTypes.string.isRequired,
-  }).isRequired,
-};
-const stagesDefaultProps = {};
-
-function Stages({
-  stageId,
-  index,
-  people,
-  stage,
-  setSelectedUser,
-  setVisibility,
-}) {
-  return (
-    <Draggable draggableId={stageId} index={index}>
-      {provided => (
-        <div
-          {...provided.draggableProps}
-          ref={provided.innerRef}
-          className="bg-white-80 br3"
-        >
-          <Droppable droppableId={stageId} direction="horizontal" type="people">
-            {({ droppableProps, innerRef, placeholder }, snapshot) => (
-              <li
-                className="pa3 pa4-ns bb b--black-10"
-                ref={innerRef}
-                {...droppableProps}
-              >
-                <b className="db f3 mb1" {...provided.dragHandleProps}>
-                  {stage.title}
-                </b>
-                <small className="f5 db lh-copy measure gray">
-                  {stage.subtitle}
-                </small>
-
-                <div
-                  className={`br3 flex ${snapshot.isDraggingOver &&
-                    'bg-light-blue'}`}
-                  style={{
-                    transition: 'background-color 1s ease',
-                  }}
-                >
-                  {people &&
-                    people.map(({ id, name, photoURL }, _index) => (
-                      <Peoples
-                        id={id}
-                        key={id}
-                        index={_index}
-                        photoURL={photoURL}
-                        name={name}
-                        placeholder={placeholder}
-                        setSelectedUser={setSelectedUser}
-                        setVisibility={setVisibility}
-                      />
-                    ))}
-                </div>
-              </li>
-            )}
-          </Droppable>
-        </div>
-      )}
-    </Draggable>
-  );
-}
-
-Stages.propTypes = stagesPropTypes;
-Stages.defaultProps = stagesDefaultProps;
-
-const peoplesPropTypes = {
-  id: PropTypes.string.isRequired,
-  index: PropTypes.number.isRequired,
-  photoURL: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  setSelectedUser: PropTypes.func.isRequired,
-  setVisibility: PropTypes.func.isRequired,
-};
-const peoplesDefaultProps = {};
-
-function Peoples({
-  id,
-  index,
-  photoURL,
-  name,
-  setSelectedUser,
-  setVisibility,
-}) {
-  return (
-    <Draggable draggableId={id} index={index}>
-      {(provided, snapshot) => (
-        <div
-          className="tc "
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          ref={provided.innerRef}
-        >
-          <img
-            src={photoURL}
-            className={`${snapshot.isDragging &&
-              'ba bg-white-70 bw3'} dib ba b--black-10 db br-100 w2 w3-ns h2 h3-ns mv3 mr3 pointer`}
-            title={name}
-            alt={name}
-            onDoubleClick={() => {
-              setVisibility(true);
-              setSelectedUser(id);
-            }}
-          />
-          {/* <h1 className="f3 mb2">{name}</h1>
-      <h2 className="f5 fw4 gray mt0">{name}</h2> */}
-        </div>
-      )}
-    </Draggable>
-  );
-}
-
-Peoples.propTypes = peoplesPropTypes;
-Peoples.defaultProps = peoplesDefaultProps;
