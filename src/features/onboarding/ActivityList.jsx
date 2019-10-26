@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { useImmerReducer } from 'use-immer';
 import { useDispatch } from 'react-redux';
 import AvatarGenerator from 'react-avatar-generator';
+import { AutoComplete } from 'antd';
 import { HelpfulTaskList } from '../network/components/UniversalTaskList';
 import { GettingStarted } from './GettingStarted';
 import { USER_UPDATED } from '../network/networkConstants';
@@ -77,6 +78,13 @@ export function AddBox({ setUser, userId }) {
 
   const avatarRef = React.useRef(null);
 
+  const allContacts = [
+    { value: 'string1', text: 'red' },
+    { value: 'string2', text: 'blue' },
+    { value: 'string3', text: 'green' },
+  ];
+  const [contacts, setContacts] = React.useState([]);
+
   return (
     <form
       className="center mw5 mw6-ns br3 hidden ba b--black-10 mv4"
@@ -107,6 +115,20 @@ export function AddBox({ setUser, userId }) {
         <AvatarGenerator ref={avatarRef} height="25" width="25" /> Add an
         Activity
       </h1>
+      <AutoComplete
+        dataSource={contacts}
+        className="b pa2 input-reset ba bg-transparent center br2 b--black-20"
+        onChange={e => console.log(e)}
+        onSelect={id => console.log(id)}
+        onSearch={searchText =>
+          setContacts(
+            !searchText
+              ? []
+              : allContacts.filter(item => item.text.includes(searchText))
+          )
+        }
+        placeholder="input here"
+      ></AutoComplete>
       <div className="pa3 bt b--black-10">
         <label className="db fw4 lh-copy f6 " htmlFor="name">
           {/* <span className="b">Name</span> */}

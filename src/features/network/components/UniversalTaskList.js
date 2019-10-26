@@ -136,7 +136,7 @@ function TaskDetails({
           }}
         />
         <small className={`w-100 ${dateCompleted && 'strike'}`}>{name}</small>
-        <img src={photoURL} alt={name} height="25" />
+        {photoURL && <img src={photoURL} alt={name} height="25" />}
       </label>
     </div>
   );
