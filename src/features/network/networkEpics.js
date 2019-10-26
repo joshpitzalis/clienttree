@@ -1,15 +1,12 @@
 import { tap, mapTo, catchError } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
-import { getActivitiesLeft, handleCompleteTask } from './networkAPI';
+import {
+  getActivitiesLeft,
+  handleCompleteTask,
+  setFirebaseContactUpdate,
+} from './networkAPI';
 import { toast$ } from '../notifications/toast';
-import { ACTIVITY_COMPLETED } from './networkConstants';
-
-// export const logEpic = action$ =>
-//   action$.pipe(
-//     ofType('logMe'),
-//     tap(({ payload }) => console.log('frog', payload)),
-//     mapTo({ type: 'PONG' })
-//   );
+import { ACTIVITY_COMPLETED, USER_UPDATED } from './networkConstants';
 
 export const markActivityComplete = action$ =>
   action$.pipe(
@@ -37,6 +34,29 @@ export const markActivityComplete = action$ =>
           setVisibility(true);
         }
       });
+    }),
+    catchError(error =>
+      toast$.next({ type: 'ERROR', message: error.message || error })
+    ),
+    mapTo({ type: 'done' })
+  );
+
+export const setNewUserTask = action$ =>
+  action$.pipe(
+    ofType(USER_UPDATED),
+    tap(async ({ payload }) => {
+      // const {
+      //   userId,
+      //   contactId,
+      //   uid,
+      //   name,
+      //   summary,
+      //   lastContacted,
+      //   photoURL,
+      //   imgString,
+      //   taskName,
+      // } = payload;
+      setFirebaseContactUpdate(payload);
     }),
     catchError(error =>
       toast$.next({ type: 'ERROR', message: error.message || error })

@@ -21,7 +21,6 @@ export const GettingStarted = ({ uid }) => {
   React.useEffect(() => {
     const completeCount =
       onboarding && Object.values(onboarding).filter(_x => !!_x).length;
-    console.log({ completeCount });
 
     if (completeCount >= 6) {
       dispatch({

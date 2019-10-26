@@ -56,34 +56,36 @@ export function Stages({
               >
                 <details>
                   <summary>
-                    <b className="db f3 mb1" {...provided.dragHandleProps}>
-                      {stage.title}
-                    </b>
-                    <small className="f5 db lh-copy measure gray">
-                      {stage.subtitle}
-                    </small>
+                    <>
+                      <b className="db f3 mb1" {...provided.dragHandleProps}>
+                        {stage.title}
+                      </b>
+                      <small className="f5 db lh-copy measure gray">
+                        {stage.subtitle}
+                      </small>
 
-                    <div
-                      className={`br3 flex ${snapshot.isDraggingOver &&
-                        'bg-light-blue h3'}`}
-                      style={{
-                        transition: 'background-color 1s ease',
-                      }}
-                    >
-                      {people &&
-                        people.map(({ id, name, photoURL }, _index) => (
-                          <Peoples
-                            id={id}
-                            key={id}
-                            index={_index}
-                            photoURL={photoURL}
-                            name={name}
-                            placeholder={placeholder}
-                            setSelectedUser={setSelectedUser}
-                            setVisibility={setVisibility}
-                          />
-                        ))}
-                    </div>
+                      <div
+                        className={`br3 flex ${snapshot.isDraggingOver &&
+                          'bg-light-blue h3'}`}
+                        style={{
+                          transition: 'background-color 1s ease',
+                        }}
+                      >
+                        {people &&
+                          people.map(({ id, name, photoURL }, _index) => (
+                            <Peoples
+                              id={id}
+                              key={id}
+                              index={_index}
+                              photoURL={photoURL}
+                              name={name}
+                              placeholder={placeholder}
+                              setSelectedUser={setSelectedUser}
+                              setVisibility={setVisibility}
+                            />
+                          ))}
+                      </div>
+                    </>
                   </summary>
 
                   <ChallengeBox

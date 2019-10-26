@@ -140,5 +140,10 @@ describe('outreach', () => {
     it('ensure task count updates when task is completed from universal task list', () => {
       ✅
     });
+
+
+    it('adding someone from te universal task list creates the user and then creates teh task, and adds it to the universal task list', () => {
+      ✅
+    });
   });
 });

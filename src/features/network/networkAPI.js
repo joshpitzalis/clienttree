@@ -46,6 +46,7 @@ export const setFirebaseContactUpdate = async payload => {
     lastContacted,
     photoURL,
     imgString,
+    taskName,
   } = payload;
 
   const newDoc = await firebase
@@ -66,6 +67,57 @@ export const setFirebaseContactUpdate = async payload => {
       .child(`contacts/${contactUid}.png`)
       .putString(imgString, 'data_url', { contentType: 'image/png' })
       .then(({ ref }) => ref.getDownloadURL());
+  }
+
+  // create a specific task for new contacts
+  if (taskName) {
+    const task = await firebase
+      .firestore()
+      .collection('users')
+      .doc(userId)
+      .collection('contacts')
+      .doc(contactUid)
+      .collection('helpfulTasks')
+      .doc();
+    const taskId = task.id;
+
+    await firebase
+      .firestore()
+      .collection('users')
+      .doc(userId)
+      .collection('contacts')
+      .doc(contactUid)
+      .collection('helpfulTasks')
+      .doc(taskId)
+      .set(
+        {
+          taskId,
+          name: taskName,
+          dateCreated: new Date(),
+          dateCompleted: null,
+          connectedTo: userId,
+        },
+        { merge: true }
+      );
+
+    await firebase
+      .firestore()
+      .collection('users')
+      .doc(userId)
+      .collection('contacts')
+      .doc(contactUid)
+      .set(
+        {
+          name,
+          summary,
+          uid: contactUid,
+          lastContacted,
+          photoURL: photoURL || downloadURL,
+          activeTaskCount: 1,
+        },
+        { merge: true }
+      );
+    return;
   }
 
   // create a default task for new contacts

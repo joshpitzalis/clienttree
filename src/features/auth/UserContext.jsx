@@ -19,9 +19,14 @@ const UserProvider = ({ children }) => {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         const { analytics } = window;
-        const { uid, email } = user;
+        const { uid, email, metadata } = user;
+        const createdAt = parseInt(+new Date(metadata.creationTime)) / 1000;
+
+        console.log({ createdAt: metadata.creationTime });
+
         analytics.identify(uid, {
           email,
+          created_at: createdAt,
         });
         setUid(uid);
         setAuthStatus(true);
