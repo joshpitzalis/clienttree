@@ -4,6 +4,7 @@ import {
   getActivitiesLeft,
   handleCompleteTask,
   setFirebaseContactUpdate,
+  inCompleteTask,
 } from './networkAPI';
 import { toast$ } from '../notifications/toast';
 import { ACTIVITY_COMPLETED, USER_UPDATED } from './networkConstants';
@@ -18,22 +19,31 @@ export const markActivityComplete = action$ =>
         completedFor,
         setSelectedUser,
         setVisibility,
+        checked,
       } = payload;
 
-      // mark task complete in db
-      await handleCompleteTask(taskId, myUid, completedFor);
+      console.log({ checked });
 
-      // track event in amplitude
-      const { analytics } = window;
-      analytics.track('Helped Someone');
+      if (checked) {
+        // if task is complete mark incomplete
+        await inCompleteTask(taskId, myUid, completedFor);
+      } else {
+        // mark task complete in db
+        await handleCompleteTask(taskId, myUid, completedFor);
 
-      // if no more task for this contact then open teh contact modal so people can add a next task
-      getActivitiesLeft(myUid, completedFor).then(async numberofActiveTasks => {
-        if (numberofActiveTasks === 1) {
-          setSelectedUser(completedFor);
-          setVisibility(true);
-        }
-      });
+        // track event in amplitude
+        const { analytics } = window;
+        analytics.track('Helped Someone');
+        // if no more task for this contact then open the contact modal so people can add a next task
+        getActivitiesLeft(myUid, completedFor).then(
+          async numberofActiveTasks => {
+            if (numberofActiveTasks === 1) {
+              setSelectedUser(completedFor);
+              setVisibility(true);
+            }
+          }
+        );
+      }
     }),
     catchError(error =>
       toast$.next({ type: 'ERROR', message: error.message || error })

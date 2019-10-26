@@ -2,8 +2,7 @@ import React from 'react';
 import { collectionData } from 'rxfire/firestore';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { toast$ } from '../../notifications/toast';
-import { handleDeleteTask, handleCompleteTask } from '../networkAPI';
+import { handleDeleteTask } from '../networkAPI';
 import firebase from '../../../utils/firebase';
 import { taskSlice } from '../taskSlice';
 import { HelpfulTask } from './HelpfulTask';
@@ -14,6 +13,7 @@ export const propTypes = {
   handleAddingTask: PropTypes.func.isRequired,
   activeTaskCount: PropTypes.number.isRequired,
   _setActiveTaskCount: PropTypes.func.isRequired,
+  photoURL: PropTypes.string.isRequired,
 };
 export const defaultProps = {};
 
@@ -23,6 +23,7 @@ export const ToDoList = ({
   handleAddingTask,
   activeTaskCount,
   _setActiveTaskCount,
+  photoURL,
 }) => {
   const [task, setTask] = React.useState('');
   const { actions } = taskSlice;
@@ -57,16 +58,6 @@ export const ToDoList = ({
   ]);
   const helpfulTasks = useSelector(state => state.tasks[theirUid]);
 
-  // const markComplete = (taskId, _myUid, _theirUid) => {
-  //   handleCompleteTask(taskId, _myUid, _theirUid)
-  //     .then(() => {
-
-  //     })
-  //     .catch(error =>
-  //       toast$.next({ type: 'ERROR', message: error.message || error })
-  //     );
-  // };
-
   return (
     <div className="center pl4 pt2">
       <form
@@ -74,7 +65,7 @@ export const ToDoList = ({
         onSubmit={e => {
           e.stopPropagation();
           e.preventDefault();
-          handleAddingTask(task, myUid, theirUid);
+          handleAddingTask(task, myUid, theirUid, photoURL);
           setTask('');
         }}
       >
@@ -113,7 +104,6 @@ export const ToDoList = ({
             taskId={taskId}
             name={name}
             dateCompleted={dateCompleted}
-            // markComplete={markComplete}
             myUid={myUid}
             theirUid={theirUid}
             _handleDeleteTask={handleDeleteTask}

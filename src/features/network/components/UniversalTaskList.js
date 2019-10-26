@@ -101,6 +101,7 @@ function TaskDetails({
   photoURL,
 }) {
   const dispatch = useDispatch();
+
   return (
     <div className="flex items-center mb2" key={taskId}>
       <label htmlFor={name} className="lh-copy flex items-center">
@@ -131,7 +132,7 @@ function TaskDetails({
           }}
         />
         <small className={`w-100 ${dateCompleted && 'strike'}`}>{name}</small>
-        {photoURL && <img src={photoURL} alt={name} height="25" />}
+        <img src={photoURL} alt={name} height="25" />
       </label>
     </div>
   );

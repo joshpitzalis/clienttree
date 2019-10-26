@@ -3,7 +3,7 @@ import { map, catchError } from 'rxjs/operators';
 import firebase from '../../utils/firebase';
 import { toast$ } from '../notifications/toast';
 
-export const handleAddTask = (task, _myUid, _theirUid) => {
+export const handleAddTask = (task, _myUid, _theirUid, photoURL) => {
   const newtask = firebase
     .firestore()
     .collection('users')
@@ -31,6 +31,7 @@ export const handleAddTask = (task, _myUid, _theirUid) => {
         dateCompleted: null,
         connectedTo: _myUid,
         completedFor: _theirUid,
+        photoURL,
       },
       { merge: true }
     );
@@ -247,15 +248,8 @@ export const handleDeleteTask = (taskId, myUid, theirUid) =>
     .doc(taskId)
     .delete();
 
-export const handleCompleteTask = (taskId, myUid, theirUid) => {
-  console.log({ taskId, myUid, theirUid });
-
-  // if modal not open
-  // open modal
-
-  // update active count
-
-  return firebase
+export const handleCompleteTask = (taskId, myUid, theirUid) =>
+  firebase
     .firestore()
     .collection('users')
     .doc(myUid)
@@ -269,7 +263,22 @@ export const handleCompleteTask = (taskId, myUid, theirUid) => {
       },
       { merge: true }
     );
-};
+
+export const inCompleteTask = (taskId, myUid, theirUid) =>
+  firebase
+    .firestore()
+    .collection('users')
+    .doc(myUid)
+    .collection('contacts')
+    .doc(theirUid)
+    .collection('helpfulTasks')
+    .doc(taskId)
+    .set(
+      {
+        dateCompleted: null,
+      },
+      { merge: true }
+    );
 
 export const setActiveTaskCount = (myUid, theirUid, newActiveTaskCount) => {
   firebase

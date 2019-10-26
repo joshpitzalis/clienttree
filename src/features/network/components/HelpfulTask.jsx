@@ -41,9 +41,9 @@ export function HelpfulTask({
                 taskId,
                 myUid,
                 completedFor: theirUid,
+                checked: !!dateCompleted,
               },
             });
-
             dispatch({
               type: ONBOARDING_STEP_COMPLETED,
               payload: {

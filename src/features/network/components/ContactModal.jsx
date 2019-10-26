@@ -70,8 +70,8 @@ export function Modal({ uid, selectedUserUid, onClose }) {
         toast$.next({ type: 'ERROR', message: error.message || error })
       );
 
-  const handleAddingTask = (task, myUid, theirUid) => {
-    handleAddTask(task, myUid, theirUid).catch(error =>
+  const handleAddingTask = (task, myUid, theirUid, photoURL) => {
+    handleAddTask(task, myUid, theirUid, photoURL).catch(error =>
       toast$.next({ type: 'ERROR', message: error.message || error })
     );
   };
@@ -271,6 +271,7 @@ export function Modal({ uid, selectedUserUid, onClose }) {
                 handleAddingTask={handleAddingTask}
                 activeTaskCount={state.activeTaskCount}
                 _setActiveTaskCount={setActiveTaskCount}
+                photoURL={state.photoURL}
               />
             </div>
           )}
