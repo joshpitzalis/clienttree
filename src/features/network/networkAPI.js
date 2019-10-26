@@ -57,6 +57,7 @@ export const setFirebaseContactUpdate = async payload => {
     .doc();
 
   const contactUid = contactId || uid || newDoc.id;
+
   let downloadURL;
 
   if (imgString) {
@@ -96,6 +97,8 @@ export const setFirebaseContactUpdate = async payload => {
           dateCreated: new Date(),
           dateCompleted: null,
           connectedTo: userId,
+          completedFor: contactUid,
+          photoURL: photoURL || downloadURL,
         },
         { merge: true }
       );
@@ -147,6 +150,7 @@ export const setFirebaseContactUpdate = async payload => {
           dateCreated: new Date(),
           dateCompleted: null,
           connectedTo: userId,
+          completedFor: contactUid,
         },
         { merge: true }
       );

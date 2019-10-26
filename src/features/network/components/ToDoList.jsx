@@ -96,7 +96,7 @@ export const ToDoList = ({
           </div>
         </fieldset>
       </form>
-      {console.log({ helpfulTasks })}
+
       {helpfulTasks &&
         !helpfulTasks.filter(_task => !_task.dateCompleted).length && (
           <small className="red">

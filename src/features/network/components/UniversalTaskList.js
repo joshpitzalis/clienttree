@@ -56,17 +56,26 @@ export const HelpfulTaskList = ({ myUid }) => {
       )}
 
       {helpfulTasks &&
-        helpfulTasks.map(({ taskId, name, dateCompleted, completedFor }) => (
-          <TaskDetails
-            taskId={taskId}
-            name={name}
-            dateCompleted={dateCompleted}
-            myUid={myUid}
-            completedFor={completedFor}
-            setSelectedUser={setSelectedUser}
-            setVisibility={setVisibility}
-          />
-        ))}
+        helpfulTasks.map(
+          ({ taskId, name, dateCompleted, completedFor, photoURL }) => {
+            console.log({ completedFor, name });
+
+            return (
+              completedFor && (
+                <TaskDetails
+                  taskId={taskId}
+                  name={name}
+                  dateCompleted={dateCompleted}
+                  myUid={myUid}
+                  completedFor={completedFor}
+                  setSelectedUser={setSelectedUser}
+                  setVisibility={setVisibility}
+                  photoURL={photoURL}
+                />
+              )
+            );
+          }
+        )}
     </div>
   );
 };
@@ -82,6 +91,7 @@ const propTypes = {
   completedFor: PropTypes.string.isRequired,
   setSelectedUser: PropTypes.func.isRequired,
   setVisibility: PropTypes.func.isRequired,
+  photoURL: PropTypes.string.isRequired,
 };
 const defaultProps = {};
 
@@ -93,11 +103,12 @@ function TaskDetails({
   completedFor,
   setSelectedUser,
   setVisibility,
+  photoURL,
 }) {
   const dispatch = useDispatch();
   return (
     <div className="flex items-center mb2" key={taskId}>
-      <label htmlFor={name} className="lh-copy">
+      <label htmlFor={name} className="lh-copy flex items-center">
         <input
           className="mr2"
           type="checkbox"
@@ -123,28 +134,9 @@ function TaskDetails({
               },
             });
           }}
-          // onChange={async () => {
-          //   const numberofActiveTasks = await firebase
-          //     .firestore()
-          //     .collection('users')
-          //     .doc(myUid)
-          //     .collection('contacts')
-          //     .doc(completedFor)
-          //     .collection('helpfulTasks')
-          //     .get()
-          //     .then(coll => coll.docs.map(doc => doc.data()))
-          //     .then(coll => coll.filter(task => !task.dateCompleted))
-          //     .then(coll => coll.length);
-
-          //   handleCompleteTask(taskId, myUid, completedFor);
-
-          //   if (numberofActiveTasks === 1) {
-          //     setSelectedUser(completedFor);
-          //     setVisibility(true);
-          //   }
-          // }}
         />
-        <small className={dateCompleted && 'strike'}>{name}</small>
+        <small className={`w-100 ${dateCompleted && 'strike'}`}>{name}</small>
+        <img src={photoURL} alt={name} height="25" />
       </label>
     </div>
   );

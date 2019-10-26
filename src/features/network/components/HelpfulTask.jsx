@@ -14,6 +14,7 @@ const helpfulTaskPropTypes = {
   _handleDeleteTask: PropTypes.func.isRequired,
 };
 const helpfulTaskDefaultProps = {};
+
 export function HelpfulTask({
   taskId,
   name,

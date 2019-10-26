@@ -42,8 +42,12 @@ test('add box lets you submit form data', () => {
   expect(fakehandler).toHaveBeenCalledWith(fakeData);
 });
 
-test('create new person from Addbox', () => {
-  // this is a cypress test
+test('create new person and task from Addbox, and make sure it shows up in UTL', () => {
+  // this is now a cypress test
+});
+
+test('faces show up beside their taks in UTL', () => {
+  // this is now a cypress test
 });
 
 xtest('addbox autocomplete if there is an existing person with the same name', () => {});

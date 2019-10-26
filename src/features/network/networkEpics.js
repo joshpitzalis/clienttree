@@ -45,17 +45,6 @@ export const setNewUserTask = action$ =>
   action$.pipe(
     ofType(USER_UPDATED),
     tap(async ({ payload }) => {
-      // const {
-      //   userId,
-      //   contactId,
-      //   uid,
-      //   name,
-      //   summary,
-      //   lastContacted,
-      //   photoURL,
-      //   imgString,
-      //   taskName,
-      // } = payload;
       setFirebaseContactUpdate(payload);
     }),
     catchError(error =>
