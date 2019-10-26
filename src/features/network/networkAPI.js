@@ -1,7 +1,4 @@
-import { collection } from 'rxfire/firestore';
-import { map, catchError } from 'rxjs/operators';
 import firebase from '../../utils/firebase';
-import { toast$ } from '../notifications/toast';
 
 export const handleAddTask = (task, _myUid, _theirUid, photoURL) => {
   const newtask = firebase

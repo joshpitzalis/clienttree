@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import PieChart from 'react-minimal-pie-chart';
+import { collection } from 'rxfire/firestore';
+import { map, filter } from 'rxjs/operators';
 import Portal from '../../utils/Portal';
 import Plus from '../../images/Plus';
 import { Modal } from './components/ContactModal';
 import { NetworkContext } from './NetworkContext';
+import firebase from '../../utils/firebase';
 
 const networkPropTypes = {
   uid: PropTypes.string.isRequired,
@@ -17,6 +20,23 @@ export function Network({ uid }) {
   const { contacts } = React.useContext(NetworkContext);
 
   const [selectedUser, setSelectedUser] = React.useState('');
+
+  const [tasksCompleted, setTasksCompleted] = React.useState(0);
+
+  React.useEffect(() => {
+    const subscription = collection(
+      firebase
+        .firestore()
+        .collectionGroup('helpfulTasks')
+        .where('connectedTo', '==', uid)
+        .where('dateCompleted', '>', new Date(0))
+    )
+      .pipe(map(docs => docs.map(d => d.data())))
+      .subscribe(tasks => setTasksCompleted(tasks.length));
+    return () => subscription.unsubscribe();
+  }, [uid]);
+
+  console.log({ tasksCompleted });
 
   return (
     <>
@@ -74,7 +94,7 @@ export function Network({ uid }) {
         />
         <dl className="db dib-l w-auto-l lh-title mr6-l pt5">
           <dd className="f6 fw4 ml0">Activities Completed</dd>
-          <dd className="f2 f-subheadline-l fw6 ml0">24</dd>
+          <dd className="f2 f-subheadline-l fw6 ml0">{tasksCompleted}</dd>
         </dl>
       </div>
       <div

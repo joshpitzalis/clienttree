@@ -22,28 +22,25 @@ export const markActivityComplete = action$ =>
         checked,
       } = payload;
 
-      console.log({ checked });
-
       if (checked) {
         // if task is complete mark incomplete
         await inCompleteTask(taskId, myUid, completedFor);
-      } else {
-        // mark task complete in db
-        await handleCompleteTask(taskId, myUid, completedFor);
-
-        // track event in amplitude
-        const { analytics } = window;
-        analytics.track('Helped Someone');
-        // if no more task for this contact then open the contact modal so people can add a next task
-        getActivitiesLeft(myUid, completedFor).then(
-          async numberofActiveTasks => {
-            if (numberofActiveTasks === 1) {
-              setSelectedUser(completedFor);
-              setVisibility(true);
-            }
-          }
-        );
+        return;
       }
+
+      // mark task complete in db
+      await handleCompleteTask(taskId, myUid, completedFor);
+
+      // track event in amplitude
+      const { analytics } = window;
+      analytics.track('Helped Someone');
+      // if no more task for this contact then open the contact modal so people can add a next task
+      getActivitiesLeft(myUid, completedFor).then(async numberofActiveTasks => {
+        if (numberofActiveTasks === 1) {
+          setSelectedUser(completedFor);
+          setVisibility(true);
+        }
+      });
     }),
     catchError(error =>
       toast$.next({ type: 'ERROR', message: error.message || error })
