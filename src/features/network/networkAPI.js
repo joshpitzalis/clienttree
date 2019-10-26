@@ -120,6 +120,9 @@ export const setFirebaseContactUpdate = async payload => {
         },
         { merge: true }
       );
+
+    console.log({ payload });
+
     return;
   }
 
@@ -295,22 +298,3 @@ export const getActivitiesLeft = (myUid, completedFor) =>
     .then(coll => coll.docs.map(doc => doc.data()))
     .then(coll => coll.filter(task => !task.dateCompleted))
     .then(coll => coll.length);
-
-// export const getFirebaseContacts = uid =>
-//   collection(
-//     firebase
-//       .firestore()
-//       .collection('users')
-//       .doc(uid)
-//       .collection('contacts')
-//   )
-//     .pipe(
-//       map(docs => docs.map(d => d.data())),
-//       catchError(error =>
-//         toast$.next({
-//           type: 'ERROR',
-//           message: error.message || error,
-//         })
-//       )
-//     )
-//     .subscribe(network => setContacts(network));

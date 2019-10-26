@@ -57,24 +57,19 @@ export const HelpfulTaskList = ({ myUid }) => {
 
       {helpfulTasks &&
         helpfulTasks.map(
-          ({ taskId, name, dateCompleted, completedFor, photoURL }) => {
-            console.log({ completedFor, name });
-
-            return (
-              completedFor && (
-                <TaskDetails
-                  taskId={taskId}
-                  name={name}
-                  dateCompleted={dateCompleted}
-                  myUid={myUid}
-                  completedFor={completedFor}
-                  setSelectedUser={setSelectedUser}
-                  setVisibility={setVisibility}
-                  photoURL={photoURL}
-                />
-              )
-            );
-          }
+          ({ taskId, name, dateCompleted, completedFor, photoURL }) =>
+            completedFor && (
+              <TaskDetails
+                taskId={taskId}
+                name={name}
+                dateCompleted={dateCompleted}
+                myUid={myUid}
+                completedFor={completedFor}
+                setSelectedUser={setSelectedUser}
+                setVisibility={setVisibility}
+                photoURL={photoURL}
+              />
+            )
         )}
     </div>
   );

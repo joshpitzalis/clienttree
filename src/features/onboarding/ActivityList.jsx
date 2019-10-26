@@ -5,9 +5,13 @@ import { useImmerReducer } from 'use-immer';
 import { useDispatch } from 'react-redux';
 import AvatarGenerator from 'react-avatar-generator';
 import { AutoComplete } from 'antd';
+import { collection } from 'rxfire/firestore';
+import { map, catchError } from 'rxjs/operators';
 import { HelpfulTaskList } from '../network/components/UniversalTaskList';
 import { GettingStarted } from './GettingStarted';
 import { USER_UPDATED } from '../network/networkConstants';
+import firebase from '../../utils/firebase';
+import { toast$ } from '../notifications/toast';
 
 const propTypes = {
   uid: PropTypes.string.isRequired,
@@ -78,12 +82,43 @@ export function AddBox({ setUser, userId }) {
 
   const avatarRef = React.useRef(null);
 
-  const allContacts = [
-    { value: 'string1', text: 'red' },
-    { value: 'string2', text: 'blue' },
-    { value: 'string3', text: 'green' },
-  ];
+  const [allContacts, setAllContacts] = React.useState([]);
+
+  React.useEffect(() => {
+    const getAllContacts = collection(
+      firebase
+        .firestore()
+        .collection('users')
+        .doc(userId)
+        .collection('contacts')
+    )
+      .pipe(
+        map(docs =>
+          docs.map(d => {
+            const { name: text, photoURL, uid: value } = d.data();
+            const item = {
+              value,
+              text,
+              photoURL,
+            };
+            return item;
+          })
+        ),
+        catchError(error =>
+          toast$.next({
+            type: 'ERROR',
+            message: error.message || error,
+          })
+        )
+      )
+      .subscribe(network => setAllContacts(network));
+
+    return () => getAllContacts.unsubscribe();
+  }, [userId]);
+
   const [contacts, setContacts] = React.useState([]);
+
+  const [contactId, setContactId] = React.useState('');
 
   return (
     <form
@@ -102,7 +137,7 @@ export function AddBox({ setUser, userId }) {
           imgString,
           // if existing user
           photoURL: '',
-          contactId: '',
+          contactId,
           uid: '',
         });
 
@@ -115,24 +150,43 @@ export function AddBox({ setUser, userId }) {
         <AvatarGenerator ref={avatarRef} height="25" width="25" /> Add an
         Activity
       </h1>
-      <AutoComplete
-        dataSource={contacts}
-        className="b pa2 input-reset ba bg-transparent center br2 b--black-20"
-        onChange={e => console.log(e)}
-        onSelect={id => console.log(id)}
-        onSearch={searchText =>
-          setContacts(
-            !searchText
-              ? []
-              : allContacts.filter(item => item.text.includes(searchText))
-          )
-        }
-        placeholder="input here"
-      ></AutoComplete>
+
       <div className="pa3 bt b--black-10">
-        <label className="db fw4 lh-copy f6 " htmlFor="name">
-          {/* <span className="b">Name</span> */}
-          <input
+        {/* <label className="db fw4 lh-copy f6 " htmlFor="name"> */}
+        {/* <span className="b">Name</span> */}
+        <AutoComplete
+          dataSource={contacts}
+          id="name"
+          name="name"
+          className="b  input-reset  bg-transparent center br2 b--black-20"
+          value={name}
+          onChange={payload =>
+            dispatch({
+              type: 'nameUpdated',
+              payload,
+            })
+          }
+          onSelect={(id, opt) => {
+            dispatch({
+              type: 'nameUpdated',
+              payload: opt.props.children,
+            });
+            setContactId(id);
+          }}
+          onSearch={searchText =>
+            setContacts(
+              !searchText
+                ? []
+                : allContacts.filter(
+                    item =>
+                      item.text &&
+                      item.text.toLowerCase().includes(searchText.toLowerCase())
+                  )
+            )
+          }
+          placeholder="Name..."
+        ></AutoComplete>
+        {/* <input
             className="b pa2 input-reset ba bg-transparent center br2 b--black-20"
             placeholder="Name..."
             type="text"
@@ -145,8 +199,8 @@ export function AddBox({ setUser, userId }) {
                 payload: e.target.value,
               })
             }
-          />
-        </label>
+          /> */}
+        {/* </label> */}
         <label className="db fw4 lh-copy f6 mv3" htmlFor="activity">
           {/* <span className="b">Activity</span> */}
           <input

@@ -46,11 +46,14 @@ test('create new person and task from Addbox, and make sure it shows up in UTL',
   // this is now a cypress test
 });
 
-test('faces show up beside their taks in UTL', () => {
+test('faces show up beside their tasks in UTL', () => {
   // this is now a cypress test
 });
 
-xtest('addbox autocomplete if there is an existing person with the same name', () => {});
+xtest('addbox autocomplete if there is an existing person with the same name', () => {
+  // ✅
+});
+xtest('when you select someone it changes the picture in teh add box', () => {});
 
 xtest('prevent submissions with empty values', () => {});
 
