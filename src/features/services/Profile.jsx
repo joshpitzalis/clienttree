@@ -286,13 +286,13 @@ export function Profile(props) {
             </div>
 
             <div className="mb4">
-              <label htmlFor="comment" className="f6 b db mb2">
+              <label htmlFor="helpThem" className="f6 b db mb2">
                 How do you help them?
                 <textarea
-                  id="comment"
-                  name="comment"
+                  id="helpThem"
+                  name="helpThem"
                   className="db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
-                  aria-describedby="comment-desc"
+                  aria-describedby="helpThem"
                   placeholder="The thing I help with..."
                   value={state.service}
                   onChange={e => {
