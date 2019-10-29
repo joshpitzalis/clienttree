@@ -60,33 +60,3 @@ export { NetworkProvider, NetworkContext };
 
 NetworkProvider.propTypes = propTypes;
 NetworkProvider.defaultProps = defaultProps;
-
-// React.useEffect(() => {
-//   if (uid) {
-//     fetchUserData(uid)
-//       .then(data => {
-//         if (data) {
-//           dispatch({
-//             type: 'HYDRATE_PROFILE',
-//             payload: data,
-//           });
-//         }
-//       })
-//       .catch(error =>
-//         toast$.next({ type: 'ERROR', message: error.message || error })
-//       );
-//   }
-// }, [uid]);
-// React.useEffect(() => {
-//   const updates = personFormUpdate$
-//     .pipe(
-//       debounceTime(1000),
-//       tap(({ payload }) => {
-//         handleFirebaseProfileUpdate(payload).catch(error =>
-//           toast$.next({ type: 'ERROR', message: error.message || error })
-//         );
-//       })
-//     )
-//     .subscribe();
-//   return () => updates.unsubscribe();
-// }, []);

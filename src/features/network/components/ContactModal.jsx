@@ -230,15 +230,15 @@ export function Modal({ uid, selectedUserUid, onClose }) {
               setState={setState}
               state={state}
               value={state.lastContacted}
-              name="Last Contacted"
+              name="lastContacted"
               placeholder="Last contacted..."
             />
 
             <Input
               setState={setState}
               state={state}
-              value={state.lastContacted}
-              name="Summary"
+              value={state.summary}
+              name="summary"
               placeholder="Notes..."
               type="textarea"
             />

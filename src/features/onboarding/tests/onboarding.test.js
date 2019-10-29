@@ -60,3 +60,9 @@ xtest('complete crm task when one client is added to network', () => {});
 xtest('add a helpful task to a client', () => {});
 xtest('mark a helpful task complete', () => {});
 xtest('set up financials', () => {});
+
+xtest('says getting staretd bt then switches to acticities when setup is complete', () => {});
+xtest('hides onboarding box when complete', () => {});
+
+xtest('completePercentage is accurate', () => {});
+xtest('completePercentage undates when completed or incompleted', () => {});

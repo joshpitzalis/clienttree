@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import { toast$ } from '../features/notifications/toast';
 import firebase from '../utils/firebase';
-import { setFirebaseContactUpdate } from '../features/network/networkAPI';
+// import { setFirebaseContactUpdate } from '../features/network/networkAPI';
 
 const loginPropTypes = {
   // location: ReactRouterPropTypes.location.isRequired,
@@ -54,7 +54,8 @@ export class Login extends Component {
                 Client Tree is currently invite only.
               </legend>
               <small>
-                If you do not have credentials please join the waiting list.
+                If you do not have credentials please{' '}
+                <a href="https://clienttree.io/">join the waiting list</a>.
               </small>
               <div className="mt3">
                 <label className="db fw6 lh-copy f6" htmlFor="email-address">

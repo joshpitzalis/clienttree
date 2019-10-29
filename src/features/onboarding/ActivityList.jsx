@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 // import { filter } from 'rxjs/operators';
 import { useImmerReducer } from 'use-immer';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import AvatarGenerator from 'react-avatar-generator';
-import { AutoComplete } from 'antd';
+import { AutoComplete, Progress } from 'antd';
 import { collection } from 'rxfire/firestore';
 import { map, catchError } from 'rxjs/operators';
 import { HelpfulTaskList } from '../network/components/UniversalTaskList';
@@ -20,6 +20,12 @@ const defaultProps = {};
 
 export function Onboarding({ uid }) {
   const dispatch = useDispatch();
+
+  // gets user onboarding details
+  const onboarding = useSelector(
+    store => store.user && store.user.onboarding && store.user.onboarding
+  );
+
   const setUser = async payload => {
     dispatch({
       type: USER_UPDATED,
@@ -27,18 +33,31 @@ export function Onboarding({ uid }) {
     });
   };
 
+  const onboardingComplete = onboarding && onboarding.complete === true;
+
+  const completePercentage =
+    onboarding &&
+    Math.round(
+      ((1 + Object.values(onboarding).filter(_x => !!_x).length) / 7) * 100
+    );
+
   return (
     <form className="pa4">
       <fieldset className="bn">
         <details data-testid="detailBox">
           <summary>
             <legend className="fw7 mb2 dib" data-testid="toggleAddBox">
-              Activities
+              {onboardingComplete ? 'Activities' : 'Getting Started'}
             </legend>
           </summary>
           <AddBox setUser={setUser} userId={uid} />
         </details>
-        <GettingStarted uid={uid} />
+        {!onboardingComplete && (
+          <div>
+            <Progress percent={completePercentage} />
+            <GettingStarted uid={uid} onboarding={onboarding} />
+          </div>
+        )}
         <HelpfulTaskList myUid={uid} />
       </fieldset>
     </form>

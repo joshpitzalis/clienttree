@@ -20,10 +20,7 @@ const propTypes = {
 
 const defaultProps = {};
 
-export function GeneralForm({ userId, onClose, userStats }) {
-  const [state, setState] = React.useState(userStats);
-  console.log({ state });
-
+const useDerivedProjectData = state => {
   const projectCount = Math.ceil((state.goal - state.income) / state.average);
   const timeLeft = state.deadline ? formatDistanceToNow(state.deadline) : null;
   const weeks = state.deadline
@@ -34,40 +31,40 @@ export function GeneralForm({ userId, onClose, userStats }) {
       )
     : null;
 
+  return [projectCount, timeLeft, weeks];
+};
+
+export function GeneralForm({ userId, onClose, userStats }) {
   const dispatch = useDispatch();
+  const [state, setState] = React.useState(userStats);
+  const [projectCount, timeLeft, weeks] = useDerivedProjectData(state);
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    dispatch({
+      type: FORM_SUBMITTED,
+      payload: { ...state, userId },
+    });
+    onClose();
+  };
+
   return (
     <form
       className="measure center"
       data-testid="contactModal"
-      onSubmit={e => {
-        e.preventDefault();
-        dispatch({
-          type: FORM_SUBMITTED,
-          payload: { ...state, userId },
-        });
-        onClose();
-      }}
+      onSubmit={e => handleSubmit(e)}
     >
       <fieldset id="contact" className="ba b--transparent ph0 mh0 tl">
         <legend className="f4 fw6 ph0 mh0 dn">Profile</legend>
         <div className="flex justify-center">
           {state.goal && state.average && (
-            <div className="w-50 pv2 pr4">
-              <p className="measure lh-copy f3 fw6">
-                {`Making ${state.goal}K this year means completing ${projectCount} projects`}
-                {state.deadline && ` in the next ${timeLeft}`}.
-              </p>
-
-              {projectCount && timeLeft && (
-                <p className="measure lh-copy ">
-                  {weeks > 1
-                    ? `That gives you a maximum of ${weeks} weeks per project if there is no
-              overlap.`
-                    : `That gives you less than a week per project if there is no
-              overlap.`}
-                </p>
-              )}
-            </div>
+            <Statement
+              projectCount={projectCount}
+              timeLeft={timeLeft}
+              weeks={weeks}
+              goal={state.goal}
+              deadline={state.deadline}
+            />
           )}
           <div className="w-50">
             <Input
@@ -126,3 +123,36 @@ export function GeneralForm({ userId, onClose, userStats }) {
 
 GeneralForm.propTypes = propTypes;
 GeneralForm.defaultProps = defaultProps;
+
+const statementPropTypes = {
+  projectCount: PropTypes.number.isRequired,
+  timeLeft: PropTypes.number.isRequired,
+  weeks: PropTypes.number.isRequired,
+  goal: PropTypes.number.isRequired,
+  deadline: PropTypes.number.isRequired,
+};
+const statementDefaultProps = {};
+
+function Statement({ projectCount, timeLeft, weeks, goal, deadline }) {
+  return (
+    <div className="w-50 pv2 pr4">
+      <p className="measure lh-copy f3 fw6">
+        {`Making ${goal}K this year means completing ${projectCount} projects`}
+        {deadline && ` in the next ${timeLeft}`}.
+      </p>
+
+      {projectCount && timeLeft && (
+        <p className="measure lh-copy ">
+          {weeks > 1
+            ? `That gives you a maximum of ${weeks} weeks per project if there is no
+              overlap.`
+            : `That gives you less than a week per project if there is no
+              overlap.`}
+        </p>
+      )}
+    </div>
+  );
+}
+
+Statement.propTypes = statementPropTypes;
+Statement.defaultProps = statementDefaultProps;

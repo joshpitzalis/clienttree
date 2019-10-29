@@ -1,5 +1,5 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 // import PropTypes from 'prop-types';
 import Tree from '../../images/Tree';
 
@@ -26,9 +26,13 @@ export const AuthButton = withRouter(({ history }) => {
 const propTypes = {};
 
 export function Navbar() {
+  const { userId } = React.useContext(UserContext);
+
   return (
     <nav className="flex justify-between bb b--white-10 h3">
-      <Tree classNames="ml4 pl2 b hover-white no-underline flex items-center pa3" />
+      <Link to={userId ? `/user/${userId}/dashboard` : '/'}>
+        <Tree classNames="ml4 pl2 b hover-white no-underline flex items-center pa3" />
+      </Link>
       <div className="flex-grow pa3 flex items-center">
         <AuthButton />
       </div>

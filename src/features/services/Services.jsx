@@ -19,9 +19,10 @@ export const curriedReducer = produce((draft, action) => {
   if (action.type === 'SERVICE_ADDED') {
     const newId = +new Date();
     const newIdString = newId.toString();
-    draft.services[newIdString] = {
+
+    draft[newIdString] = {
       id: newIdString,
-      order: Object.values(draft.services).length,
+      order: Object.values(draft).length ? Object.values(draft).length : 0,
       name: '',
       description: '',
       price: '',
@@ -30,33 +31,29 @@ export const curriedReducer = produce((draft, action) => {
   }
 
   if (action.type === 'SERVICE_NAME_CHANGED') {
-    draft.services[action.payload.serviceId].name = action.payload.value;
+    draft[action.payload.serviceId].name = action.payload.value;
   }
 
   if (action.type === 'SERVICE_DESCRIPTION_CHANGED') {
-    draft.services[action.payload.serviceId].description = action.payload.value;
+    draft[action.payload.serviceId].description = action.payload.value;
   }
 
   if (action.type === 'SERVICE_PRICE_CHANGED') {
-    draft.services[action.payload.serviceId].price = action.payload.value;
+    draft[action.payload.serviceId].price = action.payload.value;
   }
 
   if (action.type === 'SERVICE_LINK_CHANGED') {
-    draft.services[action.payload.serviceId].link = action.payload.value;
+    draft[action.payload.serviceId].link = action.payload.value;
   }
 
   if (action.type === 'HYDRATE_SERVICES') {
-    draft.services = action.payload;
+    return action.payload;
   }
 
   if (action.type === 'SERVICE_DELETED') {
-    delete draft.services[action.payload.serviceId];
+    delete draft[action.payload.serviceId];
   }
 });
-
-export const initialState = {
-  services: {},
-};
 
 const propTypes = {
   setSubmitted: PropTypes.func.isRequired,
@@ -67,7 +64,7 @@ const defaultProps = {};
 
 const Services = props => {
   const { setSubmitted, submitted, uid } = props;
-  const [state, dispatch] = React.useReducer(curriedReducer, initialState);
+  const [state, dispatch] = React.useReducer(curriedReducer, {});
   const [firstTime, completeFirstTime] = React.useState(false);
   const reduxDispatch = useDispatch();
 
@@ -146,8 +143,8 @@ const Services = props => {
             </Link>
           </fieldset>
 
-          {state.services &&
-            Object.values(state.services)
+          {state &&
+            Object.values(state)
               .sort((a, b) => a.order - b.order)
               .map(service => (
                 <IndividualService

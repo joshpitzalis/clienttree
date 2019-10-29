@@ -1,23 +1,30 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { ONBOARDING_STEP_COMPLETED } from './onboardingConstants';
 
 const startingPropTypes = {
   uid: PropTypes.string,
+  onboarding: PropTypes.shape({
+    complete: PropTypes.bool.isRequired,
+    signatureCreated: PropTypes.bool.isRequired,
+    addedSignatureToEmail: PropTypes.bool.isRequired,
+    referralPageCreated: PropTypes.bool.isRequired,
+    addedSomeone: PropTypes.bool.isRequired,
+    reachOut: PropTypes.bool.isRequired,
+    helpedSomeone: PropTypes.bool.isRequired,
+  }),
 };
 const startingDefaultProps = {
   uid: '',
 };
 
-export const GettingStarted = ({ uid }) => {
+export const GettingStarted = ({ uid, onboarding }) => {
   const dispatch = useDispatch();
-  const onboarding = useSelector(
-    store => store.user && store.user.onboarding && store.user.onboarding
-  );
 
+  // marks onboarding complete once user completes all steps
   React.useEffect(() => {
     const completeCount =
       onboarding && Object.values(onboarding).filter(_x => !!_x).length;
@@ -33,10 +40,6 @@ export const GettingStarted = ({ uid }) => {
     }
   }, [dispatch, onboarding, uid]);
 
-  if (onboarding && onboarding.complete === true) {
-    // if all the onboarding staeps are complete there is no reason to show this module
-    return null;
-  }
   return (
     <>
       <div className="flex items-center mb2">
@@ -60,12 +63,12 @@ export const GettingStarted = ({ uid }) => {
             type="checkbox"
             id="signature"
             value="signature"
-            onChange={() => {}}
+            disabled
             checked={onboarding && onboarding.signatureCreated}
           />
           {onboarding && onboarding.signatureCreated ? (
             <small className="strike">
-              Create an email signature that helps people refer you.
+              Completed your profile and created a referrable email signature.
             </small>
           ) : (
             <Link
@@ -73,7 +76,7 @@ export const GettingStarted = ({ uid }) => {
               className="f6 link dim mr3 mr4-ns"
             >
               <small>
-                Create an email signature that helps people refer you.
+                Complete your profile to create a referrable email signature.
               </small>
             </Link>
           )}
@@ -103,7 +106,15 @@ export const GettingStarted = ({ uid }) => {
               Actually add the signature to your email account
             </small>
           ) : (
-            <small>Actually add the signature to your email account</small>
+            <small>
+              <a
+                href="https://support.google.com/mail/answer/8395?co=GENIE.Platform%3DDesktop&hl=en"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Actually add the signature to your email account
+              </a>
+            </small>
           )}
         </label>
       </div>
@@ -114,12 +125,17 @@ export const GettingStarted = ({ uid }) => {
             type="checkbox"
             id="referral"
             value="referral"
+            disabled
             checked={onboarding && onboarding.referralPageCreated}
           />
           {onboarding && onboarding.referralPageCreated ? (
-            <small className="strike">Create a referral page</small>
+            <small className="strike">
+              Add services to your profile to create a referral page
+            </small>
           ) : (
-            <small className="">Create a referral page</small>
+            <small>
+              Add services to your profile to create a referral page
+            </small>
           )}
         </label>
       </div>
@@ -175,6 +191,7 @@ export const GettingStarted = ({ uid }) => {
             type="checkbox"
             id="helpedSomeone"
             value="helpedSomeone"
+            disabled
             checked={onboarding && onboarding.helpedSomeone}
           />
           {onboarding && onboarding.helpedSomeone ? (

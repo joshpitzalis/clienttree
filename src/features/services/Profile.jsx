@@ -41,11 +41,11 @@ export const curriedReducer = produce((draft, action) => {
 
   if (action.type === 'HYDRATE_PROFILE') {
     const { name, designation, website, clients, service } = action.payload;
-    draft.name = name;
-    draft.designation = designation;
-    draft.website = website;
-    draft.clients = clients;
-    draft.service = service;
+    draft.name = name || '';
+    draft.designation = designation || '';
+    draft.website = website || '';
+    draft.clients = clients || '';
+    draft.service = service || '';
   }
 });
 

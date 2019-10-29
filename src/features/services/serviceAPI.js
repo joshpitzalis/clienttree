@@ -18,6 +18,7 @@ export const handleFirebaseDelete = ({ payload }) => {
 
 export const handleFirebaseProfileUpdate = payload => {
   const { userId, name, designation, website, clients, service } = payload;
+
   return firebase
     .firestore()
     .collection('users')

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useWindowSize } from 'react-use';
 import Confetti from 'react-confetti';
 import { Subject } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
+import PropTypes from 'prop-types';
 // history: ReactRouterPropTypes.history.isRequired,
 // location: ReactRouterPropTypes.location.isRequired,
 // match: ReactRouterPropTypes.match.isRequired,
@@ -22,7 +23,14 @@ const useConfetti = confettiStream$ => {
   }, [confettiStream$]);
   return [pour];
 };
-export const ConfettiBanner = ({ setWelcomeMessage }) => {
+
+const propTypes = {
+  setWelcomeMessage: PropTypes.func.isRequired,
+};
+
+const defaultProps = {};
+
+export const ConfettiBanner = memo(({ setWelcomeMessage }) => {
   const [pour] = useConfetti(confetti$);
   const { width, height } = useWindowSize();
   return (
@@ -32,13 +40,19 @@ export const ConfettiBanner = ({ setWelcomeMessage }) => {
         height={height}
         numberOfPieces={500}
         recycle={false}
-        onConfettiComplete={() =>
+        onConfettiComplete={() => {
+          console.log('dog');
+
           setWelcomeMessage({
             header: 'Nice!',
             byline: 'Try adding your signature to your email account next.',
-          })
-        }
+          });
+        }}
       />
     )
   );
-};
+});
+
+ConfettiBanner.displayName = 'ConfettiBanner';
+ConfettiBanner.propTypes = propTypes;
+ConfettiBanner.defaultProps = defaultProps;

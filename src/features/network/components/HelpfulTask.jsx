@@ -42,6 +42,8 @@ export function HelpfulTask({
                 myUid,
                 completedFor: theirUid,
                 checked: !!dateCompleted,
+                setSelectedUser: () => {},
+                setVisibility: () => {},
               },
             });
             dispatch({
