@@ -1,68 +1,18 @@
 import firebase from '../../../utils/firebase';
 
+import { helpfulTaskRef, setTaskDetails } from './index';
+
 export const handleAddTask = (task, _myUid, _theirUid, photoURL) => {
-  const newtask = firebase
-    .firestore()
-    .collection('users')
-    .doc(_myUid)
-    .collection('contacts')
-    .doc(_theirUid)
-    .collection('helpfulTasks')
-    .doc();
-
+  const newtask = helpfulTaskRef(_myUid, _theirUid);
   const taskId = task.id || newtask.id;
 
-  return firebase
-    .firestore()
-    .collection('users')
-    .doc(_myUid)
-    .collection('contacts')
-    .doc(_theirUid)
-    .collection('helpfulTasks')
-    .doc(taskId)
-    .set(
-      {
-        taskId,
-        name: task,
-        dateCreated: new Date(),
-        dateCompleted: null,
-        connectedTo: _myUid,
-        completedFor: _theirUid,
-        photoURL,
-      },
-      { merge: true }
-    );
-};
-
-export const getTasks = (task, _myUid, _theirUid) => {
-  const newtask = firebase
-    .firestore()
-    .collection('users')
-    .doc(_myUid)
-    .collection('contacts')
-    .doc(_theirUid)
-    .collection('helpfulTasks')
-    .doc();
-
-  const taskId = task.id || newtask.id;
-
-  return firebase
-    .firestore()
-    .collection('users')
-    .doc(_myUid)
-    .collection('contacts')
-    .doc(_theirUid)
-    .collection('helpfulTasks')
-    .doc(taskId)
-    .set(
-      {
-        taskId,
-        task,
-        dateCreated: new Date(),
-        dateCompleted: null,
-      },
-      { merge: true }
-    );
+  return setTaskDetails({
+    userId: _myUid,
+    contactUid: _theirUid,
+    taskId,
+    taskName: task,
+    photoURL,
+  });
 };
 
 export const handleDeleteTask = (taskId, myUid, theirUid) =>
@@ -108,7 +58,7 @@ export const inCompleteTask = (taskId, myUid, theirUid) =>
       { merge: true }
     );
 
-export const setActiveTaskCount = (myUid, theirUid, newActiveTaskCount) => {
+export const setActiveTaskCount = (myUid, theirUid, newActiveTaskCount) =>
   firebase
     .firestore()
     .collection('users')
@@ -121,7 +71,6 @@ export const setActiveTaskCount = (myUid, theirUid, newActiveTaskCount) => {
       },
       { merge: true }
     );
-};
 
 export const getActivitiesLeft = (myUid, completedFor) =>
   firebase

@@ -1,4 +1,5 @@
 import firebase from '../../../utils/firebase';
+import { helpfulTaskRef } from './index';
 
 const contactRef = (userId, uid) =>
   firebase
@@ -7,16 +8,6 @@ const contactRef = (userId, uid) =>
     .doc(userId)
     .collection('contacts')
     .doc(uid);
-
-const helpfulTaskRef = (userId, contactUid) =>
-  firebase
-    .firestore()
-    .collection('users')
-    .doc(userId)
-    .collection('contacts')
-    .doc(contactUid)
-    .collection('helpfulTasks')
-    .doc();
 
 const getImageDownloadURL = (contactUid, imgString) =>
   firebase
@@ -102,26 +93,25 @@ const payloads = async (
     downloadURL = await getImageDownloadURL(contactUid, imgString);
   }
 
-  const contactPayload = {
+  const basePayload = {
     userId,
     contactUid,
-    name,
-    summary,
-    lastContacted,
     photoURL,
     downloadURL,
   };
 
+  const contactPayload = {
+    ...basePayload,
+    name,
+    summary,
+    lastContacted,
+  };
+
   const task = helpfulTaskRef(userId, contactUid);
-
   const taskId = task.id;
-
   const taskPayload = {
-    userId,
-    contactUid,
+    ...basePayload,
     taskId,
-    photoURL,
-    downloadURL,
   };
 
   return [contactPayload, taskPayload, contactUid];
