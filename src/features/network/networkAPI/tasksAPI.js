@@ -1,6 +1,6 @@
 import firebase from '../../../utils/firebase';
 
-import { helpfulTaskRef, setTaskDetails } from './index';
+import { helpfulTaskRef, setTaskDetails } from './APIcalls';
 
 export const handleAddTask = (task, _myUid, _theirUid, photoURL) => {
   const newtask = helpfulTaskRef(_myUid, _theirUid);

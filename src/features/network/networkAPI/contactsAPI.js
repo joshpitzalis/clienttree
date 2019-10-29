@@ -1,5 +1,5 @@
 import firebase from '../../../utils/firebase';
-import { helpfulTaskRef } from './index';
+import { helpfulTaskRef, setTaskDetails } from './APIcalls';
 
 const contactRef = (userId, uid) =>
   firebase
@@ -16,35 +16,6 @@ const getImageDownloadURL = (contactUid, imgString) =>
     .child(`contacts/${contactUid}.png`)
     .putString(imgString, 'data_url', { contentType: 'image/png' })
     .then(({ ref }) => ref.getDownloadURL());
-
-const setTaskDetails = ({
-  userId,
-  contactUid,
-  taskId,
-  taskName,
-  photoURL,
-  downloadURL,
-}) =>
-  firebase
-    .firestore()
-    .collection('users')
-    .doc(userId)
-    .collection('contacts')
-    .doc(contactUid)
-    .collection('helpfulTasks')
-    .doc(taskId)
-    .set(
-      {
-        taskId,
-        name: taskName,
-        dateCreated: new Date(),
-        dateCompleted: null,
-        connectedTo: userId,
-        completedFor: contactUid,
-        photoURL: downloadURL || photoURL,
-      },
-      { merge: true }
-    );
 
 const setContactDetails = ({
   userId,
