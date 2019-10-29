@@ -1,19 +1,94 @@
 import firebase from '../../../utils/firebase';
 
-export const setFirebaseContactUpdate = async payload => {
-  const {
-    userId,
-    contactId,
-    uid,
-    name,
-    summary,
-    lastContacted,
-    photoURL,
-    imgString,
-    taskName,
-  } = payload;
+const contactRef = (userId, uid) =>
+  firebase
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('contacts')
+    .doc(uid);
 
-  const newDoc = await firebase
+const helpfulTaskRef = (userId, contactUid) =>
+  firebase
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('contacts')
+    .doc(contactUid)
+    .collection('helpfulTasks')
+    .doc();
+
+const getImageDownloadURL = (contactUid, imgString) =>
+  firebase
+    .storage()
+    .ref()
+    .child(`contacts/${contactUid}.png`)
+    .putString(imgString, 'data_url', { contentType: 'image/png' })
+    .then(({ ref }) => ref.getDownloadURL());
+
+const setTaskDetails = ({
+  userId,
+  contactUid,
+  taskId,
+  taskName,
+  photoURL,
+  downloadURL,
+}) =>
+  firebase
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('contacts')
+    .doc(contactUid)
+    .collection('helpfulTasks')
+    .doc(taskId)
+    .set(
+      {
+        taskId,
+        name: taskName,
+        dateCreated: new Date(),
+        dateCompleted: null,
+        connectedTo: userId,
+        completedFor: contactUid,
+        photoURL: downloadURL || photoURL,
+      },
+      { merge: true }
+    );
+
+const setContactDetails = ({
+  userId,
+  contactUid,
+  name,
+  summary,
+  lastContacted,
+  photoURL,
+  downloadURL,
+}) =>
+  contactRef(userId, contactUid).set(
+    {
+      name,
+      summary,
+      uid: contactUid,
+      lastContacted: lastContacted || null,
+      photoURL: downloadURL || photoURL,
+      activeTaskCount: 1,
+    },
+    { merge: true }
+  );
+
+const payloads = async (
+  userId,
+  uid,
+  contactId,
+  name,
+  summary,
+  lastContacted,
+  photoURL,
+  imgString
+) => {
+  let downloadURL;
+
+  const newDoc = firebase
     .firestore()
     .collection('users')
     .doc(userId)
@@ -22,147 +97,78 @@ export const setFirebaseContactUpdate = async payload => {
 
   const contactUid = contactId || uid || newDoc.id;
 
-  let downloadURL;
-
+  // upload the base 64 string to get an image url
   if (imgString) {
-    // upload the base 64 string to get an image url
-    downloadURL = await firebase
-      .storage()
-      .ref()
-      .child(`contacts/${contactUid}.png`)
-      .putString(imgString, 'data_url', { contentType: 'image/png' })
-      .then(({ ref }) => ref.getDownloadURL());
+    downloadURL = await getImageDownloadURL(contactUid, imgString);
   }
+
+  const contactPayload = {
+    userId,
+    contactUid,
+    name,
+    summary,
+    lastContacted,
+    photoURL,
+    downloadURL,
+  };
+
+  const task = helpfulTaskRef(userId, contactUid);
+
+  const taskId = task.id;
+
+  const taskPayload = {
+    userId,
+    contactUid,
+    taskId,
+    photoURL,
+    downloadURL,
+  };
+
+  return [contactPayload, taskPayload, contactUid];
+};
+
+export const setFirebaseContactUpdate = async ({
+  userId,
+  contactId,
+  uid,
+  name,
+  summary,
+  lastContacted,
+  photoURL,
+  imgString,
+  taskName,
+}) => {
+  // payloads
+  const [contactPayload, taskPayload] = await payloads(
+    userId,
+    uid,
+    contactId,
+    name,
+    summary,
+    lastContacted,
+    photoURL,
+    imgString
+  );
 
   // create a specific task for new contacts
   if (taskName) {
-    const task = await firebase
-      .firestore()
-      .collection('users')
-      .doc(userId)
-      .collection('contacts')
-      .doc(contactUid)
-      .collection('helpfulTasks')
-      .doc();
-    const taskId = task.id;
-
-    await firebase
-      .firestore()
-      .collection('users')
-      .doc(userId)
-      .collection('contacts')
-      .doc(contactUid)
-      .collection('helpfulTasks')
-      .doc(taskId)
-      .set(
-        {
-          taskId,
-          name: taskName,
-          dateCreated: new Date(),
-          dateCompleted: null,
-          connectedTo: userId,
-          completedFor: contactUid,
-          photoURL: photoURL || downloadURL,
-        },
-        { merge: true }
-      );
-
-    await firebase
-      .firestore()
-      .collection('users')
-      .doc(userId)
-      .collection('contacts')
-      .doc(contactUid)
-      .set(
-        {
-          name,
-          summary,
-          uid: contactUid,
-          lastContacted: lastContacted || null,
-          photoURL: photoURL || downloadURL,
-          activeTaskCount: 1,
-        },
-        { merge: true }
-      );
-
+    await setTaskDetails({ ...taskPayload, taskName });
+    await setContactDetails(contactPayload);
     return;
   }
 
   // create a default task for new contacts
   if (!contactId) {
-    const task = await firebase
-      .firestore()
-      .collection('users')
-      .doc(userId)
-      .collection('contacts')
-      .doc(contactUid)
-      .collection('helpfulTasks')
-      .doc();
-    const taskId = task.id;
-
-    await firebase
-      .firestore()
-      .collection('users')
-      .doc(userId)
-      .collection('contacts')
-      .doc(contactUid)
-      .collection('helpfulTasks')
-      .doc(taskId)
-      .set(
-        {
-          taskId,
-          name: `Touch base with ${name}`,
-          dateCreated: new Date(),
-          dateCompleted: null,
-          connectedTo: userId,
-          completedFor: contactUid,
-        },
-        { merge: true }
-      );
-
-    await firebase
-      .firestore()
-      .collection('users')
-      .doc(userId)
-      .collection('contacts')
-      .doc(contactUid)
-      .set(
-        {
-          name,
-          summary,
-          uid: contactUid,
-          lastContacted,
-          photoURL: photoURL || downloadURL,
-          activeTaskCount: 1,
-        },
-        { merge: true }
-      );
+    await setTaskDetails({
+      ...taskPayload,
+      taskName: `Touch base with ${name}`,
+    });
+    await setContactDetails(contactPayload);
     return;
   }
 
-  await firebase
-    .firestore()
-    .collection('users')
-    .doc(userId)
-    .collection('contacts')
-    .doc(contactUid)
-    .set(
-      {
-        name,
-        summary,
-        uid: contactUid,
-        lastContacted,
-        photoURL: photoURL || downloadURL,
-      },
-      { merge: true }
-    );
+  await setContactDetails(contactPayload);
 };
 
-export const handleContactDelete = (name, uid, userId) =>
-  firebase
-    .firestore()
-    .collection('users')
-    .doc(userId)
-    .collection('contacts')
-    .doc(uid)
-    .delete();
+export const handleContactDelete = (uid, userId) =>
+  contactRef(userId, uid).delete();

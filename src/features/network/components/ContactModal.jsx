@@ -179,12 +179,10 @@ export function Modal({ uid, selectedUserUid, onClose }) {
 
       if (newUser) {
         const imgString = await avatarRef.current.getImageData();
-
         dispatch({
           type: ONBOARDING_STEP_COMPLETED,
           payload: { userId: uid, onboardingStep: 'addedSomeone' },
         });
-
         await setContact({ ...state, imgString, userId: uid });
         onClose();
         return;
