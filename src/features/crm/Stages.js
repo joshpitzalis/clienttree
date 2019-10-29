@@ -71,19 +71,20 @@ export function Stages({
                           transition: 'background-color 1s ease',
                         }}
                       >
-                        {people &&
-                          people.map(({ id, name, photoURL }, _index) => (
-                            <Peoples
-                              id={id}
-                              key={id}
-                              index={_index}
-                              photoURL={photoURL}
-                              name={name}
-                              placeholder={placeholder}
-                              setSelectedUser={setSelectedUser}
-                              setVisibility={setVisibility}
-                            />
-                          ))}
+                        {people && people.length
+                          ? people.map(({ id, name, photoURL }, _index) => (
+                              <Peoples
+                                id={id}
+                                key={id}
+                                index={_index}
+                                photoURL={photoURL}
+                                name={name}
+                                placeholder={placeholder}
+                                setSelectedUser={setSelectedUser}
+                                setVisibility={setVisibility}
+                              />
+                            ))
+                          : null}
                       </div>
                     </>
                   </summary>

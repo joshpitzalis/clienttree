@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { doc } from 'rxfire/firestore';
 import { catchError } from 'rxjs/operators';
-// import { initialData } from './initialData';
+import { initialData } from './initialData';
 import { setStateToDB } from './crmAPI';
 import { toast$ } from '../notifications/toast';
 import firebase from '../../utils/firebase';
@@ -21,7 +21,7 @@ const crmPropTypes = {
 const crmDefaultProps = {};
 
 export function CRM({ welcomeMessage, userId = '' }) {
-  const [state, setState] = React.useState();
+  const [state, setState] = React.useState(initialData);
 
   React.useEffect(() => {
     const subscription = doc(
@@ -35,7 +35,12 @@ export function CRM({ welcomeMessage, userId = '' }) {
           toast$.next({ type: 'ERROR', message: error.message || error })
         )
       )
-      .subscribe(data => setState(data.data().dashboard));
+      .subscribe(
+        data =>
+          data.data() &&
+          data.data().dashboard &&
+          setState(data.data().dashboard)
+      );
 
     return () => subscription.unsubscribe();
   }, [userId]);

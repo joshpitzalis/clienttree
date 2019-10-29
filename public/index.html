@@ -23,6 +23,7 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
   <title>Client Tree</title>
+
 </head>
 
 <body>
@@ -41,14 +42,19 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   <script>
+
     !function () {
       var analytics = window.analytics = window.analytics || []; if (!analytics.initialize) if (analytics.invoked) window.console && console.error && console.error("Segment snippet included twice."); else {
         analytics.invoked = !0; analytics.methods = ["trackSubmit", "trackClick", "trackLink", "trackForm", "pageview", "identify", "reset", "group", "track", "ready", "alias", "debug", "page", "once", "off", "on"]; analytics.factory = function (t) { return function () { var e = Array.prototype.slice.call(arguments); e.unshift(t); analytics.push(e); return analytics } }; for (var t = 0; t < analytics.methods.length; t++) { var e = analytics.methods[t]; analytics[e] = analytics.factory(e) } analytics.load = function (t, e) { var n = document.createElement("script"); n.type = "text/javascript"; n.async = !0; n.src = "https://cdn.segment.com/analytics.js/v1/" + t + "/analytics.min.js"; var a = document.getElementsByTagName("script")[0]; a.parentNode.insertBefore(n, a); analytics._loadOptions = e }; analytics.SNIPPET_VERSION = "4.1.0";
-        analytics.load("YdjuI7oNlrWPGyahNYZ2vvNqja3j8Pb4");
+        analytics.load("%REACT_APP_SEGMENT_ID%");
         analytics.page();
       }
     }();
   </script>
+
+  <!-- start Gist JS code-->
+  <script>    (function (d, h, w) { var gist = w.gist = w.gist || []; gist.methods = ['trackPageView', 'identify', 'track', 'setAppId']; gist.factory = function (t) { return function () { var e = Array.prototype.slice.call(arguments); e.unshift(t); gist.push(e); return gist; } }; for (var i = 0; i < gist.methods.length; i++) { var c = gist.methods[i]; gist[c] = gist.factory(c) } s = d.createElement('script'), s.src = "https://widget.getgist.com", s.async = !0, e = d.getElementsByTagName(h)[0], e.appendChild(s), s.addEventListener('load', function (e) { }, !1), gist.setAppId("dgcllwy3"), gist.trackPageView() })(document, 'head', window);</script>
+  <!-- end Gist JS code-->
 
 </body>
 

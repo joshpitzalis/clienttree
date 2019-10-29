@@ -86,7 +86,8 @@
     "test": "node scripts/test.js",
     "cypress:open": "npx cypress open",
     "cypress": "start-server-and-test start http://localhost:3000 cypress:open",
-    "deploy": "firebase deploy"
+    "deploy": "firebase deploy",
+    "coverage": "npm test -- --coverage"
   },
   "eslintConfig": {
     "extends": "wesbos",

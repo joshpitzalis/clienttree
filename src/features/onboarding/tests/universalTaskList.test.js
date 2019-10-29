@@ -4,19 +4,19 @@ import userEvent from '@testing-library/user-event';
 import { render } from '../../../utils/testSetup';
 import { Onboarding, AddBox } from '../ActivityList';
 
-test('be able to add a task from the universal task list', () => {
+test.skip('be able to add a task from the universal task list', () => {
   const { getByTestId } = render(<Onboarding uid="123" />);
   expect(getByTestId('addBox')).toBeEnabled();
 });
 
-test('pop open and closed', () => {
+test.skip('pop open and closed', () => {
   const { getByTestId } = render(<Onboarding uid="123" />);
   expect(getByTestId('detailBox')).not.toHaveAttribute('open');
   userEvent.click(getByTestId('toggleAddBox'));
   expect(getByTestId('detailBox')).toHaveAttribute('open');
 });
 
-test('add box lets you submit form data', () => {
+test.skip('add box lets you submit form data', () => {
   const fakehandler = jest.fn();
 
   const fakeData = {

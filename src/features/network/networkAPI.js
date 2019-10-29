@@ -112,14 +112,12 @@ export const setFirebaseContactUpdate = async payload => {
           name,
           summary,
           uid: contactUid,
-          lastContacted,
+          lastContacted: lastContacted || null,
           photoURL: photoURL || downloadURL,
           activeTaskCount: 1,
         },
         { merge: true }
       );
-
-    console.log({ payload });
 
     return;
   }

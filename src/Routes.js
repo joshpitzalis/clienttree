@@ -59,7 +59,7 @@ const App = () => {
             path="/refer/:uid"
             render={referProps => <Refer {...referProps} userId={userId} />}
           />
-          <p className="tc f6">Version 0.0.7</p>
+          <p className="tc f6">{process.env.REACT_APP_VERSION}</p>
         </div>
       </main>
     </BrowserRouter>

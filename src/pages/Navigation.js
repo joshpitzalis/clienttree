@@ -35,7 +35,7 @@ export function Navigation({ uid }) {
           to={`/user/${uid}/network`}
           className="f6 link dim mr3 mr4-ns "
         >
-          Outreach
+          Network
         </NavLink>
       </li>
     </ul>

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import { toast$ } from '../features/notifications/toast';
 import firebase from '../utils/firebase';
+import { setFirebaseContactUpdate } from '../features/network/networkAPI';
 
 const loginPropTypes = {
   // location: ReactRouterPropTypes.location.isRequired,
@@ -18,7 +19,10 @@ export class Login extends Component {
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then(({ uid }) => this.setState({ uid }))
+      .then(result => {
+        const { uid } = result;
+        this.setState({ uid });
+      })
       .then(() => this.setState({ loggedInSuccessfully: true }))
       .catch(error =>
         toast$.next({
@@ -32,10 +36,10 @@ export class Login extends Component {
     const { loggedInSuccessfully, email, password, uid } = this.state;
     const { authStatus, userId } = this.props;
 
-    if (authStatus) {
+    if (authStatus && userId) {
       return <Redirect to={`/user/${userId}/dashboard`} />;
     }
-    if (loggedInSuccessfully) {
+    if (loggedInSuccessfully && uid) {
       return <Redirect to={`/user/${uid}/dashboard`} />;
     }
     return (

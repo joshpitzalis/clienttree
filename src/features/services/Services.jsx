@@ -70,14 +70,14 @@ const Services = props => {
   const [state, dispatch] = React.useReducer(curriedReducer, initialState);
   const [firstTime, completeFirstTime] = React.useState(false);
   const reduxDispatch = useDispatch();
-  // const [profileData, setProfileData] = React.useState({});
+
   React.useEffect(() => {
     if (uid) {
       fetchUserData(uid)
         .then(data =>
           dispatch({
             type: 'HYDRATE_SERVICES',
-            payload: data.services,
+            payload: data && data.services && data.services,
           })
         )
         .catch(error =>

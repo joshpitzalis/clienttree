@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import PieChart from 'react-minimal-pie-chart';
 import { collection } from 'rxfire/firestore';
-import { map, filter } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import Portal from '../../utils/Portal';
 import Plus from '../../images/Plus';
 import { Modal } from './components/ContactModal';
@@ -35,8 +35,6 @@ export function Network({ uid }) {
       .subscribe(tasks => setTasksCompleted(tasks.length));
     return () => subscription.unsubscribe();
   }, [uid]);
-
-  console.log({ tasksCompleted });
 
   return (
     <>
@@ -76,11 +74,6 @@ export function Network({ uid }) {
           ]}
           totalValue={150}
           label={false}
-          // labelPosition={112}
-          // labelStyle={{
-          //   fontFamily: 'sans-serif',
-          //   fontSize: '5px',
-          // }}
           lengthAngle={360}
           lineWidth={100}
           onClick={undefined}
