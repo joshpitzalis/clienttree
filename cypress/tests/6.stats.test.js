@@ -1,4 +1,4 @@
-describe('stats box', () => {
+describe.skip('stats box', () => {
   it('lets me add stats', () => {
     cy.visit('/');
   });

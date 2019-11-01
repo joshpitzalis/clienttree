@@ -3,7 +3,6 @@ import 'tachyons';
 import { BrowserRouter, Route } from 'react-router-dom';
 // import PropTypes from 'prop-types';
 // import ReactRouterPropTypes from 'react-router-prop-types';
-import { createSlice } from 'redux-starter-kit';
 import { Navbar } from './features/auth/Navbar';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';

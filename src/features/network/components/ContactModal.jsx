@@ -57,18 +57,14 @@ export function Modal({ uid, selectedUserUid, onClose }) {
 
   const avatarRef = React.useRef(null);
 
-  const handleDelete = (_name, _uid, _userId) =>
-    handleContactDelete(_name, _uid, _userId)
-      .then(() => {
-        onClose();
-        toast$.next({
-          type: 'SUCCESS',
-          message: `${_name} Successfully Deleted`,
-        });
-      })
-      .catch(error =>
-        toast$.next({ type: 'ERROR', message: error.message || error })
-      );
+  const handleDelete = async (_name, _uid, _userId) => {
+    try {
+      await handleContactDelete(_uid, _userId);
+      onClose();
+    } catch (error) {
+      toast$.next({ type: 'ERROR', message: error.message || error });
+    }
+  };
 
   const handleAddingTask = (task, myUid, theirUid, photoURL) => {
     handleAddTask(task, myUid, theirUid, photoURL).catch(error =>
@@ -188,7 +184,7 @@ export function Modal({ uid, selectedUserUid, onClose }) {
         return;
       }
 
-      await setContact({ ...state, userId: uid });
+      await setContact({ ...state, userId: uid, contactId: state.uid });
       onClose();
     } catch (error) {
       toast$.next({ type: 'ERROR', message: error.message || error });
@@ -286,6 +282,7 @@ export function Modal({ uid, selectedUserUid, onClose }) {
           <ConfirmDelete
             handleDelete={() => handleDelete(state.name, state.uid, uid)}
             title={state.name}
+            activeTaskCount={state.activeTaskCount}
           />
         )}
       </div>

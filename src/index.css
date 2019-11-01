@@ -48,6 +48,6 @@ background-color: #808080;
   width: 100%;
 }
 
-/* details summary::-webkit-details-marker {
+details summary::-webkit-details-marker {
   display:none;
-} */
+}

@@ -56,16 +56,14 @@ export const curriedReducer = produce((draft, action) => {
 });
 
 const propTypes = {
-  setSubmitted: PropTypes.func.isRequired,
-  submitted: PropTypes.bool.isRequired,
   uid: PropTypes.string.isRequired,
 };
 const defaultProps = {};
 
 const Services = props => {
-  const { setSubmitted, submitted, uid } = props;
+  const { uid } = props;
   const [state, dispatch] = React.useReducer(curriedReducer, {});
-  const [firstTime, completeFirstTime] = React.useState(false);
+  const [firstTime] = React.useState(false);
   const reduxDispatch = useDispatch();
 
   React.useEffect(() => {
@@ -160,6 +158,7 @@ const Services = props => {
               className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
               type="submit"
               value="+ Add a service"
+              data-testid="addService"
             />
           </div>
         </form>
@@ -346,17 +345,17 @@ const IndividualService = ({
     </div>
     <ConfirmDelete
       handleDelete={() => {
-        dispatch({
-          type: 'SERVICE_DELETED',
-          payload: {
-            serviceId: id,
-          },
-        });
         serviceFormUpdate$.next({
           type: 'SERVICES_DELETED',
           payload: {
             userId,
             id,
+          },
+        });
+        dispatch({
+          type: 'SERVICE_DELETED',
+          payload: {
+            serviceId: id,
           },
         });
       }}

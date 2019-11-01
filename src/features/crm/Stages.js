@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { Peoples } from './People';
-import { ChallengeBox } from './ChallengeBox';
+// import { ChallengeBox } from './ChallengeBox';
 
 const stagesPropTypes = {
   stageId: PropTypes.string.isRequired,
@@ -20,13 +20,13 @@ const stagesPropTypes = {
     title: PropTypes.string.isRequired,
     subtitle: PropTypes.string.isRequired,
   }).isRequired,
-  challenges: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      link: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-  userId: PropTypes.string.isRequired,
+  // challenges: PropTypes.arrayOf(
+  //   PropTypes.shape({
+  //     title: PropTypes.string.isRequired,
+  //     link: PropTypes.string.isRequired,
+  //   })
+  // ).isRequired,
+  // userId: PropTypes.string.isRequired,
 };
 const stagesDefaultProps = {};
 export function Stages({
@@ -36,8 +36,8 @@ export function Stages({
   stage,
   setSelectedUser,
   setVisibility,
-  challenges,
-  userId,
+  // challenges,
+  // userId,
 }) {
   return (
     <Draggable draggableId={stageId} index={index}>
@@ -89,11 +89,11 @@ export function Stages({
                     </>
                   </summary>
 
-                  <ChallengeBox
+                  {/* <ChallengeBox
                     challenges={challenges}
                     userId={userId}
                     stageId={stageId}
-                  />
+                  /> */}
                 </details>
               </li>
             )}

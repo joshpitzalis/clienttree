@@ -34,6 +34,7 @@ export function Navigation({ uid }) {
           activeClassName="b underline"
           to={`/user/${uid}/network`}
           className="f6 link dim mr3 mr4-ns "
+          data-testid="networkPage"
         >
           Network
         </NavLink>

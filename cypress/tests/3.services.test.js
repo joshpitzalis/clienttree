@@ -10,11 +10,10 @@ describe('services', () => {
 
   it('lets you add a service', () => {
     cy.visit('/')
-      .login()
       .findByText(/Welcome/i)
-      .findByText(/services/i)
+      .findByTestId('linkToServices')
       .click()
-      .findByTestId(/services/i)
+      .findByTestId('services')
       .queryByTestId(/serviceBox/i)
       .should('not.exist')
       .findByText(/add a service/i)
@@ -23,6 +22,7 @@ describe('services', () => {
       .should('exist')
       .findByPlaceholderText(/What should people ask for/i)
       .type(fakeData.title)
+      .wait(2000)
       .findByPlaceholderText(/What do people get/i)
       .type(fakeData.service)
       .findByPlaceholderText(/How much/i)
@@ -36,16 +36,15 @@ describe('services', () => {
       .should('include', 'refer')
       .findByText(fakeData.title)
       .findByText(fakeData.service)
-      .findByText(fakeData.price)
-      .findByText(/sign out/i)
-      .click();
+      .findByText(fakeData.price);
   });
 
   it('lets you update a service', () => {
     cy.visit('/')
-      .login()
       .findByText(/Welcome!/i)
-      .findByText(/services/i)
+      .findByTestId('linkToServices')
+      .click()
+      .findByTestId('services')
       .click()
       .findByText(fakeData.price)
       .clear()
@@ -60,16 +59,18 @@ describe('services', () => {
 
   it('lets you delete a service', () => {
     cy.visit('/')
-      .login()
       .findByText(/Welcome!/i)
-      .findByText(/services/i)
+      .findByTestId('linkToServices')
       .click()
-      .findByText(/add a service/i)
+      .findByTestId('services')
       .click()
-      .queryByTestId(/serviceBox/i)
+      .findByTestId('addService')
+      .click()
+      .queryByTestId('serviceBox')
       .should('exist')
       .findByPlaceholderText(/What should people ask for/i)
       .type(fakeData.title2)
+      .wait(2000)
       .findByText(/DELETE EXAMPLE TITLE/i)
       .click()
       .findByText(/DELETE EXAMPLE TITLE/i)

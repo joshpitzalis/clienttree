@@ -1,9 +1,10 @@
 describe('onboarding', () => {
   it('shows first task completed when you start', () => {
     cy.visit('/')
+      .login()
       .findByText(/Welcome!/i)
       .findByLabelText(/Sign up to Client Tree/i)
-      .should('not.be.checked');
+      .should('be.checked');
   });
 
   it('lets you create an email signature', () => {
@@ -17,9 +18,13 @@ describe('onboarding', () => {
 
     cy.visit('/')
       .findByText(/Welcome!/i)
-      .findByLabelText(/Create an email signature that helps people refer you/i)
+      .findByLabelText(
+        /Complete your profile to create a referrable email signature/i
+      )
       .should('not.be.checked')
-      .findByText(/Create an email signature that helps people refer you/i)
+      .findByText(
+        /Complete your profile to create a referrable email signature/i
+      )
       .click()
       .findAllByText(/profile/i)
       .findByTestId('signatureCard')
@@ -53,7 +58,9 @@ describe('onboarding', () => {
       .findByText(/Welcome!/i)
       .wait(10000)
       .findByText(/nice!/i)
-      .findByLabelText(/Create an email signature that helps people refer you/i)
+      .findByLabelText(
+        /Completed your profile and created a referrable email signature/i
+      )
       .should('be.checked')
       .findByTestId(/linkToServices/i)
       .click()
@@ -71,24 +78,31 @@ describe('onboarding', () => {
   it('once you have create a signature the onboarding task gets marked complete and thsi is persisted', () => {
     cy.visit('/')
       .findByText(/Welcome!/i)
-      .findByLabelText(/Create an email signature that helps people refer you/i)
+      .findByLabelText(
+        /Completed your profile and created a referrable email signature/i
+      )
       .should('be.checked');
   });
 
   it('you cannot uncheck signature step once persisted', () => {
     cy.visit('/')
       .findByText(/Welcome!/i)
-      .findByLabelText(/Create an email signature that helps people refer you/i)
+      .findByLabelText(
+        /Completed your profile and created a referrable email signature/i
+      )
       .should('be.checked')
-      .findByLabelText(/Create an email signature that helps people refer you/i)
-      .uncheck()
-      .findByLabelText(/Create an email signature that helps people refer you/i)
+      .findByLabelText(
+        /Completed your profile and created a referrable email signature/i
+      )
+      .uncheck({ force: true })
+      .findByLabelText(
+        /Completed your profile and created a referrable email signature/i
+      )
       .should('be.checked');
   });
 
-  it.only('lets me mark send email complete', () => {});
-
   context.skip('hook up onboarding steps to email and services', () => {
+    it.skip('lets me mark send email complete', () => {});
     it.skip('modal pops  up after signature explaining you can send to josh', () => {});
     it.skip('let people mark sending email complete', () => {});
     it.skip('complete referrla page once servicea  are  added', () => {});

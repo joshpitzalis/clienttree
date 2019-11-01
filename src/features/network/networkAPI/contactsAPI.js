@@ -120,6 +120,7 @@ export const setFirebaseContactUpdate = async ({
 
   // create a default task for new contacts
   if (!contactId) {
+    console.log('new contacts');
     await setTaskDetails({
       ...taskPayload,
       taskName: `Touch base with ${name}`,
