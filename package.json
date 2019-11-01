@@ -85,8 +85,11 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "cypress:open": "npx cypress open",
+    "cypress:run": "npx cypress run --record --key a7efa281-ee2d-4ee8-9ab3-158226603f23",
+    "cypress:ci": "START_SERVER_AND_TEST_INSECURE=1  start-server-and-test start http-get://localhost:3000 cypress:run",
     "cypress": "start-server-and-test start http://localhost:3000 cypress:open",
-    "deploy": "firebase deploy",
+    "deploy": "firebase deploy --except functions",
+    "deployFunctions": "firebase deploy --only functions",
     "coverage": "npm test -- --coverage"
   },
   "eslintConfig": {

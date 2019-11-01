@@ -1,6 +1,7 @@
 {
   "projects": {
     "default": "client-tree-dev",
-    "prod": "client-tree-prod"
+    "prod": "client-tree-prod",
+    "dev": "client-tree-dev"
   }
 }
