@@ -96,6 +96,7 @@ export const GettingStarted = ({ uid, onboarding }) => {
                 payload: {
                   userId: uid,
                   onboardingStep: 'addedSignatureToEmail',
+                  checked: onboarding && onboarding.addedSignatureToEmail,
                 },
               })
             }
@@ -146,6 +147,7 @@ export const GettingStarted = ({ uid, onboarding }) => {
             type="checkbox"
             id="addedSomeone"
             value="addedSomeone"
+            disabled
             checked={onboarding && onboarding.addedSomeone}
           />
           {onboarding && onboarding.addedSomeone ? (
@@ -171,6 +173,7 @@ export const GettingStarted = ({ uid, onboarding }) => {
                 payload: {
                   userId: uid,
                   onboardingStep: 'reachOut',
+                  checked: onboarding && onboarding.reachOut,
                 },
               })
             }

@@ -8,12 +8,20 @@ export const onboardingEpic = action$ =>
   action$.pipe(
     ofType(ONBOARDING_STEP_COMPLETED),
     tap(async ({ payload }) => {
-      const { userId, onboardingStep } = payload;
-      await firebase
-        .firestore()
-        .collection('users')
-        .doc(userId)
-        .set({ onboarding: { [onboardingStep]: true } }, { merge: true });
+      const { userId, onboardingStep, checked } = payload;
+      if (checked) {
+        await firebase
+          .firestore()
+          .collection('users')
+          .doc(userId)
+          .set({ onboarding: { [onboardingStep]: false } }, { merge: true });
+      } else {
+        await firebase
+          .firestore()
+          .collection('users')
+          .doc(userId)
+          .set({ onboarding: { [onboardingStep]: true } }, { merge: true });
+      }
       const { analytics } = window;
       analytics.track(onboardingStep);
     }),

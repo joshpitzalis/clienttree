@@ -119,13 +119,8 @@ export function Network({ uid }) {
 
       <ul className="list pl0 mt0">
         {contacts &&
-          contacts.map(contact => {
-            console.log(
-              isValidDate(fromUnixTime(contact.lastContacted)),
-              contact.lastContacted
-            );
-
-            return (
+          contacts.map(
+            contact =>
               contact.uid && (
                 <li key={contact.uid}>
                   <div
@@ -179,8 +174,7 @@ export function Network({ uid }) {
                   </div>
                 </li>
               )
-            );
-          })}
+          )}
       </ul>
     </>
   );

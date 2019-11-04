@@ -1,43 +1,12 @@
 import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
-import { render as rtlRender, fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { Router } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
+import { fireEvent } from '@testing-library/react';
+// import userEvent from '@testing-library/user-event';
 import { GettingStarted } from '../GettingStarted';
 import { Dashboard } from '../../../pages/Dashboard';
 // import 'react-testing-library/cleanup-after-each';
-import { rootReducer } from '../../../utils/store';
-
-function render(
-  ui,
-  {
-    route = '/',
-    history = createMemoryHistory({ initialEntries: [route] }),
-    initialState,
-    store = createStore(rootReducer, initialState),
-    ...renderOptions
-  } = {}
-) {
-  return {
-    ...rtlRender(
-      <Provider store={store}>
-        <Router history={history}>{ui}</Router>
-      </Provider>,
-      renderOptions
-    ),
-    // adding `history` to the returned utilities to allow us
-    // to reference it in our tests (just try to avoid using
-    // this to test implementation details).
-    history,
-    // adding `store` to the returned utilities to allow us
-    // to reference it in our tests (just try to avoid using
-    // this to test implementation details).
-    store,
-  };
-}
+import { Onboarding } from '../ActivityList';
+import { render } from '../../../utils/testSetup';
 
 test('shows first task completed when you start', () => {
   const { getByLabelText } = render(<GettingStarted />);
@@ -66,3 +35,12 @@ xtest('hides onboarding box when complete', () => {});
 
 xtest('completePercentage is accurate', () => {});
 xtest('completePercentage undates when completed or incompleted', () => {});
+
+describe('Shanu feedback', () => {
+  xtest('onboarding block lets you know it will disappear, and that you can take a few days to complete', () => {
+    const { getByTestId } = render(<Onboarding />);
+    expect(getByTestId('onboardingHelpText')).toBeInTheDocument();
+  });
+
+  xtest('uncheck or skip voluntary tasks, non-disabled', () => {});
+});

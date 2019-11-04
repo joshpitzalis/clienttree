@@ -54,8 +54,13 @@ export function Onboarding({ uid }) {
         </details>
         {!onboardingComplete && (
           <div>
-            <Progress percent={completePercentage} />
             <GettingStarted uid={uid} onboarding={onboarding} />
+            <Progress percent={completePercentage} />
+            <small data-test="onboardingHelpText" className="o-50">
+              The tasks above will disappear once you complete all of them. Take
+              a few days to complete them, they're not meant to be done all at
+              once.
+            </small>
           </div>
         )}
         <HelpfulTaskList myUid={uid} />
