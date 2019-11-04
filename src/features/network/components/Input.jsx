@@ -1,5 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { DatePicker } from 'antd';
+
+const moment = require('moment');
 
 const inputPropTypes = {
   setState: PropTypes.func.isRequired,
@@ -21,7 +24,31 @@ const inputPropTypes = {
 const inputDefaultProps = {
   type: 'text',
 };
+
+function isValidDate(date) {
+  return (
+    date &&
+    Object.prototype.toString.call(date) === '[object Date]' &&
+    !Number.isNaN(date)
+  );
+}
+
 export function Input({ setState, state, value, name, placeholder, type }) {
+  console.log({ value });
+
+  if (type === 'date') {
+    return (
+      <div className="mb4">
+        <DatePicker
+          size="large"
+          format="DD-MM-YYYY"
+          onChange={date => setState({ ...state, [name]: moment(date).unix() })}
+          value={isValidDate(new Date(value)) ? moment.unix(value) : null}
+          disabledDate={date => date > moment()}
+        />
+      </div>
+    );
+  }
   if (type === 'textarea') {
     return (
       <div className="mb4">

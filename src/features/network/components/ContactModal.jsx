@@ -226,6 +226,7 @@ export function Modal({ uid, selectedUserUid, onClose }) {
               value={state.lastContacted}
               name="lastContacted"
               placeholder="Last contacted..."
+              type="date"
             />
 
             <Input

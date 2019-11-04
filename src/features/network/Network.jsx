@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import PieChart from 'react-minimal-pie-chart';
 import { collection } from 'rxfire/firestore';
 import { map } from 'rxjs/operators';
+// import format from 'date-fns/format';
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import fromUnixTime from 'date-fns/fromUnixTime';
 import Portal from '../../utils/Portal';
 import Plus from '../../images/Plus';
 import { Modal } from './components/ContactModal';
@@ -13,6 +16,10 @@ const networkPropTypes = {
   uid: PropTypes.string.isRequired,
 };
 const networkDefaultProps = {};
+
+function isValidDate(timestamp) {
+  return new Date(timestamp).getTime() > 0;
+}
 
 export function Network({ uid }) {
   const [visible, setVisibility] = React.useState(false);
@@ -112,8 +119,13 @@ export function Network({ uid }) {
 
       <ul className="list pl0 mt0">
         {contacts &&
-          contacts.map(
-            contact =>
+          contacts.map(contact => {
+            console.log(
+              isValidDate(fromUnixTime(contact.lastContacted)),
+              contact.lastContacted
+            );
+
+            return (
               contact.uid && (
                 <li key={contact.uid}>
                   <div
@@ -138,7 +150,19 @@ export function Network({ uid }) {
                       <span className="f6 db black-70 b">{contact.name}</span>
                       <span className="f6 db black-70 i">
                         {contact.lastContacted &&
-                          `Last contacted ${contact.lastContacted}`}
+                        isValidDate(fromUnixTime(contact.lastContacted))
+                          ? `Last contacted ${
+                              formatDistanceToNow(
+                                fromUnixTime(contact.lastContacted),
+                                { addSuffix: true }
+                              )
+
+                              // format(
+                              //   fromUnixTime(contact.lastContacted),
+                              //   'Do MMM YYYY'
+                              // )
+                            }`
+                          : null}
                       </span>
                     </div>
                     <div>
@@ -155,7 +179,8 @@ export function Network({ uid }) {
                   </div>
                 </li>
               )
-          )}
+            );
+          })}
       </ul>
     </>
   );
