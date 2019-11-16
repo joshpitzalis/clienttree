@@ -192,102 +192,101 @@ export function Modal({ uid, selectedUserUid, onClose }) {
   };
 
   return (
-    <form
-      className="measure center"
-      data-testid="contactModal"
-      onSubmit={handleUpdateUser}
-    >
-      <fieldset id="contact" className="ba b--transparent ph0 mh0 tl">
-        <div className="w-100 tc">
-          {state.photoURL ? (
-            <img
-              alt={state.name}
-              className="w2 h2 w3-ns h3-ns br-100"
-              src={state.photoURL}
-            />
-          ) : (
-            <AvatarGenerator ref={avatarRef} height="100" width="100" />
-          )}
-        </div>
-        <legend className="f4 fw6 ph0 mh0 dn">Profile</legend>
-        <div className="flex justify-center">
-          <div className="w-50">
-            <Input
-              setState={setState}
-              state={state}
-              value={state.name}
-              name="name"
-              placeholder="Their name..."
-            />
-
-            <Input
-              setState={setState}
-              state={state}
-              value={state.lastContacted}
-              name="lastContacted"
-              placeholder="Last contacted..."
-              type="date"
-            />
-
-            <Input
-              setState={setState}
-              state={state}
-              value={state.summary}
-              name="summary"
-              placeholder="Notes..."
-              type="textarea"
-            />
-
-            <label className="pa0 ma0 lh-copy f6 pointer" htmlFor="tracked">
-              <input
-                type="checkbox"
-                id="tracked"
-                className="mr1"
-                checked={state.tracked}
-                onChange={e =>
-                  handleTracking(
-                    e.target.checked,
-                    uid,
-                    selectedUserUid,
-                    state.name,
-                    state.photoURL
-                  )
-                }
-              />
-              Tracked on the Dashboard
-            </label>
-          </div>
-
-          {selectedUserUid && (
-            <div className="w-50">
-              <ToDoList
-                myUid={uid}
-                theirUid={selectedUserUid}
-                handleAddingTask={handleAddingTask}
-                activeTaskCount={state.activeTaskCount}
-                _setActiveTaskCount={setActiveTaskCount}
-                photoURL={state.photoURL}
-              />
-            </div>
-          )}
-        </div>
-      </fieldset>
-      <div className="mt3 flex justify-around items-center">
-        <input
-          className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
-          type="submit"
-          value="Save"
-        />
-
-        {selectedUserUid && (
-          <ConfirmDelete
-            handleDelete={() => handleDelete(state.name, state.uid, uid)}
-            title={state.name}
-            activeTaskCount={state.activeTaskCount}
+    <div data-testid="contactModal">
+      <div className="w-100 tc">
+        {state.photoURL ? (
+          <img
+            alt={state.name}
+            className="w2 h2 w3-ns h3-ns br-100"
+            src={state.photoURL}
           />
+        ) : (
+          <AvatarGenerator ref={avatarRef} height="100" width="100" />
         )}
       </div>
-    </form>
+      <div className="flex">
+        <form className=" w-50" onSubmit={handleUpdateUser}>
+          <fieldset id="contact" className="ba b--transparent ph0 mh0 tl">
+            <legend className="f4 fw6 ph0 mh0 dn">Profile</legend>
+            <div className="flex justify-center">
+              <div>
+                <Input
+                  setState={setState}
+                  state={state}
+                  value={state.name}
+                  name="name"
+                  placeholder="Their name..."
+                />
+
+                <Input
+                  setState={setState}
+                  state={state}
+                  value={state.lastContacted}
+                  name="lastContacted"
+                  placeholder="Last contacted..."
+                  type="date"
+                />
+
+                <Input
+                  setState={setState}
+                  state={state}
+                  value={state.summary}
+                  name="summary"
+                  placeholder="Notes..."
+                  type="textarea"
+                />
+
+                <label className="pa0 ma0 lh-copy f6 pointer" htmlFor="tracked">
+                  <input
+                    type="checkbox"
+                    id="tracked"
+                    className="mr1"
+                    checked={state.tracked}
+                    onChange={e =>
+                      handleTracking(
+                        e.target.checked,
+                        uid,
+                        selectedUserUid,
+                        state.name,
+                        state.photoURL
+                      )
+                    }
+                  />
+                  Tracked on the Dashboard
+                </label>
+              </div>
+            </div>
+          </fieldset>
+          <div className="mt3 flex justify-around items-center">
+            <input
+              className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
+              type="submit"
+              value="Save"
+            />
+
+            {selectedUserUid && (
+              <ConfirmDelete
+                handleDelete={() => handleDelete(state.name, state.uid, uid)}
+                title={state.name}
+                activeTaskCount={state.activeTaskCount}
+              />
+            )}
+          </div>
+        </form>
+        {selectedUserUid && (
+          <div className="w-50">
+            <ToDoList
+              myUid={uid}
+              theirUid={selectedUserUid}
+              handleAddingTask={handleAddingTask}
+              activeTaskCount={state.activeTaskCount}
+              _setActiveTaskCount={setActiveTaskCount}
+              photoURL={state.photoURL}
+            />
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 Modal.propTypes = modalPropTypes;

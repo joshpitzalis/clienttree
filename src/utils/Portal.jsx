@@ -39,13 +39,15 @@ export default class Portal extends Component {
         tabIndex={-1}
       >
         <article className=" w-50 center pa3 tc br2 bg-white ma3 flex flex-column justify-center">
-          <button
-            type="button"
-            onClick={onClose}
-            className="fr bn link bg-transparent pointer self-end"
-          >
-            <Close />
-          </button>
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="fr bn link bg-transparent pointer self-end"
+            >
+              <Close />
+            </button>
+          )}
 
           <div
             role="button"

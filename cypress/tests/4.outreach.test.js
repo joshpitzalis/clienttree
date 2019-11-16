@@ -17,8 +17,7 @@ describe('outreach', () => {
       .findByTestId(/contactModal/i)
       .findByPlaceholderText(/Their name/i)
       .type(fakeData.name)
-      .findByPlaceholderText(/last contacted/i)
-      .type(fakeData.lastContacted)
+      .pickDate()
       .findByPlaceholderText(/notes/i)
       .type(fakeData.description)
       .findByText(/save/i)
@@ -65,7 +64,6 @@ describe('outreach', () => {
       .findByTestId('deleteContact')
       .click()
       .findByTestId('deleteGuard')
-
       .findByTestId(/contactModal/i)
       .within(() =>
         cy

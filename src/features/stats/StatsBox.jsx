@@ -1,8 +1,44 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { useMachine } from '@xstate/react';
+import { Machine } from 'xstate';
 import Portal from '../../utils/Portal';
 import { GeneralForm } from './InputForm';
+import { Stats } from './StatsDetails';
+
+const incomeGoalsCompleted = (_, { payload }) => {
+  if (payload.incomeGoalsCompleted) {
+    return true;
+  }
+
+  return false;
+};
+
+const statsMachine = Machine({
+  id: 'stats',
+  initial: 'incomplete',
+  states: {
+    incomplete: {
+      on: { MODAL_OPENED: 'modal' },
+    },
+    modal: {
+      on: {
+        CLOSED: [
+          {
+            target: 'complete',
+            // Only transition to 'complete' if the guard (incomeGoalsCompleted) evaluates to true
+            cond: incomeGoalsCompleted,
+          },
+          { target: 'incomplete' },
+        ],
+      },
+    },
+    complete: {
+      on: { MODAL_OPENED: 'modal' },
+    },
+  },
+});
 
 const propTypes = {
   userId: PropTypes.string.isRequired,
@@ -11,118 +47,43 @@ const propTypes = {
 const defaultProps = {};
 
 export default function StatsBox({ userId }) {
-  const [visible, setVisibility] = React.useState(false);
   const userStats = useSelector(store => store.user);
-  const { goal, income, average } = userStats;
+  const [current, send] = useMachine(statsMachine);
 
-  const projectCount = Math.ceil((goal - income) / average);
-
-  return (
-    <>
-      {visible && (
-        <Portal
-          onClose={() => {
-            setVisibility(false);
-          }}
+  switch (current.value) {
+    case 'incomplete':
+      return (
+        <button
+          onClick={() => send('MODAL_OPENED')}
+          type="button"
+          className="bn tl pl4 mb6 pointer"
         >
+          <p className="underline b">Income Calculator</p>
+          <small>
+            Click here to figure out how many people you need to help out to
+            reach your income goals this year.
+          </small>
+        </button>
+      );
+    case 'modal':
+      return (
+        <Portal>
           {/* <InvoiceForm  /> */}
-          <GeneralForm
-            userId={userId}
-            onClose={() => {
-              setVisibility(false);
-            }}
-            userStats={userStats}
-          />
+          <GeneralForm userId={userId} send={send} userStats={userStats} />
         </Portal>
-      )}
-
-      <article className="pt5 w5 center bg-white br3 pv3 pv4-ns mv3 pl2">
-        <div
-          className="tc mv4 pt5 pointer "
-          role="button"
-          tabIndex={-1}
-          onKeyPress={() => setVisibility(true)}
-          onClick={() => setVisibility(true)}
-        >
-          <h1 className="f4 tl">
-            {`$${income}K`}
-            <small className="fw5">/ {`${goal}K`}</small>
-          </h1>
-        </div>
-
-        <>
-          <small className="fw5 small-caps">You need...</small>
-          <dl className="db mr5">
-            <dd className="f6 f5-ns  ml0">Projects</dd>
-            <dd className="f3 f2-ns b ml0">{projectCount}</dd>
-          </dl>
-
-          <dl className="db mr5 mt3">
-            <dd className="f6 f5-ns  ml0">Leads</dd>
-            <dd className="f3 f2-ns b ml0 ">{projectCount * 3}</dd>
-          </dl>
-
-          <dl className="db mr5 mt3">
-            <dd className="f6 f5-ns  ml0">Activities</dd>
-            <dd className="f3 f2-ns b ml0">{projectCount * 3 * 10} </dd>
-          </dl>
-        </>
-      </article>
-    </>
-  );
+      );
+    case 'complete':
+      return (
+        <Stats
+          userId={userId}
+          userStats={userStats}
+          showModal={() => send('MODAL_OPENED')}
+        />
+      );
+    default:
+      return null;
+  }
 }
 
 StatsBox.propTypes = propTypes;
 StatsBox.defaultProps = defaultProps;
-
-// function InvoiceForm() {
-//   const [state, setState] = React.useState({
-//     date: '',
-//     project: '',
-//     amount: '',
-//   });
-//   return (
-//     <form
-//       className="measure center"
-//       data-testid="contactModal"
-//       onSubmit={() => {}}
-//     >
-//       <fieldset id="contact" className="ba b--transparent ph0 mh0 tl">
-//         <legend className="f4 fw6 ph0 mh0 dn">Profile</legend>
-//         <div className="flex justify-center">
-//           <div className="w-50">
-//             <Input
-//               setState={setState}
-//               state={state}
-//               value={state.invoice}
-//               name="amount"
-//               placeholder="How much did you just bill for?"
-//             />
-
-//             <Input
-//               setState={setState}
-//               state={state}
-//               value={state.project}
-//               name="project"
-//               placeholder="Whats the name of the project?"
-//             />
-//             <Input
-//               setState={setState}
-//               state={state}
-//               value={state.date}
-//               name="date"
-//               placeholder="When was this paid?"
-//             />
-//           </div>
-//         </div>
-//       </fieldset>
-//       <div className="mt3 flex justify-around items-center">
-//         <input
-//           className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
-//           type="submit"
-//           value="Add Payment"
-//         />
-//       </div>
-//     </form>
-//   );
-// }

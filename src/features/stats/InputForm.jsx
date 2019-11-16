@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import DatePicker from 'react-date-picker';
+// import DatePicker from 'react-date-picker';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import differenceInDays from 'date-fns/differenceInDays';
 import { useDispatch } from 'react-redux';
@@ -9,7 +9,7 @@ import { FORM_SUBMITTED } from './statsConstants';
 
 const propTypes = {
   userId: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
+  send: PropTypes.func.isRequired,
   userStats: PropTypes.shape({
     goal: PropTypes.string,
     average: PropTypes.string,
@@ -34,7 +34,7 @@ const useDerivedProjectData = state => {
   return [projectCount, timeLeft, weeks];
 };
 
-export function GeneralForm({ userId, onClose, userStats }) {
+export function GeneralForm({ userId, send, userStats }) {
   const dispatch = useDispatch();
   const [state, setState] = React.useState(userStats);
   const [projectCount, timeLeft, weeks] = useDerivedProjectData(state);
@@ -45,15 +45,11 @@ export function GeneralForm({ userId, onClose, userStats }) {
       type: FORM_SUBMITTED,
       payload: { ...state, userId },
     });
-    onClose();
+    send('CLOSED');
   };
 
   return (
-    <form
-      className="measure center"
-      data-testid="contactModal"
-      onSubmit={e => handleSubmit(e)}
-    >
+    <div className="measure center" data-testid="contactModal">
       <fieldset id="contact" className="ba b--transparent ph0 mh0 tl">
         <legend className="f4 fw6 ph0 mh0 dn">Profile</legend>
         <div className="flex justify-center">
@@ -99,25 +95,42 @@ export function GeneralForm({ userId, onClose, userStats }) {
                   <p className="db fw6 lh-copy f6 ttc ">
                     When do you pay taxes?
                   </p>
-                  <DatePicker
+                  {/* <DatePicker
                     onChange={deadline => setState({ ...state, deadline })}
                     className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2"
                     value={state.deadline ? new Date(state.deadline) : null}
-                  />
+                  /> */}
                 </>{' '}
               </>
             ) : null}
           </div>
         </div>
         <div className="mt3 flex justify-around items-center">
-          <input
+          <button
             className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
             type="submit"
-            value="Save"
-          />
+            onClick={e => handleSubmit(e)}
+          >
+            Save
+          </button>
+
+          <button
+            onClick={() =>
+              send({
+                type: 'CLOSED',
+                payload: {
+                  incomeGoalsCompleted: state.goal && state.average,
+                },
+              })
+            }
+            type="button"
+            className="small-caps ml3 bn pointer"
+          >
+            Close
+          </button>
         </div>
       </fieldset>
-    </form>
+    </div>
   );
 }
 

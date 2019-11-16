@@ -153,14 +153,12 @@ const Services = props => {
                 />
               ))}
 
-          <div className="mt3">
-            <input
-              className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
-              type="submit"
-              value="+ Add a service"
-              data-testid="addService"
-            />
-          </div>
+          <input
+            className="mt3  b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
+            type="submit"
+            value="+ Add a service"
+            data-testid="addService"
+          />
         </form>
       </main>
     </div>
@@ -202,7 +200,7 @@ const IndividualService = ({
           type="text"
           name="serviceName"
           id="serviceName"
-          placeholder="What should people ask for?"
+          placeholder="What should people ask for ?"
           value={name}
           onChange={e => {
             dispatch({

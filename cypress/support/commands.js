@@ -32,3 +32,19 @@ Cypress.Commands.add('login', () => {
     .findByText(/Sign in/i)
     .click();
 });
+
+Cypress.Commands.add('pickDate', () => {
+  cy.get('.ant-calendar-picker-input')
+    .click({ force: true })
+    .get('.ant-calendar-date-panel')
+    .within(() =>
+      cy
+        .findByText(/jan/i)
+        .click()
+        .findByText(/nov/i)
+        .click()
+        .findAllByText(/10/i)
+        .first()
+        .click()
+    );
+});

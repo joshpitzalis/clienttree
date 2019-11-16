@@ -42,5 +42,5 @@ describe('Shanu feedback', () => {
     expect(getByTestId('onboardingHelpText')).toBeInTheDocument();
   });
 
-  xtest('uncheck or skip voluntary tasks, non-disabled', () => {});
+  xtest('uncheck or skip voluntary tasks, non-disabled, and tehn check that teh total count test stsill work to make the module disappear on completion', () => {});
 });

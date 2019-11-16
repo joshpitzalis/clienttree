@@ -53,7 +53,7 @@ export function Onboarding({ uid }) {
           <AddBox setUser={setUser} userId={uid} />
         </details>
         {!onboardingComplete && (
-          <div>
+          <div className="mb4">
             <GettingStarted uid={uid} onboarding={onboarding} />
             <Progress percent={completePercentage} />
             <small data-test="onboardingHelpText" className="o-50">

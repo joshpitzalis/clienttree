@@ -60,6 +60,7 @@ export const HelpfulTaskList = ({ myUid }) => {
           ({ taskId, name, dateCompleted, completedFor, photoURL }) =>
             completedFor && (
               <TaskDetails
+                key={taskId}
                 taskId={taskId}
                 name={name}
                 dateCompleted={dateCompleted}
@@ -81,14 +82,16 @@ HelpfulTaskList.defaultProps = helpfulDefaultProps;
 const propTypes = {
   taskId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  dateCompleted: PropTypes.string.isRequired,
+  dateCompleted: PropTypes.string,
   myUid: PropTypes.string.isRequired,
   completedFor: PropTypes.string.isRequired,
   setSelectedUser: PropTypes.func.isRequired,
   setVisibility: PropTypes.func.isRequired,
   photoURL: PropTypes.string.isRequired,
 };
-const defaultProps = {};
+const defaultProps = {
+  dateCompleted: undefined,
+};
 
 function TaskDetails({
   taskId,
