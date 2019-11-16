@@ -42,171 +42,164 @@ export const GettingStarted = ({ uid, onboarding }) => {
 
   return (
     <>
-      <div className="flex items-center mb2">
-        <label htmlFor="signup" className="lh-copy">
-          <input
-            className="mr2"
-            type="checkbox"
-            id="signup"
-            value="signup"
-            checked
-            onChange={() => {}}
-          />
-          <small className="strike">Sign up to Client Tree</small>
-        </label>
-      </div>
+      <Step
+        completedText={<small className="strike">Sign up to Client Tree</small>}
+        value="signup"
+      />
+      <Step
+        completedText="Completed your profile and created a referrable email signature."
+        uncompletedText="Complete your profile to create a referrable email signature."
+        completed={onboarding && onboarding.signatureCreated}
+        value="signup"
+      />
+      <Step
+        value="signature"
+        completed={onboarding && onboarding.signatureCreated}
+        disabled
+        uid={uid}
+        completedText="Completed your profile and created a referrable email signature."
+        uncompletedText="Complete your profile to create a referrable email signature."
+      />
+      <Step
+        value="email"
+        completed={onboarding && onboarding.addedSignatureToEmail}
+        uid={uid}
+        completedText="Actually add the signature to your email account"
+        uncompletedText="Actually add the signature to your email account"
+        href="https://support.google.com/mail/answer/8395?co=GENIE.Platform%3DDesktop&hl=en"
+        handleChange={() =>
+          dispatch({
+            type: ONBOARDING_STEP_COMPLETED,
+            payload: {
+              userId: uid,
+              onboardingStep: 'addedSignatureToEmail',
+              checked: onboarding && onboarding.addedSignatureToEmail,
+            },
+          })
+        }
+      />
 
-      <div className="flex items-center mb2">
-        <label htmlFor="signature" className="lh-copy">
-          <input
-            className="mr2"
-            type="checkbox"
-            id="signature"
-            value="signature"
-            disabled
-            checked={onboarding && onboarding.signatureCreated}
-          />
-          {onboarding && onboarding.signatureCreated ? (
-            <small className="strike">
-              Completed your profile and created a referrable email signature.
-            </small>
-          ) : (
-            <Link
-              to={`/user/${uid}/profile`}
-              className="f6 link dim mr3 mr4-ns"
-            >
-              <small>
-                Complete your profile to create a referrable email signature.
-              </small>
-            </Link>
-          )}
-        </label>
-      </div>
-      <div className="flex items-center mb2">
-        <label htmlFor="email" className="lh-copy">
-          <input
-            className="mr2 "
-            type="checkbox"
-            id="email"
-            value="email"
-            checked={onboarding && onboarding.addedSignatureToEmail}
-            onChange={() =>
-              dispatch({
-                type: ONBOARDING_STEP_COMPLETED,
-                payload: {
-                  userId: uid,
-                  onboardingStep: 'addedSignatureToEmail',
-                  checked: onboarding && onboarding.addedSignatureToEmail,
-                },
-              })
-            }
-          />
+      <Step
+        value="referral"
+        completed={onboarding && onboarding.referralPageCreated}
+        uid={uid}
+        completedText="Add services to your profile to create a referral page"
+        uncompletedText="Add services to your profile to create a referral page"
+      />
 
-          {onboarding && onboarding.addedSignatureToEmail ? (
-            <small className="strike">
-              Actually add the signature to your email account
-            </small>
-          ) : (
-            <small>
-              <a
-                href="https://support.google.com/mail/answer/8395?co=GENIE.Platform%3DDesktop&hl=en"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Actually add the signature to your email account
-              </a>
-            </small>
-          )}
-        </label>
-      </div>
-      <div className="flex items-center mb2">
-        <label htmlFor="referral" className="lh-copy">
-          <input
-            className="mr2"
-            type="checkbox"
-            id="referral"
-            value="referral"
-            disabled
-            checked={onboarding && onboarding.referralPageCreated}
-          />
-          {onboarding && onboarding.referralPageCreated ? (
-            <small className="strike">
-              Add services to your profile to create a referral page
-            </small>
-          ) : (
-            <small>
-              Add services to your profile to create a referral page
-            </small>
-          )}
-        </label>
-      </div>
-      <div className="flex items-center mb2">
-        <label htmlFor="addedSomeone" className="lh-copy">
-          <input
-            className="mr2"
-            type="checkbox"
-            id="addedSomeone"
-            value="addedSomeone"
-            disabled
-            checked={onboarding && onboarding.addedSomeone}
-          />
-          {onboarding && onboarding.addedSomeone ? (
-            <small className="strike">
-              Add someone to your professional network
-            </small>
-          ) : (
-            <small className="">Add someone to your professional network</small>
-          )}
-        </label>
-      </div>
-      <div className="flex items-center mb2">
-        <label htmlFor="reachOut" className="lh-copy">
-          <input
-            className="mr2"
-            type="checkbox"
-            id="reachOut"
-            value="reachOut"
-            checked={onboarding && onboarding.reachOut}
-            onChange={() =>
-              dispatch({
-                type: ONBOARDING_STEP_COMPLETED,
-                payload: {
-                  userId: uid,
-                  onboardingStep: 'reachOut',
-                  checked: onboarding && onboarding.reachOut,
-                },
-              })
-            }
-          />
-          {onboarding && onboarding.reachOut ? (
-            <small className="strike">
-              Reach out to someone in your network
-            </small>
-          ) : (
-            <small className="">Reach out to someone in your network</small>
-          )}
-        </label>
-      </div>
-      <div className="flex items-center mb2">
-        <label htmlFor="helpedSomeone" className="lh-copy">
-          <input
-            className="mr2"
-            type="checkbox"
-            id="helpedSomeone"
-            value="helpedSomeone"
-            disabled
-            checked={onboarding && onboarding.helpedSomeone}
-          />
-          {onboarding && onboarding.helpedSomeone ? (
-            <small className="strike">Help someone in your network</small>
-          ) : (
-            <small className="">Help someone in your network</small>
-          )}
-        </label>
-      </div>
+      <Step
+        value="addedSomeone"
+        completed={onboarding && onboarding.addedSomeone}
+        uid={uid}
+        completedText="Add someone to your professional network"
+        uncompletedText="Add someone to your professional network"
+      />
+
+      <Step
+        value="reachOut"
+        completed={onboarding && onboarding.reachOut}
+        uid={uid}
+        completedText="Reach out to someone in your network"
+        uncompletedText="Reach out to someone in your network"
+        handleChange={() =>
+          dispatch({
+            type: ONBOARDING_STEP_COMPLETED,
+            payload: {
+              userId: uid,
+              onboardingStep: 'reachOut',
+              checked: onboarding && onboarding.reachOut,
+            },
+          })
+        }
+      />
+
+      <Step
+        value="helpedSomeone"
+        completed={onboarding && onboarding.helpedSomeone}
+        disabled
+        completedText="Help someone in your network"
+        uncompletedText="Help someone in your network"
+      />
     </>
   );
 };
 
 GettingStarted.propTypes = startingPropTypes;
 GettingStarted.defaultProps = startingDefaultProps;
+
+const Step = ({
+  value,
+  completed,
+  disabled,
+  uid,
+  completedText,
+  uncompletedText,
+  handleChange,
+  href,
+}) => (
+  <div className="flex items-center mb2">
+    <label htmlFor="signup" className="lh-copy">
+      <input
+        className="mr2"
+        type="checkbox"
+        id={value}
+        value={value}
+        checked={completed}
+        disabled={disabled}
+        onChange={handleChange}
+      />
+
+      {completed ? (
+        <small className="strike">{completedText}</small>
+      ) : (
+        <IncompleteText
+          href={href}
+          uid={uid}
+          uncompletedText={uncompletedText}
+        />
+      )}
+    </label>
+  </div>
+);
+
+Step.propTypes = {
+  value: PropTypes.string.isRequired,
+  completed: PropTypes.bool,
+  disabled: PropTypes.bool,
+  uid: PropTypes.string,
+  completedText: PropTypes.string.isRequired,
+  uncompletedText: PropTypes.string,
+  handleChange: PropTypes.func,
+  href: PropTypes.string,
+};
+
+Step.defaultProps = {
+  completed: true,
+  uncompletedText: '',
+  uid: undefined,
+  disabled: false,
+  handleChange: () => {},
+  href: undefined,
+};
+
+const IncompleteText = ({ href, uid, uncompletedText }) =>
+  href ? (
+    <a href={href} target="_blank" rel="noopener noreferrer">
+      <small>{uncompletedText}</small>
+    </a>
+  ) : (
+    <Link to={`/user/${uid}/profile`} className="f6 link dim mr3 mr4-ns">
+      <small>{uncompletedText}</small>
+    </Link>
+  );
+
+IncompleteText.propTypes = {
+  uid: PropTypes.string,
+  uncompletedText: PropTypes.string,
+  href: PropTypes.string,
+};
+IncompleteText.defaultProps = {
+  uncompletedText: '',
+  uid: undefined,
+  href: undefined,
+};

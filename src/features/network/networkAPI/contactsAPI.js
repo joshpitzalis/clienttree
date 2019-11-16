@@ -64,6 +64,9 @@ const payloads = async (
     downloadURL = await getImageDownloadURL(contactUid, imgString);
   }
 
+  const task = helpfulTaskRef(userId, contactUid);
+  const taskId = task.id;
+
   const basePayload = {
     userId,
     contactUid,
@@ -71,21 +74,19 @@ const payloads = async (
     downloadURL,
   };
 
-  const contactPayload = {
-    ...basePayload,
-    name,
-    summary,
-    lastContacted,
-  };
-
-  const task = helpfulTaskRef(userId, contactUid);
-  const taskId = task.id;
-  const taskPayload = {
-    ...basePayload,
-    taskId,
-  };
-
-  return [contactPayload, taskPayload, contactUid];
+  return [
+    {
+      ...basePayload,
+      name,
+      summary,
+      lastContacted,
+    },
+    {
+      ...basePayload,
+      taskId,
+    },
+    contactUid,
+  ];
 };
 
 export const setFirebaseContactUpdate = async ({

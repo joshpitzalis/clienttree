@@ -42,7 +42,7 @@ export function Onboarding({ uid }) {
     );
 
   return (
-    <form className="pa4">
+    <div className="pa4">
       <fieldset className="bn">
         <details data-testid="detailBox">
           <summary>
@@ -65,7 +65,7 @@ export function Onboarding({ uid }) {
         )}
         <HelpfulTaskList myUid={uid} />
       </fieldset>
-    </form>
+    </div>
   );
 }
 
@@ -125,6 +125,7 @@ export function AddBox({ setUser, userId }) {
               text,
               photoURL,
             };
+
             return item;
           })
         ),
