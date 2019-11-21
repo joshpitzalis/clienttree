@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import '@duik/it/dist/styles.css';
 import { Provider } from 'react-redux';
 import Routes from './Routes';
 import * as serviceWorker from './serviceWorker';

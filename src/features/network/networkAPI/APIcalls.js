@@ -10,6 +10,14 @@ export const helpfulTaskRef = (userId, contactUid) =>
     .collection('helpfulTasks')
     .doc();
 
+export const newDocRef = userId =>
+  firebase
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('contacts')
+    .doc();
+
 export const setTaskDetails = ({
   userId,
   contactUid,

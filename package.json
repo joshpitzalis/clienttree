@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/core": "7.6.0",
+    "@duik/it": "^0.4.1",
     "@svgr/webpack": "4.3.2",
     "@testing-library/jest-dom": "^4.1.2",
     "@typescript-eslint/eslint-plugin": "^2.2.0",
@@ -16,6 +17,8 @@
     "babel-preset-react-app": "^9.0.2",
     "camelcase": "^5.2.0",
     "case-sensitive-paths-webpack-plugin": "2.2.0",
+    "chai": "^4.2.0",
+    "classnames": "^2.2.6",
     "css-loader": "2.1.1",
     "cypress": "^3.4.1",
     "date-fns": "^2.5.0",
@@ -95,6 +98,7 @@
   },
   "eslintConfig": {
     "extends": "wesbos",
+    "rules": {},
     "plugins": [
       "eslint-plugin-cypress"
     ],
@@ -171,6 +175,7 @@
     "@testing-library/cypress": "^5.0.1",
     "@testing-library/react": "^9.3.0",
     "@testing-library/user-event": "^7.1.2",
+    "@xstate/test": "^0.1.0",
     "babel-eslint": "^9.0.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.1",

@@ -42,10 +42,7 @@ export const GettingStarted = ({ uid, onboarding }) => {
 
   return (
     <>
-      <Step
-        completedText={<small className="strike">Sign up to Client Tree</small>}
-        value="signup"
-      />
+      <Step completedText="Sign up to Client Tree" value="signup" />
       <Step
         completedText="Completed your profile and created a referrable email signature."
         uncompletedText="Complete your profile to create a referrable email signature."

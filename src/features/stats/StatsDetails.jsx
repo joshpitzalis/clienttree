@@ -16,13 +16,17 @@ export const Stats = ({ userStats, showModal }) => {
   const projectCount = Math.ceil((goal - income) / average);
 
   return (
-    <article className="pt5 w5 center bg-white br3 pv3 pv4-ns mv3 pl2">
+    <article
+      className="pt5 w5 center bg-white br3 pv3 pv4-ns mv3 pl2"
+      data-testid="complete-screen"
+    >
       <div
         className="tc mv4 pt5 pointer "
         role="button"
         tabIndex={-1}
         onKeyPress={() => showModal()}
         onClick={() => showModal()}
+        data-testid="statsTitle"
       >
         <h1 className="f4 tl">
           {`$${income}K`}

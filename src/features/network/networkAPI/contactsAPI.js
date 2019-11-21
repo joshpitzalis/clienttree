@@ -1,5 +1,5 @@
 import firebase from '../../../utils/firebase';
-import { helpfulTaskRef, setTaskDetails } from './APIcalls';
+import { helpfulTaskRef, setTaskDetails, newDocRef } from './APIcalls';
 
 const contactRef = (userId, uid) =>
   firebase
@@ -50,22 +50,16 @@ const payloads = async (
 ) => {
   let downloadURL;
 
-  const newDoc = firebase
-    .firestore()
-    .collection('users')
-    .doc(userId)
-    .collection('contacts')
-    .doc();
-
+  const newDoc = newDocRef(userId);
   const contactUid = contactId || uid || newDoc.id;
+
+  const task = helpfulTaskRef(userId, contactUid);
+  const taskId = task.id;
 
   // upload the base 64 string to get an image url
   if (imgString) {
     downloadURL = await getImageDownloadURL(contactUid, imgString);
   }
-
-  const task = helpfulTaskRef(userId, contactUid);
-  const taskId = task.id;
 
   const basePayload = {
     userId,

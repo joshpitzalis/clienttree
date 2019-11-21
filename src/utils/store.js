@@ -2,7 +2,10 @@ import { combineReducers } from 'redux';
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
 import { createEpicMiddleware, combineEpics } from 'redux-observable';
 import { taskSlice } from '../features/network/taskSlice';
-import { updateUserDetails } from '../features/stats/statsEpic';
+import {
+  // updateUserDetails,
+  updateStatsDetails,
+} from '../features/stats/statsEpic';
 import {
   markActivityComplete,
   setNewUserTask,
@@ -12,9 +15,10 @@ import { onboardingEpic } from '../features/onboarding/onboardingEpics';
 
 export const rootEpic = combineEpics(
   markActivityComplete,
-  updateUserDetails,
+  // updateUserDetails,
   onboardingEpic,
-  setNewUserTask
+  setNewUserTask,
+  updateStatsDetails
 );
 
 export const rootReducer = combineReducers({

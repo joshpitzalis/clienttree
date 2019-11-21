@@ -3,42 +3,67 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useMachine } from '@xstate/react';
 import { Machine } from 'xstate';
+import { assert } from 'chai';
 import Portal from '../../utils/Portal';
 import { GeneralForm } from './InputForm';
 import { Stats } from './StatsDetails';
 
-const incomeGoalsCompleted = (_, { payload }) => {
-  if (payload.incomeGoalsCompleted) {
-    return true;
-  }
-
-  return false;
-};
-
-const statsMachine = Machine({
-  id: 'stats',
-  initial: 'incomplete',
-  states: {
-    incomplete: {
-      on: { MODAL_OPENED: 'modal' },
-    },
-    modal: {
-      on: {
-        CLOSED: [
-          {
-            target: 'complete',
-            // Only transition to 'complete' if the guard (incomeGoalsCompleted) evaluates to true
-            cond: incomeGoalsCompleted,
+export const statsMachine = Machine(
+  {
+    id: 'stats',
+    initial: 'incomplete',
+    states: {
+      incomplete: {
+        on: { MODAL_OPENED: 'modal' },
+        meta: {
+          test: ({ getByTestId }) => {
+            assert.ok(getByTestId('incomplete-screen'));
           },
-          { target: 'incomplete' },
-        ],
+        },
+      },
+      modal: {
+        on: {
+          CLOSED: [
+            {
+              target: 'complete',
+              // Only transition to 'complete' if the guard (cond) evaluates to true
+              cond: 'incomeGoalsCompleted',
+            },
+            { target: 'incomplete' },
+            // {
+            //   target: 'incomplete',
+            //   cond: 'incomeGoalsCompleted',
+            // },
+            // { target: 'complete' },
+          ],
+        },
+        meta: {
+          test: ({ getByTestId }) => {
+            assert.ok(getByTestId('contactModal'));
+          },
+        },
+      },
+      complete: {
+        on: { COMPLETE_MODAL_OPENED: 'modal' },
+        meta: {
+          test: ({ getByTestId }) => {
+            assert.ok(getByTestId('complete-screen'));
+          },
+        },
       },
     },
-    complete: {
-      on: { MODAL_OPENED: 'modal' },
-    },
   },
-});
+  {
+    guards: {
+      incomeGoalsCompleted: (_, { payload }) => {
+        if (payload && payload.incomeGoalsCompleted) {
+          return true;
+        }
+        return false;
+      },
+    },
+  }
+);
 
 const propTypes = {
   userId: PropTypes.string.isRequired,
@@ -56,9 +81,10 @@ export default function StatsBox({ userId }) {
         <button
           onClick={() => send('MODAL_OPENED')}
           type="button"
-          className="bn tl pl4 mb6 pointer"
+          className="bn tl pl4 mb6 pointer bg-transparent"
+          data-testid="incomplete-screen"
         >
-          <p className="underline b">Income Calculator</p>
+          <p className="underline b">Configure Your Hustle Meter</p>
           <small>
             Click here to figure out how many people you need to help out to
             reach your income goals this year.
@@ -67,7 +93,7 @@ export default function StatsBox({ userId }) {
       );
     case 'modal':
       return (
-        <Portal>
+        <Portal onClose={() => send('CLOSED')}>
           {/* <InvoiceForm  /> */}
           <GeneralForm userId={userId} send={send} userStats={userStats} />
         </Portal>
@@ -77,7 +103,7 @@ export default function StatsBox({ userId }) {
         <Stats
           userId={userId}
           userStats={userStats}
-          showModal={() => send('MODAL_OPENED')}
+          showModal={() => send('COMPLETE_MODAL_OPENED')}
         />
       );
     default:
