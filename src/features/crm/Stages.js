@@ -48,7 +48,7 @@ export function Stages({
           className="bg-white-80 br3"
         >
           <Droppable droppableId={stageId} direction="horizontal" type="people">
-            {({ droppableProps, innerRef, placeholder }, snapshot) => (
+            {({ droppableProps, innerRef }, snapshot) => (
               <li
                 className="pa3 pa4-ns bb b--black-10"
                 ref={innerRef}
@@ -66,7 +66,7 @@ export function Stages({
 
                       <div
                         className={`br3 flex ${snapshot.isDraggingOver &&
-                          'bg-light-blue h3'}`}
+                          'bg-light-blue h4'}`}
                         style={{
                           transition: 'background-color 1s ease',
                         }}
@@ -79,7 +79,6 @@ export function Stages({
                                 index={_index}
                                 photoURL={photoURL}
                                 name={name}
-                                placeholder={placeholder}
                                 setSelectedUser={setSelectedUser}
                                 setVisibility={setVisibility}
                               />

@@ -47,7 +47,7 @@ export default class Portal extends Component {
         tabIndex={-1}
         data-testid="close-button"
       >
-        <article className=" w-50 center pa3 tc br2 bg-white ma3 flex flex-column justify-center">
+        <article className="bg-base w-50 center pa3 tc br2 ma3 flex flex-column justify-center">
           {onClose && (
             <button
               type="button"

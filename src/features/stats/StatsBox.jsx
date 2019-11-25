@@ -14,7 +14,10 @@ export const statsMachine = Machine(
     initial: 'incomplete',
     states: {
       incomplete: {
-        on: { MODAL_OPENED: 'modal' },
+        on: {
+          MODAL_OPENED: 'modal',
+          ALREADY_COMPLETE: 'complete',
+        },
         meta: {
           test: ({ getByTestId }) => {
             assert.ok(getByTestId('incomplete-screen'));
@@ -75,25 +78,46 @@ export default function StatsBox({ userId }) {
   const userStats = useSelector(store => store.user);
   const [current, send] = useMachine(statsMachine);
 
+  // if the hustle meter is already set up go straight to the complete state
+  React.useEffect(() => {
+    if (userStats.stats && userStats.stats.goal && userStats.stats.average) {
+      send('ALREADY_COMPLETE');
+    }
+  }, [userStats, send]);
+
   switch (current.value) {
     case 'incomplete':
       return (
         <button
           onClick={() => send('MODAL_OPENED')}
           type="button"
-          className="bn tl pl4 mb6 pointer bg-transparent"
+          className="bn tl pa2 pointer bg-base br3 black w5 fixed mt7 ml2 br--top"
+          style={{ bottom: 0 }}
           data-testid="incomplete-screen"
         >
-          <p className="underline b">Configure Your Hustle Meter</p>
-          <small>
-            Click here to figure out how many people you need to help out to
-            reach your income goals this year.
+          <p className="b pb2 pointer"> 🎯 Configure The Hustle Meter</p>
+          <small className="">
+            Figure out how many people you need to help if you want to reach
+            your income goals this year.
           </small>
         </button>
       );
     case 'modal':
       return (
-        <Portal onClose={() => send('CLOSED')}>
+        <Portal
+          onClose={() =>
+            // send('CLOSED')
+            send({
+              type: 'CLOSED',
+              payload: {
+                incomeGoalsCompleted:
+                  userStats.stats &&
+                  userStats.stats.goal &&
+                  userStats.stats.average,
+              },
+            })
+          }
+        >
           {/* <InvoiceForm  /> */}
           <GeneralForm userId={userId} send={send} userStats={userStats} />
         </Portal>

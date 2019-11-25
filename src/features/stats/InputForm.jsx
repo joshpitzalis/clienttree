@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 // import DatePicker from 'react-date-picker';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import differenceInDays from 'date-fns/differenceInDays';
-import { FormGroupContainer, FormGroup } from '@duik/it';
+import { FormGroupContainer, FormGroup, Progress } from '@duik/it';
 import { useDispatch } from 'react-redux';
+import { Tooltip } from 'antd';
 import { Input } from './Input';
 import { FORM_SUBMITTED } from './statsConstants';
 
@@ -12,9 +13,9 @@ const propTypes = {
   userId: PropTypes.string.isRequired,
   userStats: PropTypes.shape({
     stats: PropTypes.shape({
-      goal: PropTypes.string,
-      average: PropTypes.string,
-      income: PropTypes.string,
+      goal: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      average: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      income: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       deadline: PropTypes.string,
     }),
   }),
@@ -25,19 +26,21 @@ const defaultProps = {
     stats: {
       goal: '',
       average: '',
-      income: '',
+      income: 0,
       deadline: '',
     },
   },
 };
 
-const useDerivedProjectData = state => {
-  const projectCount = Math.ceil((state.goal - state.income) / state.average);
-  const timeLeft = state.deadline ? formatDistanceToNow(state.deadline) : null;
-  const weeks = state.deadline
+const useDerivedProjectData = stats => {
+  const { goal = 0, deadline = 0, average = 0, income = 0 } = stats;
+  const projectCount = Math.ceil((goal - income) / average);
+
+  const timeLeft = deadline ? formatDistanceToNow(deadline) : null;
+  const weeks = deadline
     ? Math.floor(
         Math.abs(
-          differenceInDays(new Date(), new Date(state.deadline)) / projectCount
+          differenceInDays(new Date(), new Date(deadline)) / projectCount
         ) / 7
       )
     : null;
@@ -46,19 +49,12 @@ const useDerivedProjectData = state => {
 };
 
 export function GeneralForm({ userId, userStats }) {
-  // const [state, setState] = React.useState(userStats);
-  const [projectCount, timeLeft, weeks] = useDerivedProjectData(userStats);
+  const [projectCount, timeLeft, weeks] = useDerivedProjectData(
+    userStats && userStats.stats
+  );
   const dispatch = useDispatch();
+  const { goal, deadline, average, income = 0 } = userStats && userStats.stats;
 
-  // const handleSubmit = e => {
-  //   e.preventDefault();
-  //   dispatch({
-  //     type: FORM_SUBMITTED,
-  //     payload: { ...state, userId },
-  //   });
-  //   send('CLOSED');
-  // };
-  const { goal, deadline } = userStats && userStats.stats && userStats.stats;
   return (
     <form data-testid="contactModal">
       <FormGroupContainer>
@@ -70,131 +66,53 @@ export function GeneralForm({ userId, userStats }) {
           deadline={deadline}
         />
       </FormGroupContainer>
-      <FormGroupContainer>
-        <FormGroupContainer horizontal>
-          <FormGroup>
-            <Input
-              value={goal}
-              name="goal"
-              placeholder="How much do you want to make ?"
-              comment=""
-              label="Your Income Goal This Year"
-              type="number"
-              rightEl={<small>USD</small>}
-              userId={userId}
-              eventType={FORM_SUBMITTED}
-              dispatch={dispatch}
-            />
-          </FormGroup>
-          <FormGroup>
-            {/* <Input
-              setState={setState}
-              state={state}
-              value={state.average}
-              name="average"
-              placeholder=""
-              comment=""
-              label="The Price of Your Ideal Project"
-              successMessage=""
-              errorMessage=""
-              type="number"
-              rightEl={<small>USD</small>}
-            /> */}
-          </FormGroup>
-        </FormGroupContainer>
 
-        {/* <FormGroupContainer horizontal>
-            <FormGroup>
-              <TextField label="Income So far" />
-            </FormGroup>
-            <FormGroup>
-              <TextField label="When do you pay taxes ?" />
-            </FormGroup>
-          </FormGroupContainer> */}
+      <FormGroupContainer horizontal>
+        <FormGroup>
+          <Input
+            value={goal}
+            name="goal"
+            placeholder="How much do you want to make ?"
+            comment=""
+            label="Your Income Goal This Year"
+            type="number"
+            rightEl={<small>USD</small>}
+            userId={userId}
+            eventType={FORM_SUBMITTED}
+            dispatch={dispatch}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Input
+            value={average}
+            name="average"
+            placeholder=""
+            comment=""
+            label="The Price of Your Ideal Project"
+            type="number"
+            rightEl={<small>USD</small>}
+            userId={userId}
+            eventType={FORM_SUBMITTED}
+            dispatch={dispatch}
+          />
+        </FormGroup>
+      </FormGroupContainer>
+
+      {goal && average ? (
+        <IncomeBox
+          income={income}
+          goal={goal}
+          userId={userId}
+          dispatch={dispatch}
+        />
+      ) : (
         <small className="measure center o-50">
           Completing this form will show you how many people you have to help
           each week to hit your income goal for the year.
         </small>
-      </FormGroupContainer>
+      )}
     </form>
   );
-
-  // return (
-  //   <div className="measure center" data-testid="contactModal">
-  //     <fieldset id="contact" className="ba b--transparent ph0 mh0 tl">
-  //       <legend className="f4 fw6 ph0 mh0 dn">Profile</legend>
-  //       <div className="flex justify-center">
-  //         {state.goal && state.average && (
-  //           <Statement
-  //             projectCount={projectCount}
-  //             timeLeft={timeLeft}
-  //             weeks={weeks}
-  //             goal={state.goal}
-  //             deadline={state.deadline}
-  //           />
-  //         )}
-  //         <div className="w-50">
-  //           <Input
-  //             setState={setState}
-  //             state={state}
-  //             value={state.average}
-  //             name="average"
-  //             placeholder="Price of your average project ?"
-  //             comment="Measured in thousands of USD"
-  //           />
-
-  //           {state.goal && state.average ? (
-  //             <>
-  //               <Input
-  //                 setState={setState}
-  //                 state={state}
-  //                 value={state.income}
-  //                 name="income"
-  //                 placeholder="How much have you made so far?"
-  //                 comment="Measured in thousands of USD"
-  //               />
-  //               <>
-  //                 <p className="db fw6 lh-copy f6 ttc ">
-  //                   When do you pay taxes?
-  //                 </p>
-  //                 {/* <DatePicker
-  //                   onChange={deadline => setState({ ...state, deadline })}
-  //                   className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2"
-  //                   value={state.deadline ? new Date(state.deadline) : null}
-  //                 /> */}
-  //               </>{' '}
-  //             </>
-  //           ) : null}
-  //         </div>
-  //       </div>
-  //       <div className="mt3 flex justify-around items-center">
-  //         <button
-  //           className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
-  //           type="submit"
-  //           onClick={e => handleSubmit(e)}
-  //         >
-  //           Save
-  //         </button>
-
-  //         <button
-  //           onClick={() =>
-  //             send({
-  //               type: 'CLOSED',
-  //               payload: {
-  //                 incomeGoalsCompleted: state.goal && state.average,
-  //               },
-  //             })
-  //           }
-  //           type="button"
-  //           className="small-caps ml3 bn pointer"
-  //           data-testid="closeModal"
-  //         >
-  //           Close
-  //         </button>
-  //       </div>
-  //     </fieldset>
-  //   </div>
-  // );
 }
 
 GeneralForm.propTypes = propTypes;
@@ -202,41 +120,97 @@ GeneralForm.defaultProps = defaultProps;
 
 const statementPropTypes = {
   projectCount: PropTypes.number.isRequired,
-  timeLeft: PropTypes.number,
-  weeks: PropTypes.number,
-  goal: PropTypes.number,
-  deadline: PropTypes.number,
+  goal: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
-const statementDefaultProps = {
-  timeLeft: null,
-  weeks: null,
-  goal: null,
-  deadline: null,
-};
+const statementDefaultProps = {};
 
-function Statement({ projectCount, timeLeft, weeks, goal, deadline }) {
+function Statement({ projectCount, goal }) {
   return (
     <div className="w-100 pb5">
-      <p className="f1 lh-title b">
-        {`Making ${
-          goal ? `$ ${goal}` : '_____'
-        } this year means completing at least ${projectCount ||
-          '_____'} projects`}
-        {deadline && ` in the next ${timeLeft}`}.
+      <p className="f1 lh-title b" data-testid="incomeStatement">
+        {projectCount <= 0 && 'Congratulations!'}
+        {` Making ${goal ? `$ ${goal}` : '_____'} this year means completing ${
+          projectCount <= 0 ? 'no more' : projectCount || '_____'
+        } projects`}
+        .
       </p>
 
-      {projectCount && timeLeft ? (
-        <p className="measure lh-copy ">
-          {weeks > 1
-            ? `That gives you a maximum of ${weeks} weeks per project if there is no
-              overlap.`
-            : `That gives you less than a week per project if there is no
-              overlap.`}
-        </p>
-      ) : null}
+      {projectCount && projectCount > 0 && (
+        <Tooltip
+          placement="bottom"
+          title="The lead and project conversion ratios start out with default
+         values (10: 1 and 3:1) but the numbers will update as you start reaching
+         out to people, collecting leads and completing projects."
+        >
+          <p className="f3 lh-copy" data-testid="hustleEstimate">
+            {`
+          Landing ${projectCount} ${
+              projectCount > 1 ? 'projects' : 'project'
+            }  means you will need to pitch ${projectCount * 3}
+          ${
+            projectCount * 3 > 1 ? 'leads' : 'lead'
+          }, which means helping atleast ${projectCount * 3 * 10} ${
+              projectCount * 3 * 10 > 1 ? 'people' : 'person'
+            }.`}
+          </p>
+        </Tooltip>
+      )}
     </div>
   );
 }
 
 Statement.propTypes = statementPropTypes;
 Statement.defaultProps = statementDefaultProps;
+
+const incomePropTypes = {
+  income: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  goal: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  userId: PropTypes.string.isRequired,
+  dispatch: PropTypes.func.isRequired,
+};
+const incomeDefaultProps = {};
+
+export const IncomeBox = ({ income, goal, userId, dispatch }) => {
+  const [editMode, setEditMode] = React.useState(false);
+  React.useEffect(() => {
+    setEditMode(false);
+  }, [income]);
+  return (
+    <FormGroupContainer horizontal data-testid="incomeBar">
+      <div className="flex flex-column">
+        <Progress fill={income / goal} />
+        <div className="flex justify-center items-center">
+          {editMode ? (
+            <Input
+              value={income}
+              name="income"
+              placeholder=""
+              comment=""
+              label="Total income so far?"
+              type="number"
+              rightEl={<small>USD</small>}
+              userId={userId}
+              eventType={FORM_SUBMITTED}
+              dispatch={dispatch}
+            />
+          ) : (
+            <div>
+              <p className="mt3">{`$${income} earned so far this year `}</p>
+              <button type="button" onClick={() => setEditMode(true)}>
+                <small data-testid="addIncome" className="underline pointer">
+                  (Update)
+                </small>
+              </button>
+            </div>
+          )}
+        </div>
+        <small className="mt4">
+          You're done! The Hustle meter is set. You can close this modal now.
+        </small>
+      </div>
+    </FormGroupContainer>
+  );
+};
+
+IncomeBox.propTypes = incomePropTypes;
+IncomeBox.defaultProps = incomeDefaultProps;

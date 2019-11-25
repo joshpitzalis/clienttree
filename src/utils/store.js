@@ -3,8 +3,9 @@ import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
 import { createEpicMiddleware, combineEpics } from 'redux-observable';
 import { taskSlice } from '../features/network/taskSlice';
 import {
-  // updateUserDetails,
   updateStatsDetails,
+  projectCompleted,
+  leadContacted,
 } from '../features/stats/statsEpic';
 import {
   markActivityComplete,
@@ -15,10 +16,11 @@ import { onboardingEpic } from '../features/onboarding/onboardingEpics';
 
 export const rootEpic = combineEpics(
   markActivityComplete,
-  // updateUserDetails,
   onboardingEpic,
   setNewUserTask,
-  updateStatsDetails
+  updateStatsDetails,
+  projectCompleted,
+  leadContacted
 );
 
 export const rootReducer = combineReducers({
@@ -27,10 +29,20 @@ export const rootReducer = combineReducers({
 });
 
 const epicMiddleware = createEpicMiddleware();
+// Be sure to ONLY add this middleware in development!
+const middleware =
+  process.env.NODE_ENV !== 'production'
+    ? [
+        // eslint-disable-next-line global-require
+        require('redux-immutable-state-invariant').default(),
+        ...getDefaultMiddleware(),
+        epicMiddleware,
+      ]
+    : [...getDefaultMiddleware(), epicMiddleware];
 
 const store = configureStore({
   reducer: rootReducer,
-  middleware: [...getDefaultMiddleware(), epicMiddleware],
+  middleware,
 });
 
 epicMiddleware.run(rootEpic);

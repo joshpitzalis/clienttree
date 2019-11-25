@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TextField } from '@duik/it';
-import { useDispatch } from 'react-redux';
 
 const inputPropTypes = {
-  value: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   name: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
   type: PropTypes.string,

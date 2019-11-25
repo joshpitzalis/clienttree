@@ -64,6 +64,7 @@
     "react-router-prop-types": "^1.0.4",
     "react-use": "^12.2.2",
     "redux": "^4.0.4",
+    "redux-immutable-state-invariant": "^2.1.0",
     "redux-observable": "^1.2.0",
     "redux-starter-kit": "^0.8.0",
     "resolve": "1.12.0",

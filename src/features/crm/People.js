@@ -9,6 +9,7 @@ const peoplesPropTypes = {
   name: PropTypes.string.isRequired,
   setSelectedUser: PropTypes.func.isRequired,
   setVisibility: PropTypes.func.isRequired,
+  placeholder: PropTypes.func.isRequired,
 };
 const peoplesDefaultProps = {};
 export function Peoples({

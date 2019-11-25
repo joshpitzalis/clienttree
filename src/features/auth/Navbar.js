@@ -1,6 +1,13 @@
 import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
 // import PropTypes from 'prop-types';
+import {
+  TopBar,
+  TopBarSection,
+  TopBarTitle,
+  Dropdown,
+  DropdownItem,
+} from '@duik/it';
 import Tree from '../../images/Tree';
 
 import { UserContext } from './UserContext';
@@ -10,34 +17,48 @@ export const AuthButton = withRouter(({ history }) => {
 
   return (
     authStatus && (
-      <p className="f6 dib  bg-animate hover-bg-white hover-black no-underline pv2 ph4 br-pill ba b--white-20">
-        <button
-          type="button"
-          className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
-          onClick={() => handleLogout(history)}
-        >
-          Sign out
-        </button>
-      </p>
+      <button
+        type="button"
+        className="link bn pointer"
+        onClick={() => handleLogout(history)}
+      >
+        💥 Sign out
+      </button>
     )
   );
 });
 
 const propTypes = {};
 
-export function Navbar() {
-  const { userId } = React.useContext(UserContext);
+export const Navbar = withRouter(({ history }) => {
+  const { userId, authStatus, handleLogout } = React.useContext(UserContext);
 
   return (
-    <nav className="flex justify-between bb b--white-10 h3">
-      <Link to={userId ? `/user/${userId}/dashboard` : '/'}>
-        <Tree classNames="ml4 pl2 b hover-white no-underline flex items-center pa3" />
-      </Link>
-      <div className="flex-grow pa3 flex items-center">
-        <AuthButton />
-      </div>
-    </nav>
+    <TopBar>
+      <TopBarSection>
+        <TopBarTitle>
+          <Link to={userId ? `/user/${userId}/dashboard` : '/'}>
+            <Tree classNames="ml4 pl2 b hover-white no-underline flex items-center pa3" />
+          </Link>
+        </TopBarTitle>
+      </TopBarSection>
+
+      {authStatus && (
+        <TopBarSection>
+          <TopBarTitle>
+            <Dropdown buttonText={<strong>🌳</strong>}>
+              <DropdownItem Component={Link} to={`/user/${userId}/profile`}>
+                😀 Profile
+              </DropdownItem>
+              <DropdownItem onClick={() => handleLogout(history)}>
+                💥 Sign out
+              </DropdownItem>
+            </Dropdown>
+          </TopBarTitle>
+        </TopBarSection>
+      )}
+    </TopBar>
   );
-}
+});
 
 Navbar.propTypes = propTypes;

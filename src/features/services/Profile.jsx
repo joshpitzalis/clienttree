@@ -150,7 +150,7 @@ export function Profile(props) {
           }}
         >
           <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
-            <legend className="f4 fw6 ph0 mh0" data-testid="profileHeader">
+            <legend className="f4 fw6 ph0 mh0 pt4" data-testid="profileHeader">
               Profile
             </legend>
             <div className="mt3 mb4">

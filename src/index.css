@@ -2,10 +2,11 @@
 @import '~antd/dist/antd.css';
 
 body {
+  background-color:var(--bg-base);
   font-size: 18px;
-  --bg-main: #fff;
-  --bg-base: #f7efdd;
-  --border-color-base: #34343a;
+  --bg-main: #ffffff;
+  --bg-base: #fdf8f5;  
+  --border-color-base: #efeff1;
   --border-color-main: #44444e;
   --border-color-highlight: #64646e;
   --text-base: #182445;
@@ -21,17 +22,31 @@ body {
 --warning	: #ffb42a;
 --danger: #e64948;
 --info: #5083f4;
+--black:#252529;
 
 
   font-family: 'Roboto',-apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
 }
+.bg-client-green {
+  background-color:var(--green);
+}
 
+.bg-black {
+  background-color:var(--black) !important;
+}
 
+.green {
+  color: var(--green) ;
+}
+
+.bg-base {
+
+  background-color: var(--bg-base) ;
+}
 
 .taskStyle {
   -webkit-font-smoothing: antialiased;
@@ -52,13 +67,11 @@ transition: box-shadow 150ms cubic-bezier(.2, .6, .6, 1), opacity 150ms cubic-be
 vertical-align: middle;
 white-space: nowrap;
 
-background-color: #808080;
+
 
 }
 
-.bg-client-green {
-  background-color: #758659;
-}
+
 
 .react-date-picker__wrapper {
   border: none !important;

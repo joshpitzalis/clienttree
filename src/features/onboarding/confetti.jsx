@@ -41,8 +41,6 @@ export const ConfettiBanner = memo(({ setWelcomeMessage }) => {
         numberOfPieces={500}
         recycle={false}
         onConfettiComplete={() => {
-          console.log('dog');
-
           setWelcomeMessage({
             header: 'Nice!',
             byline: 'Try adding your signature to your email account next.',
