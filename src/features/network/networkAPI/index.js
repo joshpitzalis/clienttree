@@ -7,4 +7,12 @@ export {
   getActivitiesLeft,
 } from './tasksAPI';
 
-export { setFirebaseContactUpdate, handleContactDelete } from './contactsAPI';
+export {
+  incrementStats,
+  decrementStats,
+  getCurrentCRMStage,
+  getStage,
+  setFirebaseContactUpdate,
+  handleContactDelete,
+  handleTracking,
+} from './contactsAPI';

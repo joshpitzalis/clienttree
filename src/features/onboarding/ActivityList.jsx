@@ -172,8 +172,13 @@ export function AddBox({ setUser, userId }) {
       }}
     >
       <h1 className="f4 bg-near-white br3 br--top black-60 mv0 pv2 ph3 flex items-center">
-        <AvatarGenerator ref={avatarRef} height="25" width="25" /> Add an
-        Activity
+        <AvatarGenerator
+          ref={avatarRef}
+          height="25"
+          width="25"
+          colors={['#333', '#222', '#ccc']}
+        />{' '}
+        Add an Activity
       </h1>
 
       <div className="pa3 bt b--black-10">

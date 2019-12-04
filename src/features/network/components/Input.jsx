@@ -34,8 +34,6 @@ function isValidDate(date) {
 }
 
 export function Input({ setState, state, value, name, placeholder, type }) {
-  console.log({ value });
-
   if (type === 'date') {
     return (
       <div className="mb4">

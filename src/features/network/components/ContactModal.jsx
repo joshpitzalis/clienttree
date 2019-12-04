@@ -10,6 +10,7 @@ import {
   handleContactDelete,
   handleAddTask,
   setActiveTaskCount,
+  handleTracking,
 } from '../networkAPI';
 import firebase from '../../../utils/firebase';
 import { ToDoList } from './ToDoList';
@@ -20,10 +21,16 @@ const modalPropTypes = {
   uid: PropTypes.string.isRequired,
   selectedUserUid: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
+  incrementStats: PropTypes.func.isRequired,
 };
 const modalDefaultProps = {};
 
-export function Modal({ uid, selectedUserUid, onClose }) {
+export function Modal({
+  uid,
+  selectedUserUid,
+  onClose,
+  incrementStats = handleTracking,
+}) {
   const dispatch = useDispatch();
 
   const [state, setState] = React.useState({
@@ -35,6 +42,7 @@ export function Modal({ uid, selectedUserUid, onClose }) {
     contactId: '',
     photoURL: '',
     imgString: '',
+    activeTaskCount: 0,
   });
 
   React.useEffect(() => {
@@ -70,99 +78,6 @@ export function Modal({ uid, selectedUserUid, onClose }) {
     handleAddTask(task, myUid, theirUid, photoURL).catch(error =>
       toast$.next({ type: 'ERROR', message: error.message || error })
     );
-  };
-
-  const handleTracking = async (checked, userId, contactId, name, photoURL) => {
-    const updateSelectedUser = (_userId, _contactId, tracked) => {
-      firebase
-        .firestore()
-        .collection('users')
-        .doc(_userId)
-        .collection('contacts')
-        .doc(_contactId)
-        .set(
-          {
-            tracked,
-          },
-          { merge: true }
-        );
-    };
-
-    const updateDashboardState = async (
-      _userId,
-      tracked,
-      _contactId,
-      _name,
-      _photoURL
-    ) => {
-      const dashboardState = await firebase
-        .firestore()
-        .collection('users')
-        .doc(_userId)
-        .get()
-        .then(data => data.data().dashboard);
-
-      const newState = { ...dashboardState };
-
-      if (tracked) {
-        newState.people = {
-          ...newState.people,
-          [_contactId]: {
-            id: _contactId,
-            name: _name,
-            photoURL: _photoURL,
-          },
-        };
-
-        newState.stages.stage1.people = [
-          ...newState.stages.stage1.people,
-          _contactId,
-        ];
-      }
-
-      if (!tracked) {
-        delete newState.people[_contactId];
-
-        newState.stages = Object.entries(newState.stages).reduce(
-          (a, [k, stage]) => ({
-            ...a,
-            [k]: {
-              ...stage,
-              people:
-                stage.people && stage.people.length
-                  ? stage.people.filter(person => person !== _contactId)
-                  : [],
-            },
-          }),
-          {}
-        );
-      }
-
-      firebase
-        .firestore()
-        .collection('users')
-        .doc(_userId)
-        .set(
-          {
-            dashboard: newState,
-          },
-          { merge: true }
-        );
-    };
-
-    try {
-      await updateDashboardState(userId, checked, contactId, name, photoURL);
-      updateSelectedUser(userId, contactId, checked);
-      if (checked) {
-        // track event in amplitude
-        const { analytics } = window;
-        analytics.track('CRM Updated', {
-          movedTo: 'Leads',
-        });
-      }
-    } catch (error) {
-      toast$.next({ type: 'ERROR', message: error.message || error });
-    }
   };
 
   const handleUpdateUser = async e => {
@@ -201,7 +116,12 @@ export function Modal({ uid, selectedUserUid, onClose }) {
             src={state.photoURL}
           />
         ) : (
-          <AvatarGenerator ref={avatarRef} height="100" width="100" />
+          <AvatarGenerator
+            ref={avatarRef}
+            height="100"
+            width="100"
+            colors={['#333', '#222', '#ccc']}
+          />
         )}
       </div>
       <div className="flex">
@@ -243,7 +163,7 @@ export function Modal({ uid, selectedUserUid, onClose }) {
                     className="mr1"
                     checked={state.tracked}
                     onChange={e =>
-                      handleTracking(
+                      incrementStats(
                         e.target.checked,
                         uid,
                         selectedUserUid,
@@ -251,8 +171,9 @@ export function Modal({ uid, selectedUserUid, onClose }) {
                         state.photoURL
                       )
                     }
+                    data-testid="leadToggle"
                   />
-                  Tracked on the Dashboard
+                  Track this contact as a lead on the dashboard
                 </label>
               </div>
             </div>

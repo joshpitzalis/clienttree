@@ -178,6 +178,7 @@
     "@testing-library/user-event": "^7.1.2",
     "@xstate/test": "^0.1.0",
     "babel-eslint": "^9.0.0",
+    "canvas": "^2.6.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.1",
     "eslint-config-prettier": "^4.3.0",
