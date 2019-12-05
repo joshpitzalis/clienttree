@@ -173,7 +173,13 @@ export function Modal({
                     }
                     data-testid="leadToggle"
                   />
-                  Track this contact as a lead on the dashboard
+                  {state.tracked
+                    ? `Remove ${
+                        state.name ? state.name : 'this person'
+                      } from the dashboard`
+                    : `Add ${
+                        state.name ? state.name : 'this person'
+                      } to the project dashboard`}
                 </label>
               </div>
             </div>

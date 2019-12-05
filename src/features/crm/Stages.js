@@ -60,9 +60,9 @@ export function Stages({
                       <b className="db f3 mb1" {...provided.dragHandleProps}>
                         {stage.title}
                       </b>
-                      <small className="f5 db lh-copy measure gray">
+                      {/* <small className="f5 db lh-copy measure gray">
                         {stage.subtitle}
-                      </small>
+                      </small> */}
 
                       <div
                         className={`br3 flex ${snapshot.isDraggingOver &&

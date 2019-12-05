@@ -2,6 +2,8 @@ import '@testing-library/jest-dom/extend-expect';
 import { cleanup } from '@testing-library/react';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
+import { TestScheduler } from 'rxjs/testing';
+import { handleActivityCompleted } from '../statsHelpers';
 import { Modal } from '../../network/components/ContactModal';
 import { render } from '../../../utils/testSetup';
 import { NetworkProvider } from '../../network/NetworkContext';
@@ -10,8 +12,8 @@ import {
   handleTracking,
   getStage,
 } from '../../network/networkAPI';
-
-// jest.mock('../../network/networkAPI');
+import { markActivityComplete } from '../../network/networkEpics';
+import { ACTIVITY_COMPLETED } from '../../network/networkConstants';
 
 afterEach(cleanup);
 
@@ -333,23 +335,114 @@ describe('stats counter logic', () => {
       expect(fakeProps._incrementProjectStats).toHaveBeenCalled();
     });
 
-    test('whenever  a task is completed  it should update stats  box', () =>
-      false);
-    // also check for real time updats of stats when toggling tracking button in modal
+    test('whenever a task is completed  it increments activity stats', async () => {
+      const fakeProps = {
+        payload: {
+          taskId: '123',
+          myUid: '345',
+          completedFor: '678',
+          setSelectedUser: jest.fn(),
+          setVisibility: jest.fn(),
+          checked: true,
+        },
+        inCompleteTask: jest.fn(),
+        decrementActivityStats: jest.fn(),
+        handleCompleteTask: jest.fn(),
+        incrementActivityStats: jest.fn(),
+        track: jest.fn(),
+        getActivitiesLeft: jest.fn().mockResolvedValue(),
+      };
+
+      await handleActivityCompleted(
+        fakeProps.payload,
+        fakeProps.inCompleteTask,
+        fakeProps.decrementActivityStats,
+        fakeProps.handleCompleteTask,
+        fakeProps.incrementActivityStats,
+        fakeProps.track,
+        fakeProps.getActivitiesLeft
+      );
+
+      expect(fakeProps.decrementActivityStats).toHaveBeenCalledTimes(1);
+      expect(fakeProps.decrementActivityStats).toHaveBeenCalledWith('345');
+      expect(fakeProps.incrementActivityStats).not.toHaveBeenCalled();
+    });
+
+    test('whenever  a task is uncompleted  it should update stats box', async () => {
+      const fakeProps = {
+        payload: {
+          taskId: '123',
+          myUid: '345',
+          completedFor: '678',
+          setSelectedUser: jest.fn(),
+          setVisibility: jest.fn(),
+          checked: false,
+        },
+        inCompleteTask: jest.fn(),
+        decrementActivityStats: jest.fn(),
+        handleCompleteTask: jest.fn(),
+        incrementActivityStats: jest.fn(),
+        track: jest.fn(),
+        getActivitiesLeft: jest.fn().mockResolvedValue(),
+      };
+
+      await handleActivityCompleted(
+        fakeProps.payload,
+        fakeProps.inCompleteTask,
+        fakeProps.decrementActivityStats,
+        fakeProps.handleCompleteTask,
+        fakeProps.incrementActivityStats,
+        fakeProps.track,
+        fakeProps.getActivitiesLeft
+      );
+
+      expect(fakeProps.incrementActivityStats).toHaveBeenCalledTimes(1);
+      expect(fakeProps.incrementActivityStats).toHaveBeenCalledWith('345');
+      expect(fakeProps.decrementActivityStats).not.toHaveBeenCalled();
+    });
+
+    // test.only('markActivityComplete epic produces correct actions', () => {
+    //   const testScheduler = new TestScheduler((actual, expected) => {
+    //     expect(actual).toEqual(expected);
+    //   });
+
+    //   testScheduler.run(({ hot, cold, expectObservable }) => {
+    //     const action$ = hot('a', {
+    //       a: {
+    //         type: ACTIVITY_COMPLETED,
+    //         payload: { checked: true },
+    //       },
+    //     });
+    //     const state$ = null;
+
+    //     const dependencies = {
+    //       decrementActivityStats: jest.fn(),
+    //     };
+    //     const output$ = markActivityComplete(action$, state$, dependencies);
+
+    //     expectObservable(output$).toBe('a', {
+    //       a: { type: 'done' },
+    //     });
+
+    //     // output$.toArray().subscribe(() => {
+    //     //   expect(dependencies.decrementActivityStats).toHaveBeenCalled();
+    //     // });
+    //   });
+    // });
+
+    test('should start off as a minimum of 3:1 and 10:1', () => {});
 
     describe.skip('to-do', () => {
-      test('should start off as a minimum of 3:1 and 10:1', () => {});
-
-      test('when columns are rearranged, leads are added to new column', () => {});
+      test('when columns are rearranged, leads are added to first column', () => {});
       test('when columns are rearranged, projects are incremented of removed from last column', () => {});
+      test('support text under add someone to your network should say, on hover, to begin with just add 5 people that you have  been meaning to touch base with for a while now.', () => {});
+      test('change emoji to icons', () => {});
 
-      test('if removed from last column revert lead stats', () => {});
-      test('if task uncompleted rever activity stats', () => {});
-      test('whenever  a task is uncompleted  it shoudl update stats  box', () => {});
+      test('test adding to a new network works, on a virgin account', () => {});
 
-      test('one a person incremenst the stats they should not be able to increment agan', () => {
-        // for example at the moment they could drop at the bginning and then drop onto 7 and it would increment again
-      });
+      test('be able to remove josh form a virgin account', () => {});
+      test('only reveal stats  on hover', () => {});
+      test('loading indicators for people page', () => {});
     });
   });
 });

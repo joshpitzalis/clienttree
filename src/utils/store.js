@@ -14,6 +14,11 @@ import {
 import { userSlice } from '../pages/Dashboard';
 import { onboardingEpic } from '../features/onboarding/onboardingEpics';
 
+import {
+  decrementActivityStats,
+  incrementActivityStats,
+} from '../features/stats/statsAPI';
+
 export const rootEpic = combineEpics(
   markActivityComplete,
   onboardingEpic,
@@ -28,7 +33,13 @@ export const rootReducer = combineReducers({
   user: userSlice.reducer,
 });
 
-const epicMiddleware = createEpicMiddleware();
+const epicMiddleware = createEpicMiddleware({
+  dependencies: {
+    decrementActivityStats,
+    incrementActivityStats,
+    track: window && window.analytics && window.analytics.track,
+  },
+});
 // Be sure to ONLY add this middleware in development!
 const middleware =
   process.env.NODE_ENV !== 'production'

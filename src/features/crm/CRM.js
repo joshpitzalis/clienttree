@@ -70,9 +70,7 @@ export function CRM({ welcomeMessage, userId = '' }) {
           />
         </Portal>
       )}
-
-      <h1 className="mt3 tc">{welcomeMessage.header}</h1>
-      <h3 className="mt0 tc gray">{welcomeMessage.byline}</h3>
+      {/* <WelcomeHeader welcomeMessage={welcomeMessage} /> */}
       <DragDropContext
         onDragEnd={result =>
           onDragEnd({
@@ -90,7 +88,7 @@ export function CRM({ welcomeMessage, userId = '' }) {
         <Droppable droppableId="allStages" type="stages">
           {({ droppableProps, innerRef, placeholder }) => (
             <div ref={innerRef} {...droppableProps}>
-              <ul className="list pl0" ref={innerRef} {...droppableProps}>
+              <ul className="list pl0 pt4" ref={innerRef} {...droppableProps}>
                 {state &&
                   state.stageOrder &&
                   state.stageOrder.map((stageId, index) => {
@@ -124,3 +122,20 @@ export function CRM({ welcomeMessage, userId = '' }) {
 }
 CRM.propTypes = crmPropTypes;
 CRM.defaultProps = crmDefaultProps;
+
+// function WelcomeHeader({ welcomeMessage }) {
+//   return (
+//     <>
+//       <h1 className="mt3 tc">{welcomeMessage.header}</h1>
+//       <h3 className="mt0 tc gray">{welcomeMessage.byline}</h3>
+//     </>
+//   );
+// }
+
+// WelcomeHeader.propTypes = {
+//   welcomeMessage: PropTypes.shape({
+//     header: PropTypes.string,
+//     byline: PropTypes.string,
+//   }).isRequired,
+// };
+// WelcomeHeader.defaultProps = {};

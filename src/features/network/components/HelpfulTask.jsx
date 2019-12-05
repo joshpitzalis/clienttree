@@ -26,8 +26,8 @@ export function HelpfulTask({
   const [confirmDelete, setConfirmDelete] = React.useState(false);
   const dispatch = useDispatch();
   return (
-    <div className="flex items-center mb2">
-      <label htmlFor={name} className="lh-copy dib">
+    <div className="flex items-baseline mb2 lh-copy">
+      <label htmlFor={name} className="pr2">
         <input
           className="mr2"
           type="checkbox"
@@ -55,27 +55,26 @@ export function HelpfulTask({
             });
           }}
         />
-        <span className={!!dateCompleted && 'strike'}>{name}</span>{' '}
+        <span className={!!dateCompleted && 'strike'}>{name}</span>
       </label>
-      <span className="dib">
-        {confirmDelete ? (
-          <button
-            className="f6 underline small-caps bn pointer red"
-            type="button"
-            onClick={() => _handleDeleteTask(taskId, myUid, theirUid)}
-          >
-            Confirm Delete
-          </button>
-        ) : (
-          <button
-            className="f6 underline small-caps bn pointer black-70"
-            type="button"
-            onClick={() => setConfirmDelete(true)}
-          >
-            (Delete)
-          </button>
-        )}
-      </span>
+
+      {confirmDelete ? (
+        <button
+          className="f6 underline small-caps bn pointer red "
+          type="button"
+          onClick={() => _handleDeleteTask(taskId, myUid, theirUid)}
+        >
+          Confirm Delete
+        </button>
+      ) : (
+        <button
+          className="f6 underline small-caps bn pointer black-70 "
+          type="button"
+          onClick={() => setConfirmDelete(true)}
+        >
+          (Delete)
+        </button>
+      )}
     </div>
   );
 }

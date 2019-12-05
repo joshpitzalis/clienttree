@@ -32,7 +32,7 @@ export const Stats = ({ userStats, showModal }) => {
       style={{ bottom: 0 }}
       data-testid="complete-screen"
     >
-      {income < goal && (
+      {/* {income < goal && (
         <div data-testid="statsDetails">
           <small className="fw5 small-caps o-50">You need...</small>
           <dl className="db mr5">
@@ -52,7 +52,7 @@ export const Stats = ({ userStats, showModal }) => {
             </dd>
           </dl>
         </div>
-      )}
+      )} */}
       <div
         className="tc mv4  pointer "
         role="button"
@@ -61,11 +61,11 @@ export const Stats = ({ userStats, showModal }) => {
         onClick={() => showModal()}
         data-testid="statsTitle"
       >
-        <Progress fill={income / goal} />
         <h1 className="f4 tl">
           {`$ ${income}`}
-          <small className="fw5">/ {`${goal}`}</small>
+          <small className="fw5"> / $ {`${goal}`}</small>
         </h1>
+        <Progress fill={income / goal} />
       </div>
     </article>
   );

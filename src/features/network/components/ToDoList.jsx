@@ -73,10 +73,10 @@ export const ToDoList = ({
           <legend className="ph0 mh0 fw6 clip"></legend>
           <div className="mb3">
             <label className="db fw4 lh-copy f6 " htmlFor="task">
-              <span className="b">Ways you can help</span>
+              {/* <span className="db b">Ways you can help this person</span> */}
               <input
-                className="b pa2 input-reset ba bg-transparent center br2 b--black-20"
-                placeholder="Add a new task..."
+                className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2 mt4"
+                placeholder="Add a way you can help this person..."
                 type="text"
                 name="task"
                 id="task"

@@ -74,7 +74,7 @@ export function Dashboard({ userId }) {
               to={`/user/${userId}/dashboard`}
               className={pathname === `/user/${userId}/dashboard` && 'active'}
             >
-              Dashboard
+              Projects
             </NavLink>
 
             {/* <NavLink
@@ -86,13 +86,13 @@ export function Dashboard({ userId }) {
               Services
             </NavLink> */}
             <NavLink
-              leftEl="🌍"
+              leftEl="👩‍👩‍👧‍👦"
               Component={Link}
               to={`/user/${userId}/network`}
               className={pathname === `/user/${userId}/network` && 'active'}
               data-testid="networkPage"
             >
-              Network
+              People
             </NavLink>
             {/* <NavLink rightEl="🚝">With left and right el</NavLink> */}
           </div>
