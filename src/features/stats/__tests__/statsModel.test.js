@@ -12,7 +12,6 @@ const statsModel = createModel(statsMachine).withEvents({
   COMPLETE_MODAL_OPENED: ({ getByTestId }) => {
     fireEvent.click(getByTestId('statsTitle'));
   },
-
   CLOSED: {
     exec: async ({ getByTestId }, event) => {
       fireEvent.change(getByTestId('goal'), {

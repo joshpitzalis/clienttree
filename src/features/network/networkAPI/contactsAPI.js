@@ -171,8 +171,10 @@ const updateDashboardState = async (
       },
     };
 
-    newState.stages.stage1.people = [
-      ...newState.stages.stage1.people,
+    const firstStage = newState.stageOrder[0];
+
+    newState.stages[firstStage].people = [
+      ...newState.stages[firstStage].people,
       _contactId,
     ];
   }
@@ -358,6 +360,8 @@ export const decrementStats = async (
     .then(([totalLeads, activitiesCompleted]) => {
       if (totalLeads && activitiesCompleted) {
         const newLeadCount = totalLeads - 1;
+        console.log({ newLeadCount });
+
         // decrement leads acquired and update ratio
         _setStats(userId, newLeadCount, activitiesCompleted);
       } else {
@@ -375,15 +379,23 @@ export const decrementStats = async (
     );
 
 export const getStage = (dashboard, contactId) => {
-  if (Object.values(dashboard.stages)[0].people.includes(contactId)) {
+  const firstStage = dashboard.stageOrder && dashboard.stageOrder[0];
+
+  const inFirstStage =
+    firstStage && dashboard.stages[firstStage].people.includes(contactId);
+
+  if (inFirstStage) {
     return 'first';
   }
 
-  const indexOfLastStage = Object.keys(dashboard.stages).length - 1;
+  const lastStage =
+    dashboard.stageOrder &&
+    dashboard.stageOrder[dashboard.stageOrder.length - 1];
 
-  if (
-    Object.values(dashboard.stages)[indexOfLastStage].people.includes(contactId)
-  ) {
+  const inLastStage =
+    lastStage && dashboard.stages[lastStage].people.includes(contactId);
+
+  if (inLastStage) {
     return 'last';
   }
 

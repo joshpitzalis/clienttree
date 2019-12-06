@@ -7,6 +7,7 @@ import { assert } from 'chai';
 import Portal from '../../utils/Portal';
 import { GeneralForm } from './InputForm';
 import { Stats } from './StatsDetails';
+import { setStatDefaults } from './statsAPI';
 
 export const statsMachine = Machine(
   {
@@ -15,12 +16,25 @@ export const statsMachine = Machine(
     states: {
       incomplete: {
         on: {
-          MODAL_OPENED: 'modal',
+          MODAL_OPENED: 'loading',
           ALREADY_COMPLETE: 'complete',
         },
         meta: {
           test: ({ getByTestId }) => {
             assert.ok(getByTestId('incomplete-screen'));
+          },
+        },
+      },
+      loading: {
+        invoke: {
+          id: 'setRatioDefaultsInFirebase',
+          src: (context, event) =>
+            setStatDefaults(event.payload && event.payload.userId),
+          onDone: {
+            target: 'modal',
+          },
+          onError: {
+            target: 'incomplete',
           },
         },
       },
@@ -85,11 +99,13 @@ export default function StatsBox({ userId }) {
     }
   }, [userStats, send]);
 
+  console.log(userStats.stats);
+
   switch (current.value) {
     case 'incomplete':
       return (
         <button
-          onClick={() => send('MODAL_OPENED')}
+          onClick={() => send({ type: 'MODAL_OPENED', payload: { userId } })}
           type="button"
           className="bn tl pa2 pointer bg-base br3 black w5 fixed mt7 ml2 br--top"
           style={{ bottom: 0 }}

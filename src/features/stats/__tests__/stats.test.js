@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
-import { cleanup, fireEvent } from '@testing-library/react';
+import { cleanup, fireEvent, wait } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import StatsBox from '../StatsBox';
 import { render } from '../../../utils/testSetup';
@@ -24,7 +24,7 @@ describe('stats box', () => {
     expect(queryByTestId('complete-screen')).not.toBeInTheDocument();
   });
 
-  test('modal closes to incomplete if no goal was added', () => {
+  test('modal closes to incomplete if no goal was added', async () => {
     const { getByTestId, queryByTestId } = render(
       <StatsBox userId={fakeData.userId} />,
       {
@@ -34,7 +34,8 @@ describe('stats box', () => {
     expect(getByTestId('incomplete-screen')).toBeInTheDocument();
     expect(queryByTestId('contactModal')).not.toBeInTheDocument();
     userEvent.click(getByTestId('incomplete-screen'));
-    expect(queryByTestId('contactModal')).toBeInTheDocument();
+
+    await wait(() => expect(queryByTestId('contactModal')).toBeInTheDocument());
     userEvent.click(getByTestId('closeModal'));
     expect(queryByTestId('contactModal')).not.toBeInTheDocument();
     expect(getByTestId('incomplete-screen')).toBeInTheDocument();
