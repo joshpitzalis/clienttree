@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import {
   TopBar,
   TopBarSection,
@@ -10,8 +10,14 @@ import {
 } from '@duik/it';
 import Settings from '../../images/Settings';
 import Tree from '../../images/Tree';
-
+import Logout from '../../images/Logout';
+import Profile from '../../images/Profile';
 import { UserContext } from './UserContext';
+
+const DropDownIcon = ({ handleToggle }) => (
+  <Settings onClick={handleToggle} className="pointer" />
+);
+DropDownIcon.propTypes = { handleToggle: PropTypes.func.isRequired };
 
 export const AuthButton = withRouter(({ history }) => {
   const { authStatus, handleLogout } = React.useContext(UserContext);
@@ -48,17 +54,22 @@ export const Navbar = withRouter(({ history }) => {
         <TopBarSection>
           <TopBarTitle>
             <Dropdown
-              buttonText={<Settings />}
+              ButtonComponent={DropDownIcon}
               buttonProps={{
                 clear: true,
+                closeOnOptionClick: true,
               }}
             >
-              <DropdownItem Component={Link} to={`/user/${userId}/profile`}>
-                😀 Profile
-              </DropdownItem>
-              <DropdownItem onClick={() => handleLogout(history)}>
-                💥 Sign out
-              </DropdownItem>
+              {({ handleClose }) => (
+                <div onMouseLeave={handleClose}>
+                  <DropdownItem Component={Link} to={`/user/${userId}/profile`}>
+                    <Profile /> <p className="tracked pl2">Profile</p>
+                  </DropdownItem>
+                  <DropdownItem onClick={() => handleLogout(history)}>
+                    <Logout /> <p className="tracked pl2">Logout</p>
+                  </DropdownItem>
+                </div>
+              )}
             </Dropdown>
           </TopBarTitle>
         </TopBarSection>

@@ -7,7 +7,7 @@ const propTypes = {
 
 const defaultProps = {};
 
-export default function Globe({ className }) {
+export default function Logout({ className }) {
   return (
     <React.Fragment>
       <svg
@@ -22,13 +22,11 @@ export default function Globe({ className }) {
         strokeLinejoin="round"
         className={className}
       >
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="2" y1="12" x2="22" y2="12"></line>
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
       </svg>
     </React.Fragment>
   );
 }
 
-Globe.propTypes = propTypes;
-Globe.defaultProps = defaultProps;
+Logout.propTypes = propTypes;
+Logout.defaultProps = defaultProps;

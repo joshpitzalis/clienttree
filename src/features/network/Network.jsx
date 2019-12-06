@@ -4,10 +4,12 @@ import PieChart from 'react-minimal-pie-chart';
 import { collection } from 'rxfire/firestore';
 import { map } from 'rxjs/operators';
 // import format from 'date-fns/format';
+import { CSSTransition } from 'react-transition-group';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import fromUnixTime from 'date-fns/fromUnixTime';
+import { Button } from '@duik/it';
 import Portal from '../../utils/Portal';
-import Plus from '../../images/Plus';
+import './networkAnimations.css';
 import { Modal } from './components/ContactModal';
 import { NetworkContext } from './NetworkContext';
 import firebase from '../../utils/firebase';
@@ -68,20 +70,10 @@ export function Network({ uid }) {
         className="flex items-center lh-copy pa3 ph0-l bb b--black-10 "
         data-testid="outreachPage"
       >
-        <div id="viz1"></div>
-        <button
-          className=" flex items-center pointer link bn"
-          type="button"
-          onClick={() => setVisibility(true)}
-        >
-          <Plus className="black-70" />
-          <div className="pl2 ">
-            <span className="f6 db black-70">Add someone to your network</span>
-            {/* <span className="f6 db black-70">
-            Bulk Import contacts from Gmail
-          </span> */}
-          </div>
-        </button>
+        <AddButton
+          setVisibility={setVisibility}
+          contactCount={contacts.filter(c => c.uid).length}
+        />
       </div>
 
       <ul className="list pl0 mt0">
@@ -193,3 +185,45 @@ Charts.propTypes = {
   tasksCompleted: PropTypes.array,
 };
 Charts.defaultProps = {};
+
+function AddButton({ setVisibility, contactCount }) {
+  const [revealSupportText, setRevealSupportText] = React.useState(false);
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => setVisibility(true)}
+        className="link ba ph3 pv2 mb2 db black-70 pointer br1"
+        onMouseEnter={() => setRevealSupportText(true)}
+        onMouseLeave={() => setRevealSupportText(false)}
+      >
+        Add Someone New
+      </button>
+      <CSSTransition
+        in={contactCount < 3 && revealSupportText}
+        timeout={500}
+        classNames="fadeIn"
+        unmountOnExit
+      >
+        <p className="black-50 db i">
+          {
+            {
+              0: 'Just start by adding 3 people that you have been meaning to keep in touch with for a while.',
+              1: 'Almost there. Add two more people. You can do it! 🙌 🙌 🙌',
+              2: 'Add One more person. You got this! 🎉 🎉 🎉',
+            }[contactCount]
+          }
+        </p>
+      </CSSTransition>
+    </div>
+  );
+}
+
+AddButton.propTypes = {
+  setVisibility: PropTypes.func.isRequired,
+  contactCount: PropTypes.number,
+};
+AddButton.defaultProps = {
+  contactCount: 0,
+};

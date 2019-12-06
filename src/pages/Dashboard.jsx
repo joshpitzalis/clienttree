@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { createSlice } from 'redux-starter-kit';
 import { catchError } from 'rxjs/operators';
 import { NavPanel, NavLink, ContainerHorizontal } from '@duik/it';
-import Globe from '../images/Globe';
+import People from '../images/People';
 import Home from '../images/Home';
 import firebase from '../utils/firebase';
 import { toast$ } from '../features/notifications/toast';
@@ -73,7 +73,7 @@ export function Dashboard({ userId }) {
               Component={Link}
               to={`/user/${userId}/dashboard`}
               className={`${pathname === `/user/${userId}/dashboard` &&
-                'active'} small-caps b tracked pb2`}
+                'active'}  tracked pb2`}
             >
               Projects
             </NavLink>
@@ -87,11 +87,11 @@ export function Dashboard({ userId }) {
               Services
             </NavLink> */}
             <NavLink
-              leftEl={<Globe className="o-75 h1" />}
+              leftEl={<People className="o-75 h1" />}
               Component={Link}
               to={`/user/${userId}/network`}
               className={`${pathname === `/user/${userId}/network` &&
-                'active'} small-caps b tracked pb2`}
+                'active'}  tracked pb2`}
               data-testid="networkPage"
             >
               People

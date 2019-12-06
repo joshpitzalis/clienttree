@@ -1217,12 +1217,11 @@ describe('stats counter logic', () => {
 
     test('only reveal stats on hover', () => false);
 
-test('show activities needed minus activties completed', () => false);
-
+    test('show activities needed minus activties completed', () => false);
 
     test('support text under add someone to your network should say, on hover, to begin with just add 5 people that you have  been meaning to touch base with for a while now.', () =>
       false);
-    test('change emoji to icons', () => false);
-    test('loading indicators for people page', () => false);
+    test('loading indicators for people page, when loading, but also when creating', () =>
+      false);
   });
 });
