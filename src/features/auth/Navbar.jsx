@@ -8,6 +8,7 @@ import {
   Dropdown,
   DropdownItem,
 } from '@duik/it';
+import Settings from '../../images/Settings';
 import Tree from '../../images/Tree';
 
 import { UserContext } from './UserContext';
@@ -46,7 +47,12 @@ export const Navbar = withRouter(({ history }) => {
       {authStatus && (
         <TopBarSection>
           <TopBarTitle>
-            <Dropdown buttonText={<strong>🌳</strong>}>
+            <Dropdown
+              buttonText={<Settings />}
+              buttonProps={{
+                clear: true,
+              }}
+            >
               <DropdownItem Component={Link} to={`/user/${userId}/profile`}>
                 😀 Profile
               </DropdownItem>

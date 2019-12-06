@@ -8,6 +8,7 @@ import Portal from '../../utils/Portal';
 import { GeneralForm } from './InputForm';
 import { Stats } from './StatsDetails';
 import { setStatDefaults } from './statsAPI';
+import Dollar from '../../images/Dollar';
 
 export const statsMachine = Machine(
   {
@@ -99,8 +100,6 @@ export default function StatsBox({ userId }) {
     }
   }, [userStats, send]);
 
-  console.log(userStats.stats);
-
   switch (current.value) {
     case 'incomplete':
       return (
@@ -111,11 +110,14 @@ export default function StatsBox({ userId }) {
           style={{ bottom: 0 }}
           data-testid="incomplete-screen"
         >
-          <p className="b pb2 pointer"> 🎯 Configure The Hustle Meter</p>
-          <small className="">
-            Figure out how many people you need to help if you want to reach
-            your income goals this year.
-          </small>
+          <p className="b pointer"> Configure Your Hustle Meter</p>
+          <div className="flex">
+            <Dollar className="w3" />
+            <small className="pl2">
+              Figure out how many people you need to help if you want to reach
+              your income goals this year.
+            </small>
+          </div>
         </button>
       );
     case 'modal':

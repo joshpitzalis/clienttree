@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Link, useLocation } from 'react-router-dom';
 import { doc } from 'rxfire/firestore';
-
 // import { PrivateRoute } from '../features/auth/PrivateRoute';
 import { useDispatch } from 'react-redux';
 import { createSlice } from 'redux-starter-kit';
 import { catchError } from 'rxjs/operators';
 import { NavPanel, NavLink, ContainerHorizontal } from '@duik/it';
-
+import Globe from '../images/Globe';
+import Home from '../images/Home';
 import firebase from '../utils/firebase';
 import { toast$ } from '../features/notifications/toast';
 import { Network } from '../features/network/Network';
@@ -69,10 +69,11 @@ export function Dashboard({ userId }) {
         <NavPanel dark className="flex flex-column justify-between min-vh-100">
           <div className="mt5">
             <NavLink
-              leftEl="🏡"
+              leftEl={<Home className="o-75 h1" />}
               Component={Link}
               to={`/user/${userId}/dashboard`}
-              className={pathname === `/user/${userId}/dashboard` && 'active'}
+              className={`${pathname === `/user/${userId}/dashboard` &&
+                'active'} small-caps b tracked pb2`}
             >
               Projects
             </NavLink>
@@ -86,10 +87,11 @@ export function Dashboard({ userId }) {
               Services
             </NavLink> */}
             <NavLink
-              leftEl="👩‍👩‍👧‍👦"
+              leftEl={<Globe className="o-75 h1" />}
               Component={Link}
               to={`/user/${userId}/network`}
-              className={pathname === `/user/${userId}/network` && 'active'}
+              className={`${pathname === `/user/${userId}/network` &&
+                'active'} small-caps b tracked pb2`}
               data-testid="networkPage"
             >
               People

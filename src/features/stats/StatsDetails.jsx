@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Progress } from '@duik/it';
+import { CSSTransition } from 'react-transition-group';
+import './statsAnimation.css';
 
 const statPropTypes = {
   userStats: PropTypes.shape({
@@ -10,6 +12,9 @@ const statPropTypes = {
       average: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       projectRatio: PropTypes.number,
       leadRatio: PropTypes.number,
+      leadsContacted: PropTypes.number,
+      projectCompleted: PropTypes.number,
+      activitiesCompleted: PropTypes.number,
     }),
   }).isRequired,
   showModal: PropTypes.func.isRequired,
@@ -23,36 +28,58 @@ export const Stats = ({ userStats, showModal }) => {
     average,
     projectRatio,
     leadRatio,
+    leadsContacted,
+    projectCompleted,
+    activitiesCompleted,
   } = userStats.stats;
   const projectCount = Math.ceil((goal - income) / average);
 
+  const [visibility, setVisibility] = React.useState(false);
+  const totalActivitiesNeeded = projectCount * projectRatio * leadRatio;
+  const leadsNeeded = projectCount * projectRatio;
   return (
     <article
       className="w5 pl4 fixed pt5"
       style={{ bottom: 0 }}
       data-testid="complete-screen"
+      onMouseLeave={() => setVisibility(false)}
     >
-      {/* {income < goal && (
-        <div data-testid="statsDetails">
-          <small className="fw5 small-caps o-50">You need...</small>
+      <CSSTransition
+        in={income < goal && visibility}
+        timeout={500}
+        classNames="rollUp"
+        unmountOnExit
+      >
+        <div
+          data-testid="statsDetails"
+          role="button"
+          className="relative pointer"
+          tabIndex={-2}
+          onKeyPress={() => showModal()}
+          onClick={() => showModal()}
+        >
           <dl className="db mr5">
-            <dd className="f6 f5-ns  ml0">Projects</dd>
-            <dd className="f3 f2-ns b ml0">{projectCount}</dd>
-          </dl>
-
-          <dl className="db mr5 mt3">
-            <dd className="f6 f5-ns  ml0">Leads</dd>
-            <dd className="f3 f2-ns b ml0 ">{projectCount * projectRatio}</dd>
-          </dl>
-
-          <dl className="db mr5 mt3">
-            <dd className="f6 f5-ns  ml0">Activities</dd>
-            <dd className="f3 f2-ns b ml0">
-              {projectCount * projectRatio * leadRatio}
+            <dd className="f3 f2-ns b ml0 mb0">
+              {projectCount - projectCompleted}
             </dd>
+            <dd className="f6 f5-ns ml0">Projects to go</dd>
+          </dl>
+          {/* <small className="fw5 small-caps o-50">Which means...</small> */}
+          <dl className="db mr5 mt3">
+            <dd className="f3 f2-ns b ml0 mb0">
+              {leadsNeeded - leadsContacted}
+            </dd>
+            <dd className="f6 f5-ns  ml0">More Leads</dd>
+          </dl>
+          {/* <small className="fw5 small-caps o-50">Which means...</small> */}
+          <dl className="db mr5 mt3">
+            <dd className="f3 f2-ns b ml0 mb0">
+              {totalActivitiesNeeded - activitiesCompleted}
+            </dd>
+            <dd className="f6 f5-ns  ml0">Activities To Complete</dd>
           </dl>
         </div>
-      )} */}
+      </CSSTransition>
       <div
         className="tc mv4  pointer "
         role="button"
@@ -60,11 +87,13 @@ export const Stats = ({ userStats, showModal }) => {
         onKeyPress={() => showModal()}
         onClick={() => showModal()}
         data-testid="statsTitle"
+        onMouseEnter={() => setVisibility(true)}
       >
         <h1 className="f4 tl">
           {`$ ${income}`}
-          <small className="fw5"> / $ {`${goal}`}</small>
+          {visibility && <small className="fw5"> / ${`${goal}`}</small>}
         </h1>
+
         <Progress fill={income / goal} />
       </div>
     </article>
