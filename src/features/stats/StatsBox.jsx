@@ -13,12 +13,17 @@ import Dollar from '../../images/Dollar';
 export const statsMachine = Machine(
   {
     id: 'stats',
-    initial: 'incomplete',
+    initial: 'initialising',
     states: {
+      initialising: {
+        on: {
+          INCOMPLETE: 'incomplete',
+          ALREADY_COMPLETE: 'complete',
+        },
+      },
       incomplete: {
         on: {
           MODAL_OPENED: 'loading',
-          ALREADY_COMPLETE: 'complete',
         },
         meta: {
           test: ({ getByTestId }) => {
@@ -97,6 +102,8 @@ export default function StatsBox({ userId }) {
   React.useEffect(() => {
     if (userStats.stats && userStats.stats.goal && userStats.stats.average) {
       send('ALREADY_COMPLETE');
+    } else {
+      send('INCOMPLETE');
     }
   }, [userStats, send]);
 

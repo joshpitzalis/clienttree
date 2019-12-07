@@ -8,11 +8,11 @@ describe('outreach', () => {
 
   it('lets you add a contact', () => {
     cy.visit('/')
-      .findByText(/Welcome/i)
+      .findByTestId('salesDashboard')
       .findByTestId('networkPage')
       .click()
       .findByTestId(/outreachPage/i)
-      .findByText(/Add someone to your network/i)
+      .findByText(/Add someone new/i)
       .click()
       .findByTestId(/contactModal/i)
       .findByPlaceholderText(/Their name/i)
@@ -30,7 +30,7 @@ describe('outreach', () => {
 
   it('lets you update a contact', () => {
     cy.visit('/')
-      .findByText(/Welcome/i)
+      .findByTestId('salesDashboard')
       .findByTestId('networkPage')
       .click()
       .findByTestId(/outreachPage/i)
@@ -54,7 +54,7 @@ describe('outreach', () => {
 
   it('lets you delete a contact', () => {
     cy.visit('/')
-      .findByText(/Welcome/i)
+      .findByTestId('salesDashboard')
       .findByTestId('networkPage')
       .click()
       .findByTestId(/outreachPage/i)

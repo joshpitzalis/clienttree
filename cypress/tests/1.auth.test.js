@@ -2,8 +2,10 @@ describe('authentication', () => {
   it('lets you sign in and logout', () => {
     cy.visit('/')
       .login()
-      .findByText(/Welcome!/i)
-      .findByText(/sign out/i)
+      .findByTestId('salesDashboard')
+      .findByTestId('settings')
+      .click()
+      .findByText(/Logout/i)
       .click()
       .findByPlaceholderText(/Your email.../i);
   });

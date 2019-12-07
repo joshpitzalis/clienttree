@@ -42,13 +42,7 @@ export const GettingStarted = ({ uid, onboarding }) => {
 
   return (
     <>
-      <Step completedText="Sign up to Client Tree" value="signup" />
-      <Step
-        completedText="Completed your profile and created a referrable email signature."
-        uncompletedText="Complete your profile to create a referrable email signature."
-        completed={onboarding && onboarding.signatureCreated}
-        value="signup"
-      />
+      <Step completedText="Sign up to Client Tree" value="signup" completed />
       <Step
         value="signature"
         completed={onboarding && onboarding.signatureCreated}
@@ -144,6 +138,7 @@ const Step = ({
         checked={completed}
         disabled={disabled}
         onChange={handleChange}
+        data-testid={value}
       />
 
       {completed ? (
@@ -171,7 +166,7 @@ Step.propTypes = {
 };
 
 Step.defaultProps = {
-  completed: true,
+  completed: false,
   uncompletedText: '',
   uid: undefined,
   disabled: false,

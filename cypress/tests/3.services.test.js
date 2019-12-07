@@ -10,9 +10,8 @@ describe('services', () => {
 
   it('lets you add a service', () => {
     cy.visit('/')
-      .findByText(/Welcome/i)
-      .findByTestId('linkToServices')
-      .click()
+      .findByTestId('salesDashboard')
+      .goToProfilePage()
       .findByTestId('services')
       .wait(5000)
       .queryByTestId('serviceBox')
@@ -39,9 +38,8 @@ describe('services', () => {
 
   it('lets you update a service', () => {
     cy.visit('/')
-      .findByText(/Welcome!/i)
-      .findByTestId('linkToServices')
-      .click()
+      .findByTestId('salesDashboard')
+      .goToProfilePage()
       .findByTestId('services')
       .click()
       .findByText(fakeData.price)
@@ -57,9 +55,8 @@ describe('services', () => {
 
   it('lets you delete a service', () => {
     cy.visit('/')
-      .findByText(/Welcome!/i)
-      .findByTestId('linkToServices')
-      .click()
+      .findByTestId('salesDashboard')
+      .goToProfilePage()
       .findByTestId('services')
       .click()
       .wait(5000)

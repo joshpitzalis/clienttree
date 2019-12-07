@@ -1,18 +1,11 @@
 export const initialData = {
-  people: {
-    person1: {
-      id: 'person1',
-      name: 'Josh 🐟',
-      photoURL:
-        'https://pbs.twimg.com/profile_images/673422102767251456/HYiR6yIE_400x400.jpg',
-    },
-  },
+  people: {},
   stages: {
     stage1: {
       id: 'stage1',
       title: 'Leads',
       subtitle: ``,
-      people: ['person1'],
+      people: [],
     },
     stage2: {
       id: 'stage2',

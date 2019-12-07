@@ -14,26 +14,26 @@ import Logout from '../../images/Logout';
 import Profile from '../../images/Profile';
 import { UserContext } from './UserContext';
 
+// export const AuthButton = withRouter(({ history }) => {
+//   const { authStatus, handleLogout } = React.useContext(UserContext);
+
+//   return (
+//     authStatus && (
+//       <button
+//         type="button"
+//         className="link bn pointer"
+//         onClick={() => handleLogout(history)}
+//       >
+//         💥 Sign out
+//       </button>
+//     )
+//   );
+// });
+
 const DropDownIcon = ({ handleToggle }) => (
   <Settings onClick={handleToggle} className="pointer" />
 );
 DropDownIcon.propTypes = { handleToggle: PropTypes.func.isRequired };
-
-export const AuthButton = withRouter(({ history }) => {
-  const { authStatus, handleLogout } = React.useContext(UserContext);
-
-  return (
-    authStatus && (
-      <button
-        type="button"
-        className="link bn pointer"
-        onClick={() => handleLogout(history)}
-      >
-        💥 Sign out
-      </button>
-    )
-  );
-});
 
 const propTypes = {};
 
@@ -55,6 +55,7 @@ export const Navbar = withRouter(({ history }) => {
           <TopBarTitle>
             <Dropdown
               ButtonComponent={DropDownIcon}
+              data-testid="settings"
               buttonProps={{
                 clear: true,
                 closeOnOptionClick: true,
@@ -62,7 +63,11 @@ export const Navbar = withRouter(({ history }) => {
             >
               {({ handleClose }) => (
                 <div onMouseLeave={handleClose}>
-                  <DropdownItem Component={Link} to={`/user/${userId}/profile`}>
+                  <DropdownItem
+                    Component={Link}
+                    to={`/user/${userId}/profile`}
+                    data-testid="goToProfilePage"
+                  >
                     <Profile /> <p className="tracked pl2">Profile</p>
                   </DropdownItem>
                   <DropdownItem onClick={() => handleLogout(history)}>

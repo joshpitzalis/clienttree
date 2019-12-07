@@ -48,3 +48,12 @@ Cypress.Commands.add('pickDate', () => {
         .click()
     );
 });
+
+Cypress.Commands.add('goToProfilePage', () => {
+  cy.findByTestId('settings')
+    .click()
+    .findByTestId('goToProfilePage')
+    .click()
+    .url()
+    .should('include', 'profile');
+});

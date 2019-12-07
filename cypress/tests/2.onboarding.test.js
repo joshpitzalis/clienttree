@@ -2,7 +2,7 @@ describe('onboarding', () => {
   it('shows first task completed when you start', () => {
     cy.visit('/')
       .login()
-      .findByText(/Welcome!/i)
+      .findByTestId('salesDashboard')
       .findByLabelText(/Sign up to Client Tree/i)
       .should('be.checked');
   });
@@ -17,10 +17,8 @@ describe('onboarding', () => {
     };
 
     cy.visit('/')
-      .findByText(/Welcome!/i)
-      .findByLabelText(
-        /Complete your profile to create a referrable email signature/i
-      )
+      .findByTestId('salesDashboard')
+      .findByTestId('signature')
       .should('not.be.checked')
       .findByText(
         /Complete your profile to create a referrable email signature/i
@@ -55,17 +53,11 @@ describe('onboarding', () => {
       .click()
       .url()
       .should('include', 'dashboard')
-      .findByText(/Welcome!/i)
-      .wait(10000)
-      .findByText(/nice!/i)
       .findByLabelText(
         /Completed your profile and created a referrable email signature/i
       )
       .should('be.checked')
-      .findByTestId(/linkToServices/i)
-      .click()
-      .url()
-      .should('include', 'profile')
+      .goToProfilePage()
       .findByText(/Go To Your Public Referral Page/i)
       .click()
       .url()
@@ -75,9 +67,9 @@ describe('onboarding', () => {
       .findByText('I specialise in helping bears with traps .');
   });
 
-  it('once you have create a signature the onboarding task gets marked complete and thsi is persisted', () => {
+  it('once you have create a signature the onboarding task is marked complete and this change is persisted', () => {
     cy.visit('/')
-      .findByText(/Welcome!/i)
+      .findByTestId('salesDashboard')
       .findByLabelText(
         /Completed your profile and created a referrable email signature/i
       )
@@ -86,7 +78,7 @@ describe('onboarding', () => {
 
   it('you cannot uncheck signature step once persisted', () => {
     cy.visit('/')
-      .findByText(/Welcome!/i)
+      .findByTestId('salesDashboard')
       .findByLabelText(
         /Completed your profile and created a referrable email signature/i
       )

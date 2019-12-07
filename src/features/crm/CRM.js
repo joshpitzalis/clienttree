@@ -51,7 +51,7 @@ export function CRM({ welcomeMessage, userId = '' }) {
   }, [userId]);
 
   return (
-    <div className="bg-base">
+    <div className="bg-base" data-testid="salesDashboard">
       {visible && (
         <Portal
           onClose={() => {
