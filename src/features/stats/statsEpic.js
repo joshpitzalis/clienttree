@@ -97,7 +97,7 @@ export const projectCompleted = (action$, state$) => {
 export const updateStatsDetails = action$ =>
   action$.pipe(
     ofType(FORM_SUBMITTED),
-    debounceTime(500),
+    debounceTime(1000),
     tap(e => {
       const { userId, name, value } = e.payload;
       firebase

@@ -77,15 +77,23 @@ export function Input({
         placeholder={placeholder}
         value={val}
         data-testid={name}
-        onKeyDown={e => {
+        onKeyPress={e => {
           const notNumber = ev => Number.isNaN(parseInt(ev));
           if (type === 'number' && notNumber(e.target.value)) {
             setStatus({ success: '', error: 'Numbers only please.' });
           }
         }}
         onChange={e => {
-          const inputValue =
-            type === 'number' ? parseInt(e.target.value) : e.target.value;
+          let inputValue;
+          // if (type === 'number' && e.target.value === '') {
+          //   inputValue = 0;
+          // } else
+
+          if (type === 'number') {
+            inputValue = parseInt(e.target.value);
+          } else {
+            inputValue = e.target.value;
+          }
 
           setStatus({ success: '', error: 'Saving...' });
           setValue(inputValue);
@@ -95,7 +103,10 @@ export function Input({
               type: eventType,
               payload: {
                 name,
-                value: inputValue,
+                value:
+                  type === 'number' && Number.isNaN(inputValue)
+                    ? 0
+                    : inputValue,
                 userId,
               },
             });

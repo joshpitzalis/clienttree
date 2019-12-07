@@ -135,7 +135,7 @@ function Statement({ projectCount, goal }) {
         .
       </p>
 
-      {projectCount && projectCount > 0 && (
+      {!!projectCount && projectCount > 0 && (
         <Tooltip
           placement="bottom"
           title="The lead and project conversion ratios start out with default
@@ -170,47 +170,33 @@ const incomePropTypes = {
 };
 const incomeDefaultProps = {};
 
-export const IncomeBox = ({ income, goal, userId, dispatch }) => {
-  const [editMode, setEditMode] = React.useState(false);
-  React.useEffect(() => {
-    setEditMode(false);
-  }, [income]);
-  return (
-    <FormGroupContainer horizontal data-testid="incomeBar">
-      <div className="flex flex-column">
-        <Progress fill={income / goal} />
-        <div className="flex justify-center items-center">
-          {editMode ? (
-            <Input
-              value={income}
-              name="income"
-              placeholder=""
-              comment=""
-              label="Total income so far?"
-              type="number"
-              rightEl={<small>USD</small>}
-              userId={userId}
-              eventType={FORM_SUBMITTED}
-              dispatch={dispatch}
-            />
-          ) : (
-            <div>
-              <p className="mt3">{`$${income} earned so far this year `}</p>
-              <button type="button" onClick={() => setEditMode(true)}>
-                <small data-testid="addIncome" className="underline pointer">
-                  (Update)
-                </small>
-              </button>
-            </div>
-          )}
+export const IncomeBox = ({ income, goal, userId, dispatch }) => (
+  <FormGroupContainer horizontal data-testid="incomeBar">
+    <div className="flex flex-column">
+      <Progress fill={income / goal} />
+      <div className="flex justify-center items-center">
+        <div>
+          <p className="mt3">{`$${income} earned so far this year `}</p>
+          <Input
+            value={income}
+            name="income"
+            placeholder=""
+            comment=""
+            label="Total income so far?"
+            type="number"
+            rightEl={<small>USD</small>}
+            userId={userId}
+            eventType={FORM_SUBMITTED}
+            dispatch={dispatch}
+          />
         </div>
-        <small className="mt4">
-          You're done! The Hustle meter is set. You can close this modal now.
-        </small>
       </div>
-    </FormGroupContainer>
-  );
-};
+      <small className="mt4">
+        Your hustle meter is set. Close this modal and get hustling.
+      </small>
+    </div>
+  </FormGroupContainer>
+);
 
 IncomeBox.propTypes = incomePropTypes;
 IncomeBox.defaultProps = incomeDefaultProps;

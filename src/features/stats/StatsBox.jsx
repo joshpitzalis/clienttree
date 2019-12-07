@@ -102,7 +102,11 @@ export default function StatsBox({ userId }) {
   React.useEffect(() => {
     if (userStats.stats && userStats.stats.goal && userStats.stats.average) {
       send('ALREADY_COMPLETE');
-    } else {
+    }
+    if (
+      (userStats.stats && !userStats.stats.goal) ||
+      (userStats.stats && !userStats.stats.average)
+    ) {
       send('INCOMPLETE');
     }
   }, [userStats, send]);
@@ -127,6 +131,7 @@ export default function StatsBox({ userId }) {
           </div>
         </button>
       );
+    case 'loading':
     case 'modal':
       return (
         <Portal

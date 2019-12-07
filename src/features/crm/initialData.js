@@ -3,7 +3,7 @@ export const initialData = {
   stages: {
     stage1: {
       id: 'stage1',
-      title: 'Leads',
+      title: 'Potential Projects',
       subtitle: ``,
       people: [],
     },

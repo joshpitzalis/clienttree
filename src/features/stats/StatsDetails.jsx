@@ -28,8 +28,8 @@ export const Stats = ({ userStats, showModal }) => {
     average,
     projectRatio,
     leadRatio,
-    leadsContacted,
-    projectCompleted,
+    leadsContacted = 0,
+    projectCompleted = 0,
     activitiesCompleted,
   } = userStats.stats;
   const projectCount = Math.ceil((goal - income) / average);
@@ -37,6 +37,7 @@ export const Stats = ({ userStats, showModal }) => {
   const [visibility, setVisibility] = React.useState(false);
   const totalActivitiesNeeded = projectCount * projectRatio * leadRatio;
   const leadsNeeded = projectCount * projectRatio;
+
   return (
     <article
       className="w5 pl4 fixed pt5"
@@ -69,7 +70,7 @@ export const Stats = ({ userStats, showModal }) => {
             <dd className="f3 f2-ns b ml0 mb0">
               {leadsNeeded - leadsContacted}
             </dd>
-            <dd className="f6 f5-ns  ml0">More Leads</dd>
+            <dd className="f6 f5-ns  ml0">Potential Projects</dd>
           </dl>
           {/* <small className="fw5 small-caps o-50">Which means...</small> */}
           <dl className="db mr5 mt3">
