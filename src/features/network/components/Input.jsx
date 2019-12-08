@@ -6,23 +6,25 @@ const moment = require('moment');
 
 const inputPropTypes = {
   setState: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   name: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
   state: PropTypes.shape({
-    userId: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    summary: PropTypes.string.isRequired,
-    tracked: PropTypes.bool.isRequired,
-    lastContacted: PropTypes.string.isRequired,
-    contactId: PropTypes.string.isRequired,
-    photoURL: PropTypes.string.isRequired,
-    imgString: PropTypes.string.isRequired,
+    userId: PropTypes.string,
+    name: PropTypes.string,
+    summary: PropTypes.string,
+    tracked: PropTypes.bool,
+    lastContacted: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
+    contactId: PropTypes.string,
+    photoURL: PropTypes.string,
+    imgString: PropTypes.string,
   }),
   type: PropTypes.string,
 };
 const inputDefaultProps = {
   type: 'text',
+  state: {},
 };
 
 function isValidDate(date) {

@@ -71,6 +71,7 @@ export function Dashboard({ userId }) {
             <NavLink
               leftEl={<Home className="o-75 h1" />}
               Component={Link}
+              data-testid="projectPage"
               to={`/user/${userId}/dashboard`}
               className={`${pathname === `/user/${userId}/dashboard` &&
                 'active'}  tracked pb2`}

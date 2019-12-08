@@ -1,18 +1,22 @@
 import React from 'react';
 import { Subject } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
+import { captureException } from '@sentry/browser';
 
 export const toast$ = new Subject();
 
 const useNotification = notificationStream$ => {
   const [_message, setMessage] = React.useState('');
   const [_type, setType] = React.useState('');
+  const [_from, setFrom] = React.useState('');
   React.useEffect(() => {
     const messages = notificationStream$
       .pipe(
-        tap(({ type, message }) => {
+        tap(error => {
+          const { type, message, from } = error;
           setMessage(message);
           setType(type);
+          setFrom(from);
         }),
         delay(5000),
         tap(() => {
@@ -25,11 +29,11 @@ const useNotification = notificationStream$ => {
     return () => messages.unsubscribe();
   }, [notificationStream$]);
   const clear = () => setMessage('');
-  return [_message, clear, _type];
+  return [_message, clear, _type, _from];
 };
 
 const Banner = () => {
-  const [message, clear, type] = useNotification(toast$);
+  const [message, clear, type, from] = useNotification(toast$);
 
   return (
     <>
@@ -42,7 +46,9 @@ ${(type === 'ERROR' && 'bg-light-red') ||
   (type === 'SUCCESS' && 'bg-light-green') ||
   'bg-lightest-blue navy'}`}
         >
-          <span className="lh-title ml3">{message}</span>
+          <span className="lh-title ml3">
+            {message} | {from}
+          </span>
         </button>
       )}
     </>

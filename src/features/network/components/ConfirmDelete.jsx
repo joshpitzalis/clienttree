@@ -23,10 +23,7 @@ export const ConfirmDelete = ({ handleDelete, title, activeTaskCount }) => {
         <button
           className="f6  small-caps bn pointer"
           type="button"
-          onClick={() => {
-            console.log('delete ');
-            setConfirmDelete(true);
-          }}
+          onClick={() => setConfirmDelete(true)}
           data-testid="deleteContact"
         >
           {`Delete ${title}`}

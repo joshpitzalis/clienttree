@@ -9,7 +9,6 @@ const peoplesPropTypes = {
   name: PropTypes.string.isRequired,
   setSelectedUser: PropTypes.func.isRequired,
   setVisibility: PropTypes.func.isRequired,
-  placeholder: PropTypes.func.isRequired,
 };
 const peoplesDefaultProps = {};
 export function Peoples({
@@ -28,6 +27,17 @@ export function Peoples({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
+          onKeyPress={() => {
+            setVisibility(true);
+            setSelectedUser(id);
+          }}
+          onClick={() => {
+            setVisibility(true);
+            setSelectedUser(id);
+          }}
+          role="button"
+          tabIndex={-1}
+          data-testid={name}
         >
           <img
             src={photoURL}
@@ -35,10 +45,6 @@ export function Peoples({
               'ba bg-white-70 bw3'} dib ba b--black-10 db br-100 w2 w3-ns h2 h3-ns mv3 mr3 pointer`}
             title={name}
             alt={name}
-            onDoubleClick={() => {
-              setVisibility(true);
-              setSelectedUser(id);
-            }}
           />
         </div>
       )}

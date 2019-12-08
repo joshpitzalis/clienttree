@@ -45,7 +45,11 @@ export const ToDoList = ({
       if (activeTaskCount !== newActiveTaskCount) {
         _setActiveTaskCount(myUid, theirUid, newActiveTaskCount);
       }
-      dispatch(setTasks({ tasks, theirUid }));
+      const newTasks = tasks.map(_task => ({
+        ..._task,
+        dateCreated: _task.dateCreated.nanoseconds,
+      }));
+      dispatch(setTasks({ tasks: newTasks, theirUid }));
     });
     return () => subscription.unsubscribe();
   }, [

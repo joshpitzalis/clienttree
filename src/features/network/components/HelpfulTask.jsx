@@ -7,13 +7,14 @@ import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants'
 const helpfulTaskPropTypes = {
   taskId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  dateCompleted: PropTypes.string.isRequired,
-
+  dateCompleted: PropTypes.string,
   myUid: PropTypes.string.isRequired,
   theirUid: PropTypes.string.isRequired,
   _handleDeleteTask: PropTypes.func.isRequired,
 };
-const helpfulTaskDefaultProps = {};
+const helpfulTaskDefaultProps = {
+  dateCompleted: null,
+};
 
 export function HelpfulTask({
   taskId,
@@ -55,7 +56,7 @@ export function HelpfulTask({
             });
           }}
         />
-        <span className={!!dateCompleted && 'strike'}>{name}</span>
+        <span className={dateCompleted ? 'strike' : null}>{name}</span>
       </label>
 
       {confirmDelete ? (

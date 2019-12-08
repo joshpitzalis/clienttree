@@ -68,10 +68,12 @@ export const Navbar = withRouter(({ history }) => {
                     to={`/user/${userId}/profile`}
                     data-testid="goToProfilePage"
                   >
-                    <Profile /> <p className="tracked pl2">Profile</p>
+                    <Profile className="" />{' '}
+                    <p className="tracked pl2">Profile</p>
                   </DropdownItem>
                   <DropdownItem onClick={() => handleLogout(history)}>
-                    <Logout /> <p className="tracked pl2">Logout</p>
+                    <Logout className="" />{' '}
+                    <p className="tracked pl2">Logout</p>
                   </DropdownItem>
                 </div>
               )}

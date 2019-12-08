@@ -72,17 +72,19 @@ export function Stages({
                         }}
                       >
                         {people && people.length
-                          ? people.map(({ id, name, photoURL }, _index) => (
-                              <Peoples
-                                id={id}
-                                key={id}
-                                index={_index}
-                                photoURL={photoURL}
-                                name={name}
-                                setSelectedUser={setSelectedUser}
-                                setVisibility={setVisibility}
-                              />
-                            ))
+                          ? people
+                              .filter(peep => peep && peep.id)
+                              .map(({ id, name, photoURL }, _index) => (
+                                <Peoples
+                                  id={id}
+                                  key={id}
+                                  index={_index}
+                                  photoURL={photoURL}
+                                  name={name}
+                                  setSelectedUser={setSelectedUser}
+                                  setVisibility={setVisibility}
+                                />
+                              ))
                           : null}
                       </div>
                     </>

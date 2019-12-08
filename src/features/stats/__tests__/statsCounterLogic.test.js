@@ -1223,5 +1223,8 @@ describe('stats counter logic', () => {
       false);
     test('loading indicators for people page, when loading, but also when creating', () =>
       false);
+
+    test('no infinity or negative numbers should show in teh stats', () =>
+      false);
   });
 });

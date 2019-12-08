@@ -1,6 +1,7 @@
 import firebase from '../../../utils/firebase';
 import { helpfulTaskRef, setTaskDetails, newDocRef } from './APIcalls';
 import { toast$ } from '../../notifications/toast';
+import { initialData } from '../../crm/initialData';
 
 const contactRef = (userId, uid) =>
   firebase
@@ -116,7 +117,6 @@ export const setFirebaseContactUpdate = async ({
 
   // create a default task for new contacts
   if (!contactId) {
-    console.log('new contacts');
     await setTaskDetails({
       ...taskPayload,
       taskName: `Touch base with ${name}`,
@@ -143,6 +143,13 @@ const updateSelectedUser = (_userId, _contactId, tracked) =>
         tracked,
       },
       { merge: true }
+    )
+    .catch(error =>
+      toast$.next({
+        type: 'ERROR',
+        message: error && error.message ? error.message : error,
+        from: 'contactsAPI/updateSelectedUser',
+      })
     );
 
 const updateDashboardState = async (
@@ -152,61 +159,70 @@ const updateDashboardState = async (
   _name,
   _photoURL
 ) => {
-  const dashboardState = await firebase
-    .firestore()
-    .collection('users')
-    .doc(_userId)
-    .get()
-    .then(data => data.data() && data.data().dashboard);
+  try {
+    const dashboardState = await firebase
+      .firestore()
+      .collection('users')
+      .doc(_userId)
+      .get()
+      .then(data => data.data() && data.data().dashboard);
 
-  const newState = { ...dashboardState };
+    const newState = { ...initialData, ...dashboardState };
 
-  if (tracked) {
-    newState.people = {
-      ...newState.people,
-      [_contactId]: {
-        id: _contactId,
-        name: _name,
-        photoURL: _photoURL,
-      },
-    };
-
-    const firstStage = newState.stageOrder[0];
-
-    newState.stages[firstStage].people = [
-      ...newState.stages[firstStage].people,
-      _contactId,
-    ];
-  }
-
-  if (!tracked) {
-    delete newState.people[_contactId];
-
-    newState.stages = Object.entries(newState.stages).reduce(
-      (a, [k, stage]) => ({
-        ...a,
-        [k]: {
-          ...stage,
-          people:
-            stage.people && stage.people.length
-              ? stage.people.filter(person => person !== _contactId)
-              : [],
+    if (tracked) {
+      newState.people = {
+        ...newState.people,
+        [_contactId]: {
+          id: _contactId,
+          name: _name,
+          photoURL: _photoURL,
         },
-      }),
-      {}
-    );
-  }
+      };
 
-  return firebase
-    .firestore()
-    .collection('users')
-    .doc(_userId)
-    .set(
-      {
-        dashboard: newState,
-      },
-      { merge: true }
-    );
+      const firstStage = newState.stageOrder && newState.stageOrder[0];
+      if (firstStage) {
+        newState.stages[firstStage].people = [
+          ...newState.stages[firstStage].people,
+          _contactId,
+        ];
+      }
+    }
+
+    if (!tracked) {
+      delete newState.people[_contactId];
+
+      newState.stages = Object.entries(newState.stages).reduce(
+        (a, [k, stage]) => ({
+          ...a,
+          [k]: {
+            ...stage,
+            people:
+              stage.people && stage.people.length
+                ? stage.people.filter(person => person !== _contactId)
+                : [],
+          },
+        }),
+        {}
+      );
+    }
+
+    return firebase
+      .firestore()
+      .collection('users')
+      .doc(_userId)
+      .set(
+        {
+          dashboard: newState,
+        },
+        { merge: true }
+      );
+  } catch (error) {
+    return toast$.next({
+      type: 'ERROR',
+      message: error && error.message ? error.message : error,
+      from: 'contactsAPI/updateDashboardState',
+    });
+  }
 };
 
 const getCompletedActivityCount = userId =>
@@ -219,7 +235,14 @@ const getCompletedActivityCount = userId =>
     .then(collection => {
       const data = collection.docs.map(doc => doc.data());
       return data.length;
-    });
+    })
+    .catch(error =>
+      toast$.next({
+        type: 'ERROR',
+        message: error && error.message ? error.message : error,
+        from: 'contactsAPI/getCompletedActivityCount',
+      })
+    );
 
 const getLeadsContacted = userId =>
   firebase
@@ -233,25 +256,39 @@ const getLeadsContacted = userId =>
         doc.data() &&
         doc.data().stats &&
         doc.data().stats.leadsContacted
+    )
+    .catch(error =>
+      toast$.next({
+        type: 'ERROR',
+        message: error && error.message ? error.message : error,
+        from: 'contactsAPI/getLeadsContacted',
+      })
     );
 
 const setStats = (userId, newLeadCount, activitiesCompleted) => {
   const calculateLeadRatio = (_newLeadCount, _activitiesCompleted) =>
     Math.ceil(_activitiesCompleted / _newLeadCount);
-
-  return firebase
-    .firestore()
-    .collection('users')
-    .doc(userId)
-    .set(
-      {
-        stats: {
-          leadsContacted: newLeadCount,
-          leadRatio: calculateLeadRatio(newLeadCount, activitiesCompleted),
+  try {
+    return firebase
+      .firestore()
+      .collection('users')
+      .doc(userId)
+      .set(
+        {
+          stats: {
+            leadsContacted: newLeadCount,
+            leadRatio: calculateLeadRatio(newLeadCount, activitiesCompleted),
+          },
         },
-      },
-      { merge: true }
-    );
+        { merge: true }
+      );
+  } catch (error) {
+    return toast$.next({
+      type: 'ERROR',
+      message: error && error.message ? error.message : error,
+      from: 'contactsAPI/setStats',
+    });
+  }
 };
 
 const getProjectsCompleted = userId =>
@@ -266,7 +303,15 @@ const getProjectsCompleted = userId =>
         doc.data() &&
         doc.data().stats &&
         doc.data().stats.projectsCompleted
+    )
+    .catch(error =>
+      toast$.next({
+        type: 'ERROR',
+        message: error && error.message ? error.message : error,
+        from: 'contactsAPI/getProjectsCompleted',
+      })
     );
+
 const setProjectStats = (userId, newLeadCount, newProjectCount) => {
   const calculateRatio = (_newLeadCount, _newProjectCount) =>
     Math.ceil(_newLeadCount / _newProjectCount);
@@ -286,7 +331,7 @@ const setProjectStats = (userId, newLeadCount, newProjectCount) => {
     );
 };
 
-export const incrementProjectStats = async (
+export const incrementProjectStats = (
   userId,
   _getProjectsCompleted = getProjectsCompleted,
   _getLeadsContacted = getLeadsContacted,
@@ -297,22 +342,16 @@ export const incrementProjectStats = async (
     // get activities completed and current stats data
     [_getLeadsContacted(userId), _getProjectsCompleted(userId)]
   )
-    .then(([totalLeads, totalProjects]) => {
-      if (totalProjects && totalLeads) {
-        const newProjectCount = totalProjects + 1;
-        // increment leads acquired and update ratio
-        _setProjectStats(userId, totalLeads, newProjectCount);
-      } else {
-        throw new Error({
-          message:
-            'Error updating the hustle meter. Much Confuse. No hustle :(',
-        });
-      }
+    .then(([totalLeads = 0, totalProjects = 0]) => {
+      const newProjectCount = totalProjects + 1;
+      // increment leads acquired and update ratio
+      _setProjectStats(userId, totalLeads, newProjectCount);
     })
     .catch(error =>
       _toast.next({
         type: 'ERROR',
         message: error && error.message ? error.message : error,
+        from: 'contactsAPI/incrementProjectStats',
       })
     );
 
@@ -327,24 +366,18 @@ export const incrementStats = async (
     // get activities completed and current stats data
     [_getLeadsContacted(userId), _getCompletedActivityCount(userId)]
   )
-    .then(([totalLeads, activitiesCompleted]) => {
-      if (totalLeads && activitiesCompleted) {
-        const newLeadCount = totalLeads + 1;
-        // increment leads acquired and update ratio
-        _setStats(userId, newLeadCount, activitiesCompleted);
-      } else {
-        throw new Error({
-          message:
-            'Error updating the hustle meter. Much Confuse. No hustle :(',
-        });
-      }
+    .then(async ([totalLeads = 0, activitiesCompleted = 0]) => {
+      const newLeadCount = totalLeads + 1;
+      // increment leads acquired and update ratio
+      await _setStats(userId, newLeadCount, activitiesCompleted);
     })
-    .catch(error =>
+    .catch(error => {
       _toast.next({
         type: 'ERROR',
         message: error && error.message ? error.message : error,
-      })
-    );
+        from: 'contactsAPI/incrementStats',
+      });
+    });
 
 export const decrementStats = async (
   userId,
@@ -357,29 +390,22 @@ export const decrementStats = async (
     // get activities completed and current stats data
     [_getLeadsContacted(userId), _getCompletedActivityCount(userId)]
   )
-    .then(([totalLeads, activitiesCompleted]) => {
-      if (totalLeads && activitiesCompleted) {
-        const newLeadCount = totalLeads - 1;
-        console.log({ newLeadCount });
-
-        // decrement leads acquired and update ratio
-        _setStats(userId, newLeadCount, activitiesCompleted);
-      } else {
-        throw new Error({
-          message:
-            'Error updating the hustle meter. Much Confuse. No hustle :(',
-        });
-      }
+    .then(([totalLeads = 0, activitiesCompleted = 0]) => {
+      const newLeadCount = totalLeads - 1;
+      // decrement leads acquired and update ratio
+      _setStats(userId, newLeadCount, activitiesCompleted);
     })
     .catch(error =>
       _toast.next({
         type: 'ERROR',
         message: error && error.message ? error.message : error,
+        from: 'contactsAPI/decrementStats',
       })
     );
 
 export const getStage = (dashboard, contactId) => {
-  const firstStage = dashboard.stageOrder && dashboard.stageOrder[0];
+  const firstStage =
+    dashboard && dashboard.stageOrder && dashboard.stageOrder[0];
 
   const inFirstStage =
     firstStage && dashboard.stages[firstStage].people.includes(contactId);
@@ -389,6 +415,7 @@ export const getStage = (dashboard, contactId) => {
   }
 
   const lastStage =
+    dashboard &&
     dashboard.stageOrder &&
     dashboard.stageOrder[dashboard.stageOrder.length - 1];
 
@@ -427,36 +454,37 @@ export const handleTracking = async (
   _getCurrentCRMStage = getCurrentCRMStage,
   _incrementProjectStats = incrementProjectStats
 ) => {
-  // find out what stage of the CRM this contact is in
-  const stage = await _getCurrentCRMStage(contactId, userId);
+  try {
+    // find out what stage of the CRM this contact is in
+    const stage = await _getCurrentCRMStage(contactId, userId);
 
-  return Promise.all([
-    _updateDashboardState(userId, checked, contactId, name, photoURL),
-    _updateSelectedUser(userId, contactId, checked),
-  ])
-    .then(async () => {
-      if (checked) {
-        _incrementStats(userId);
-        // track event in amplitude
-        track('CRM Updated', {
-          movedTo: 'Leads',
-        });
-        return;
-      }
+    await Promise.all([
+      _updateDashboardState(userId, checked, contactId, name, photoURL),
+      _updateSelectedUser(userId, contactId, checked),
+    ]);
 
-      if (stage === 'first') {
-        _decrementStats(userId);
-        return;
-      }
+    if (checked) {
+      _incrementStats(userId);
+      // track event in amplitude
+      track('CRM Updated', {
+        movedTo: 'Leads',
+      });
+      return;
+    }
 
-      if (stage === 'last') {
-        _incrementProjectStats(userId);
-      }
-    })
-    .catch(error =>
-      toast$.next({
-        type: 'ERROR',
-        message: error && error.message ? error.message : error,
-      })
-    );
+    if (stage === 'first') {
+      _decrementStats(userId);
+      return;
+    }
+
+    if (stage === 'last') {
+      _incrementProjectStats(userId);
+    }
+  } catch (error) {
+    return toast$.next({
+      type: 'ERROR',
+      message: error && error.message ? error.message : error,
+      from: 'contactsAPI/handleTracking',
+    });
+  }
 };

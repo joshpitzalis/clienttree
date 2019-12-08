@@ -67,6 +67,7 @@ export const onDragEnd = ({
         [newStage.id]: newStage,
       },
     };
+
     setState(newState);
     setStateToDB(userId, newState).catch(error =>
       toast$.next({ type: 'ERROR', message: error.message || error })

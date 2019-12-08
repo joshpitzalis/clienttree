@@ -8,17 +8,26 @@ import { ONBOARDING_STEP_COMPLETED } from './onboardingConstants';
 const startingPropTypes = {
   uid: PropTypes.string,
   onboarding: PropTypes.shape({
-    complete: PropTypes.bool.isRequired,
-    signatureCreated: PropTypes.bool.isRequired,
-    addedSignatureToEmail: PropTypes.bool.isRequired,
-    referralPageCreated: PropTypes.bool.isRequired,
-    addedSomeone: PropTypes.bool.isRequired,
-    reachOut: PropTypes.bool.isRequired,
-    helpedSomeone: PropTypes.bool.isRequired,
+    complete: PropTypes.bool,
+    signatureCreated: PropTypes.bool,
+    addedSignatureToEmail: PropTypes.bool,
+    referralPageCreated: PropTypes.bool,
+    addedSomeone: PropTypes.bool,
+    reachOut: PropTypes.bool,
+    helpedSomeone: PropTypes.bool,
   }),
 };
 const startingDefaultProps = {
   uid: '',
+  onboarding: {
+    complete: false,
+    signatureCreated: false,
+    addedSignatureToEmail: false,
+    referralPageCreated: false,
+    addedSomeone: false,
+    reachOut: false,
+    helpedSomeone: false,
+  },
 };
 
 export const GettingStarted = ({ uid, onboarding }) => {

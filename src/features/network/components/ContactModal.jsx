@@ -21,9 +21,11 @@ const modalPropTypes = {
   uid: PropTypes.string.isRequired,
   selectedUserUid: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  incrementStats: PropTypes.func.isRequired,
+  incrementStats: PropTypes.func,
 };
-const modalDefaultProps = {};
+const modalDefaultProps = {
+  incrementStats: handleTracking,
+};
 
 export function Modal({
   uid,
@@ -124,6 +126,7 @@ export function Modal({
           />
         )}
       </div>
+
       <div className="flex">
         <form className=" w-50" onSubmit={handleUpdateUser}>
           <fieldset id="contact" className="ba b--transparent ph0 mh0 tl">
@@ -155,32 +158,36 @@ export function Modal({
                   placeholder="Notes..."
                   type="textarea"
                 />
-
-                <label className="pa0 ma0 lh-copy f6 pointer" htmlFor="tracked">
-                  <input
-                    type="checkbox"
-                    id="tracked"
-                    className="mr1"
-                    checked={state.tracked}
-                    onChange={e =>
-                      incrementStats(
-                        e.target.checked,
-                        uid,
-                        selectedUserUid,
-                        state.name,
-                        state.photoURL
-                      )
-                    }
-                    data-testid="leadToggle"
-                  />
-                  {state.tracked
-                    ? `Remove ${
-                        state.name ? state.name : 'this person'
-                      } from the dashboard`
-                    : `Add ${
-                        state.name ? state.name : 'this person'
-                      } to the project dashboard`}
-                </label>
+                {selectedUserUid && (
+                  <label
+                    className="pa0 ma0 lh-copy f6 pointer"
+                    htmlFor="tracked"
+                  >
+                    <input
+                      type="checkbox"
+                      id="tracked"
+                      className="mr1"
+                      checked={state.tracked}
+                      data-testid="leadToggle"
+                      onChange={e =>
+                        incrementStats(
+                          e.target.checked,
+                          uid,
+                          selectedUserUid,
+                          state.name,
+                          state.photoURL
+                        )
+                      }
+                    />
+                    {state.tracked
+                      ? `Remove ${
+                          state.name ? state.name : 'this person'
+                        } from the dashboard`
+                      : `Add ${
+                          state.name ? state.name : 'this person'
+                        } to the project dashboard`}
+                  </label>
+                )}
               </div>
             </div>
           </fieldset>
@@ -191,7 +198,7 @@ export function Modal({
               value="Save"
             />
 
-            {selectedUserUid && (
+            {selectedUserUid && !state.tracked && (
               <ConfirmDelete
                 handleDelete={() => handleDelete(state.name, state.uid, uid)}
                 title={state.name}

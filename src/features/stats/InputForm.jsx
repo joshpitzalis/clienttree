@@ -192,7 +192,7 @@ export const IncomeBox = ({ income, goal, userId, dispatch }) => (
         </div>
       </div>
       <small className="mt4">
-        Your hustle meter is set. Close this modal and get hustling.
+        Your hustle meter is set. Close this modal and start helping people.
       </small>
     </div>
   </FormGroupContainer>

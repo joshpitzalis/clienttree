@@ -23,20 +23,31 @@ const statDefaultProps = {};
 
 export const Stats = ({ userStats, showModal }) => {
   const {
-    goal,
+    goal = 0,
     income = 0,
-    average,
-    projectRatio,
-    leadRatio,
+    average = 0,
+    projectRatio = 3,
+    leadRatio = 10,
     leadsContacted = 0,
     projectCompleted = 0,
-    activitiesCompleted,
+    activitiesCompleted = 0,
   } = userStats.stats;
   const projectCount = Math.ceil((goal - income) / average);
 
   const [visibility, setVisibility] = React.useState(false);
   const totalActivitiesNeeded = projectCount * projectRatio * leadRatio;
   const leadsNeeded = projectCount * projectRatio;
+
+  console.log({
+    goal,
+    income,
+    average,
+    projectRatio,
+    leadRatio,
+    leadsContacted,
+    projectCompleted,
+    activitiesCompleted,
+  });
 
   return (
     <article
