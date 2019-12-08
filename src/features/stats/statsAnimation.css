@@ -1,0 +1,22 @@
+.rollUp-enter {
+ opacity: 0;
+}
+
+.rollUp-enter-active {
+  opacity: 1;
+ 
+  transition: opacity 500ms;
+  }
+
+
+
+  .rollUp-exit {
+    opacity: 1;
+
+   }
+
+   .rollUp-exit-active {
+    opacity: 0;
+  
+    transition: opacity 500ms;
+  }

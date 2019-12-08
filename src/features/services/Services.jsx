@@ -4,12 +4,14 @@ import produce from 'immer';
 import { Redirect, Link } from 'react-router-dom';
 import { Subject } from 'rxjs';
 import { tap, debounceTime } from 'rxjs/operators';
+import { useDispatch } from 'react-redux';
 import {
   handleFirebaseUpdate,
   fetchUserData,
   handleFirebaseDelete,
 } from './serviceAPI';
 import { toast$ } from '../notifications/toast';
+import { ONBOARDING_STEP_COMPLETED } from '../onboarding/onboardingConstants';
 
 export const serviceFormUpdate$ = new Subject();
 
@@ -17,9 +19,10 @@ export const curriedReducer = produce((draft, action) => {
   if (action.type === 'SERVICE_ADDED') {
     const newId = +new Date();
     const newIdString = newId.toString();
-    draft.services[newIdString] = {
+
+    draft[newIdString] = {
       id: newIdString,
-      order: Object.values(draft.services).length,
+      order: Object.values(draft).length ? Object.values(draft).length : 0,
       name: '',
       description: '',
       price: '',
@@ -28,54 +31,48 @@ export const curriedReducer = produce((draft, action) => {
   }
 
   if (action.type === 'SERVICE_NAME_CHANGED') {
-    draft.services[action.payload.serviceId].name = action.payload.value;
+    draft[action.payload.serviceId].name = action.payload.value;
   }
 
   if (action.type === 'SERVICE_DESCRIPTION_CHANGED') {
-    draft.services[action.payload.serviceId].description = action.payload.value;
+    draft[action.payload.serviceId].description = action.payload.value;
   }
 
   if (action.type === 'SERVICE_PRICE_CHANGED') {
-    draft.services[action.payload.serviceId].price = action.payload.value;
+    draft[action.payload.serviceId].price = action.payload.value;
   }
 
   if (action.type === 'SERVICE_LINK_CHANGED') {
-    draft.services[action.payload.serviceId].link = action.payload.value;
+    draft[action.payload.serviceId].link = action.payload.value;
   }
 
   if (action.type === 'HYDRATE_SERVICES') {
-    draft.services = action.payload;
+    return action.payload;
   }
 
   if (action.type === 'SERVICE_DELETED') {
-    delete draft.services[action.payload.serviceId];
+    delete draft[action.payload.serviceId];
   }
 });
 
-export const initialState = {
-  services: {},
-};
-
 const propTypes = {
-  setSubmitted: PropTypes.func.isRequired,
-  submitted: PropTypes.bool.isRequired,
   uid: PropTypes.string.isRequired,
 };
 const defaultProps = {};
 
 const Services = props => {
-  const { setSubmitted, submitted, uid } = props;
-  const [state, dispatch] = React.useReducer(curriedReducer, initialState);
-  const [firstTime, completeFirstTime] = React.useState(false);
+  const { uid } = props;
+  const [state, dispatch] = React.useReducer(curriedReducer, {});
+  const [firstTime] = React.useState(false);
+  const reduxDispatch = useDispatch();
 
-  // const [profileData, setProfileData] = React.useState({});
   React.useEffect(() => {
     if (uid) {
       fetchUserData(uid)
         .then(data =>
           dispatch({
             type: 'HYDRATE_SERVICES',
-            payload: data.services,
+            payload: data && data.services && data.services,
           })
         )
         .catch(error =>
@@ -95,9 +92,15 @@ const Services = props => {
             return;
           }
 
-          handleFirebaseUpdate(payload).catch(error =>
-            toast$.next({ type: 'ERROR', message: error.message || error })
-          );
+          handleFirebaseUpdate(payload)
+            .then(() => {
+              // track event in amplitude
+              const { analytics } = window;
+              analytics.track('Services Updated');
+            })
+            .catch(error =>
+              toast$.next({ type: 'ERROR', message: error.message || error })
+            );
         })
       )
       .subscribe();
@@ -113,8 +116,13 @@ const Services = props => {
           className="measure mt5"
           onSubmit={e => {
             e.preventDefault();
+
             dispatch({
               type: 'SERVICE_ADDED',
+            });
+            reduxDispatch({
+              type: ONBOARDING_STEP_COMPLETED,
+              payload: { userId: uid, onboardingStep: 'referralPageCreated' },
             });
           }}
         >
@@ -133,8 +141,8 @@ const Services = props => {
             </Link>
           </fieldset>
 
-          {state.services &&
-            Object.values(state.services)
+          {state &&
+            Object.values(state)
               .sort((a, b) => a.order - b.order)
               .map(service => (
                 <IndividualService
@@ -145,13 +153,12 @@ const Services = props => {
                 />
               ))}
 
-          <div className="mt3">
-            <input
-              className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
-              type="submit"
-              value="+ Add a service"
-            />
-          </div>
+          <input
+            className="mt3  b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
+            type="submit"
+            value="+ Add a service"
+            data-testid="addService"
+          />
         </form>
       </main>
     </div>
@@ -193,7 +200,7 @@ const IndividualService = ({
           type="text"
           name="serviceName"
           id="serviceName"
-          placeholder="What should people ask for?"
+          placeholder="What should people ask for ?"
           value={name}
           onChange={e => {
             dispatch({
@@ -336,17 +343,17 @@ const IndividualService = ({
     </div>
     <ConfirmDelete
       handleDelete={() => {
-        dispatch({
-          type: 'SERVICE_DELETED',
-          payload: {
-            serviceId: id,
-          },
-        });
         serviceFormUpdate$.next({
           type: 'SERVICES_DELETED',
           payload: {
             userId,
             id,
+          },
+        });
+        dispatch({
+          type: 'SERVICE_DELETED',
+          payload: {
+            serviceId: id,
           },
         });
       }}

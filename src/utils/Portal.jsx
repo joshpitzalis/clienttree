@@ -3,15 +3,23 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import Close from '../images/Close';
 
-const portalRoot = document.getElementById('portal');
+let portalRoot = document.getElementById('portal');
+
+if (!portalRoot) {
+  portalRoot = document.createElement('div');
+  portalRoot.setAttribute('id', 'portal');
+  document.body.appendChild(portalRoot);
+}
 
 export default class Portal extends Component {
   static propTypes = {
     children: PropTypes.element.isRequired,
-    onClose: PropTypes.func.isRequired,
+    onClose: PropTypes.func,
   };
 
-  static defaultProps = {};
+  static defaultProps = {
+    onClose: () => {},
+  };
 
   constructor(props) {
     super(props);
@@ -37,15 +45,19 @@ export default class Portal extends Component {
         onKeyPress={onClose}
         role="button"
         tabIndex={-1}
+        data-testid="close-button"
       >
-        <article className=" w-50 center pa3 tc br2 bg-white ma3 flex flex-column justify-center">
-          <button
-            type="button"
-            onClick={onClose}
-            className="fr bn link bg-transparent pointer self-end"
-          >
-            <Close />
-          </button>
+        <article className="bg-base w-50 center pa3 tc br2 ma3 flex flex-column justify-center">
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="fr bn link bg-transparent pointer self-end pointer"
+              data-testid="closeModal"
+            >
+              <Close />
+            </button>
+          )}
 
           <div
             role="button"

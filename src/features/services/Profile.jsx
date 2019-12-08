@@ -5,10 +5,12 @@ import { Redirect } from 'react-router-dom';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import { tap, debounceTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { useDispatch, useSelector } from 'react-redux';
 import { confetti$ } from '../onboarding/confetti';
 import Services from './Services';
 import { handleFirebaseProfileUpdate, fetchUserData } from './serviceAPI';
 import { toast$ } from '../notifications/toast';
+import { ONBOARDING_STEP_COMPLETED } from '../onboarding/onboardingConstants';
 
 export const profileFormUpdate$ = new Subject();
 
@@ -38,7 +40,13 @@ export const curriedReducer = produce((draft, action) => {
   }
 
   if (action.type === 'HYDRATE_PROFILE') {
-    const { name, designation, website, clients, service } = action.payload;
+    const {
+      name = '',
+      designation = '',
+      website = '',
+      clients = '',
+      service = '',
+    } = action.payload;
     draft.name = name;
     draft.designation = designation;
     draft.website = website;
@@ -57,16 +65,19 @@ export const initialState = {
 };
 
 const propTypes = {
-  setSubmitted: PropTypes.func.isRequired,
-  submitted: PropTypes.bool.isRequired,
   match: ReactRouterPropTypes.match.isRequired,
 };
 const defaultProps = {};
 
 export function Profile(props) {
+  const reduxDispatch = useDispatch();
+  const onboarded = useSelector(
+    store =>
+      store.user &&
+      store.user.onboarding &&
+      store.user.onboarding.signatureCreated
+  );
   const {
-    setSubmitted,
-    submitted,
     match: {
       params: { uid },
     },
@@ -97,9 +108,15 @@ export function Profile(props) {
       .pipe(
         debounceTime(1000),
         tap(({ payload }) => {
-          handleFirebaseProfileUpdate(payload).catch(error =>
-            toast$.next({ type: 'ERROR', message: error.message || error })
-          );
+          handleFirebaseProfileUpdate(payload)
+            .then(() => {
+              // track event in amplitude
+              const { analytics } = window;
+              analytics.track('Profile Updated');
+            })
+            .catch(error =>
+              toast$.next({ type: 'ERROR', message: error.message || error })
+            );
         })
       )
       .subscribe();
@@ -107,6 +124,7 @@ export function Profile(props) {
   }, []);
 
   if (firstTime) return <Redirect to={`/user/${uid}/dashboard`} />;
+
   return (
     <div>
       <main className="pa4 pl0 pt0 black-80">
@@ -115,8 +133,13 @@ export function Profile(props) {
           onSubmit={e => {
             e.preventDefault();
             // tk validity check goes here
-            if (!submitted) {
-              setSubmitted(true);
+
+            if (!onboarded) {
+              reduxDispatch({
+                type: ONBOARDING_STEP_COMPLETED,
+                payload: { userId: uid, onboardingStep: 'signatureCreated' },
+              });
+
               completeFirstTime(true);
               window.scrollTo(0, 0);
               confetti$.next();
@@ -127,7 +150,9 @@ export function Profile(props) {
           }}
         >
           <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
-            <legend className="f4 fw6 ph0 mh0">Profile</legend>
+            <legend className="f4 fw6 ph0 mh0 pt4" data-testid="profileHeader">
+              Profile
+            </legend>
             <div className="mt3 mb4">
               <label className="db fw6 lh-copy f6" htmlFor="name">
                 Your Name
@@ -267,13 +292,13 @@ export function Profile(props) {
             </div>
 
             <div className="mb4">
-              <label htmlFor="comment" className="f6 b db mb2">
+              <label htmlFor="helpThem" className="f6 b db mb2">
                 How do you help them?
                 <textarea
-                  id="comment"
-                  name="comment"
+                  id="helpThem"
+                  name="helpThem"
                   className="db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
-                  aria-describedby="comment-desc"
+                  aria-describedby="helpThem"
                   placeholder="The thing I help with..."
                   value={state.service}
                   onChange={e => {

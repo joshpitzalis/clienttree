@@ -7,6 +7,7 @@ import { ACTIVITY_COMPLETED } from '../networkConstants';
 import firebase from '../../../utils/firebase';
 import { Modal } from './ContactModal';
 import Portal from '../../../utils/Portal';
+import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
 
 const helpfulPropTypes = {
   myUid: PropTypes.string.isRequired,
@@ -55,17 +56,22 @@ export const HelpfulTaskList = ({ myUid }) => {
       )}
 
       {helpfulTasks &&
-        helpfulTasks.map(({ taskId, name, dateCompleted, completedFor }) => (
-          <TaskDetails
-            taskId={taskId}
-            name={name}
-            dateCompleted={dateCompleted}
-            myUid={myUid}
-            completedFor={completedFor}
-            setSelectedUser={setSelectedUser}
-            setVisibility={setVisibility}
-          />
-        ))}
+        helpfulTasks.map(
+          ({ taskId, name, dateCompleted, completedFor, photoURL }) =>
+            completedFor && (
+              <TaskDetails
+                key={taskId}
+                taskId={taskId}
+                name={name}
+                dateCompleted={dateCompleted}
+                myUid={myUid}
+                completedFor={completedFor}
+                setSelectedUser={setSelectedUser}
+                setVisibility={setVisibility}
+                photoURL={photoURL}
+              />
+            )
+        )}
     </div>
   );
 };
@@ -76,13 +82,16 @@ HelpfulTaskList.defaultProps = helpfulDefaultProps;
 const propTypes = {
   taskId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  dateCompleted: PropTypes.string.isRequired,
+  dateCompleted: PropTypes.string,
   myUid: PropTypes.string.isRequired,
   completedFor: PropTypes.string.isRequired,
   setSelectedUser: PropTypes.func.isRequired,
   setVisibility: PropTypes.func.isRequired,
+  photoURL: PropTypes.string.isRequired,
 };
-const defaultProps = {};
+const defaultProps = {
+  dateCompleted: undefined,
+};
 
 function TaskDetails({
   taskId,
@@ -92,18 +101,20 @@ function TaskDetails({
   completedFor,
   setSelectedUser,
   setVisibility,
+  photoURL,
 }) {
   const dispatch = useDispatch();
+
   return (
     <div className="flex items-center mb2" key={taskId}>
-      <label htmlFor={name} className="lh-copy">
+      <label htmlFor={name} className="lh-copy flex items-center">
         <input
           className="mr2"
           type="checkbox"
           id={name}
           value={name}
           checked={dateCompleted}
-          onChange={() =>
+          onChange={() => {
             dispatch({
               type: ACTIVITY_COMPLETED,
               payload: {
@@ -113,30 +124,18 @@ function TaskDetails({
                 setSelectedUser,
                 setVisibility,
               },
-            })
-          }
-          // onChange={async () => {
-          //   const numberofActiveTasks = await firebase
-          //     .firestore()
-          //     .collection('users')
-          //     .doc(myUid)
-          //     .collection('contacts')
-          //     .doc(completedFor)
-          //     .collection('helpfulTasks')
-          //     .get()
-          //     .then(coll => coll.docs.map(doc => doc.data()))
-          //     .then(coll => coll.filter(task => !task.dateCompleted))
-          //     .then(coll => coll.length);
-
-          //   handleCompleteTask(taskId, myUid, completedFor);
-
-          //   if (numberofActiveTasks === 1) {
-          //     setSelectedUser(completedFor);
-          //     setVisibility(true);
-          //   }
-          // }}
+            });
+            dispatch({
+              type: ONBOARDING_STEP_COMPLETED,
+              payload: {
+                userId: myUid,
+                onboardingStep: 'helpedSomeone',
+              },
+            });
+          }}
         />
-        <small className={dateCompleted && 'strike'}>{name}</small>
+        <small className={`w-100 ${dateCompleted && 'strike'}`}>{name}</small>
+        <img src={photoURL} alt={name} height="25" className="br-100" />
       </label>
     </div>
   );

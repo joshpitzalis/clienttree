@@ -1,42 +1,44 @@
 import { tap, mapTo, catchError } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
-import { getActivitiesLeft, handleCompleteTask } from './networkAPI';
+import {
+  getActivitiesLeft,
+  handleCompleteTask,
+  setFirebaseContactUpdate,
+  inCompleteTask,
+} from './networkAPI';
 import { toast$ } from '../notifications/toast';
-import { ACTIVITY_COMPLETED } from './networkConstants';
+import { ACTIVITY_COMPLETED, USER_UPDATED } from './networkConstants';
+import { handleActivityCompleted } from '../stats/statsHelpers';
 
-// export const logEpic = action$ =>
-//   action$.pipe(
-//     ofType('logMe'),
-//     tap(({ payload }) => console.log('frog', payload)),
-//     mapTo({ type: 'PONG' })
-//   );
-
-export const markActivityComplete = action$ =>
+export const markActivityComplete = (
+  action$,
+  state$,
+  { decrementActivityStats, incrementActivityStats, track }
+) =>
   action$.pipe(
     ofType(ACTIVITY_COMPLETED),
     tap(async ({ payload }) => {
-      const {
-        taskId,
-        myUid,
-        completedFor,
-        setSelectedUser,
-        setVisibility,
-      } = payload;
+      handleActivityCompleted(
+        payload,
+        inCompleteTask,
+        decrementActivityStats,
+        handleCompleteTask,
+        incrementActivityStats,
+        track,
+        getActivitiesLeft
+      );
+    }),
+    catchError(error =>
+      toast$.next({ type: 'ERROR', message: error.message || error })
+    ),
+    mapTo({ type: 'done' })
+  );
 
-      // mark task complete in db
-      await handleCompleteTask(taskId, myUid, completedFor);
-
-      // track event in amplitude
-      const { analytics } = window;
-      analytics.track('Helped Someone');
-
-      // if no more task for this contact then open teh contact modal so people can add a next task
-      getActivitiesLeft(myUid, completedFor).then(async numberofActiveTasks => {
-        if (numberofActiveTasks === 1) {
-          setSelectedUser(completedFor);
-          setVisibility(true);
-        }
-      });
+export const setNewUserTask = action$ =>
+  action$.pipe(
+    ofType(USER_UPDATED),
+    tap(async ({ payload }) => {
+      setFirebaseContactUpdate(payload);
     }),
     catchError(error =>
       toast$.next({ type: 'ERROR', message: error.message || error })

@@ -2,8 +2,7 @@ import React from 'react';
 import { collectionData } from 'rxfire/firestore';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { toast$ } from '../../notifications/toast';
-import { handleDeleteTask, handleCompleteTask } from '../networkAPI';
+import { handleDeleteTask } from '../networkAPI';
 import firebase from '../../../utils/firebase';
 import { taskSlice } from '../taskSlice';
 import { HelpfulTask } from './HelpfulTask';
@@ -14,6 +13,7 @@ export const propTypes = {
   handleAddingTask: PropTypes.func.isRequired,
   activeTaskCount: PropTypes.number.isRequired,
   _setActiveTaskCount: PropTypes.func.isRequired,
+  photoURL: PropTypes.string.isRequired,
 };
 export const defaultProps = {};
 
@@ -23,6 +23,7 @@ export const ToDoList = ({
   handleAddingTask,
   activeTaskCount,
   _setActiveTaskCount,
+  photoURL,
 }) => {
   const [task, setTask] = React.useState('');
   const { actions } = taskSlice;
@@ -44,7 +45,11 @@ export const ToDoList = ({
       if (activeTaskCount !== newActiveTaskCount) {
         _setActiveTaskCount(myUid, theirUid, newActiveTaskCount);
       }
-      dispatch(setTasks({ tasks, theirUid }));
+      const newTasks = tasks.map(_task => ({
+        ..._task,
+        dateCreated: _task.dateCreated.nanoseconds,
+      }));
+      dispatch(setTasks({ tasks: newTasks, theirUid }));
     });
     return () => subscription.unsubscribe();
   }, [
@@ -57,16 +62,6 @@ export const ToDoList = ({
   ]);
   const helpfulTasks = useSelector(state => state.tasks[theirUid]);
 
-  // const markComplete = (taskId, _myUid, _theirUid) => {
-  //   handleCompleteTask(taskId, _myUid, _theirUid)
-  //     .then(() => {
-
-  //     })
-  //     .catch(error =>
-  //       toast$.next({ type: 'ERROR', message: error.message || error })
-  //     );
-  // };
-
   return (
     <div className="center pl4 pt2">
       <form
@@ -74,7 +69,7 @@ export const ToDoList = ({
         onSubmit={e => {
           e.stopPropagation();
           e.preventDefault();
-          handleAddingTask(task, myUid, theirUid);
+          handleAddingTask(task, myUid, theirUid, photoURL);
           setTask('');
         }}
       >
@@ -82,10 +77,10 @@ export const ToDoList = ({
           <legend className="ph0 mh0 fw6 clip"></legend>
           <div className="mb3">
             <label className="db fw4 lh-copy f6 " htmlFor="task">
-              <span className="b">Ways you can help</span>
+              {/* <span className="db b">Ways you can help this person</span> */}
               <input
-                className="b pa2 input-reset ba bg-transparent center br2 b--black-20"
-                placeholder="Add a new task..."
+                className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2 mt4"
+                placeholder="Add a way you can help this person..."
                 type="text"
                 name="task"
                 id="task"
@@ -96,7 +91,7 @@ export const ToDoList = ({
           </div>
         </fieldset>
       </form>
-      {console.log({ helpfulTasks })}
+
       {helpfulTasks &&
         !helpfulTasks.filter(_task => !_task.dateCompleted).length && (
           <small className="red">
@@ -113,7 +108,6 @@ export const ToDoList = ({
             taskId={taskId}
             name={name}
             dateCompleted={dateCompleted}
-            // markComplete={markComplete}
             myUid={myUid}
             theirUid={theirUid}
             _handleDeleteTask={handleDeleteTask}

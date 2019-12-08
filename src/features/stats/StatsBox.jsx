@@ -1,45 +1,168 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { useMachine } from '@xstate/react';
+import { Machine } from 'xstate';
+import { assert } from 'chai';
+import Portal from '../../utils/Portal';
+import { GeneralForm } from './InputForm';
+import { Stats } from './StatsDetails';
+import { setStatDefaults } from './statsAPI';
+import Dollar from '../../images/Dollar';
 
-const propTypes = {};
+export const statsMachine = Machine(
+  {
+    id: 'stats',
+    initial: 'initialising',
+    states: {
+      initialising: {
+        on: {
+          INCOMPLETE: 'incomplete',
+          ALREADY_COMPLETE: 'complete',
+        },
+      },
+      incomplete: {
+        on: {
+          MODAL_OPENED: 'loading',
+        },
+        meta: {
+          test: ({ getByTestId }) => {
+            assert.ok(getByTestId('incomplete-screen'));
+          },
+        },
+      },
+      loading: {
+        invoke: {
+          id: 'setRatioDefaultsInFirebase',
+          src: (context, event) =>
+            setStatDefaults(event.payload && event.payload.userId),
+          onDone: {
+            target: 'modal',
+          },
+          onError: {
+            target: 'incomplete',
+          },
+        },
+      },
+      modal: {
+        on: {
+          CLOSED: [
+            {
+              target: 'complete',
+              // Only transition to 'complete' if the guard (cond) evaluates to true
+              cond: 'incomeGoalsCompleted',
+            },
+            { target: 'incomplete' },
+            // {
+            //   target: 'incomplete',
+            //   cond: 'incomeGoalsCompleted',
+            // },
+            // { target: 'complete' },
+          ],
+        },
+        meta: {
+          test: ({ getByTestId }) => {
+            assert.ok(getByTestId('contactModal'));
+          },
+        },
+      },
+      complete: {
+        on: { COMPLETE_MODAL_OPENED: 'modal' },
+        meta: {
+          test: ({ getByTestId }) => {
+            assert.ok(getByTestId('complete-screen'));
+          },
+        },
+      },
+    },
+  },
+  {
+    guards: {
+      incomeGoalsCompleted: (_, { payload }) => {
+        if (payload && payload.incomeGoalsCompleted) {
+          return true;
+        }
+        return false;
+      },
+    },
+  }
+);
+
+const propTypes = {
+  userId: PropTypes.string.isRequired,
+};
 
 const defaultProps = {};
 
-export default function StatsBox() {
-  return (
-    <article className="pt5 w5 center bg-white br3 pv3 pv4-ns mv3 pl2">
-      <div className="tc mb5">
-        <h1 className="f4 tl">
-          $45,781 <small className="fw5">/ 100K</small>
-        </h1>
-      </div>
+export default function StatsBox({ userId }) {
+  const userStats = useSelector(store => store.user);
+  const [current, send] = useMachine(statsMachine);
 
-      <dl className="db mr5   ">
-        <dd className="f6 f5-ns b ml0">
-          Projects <span className="fw4">(3:1)</span>
-        </dd>
-        <dd className="f3 f2-ns b ml0">12 </dd>
-      </dl>
-      <dl className="db mr5 mt3">
-        <dd className="f6 f5-ns b ml0">
-          Proposals <span className="fw4">(3:1)</span>
-        </dd>
-        <dd className="f3 f2-ns b ml0">26 </dd>
-      </dl>
-      <dl className="db mr5 mt3">
-        <dd className="f6 f5-ns b ml0">
-          Leads <span className="fw4">(5:1)</span>
-        </dd>
-        <dd className="f3 f2-ns b ml0 ">70 </dd>
-      </dl>
-      <dl className="db mr5 mt3">
-        <dd className="f6 f5-ns b ml0 fw4">326 Activities left</dd>
-        {/* <dd className="f3 f2-ns b ml0">326 </dd> */}
-      </dl>
+  // if the hustle meter is already set up go straight to the complete state
+  React.useEffect(() => {
+    if (userStats.stats && userStats.stats.goal && userStats.stats.average) {
+      send('ALREADY_COMPLETE');
+    }
+    if (
+      (userStats.stats && !userStats.stats.goal) ||
+      (userStats.stats && !userStats.stats.average)
+    ) {
+      send('INCOMPLETE');
+    }
+  }, [userStats, send]);
 
-      <small className="o-50 pointer">(Edit)</small>
-    </article>
-  );
+  switch (current.value) {
+    case 'incomplete':
+      return (
+        <button
+          onClick={() => send({ type: 'MODAL_OPENED', payload: { userId } })}
+          type="button"
+          className="bn tl pa2 pointer bg-base br3 black w5 fixed mt7 ml2 br--top"
+          style={{ bottom: 0 }}
+          data-testid="incomplete-screen"
+        >
+          <p className="b pointer"> Configure Your Hustle Meter</p>
+          <div className="flex">
+            <Dollar className="w3" />
+            <small className="pl2">
+              Figure out how many people you need to help if you want to reach
+              your income goals this year.
+            </small>
+          </div>
+        </button>
+      );
+    case 'loading':
+    case 'modal':
+      return (
+        <Portal
+          onClose={() =>
+            // send('CLOSED')
+            send({
+              type: 'CLOSED',
+              payload: {
+                incomeGoalsCompleted:
+                  userStats.stats &&
+                  userStats.stats.goal &&
+                  userStats.stats.average,
+              },
+            })
+          }
+        >
+          {/* <InvoiceForm  /> */}
+          <GeneralForm userId={userId} send={send} userStats={userStats} />
+        </Portal>
+      );
+    case 'complete':
+      return (
+        <Stats
+          userId={userId}
+          userStats={userStats}
+          showModal={() => send('COMPLETE_MODAL_OPENED')}
+        />
+      );
+    default:
+      return null;
+  }
 }
 
 StatsBox.propTypes = propTypes;

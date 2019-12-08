@@ -1,8 +1,7 @@
 import firebase from '../../utils/firebase';
 
-export const handleFirebaseDelete = ({ payload }) => {
-  const { id, userId } = payload;
-  return firebase
+export const handleFirebaseDelete = ({ id, userId }) =>
+  firebase
     .firestore()
     .collection('users')
     .doc(userId)
@@ -14,10 +13,10 @@ export const handleFirebaseDelete = ({ payload }) => {
       },
       { merge: true }
     );
-};
 
 export const handleFirebaseProfileUpdate = payload => {
   const { userId, name, designation, website, clients, service } = payload;
+
   return firebase
     .firestore()
     .collection('users')

@@ -26,9 +26,34 @@
 
 Cypress.Commands.add('login', () => {
   cy.findByPlaceholderText(/Your email.../i)
-    .type('joshpitzalis@gmail.com')
+    .type('test@test.com')
     .findByPlaceholderText(/Your password.../i)
-    .type('123456')
+    .type('test123')
     .findByText(/Sign in/i)
     .click();
+});
+
+Cypress.Commands.add('pickDate', () => {
+  cy.get('.ant-calendar-picker-input')
+    .click({ force: true })
+    .get('.ant-calendar-date-panel')
+    .within(() =>
+      cy
+        .findByText(/jan/i)
+        .click()
+        .findByText(/nov/i)
+        .click()
+        .findAllByText(/10/i)
+        .first()
+        .click()
+    );
+});
+
+Cypress.Commands.add('goToProfilePage', () => {
+  cy.findByTestId('settings')
+    .click()
+    .findByTestId('goToProfilePage')
+    .click()
+    .url()
+    .should('include', 'profile');
 });

@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import firebase from '../../utils/firebase';
 import { toast$ } from '../notifications/toast';
+import firebase from '../../utils/firebase';
 
 const UserContext = React.createContext();
 
@@ -19,9 +19,13 @@ const UserProvider = ({ children }) => {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         const { analytics } = window;
-        const { uid, email } = user;
+        const { uid, email, metadata } = user;
+
+        const createdAt = parseInt(+new Date(metadata.creationTime)) / 1000;
+
         analytics.identify(uid, {
           email,
+          created_at: createdAt,
         });
         setUid(uid);
         setAuthStatus(true);
@@ -33,18 +37,17 @@ const UserProvider = ({ children }) => {
     });
   }, []);
 
-  const handleLogout = history => {
+  const handleLogout = history =>
     firebase
       .auth()
       .signOut()
-      .then(() => history.push('/'))
+      .then(() => setTimeout(() => history.push('/login')), 2000)
       .catch(error =>
         toast$.next({
           type: 'ERROR',
           message: error.message || error,
         })
       );
-  };
 
   return (
     <UserContext.Provider
