@@ -1212,19 +1212,23 @@ describe('stats counter logic', () => {
         })
         .start();
 
+      statsBoxService.send('INCOMPLETE');
       statsBoxService.send('MODAL_OPENED');
     });
 
-    test('only reveal stats on hover', () => false);
+    test.skip('only reveal stats on hover', () => false);
 
-    test('show activities needed minus activties completed', () => false);
+    test.skip('show activities needed minus activties completed', () => false);
 
-    test('support text under add someone to your network should say, on hover, to begin with just add 5 people that you have  been meaning to touch base with for a while now.', () =>
+    test.skip('support text under add someone to your network should say, on hover, to begin with just add 5 people that you have  been meaning to touch base with for a while now.', () =>
       false);
-    test('loading indicators for people page, when loading, but also when creating', () =>
+    test.skip('loading indicators for people page, when loading, but also when creating', () =>
       false);
 
-    test('no infinity or negative numbers should show in teh stats', () =>
+    test.skip('no infinity or negative numbers should show in teh stats', () =>
+      false);
+
+    test.skip('number of activities must always be higher that the number of  potential projects', () =>
       false);
   });
 });

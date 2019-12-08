@@ -38,17 +38,6 @@ export const Stats = ({ userStats, showModal }) => {
   const totalActivitiesNeeded = projectCount * projectRatio * leadRatio;
   const leadsNeeded = projectCount * projectRatio;
 
-  console.log({
-    goal,
-    income,
-    average,
-    projectRatio,
-    leadRatio,
-    leadsContacted,
-    projectCompleted,
-    activitiesCompleted,
-  });
-
   return (
     <article
       className="w5 pl4 fixed pt5"

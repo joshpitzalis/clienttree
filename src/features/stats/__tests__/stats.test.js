@@ -6,7 +6,9 @@ import StatsBox from '../StatsBox';
 import { render } from '../../../utils/testSetup';
 import { Input } from '../Input';
 import { IncomeBox } from '../InputForm';
-import { Dashboard } from '../../../pages/Dashboard';
+import { setStatDefaults } from '../statsAPI';
+
+jest.mock('../statsAPI');
 
 afterEach(cleanup);
 
@@ -16,15 +18,19 @@ describe('stats box', () => {
   };
 
   test('box hides till you enter an income goal', () => {
-    const { getByTestId, queryByTestId } = render(
-      <StatsBox userId={fakeData.userId} />
+    const { queryByTestId, getByTestId } = render(
+      <StatsBox userId={fakeData.userId} />,
+      {
+        initialState: { user: { stats: { goal: '' } } },
+      }
     );
+
     expect(getByTestId('incomplete-screen')).toBeInTheDocument();
     expect(queryByTestId('contactModal')).not.toBeInTheDocument();
     expect(queryByTestId('complete-screen')).not.toBeInTheDocument();
   });
 
-  test('modal closes to incomplete if no goal was added', async () => {
+  test.skip('modal closes to incomplete if no goal was added', async () => {
     const { getByTestId, queryByTestId } = render(
       <StatsBox userId={fakeData.userId} />,
       {
@@ -34,8 +40,9 @@ describe('stats box', () => {
     expect(getByTestId('incomplete-screen')).toBeInTheDocument();
     expect(queryByTestId('contactModal')).not.toBeInTheDocument();
     userEvent.click(getByTestId('incomplete-screen'));
+    setStatDefaults.mockResolvedValueOnce();
+    expect(queryByTestId('contactModal')).toBeInTheDocument();
 
-    await wait(() => expect(queryByTestId('contactModal')).toBeInTheDocument());
     userEvent.click(getByTestId('closeModal'));
     expect(queryByTestId('contactModal')).not.toBeInTheDocument();
     expect(getByTestId('incomplete-screen')).toBeInTheDocument();
@@ -80,7 +87,7 @@ describe('stats box', () => {
     );
 
     expect(queryByText(/Numbers only please/i)).not.toBeInTheDocument();
-    fireEvent.keyDown(getByTestId('test'), {
+    fireEvent.keyPress(getByTestId('test'), {
       key: 'A',
       code: 65,
       charCode: 65,
@@ -151,7 +158,7 @@ describe('stats box', () => {
     userEvent.click(getByTestId('statsTitle'));
     expect(getByTestId('contactModal')).toBeInTheDocument();
     expect(getByTestId('contactModal')).toHaveTextContent(
-      `You're done! The Hustle meter is set. You can close this modal now.`
+      `Your hustle meter is set. Close this modal and start helping people`
     );
   });
 
@@ -183,19 +190,15 @@ describe('stats box', () => {
       userEvent.click(getByTestId('statsTitle'));
       expect(getByTestId('contactModal')).toBeInTheDocument();
       expect(getByTestId('incomeBar'));
-      expect(queryByTestId('income')).not.toBeInTheDocument();
-      userEvent.click(getByTestId('addIncome'));
-      expect(getByTestId('income'));
+      expect(queryByTestId('income')).toBeInTheDocument();
     });
 
     test('income box fires income update', () => {
       const fakeDispatch = jest.fn();
-      const { getByTestId, queryByTestId, getByText } = render(
+      const { getByTestId, getByText } = render(
         <IncomeBox dispatch={fakeDispatch} userId="123" />
       );
       expect(getByTestId('incomeBar'));
-      expect(queryByTestId('income')).not.toBeInTheDocument();
-      userEvent.click(getByTestId('addIncome'));
       expect(getByTestId('income'));
       userEvent.type(getByTestId('income'), 300, { allAtOnce: true });
       getByText('Saving...');
