@@ -57,3 +57,11 @@ Cypress.Commands.add('goToProfilePage', () => {
     .url()
     .should('include', 'profile');
 });
+
+// Cypress.Commands.add('drag', (testId, x, y) => {
+//   cy.findByTestId(testId)
+//     .trigger('mousedown', { button: 0, clientX: x, clientY: y })
+//     .trigger('mousemove', { button: 0, clientX: x * 2, clientY: y * 2 })
+//     .wait(2000)
+//     .trigger('mouseup', { force: true });
+// });

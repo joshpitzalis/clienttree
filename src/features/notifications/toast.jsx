@@ -1,7 +1,6 @@
 import React from 'react';
 import { Subject } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
-import { captureException } from '@sentry/browser';
 
 export const toast$ = new Subject();
 

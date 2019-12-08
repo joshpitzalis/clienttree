@@ -1,4 +1,8 @@
 describe('stats box', () => {
+  const fakeData = {
+    name: 'Sick Rick',
+  };
+
   it('lets me add stats', () => {
     cy.visit('/')
       .findByTestId('salesDashboard')
@@ -30,17 +34,7 @@ describe('stats box', () => {
       .findByText('4');
   });
 
-  // function move(testId, x, y) {
-  //   cy.findByTestId(testId)
-  //     .trigger('mousedown', { which: 1 })
-  //     .trigger('mousemove', { clientX: x, clientY: y })
-  //     .trigger('mouseup', { force: true });
-  // }
-
   it('updates stats when I move people into or out of leads', () => {
-    const fakeData = {
-      name: 'Sick Rick',
-    };
     cy.visit('/')
       .findByTestId('salesDashboard')
       .findByTestId('networkPage')
@@ -73,13 +67,14 @@ describe('stats box', () => {
       .findByText('$ 2465')
       .findByTestId('statsTitle')
       .trigger('mouseover')
-      .findByText('118')
-      .findByText('11')
-      .findByText('10');
+      .findByText('4')
+      .findAllByText('11');
   });
 
   it.skip('updates stats when I move people into or out of project started', () => {
-    cy.visit('/');
+    cy.visit('/')
+      .findByTestId('salesDashboard')
+      .drag(fakeData.name, 5000, 500);
   });
 
   //   when columns are rearranged, leads are added to first column
@@ -87,4 +82,12 @@ describe('stats box', () => {
   //   when columns are rearranged, projects are incremented of removed from last column
 
   //  // https://github.com/cypress-io/cypress-example-recipes/blob/master/examples/testing-dom__drag-drop/cypress/integration/drag_n_drop_spec.js
+
+  // it('move people between stages', () => {
+  //   cy.visit('/');
+  // });
+
+  // it('move stages around', () => {
+  //   cy.visit('/');
+  // });
 });

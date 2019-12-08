@@ -13,7 +13,7 @@ const statPropTypes = {
       projectRatio: PropTypes.number,
       leadRatio: PropTypes.number,
       leadsContacted: PropTypes.number,
-      projectCompleted: PropTypes.number,
+      projectsCompleted: PropTypes.number,
       activitiesCompleted: PropTypes.number,
     }),
   }).isRequired,
@@ -29,7 +29,7 @@ export const Stats = ({ userStats, showModal }) => {
     projectRatio = 3,
     leadRatio = 10,
     leadsContacted = 0,
-    projectCompleted = 0,
+    projectsCompleted = 0,
     activitiesCompleted = 0,
   } = userStats.stats;
   const projectCount = Math.ceil((goal - income) / average);
@@ -37,6 +37,10 @@ export const Stats = ({ userStats, showModal }) => {
   const [visibility, setVisibility] = React.useState(false);
   const totalActivitiesNeeded = projectCount * projectRatio * leadRatio;
   const leadsNeeded = projectCount * projectRatio;
+
+  const activitiesLeft = totalActivitiesNeeded - activitiesCompleted;
+  const leadsLeft = leadsNeeded - leadsContacted;
+  const projectsLeft = projectCount - projectsCompleted;
 
   return (
     <article
@@ -60,22 +64,18 @@ export const Stats = ({ userStats, showModal }) => {
           onClick={() => showModal()}
         >
           <dl className="db mr5">
-            <dd className="f3 f2-ns b ml0 mb0">
-              {projectCount - projectCompleted}
-            </dd>
+            <dd className="f3 f2-ns b ml0 mb0">{projectsLeft}</dd>
             <dd className="f6 f5-ns ml0">Projects to go</dd>
           </dl>
           {/* <small className="fw5 small-caps o-50">Which means...</small> */}
           <dl className="db mr5 mt3">
-            <dd className="f3 f2-ns b ml0 mb0">
-              {leadsNeeded - leadsContacted}
-            </dd>
+            <dd className="f3 f2-ns b ml0 mb0">{leadsLeft}</dd>
             <dd className="f6 f5-ns  ml0">Potential Projects</dd>
           </dl>
           {/* <small className="fw5 small-caps o-50">Which means...</small> */}
           <dl className="db mr5 mt3">
             <dd className="f3 f2-ns b ml0 mb0">
-              {totalActivitiesNeeded - activitiesCompleted}
+              {activitiesLeft < leadsLeft ? leadsLeft : activitiesLeft}
             </dd>
             <dd className="f6 f5-ns  ml0">Activities To Complete</dd>
           </dl>
