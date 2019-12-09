@@ -7,10 +7,10 @@ import { Navbar } from './features/auth/Navbar';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 // import { PrivateRoute } from './features/auth/PrivateRoute';
-import Refer from './features/services/Referral';
+import Refer from './features/profile/Referral';
 import { UserContext } from './features/auth/UserContext';
 import Banner from './features/notifications/toast';
-import { NetworkProvider } from './features/network/NetworkContext';
+import { NetworkProvider } from './features/people/NetworkContext';
 
 const propTypes = {
   // location: ReactRouterPropTypes.location.isRequired,

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { collection } from 'rxfire/firestore';
 import { map, catchError } from 'rxjs/operators';
-import { setFirebaseContactUpdate } from './networkAPI';
+import { setFirebaseContactUpdate } from './peopleAPI';
 import firebase from '../../utils/firebase';
 import { toast$ } from '../notifications/toast';
 

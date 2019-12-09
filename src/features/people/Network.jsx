@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 import { CSSTransition } from 'react-transition-group';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import fromUnixTime from 'date-fns/fromUnixTime';
-import { Button } from '@duik/it';
+// import { Button } from '@duik/it';
 import Portal from '../../utils/Portal';
 import './networkAnimations.css';
 import { Modal } from './components/ContactModal';
@@ -30,7 +30,7 @@ export function Network({ uid }) {
 
   const [selectedUser, setSelectedUser] = React.useState('');
 
-  const [tasksCompleted, setTasksCompleted] = React.useState(0);
+  const [, setTasksCompleted] = React.useState(0);
 
   React.useEffect(() => {
     const subscription = collection(

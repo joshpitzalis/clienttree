@@ -5,13 +5,13 @@ import { doc } from 'rxfire/firestore';
 import { catchError } from 'rxjs/operators';
 import { useDispatch } from 'react-redux';
 import { initialData } from './initialData';
-import { setStateToDB } from './crmAPI';
+import { setStateToDB } from './dashAPI';
 import { toast$ } from '../notifications/toast';
 import firebase from '../../utils/firebase';
 import Portal from '../../utils/Portal';
-import { Modal } from '../network/components/ContactModal';
+import { Modal } from '../people/components/ContactModal';
 import { Stages } from './Stages';
-import { onDragEnd } from './crmHelpers';
+import { onDragEnd } from './dashHelpers';
 
 const crmPropTypes = {
   welcomeMessage: PropTypes.shape({
@@ -22,7 +22,7 @@ const crmPropTypes = {
 };
 const crmDefaultProps = {};
 
-export function CRM({ welcomeMessage, userId = '' }) {
+export function CRM({ userId = '' }) {
   const [state, setState] = React.useState(initialData);
   const [visible, setVisibility] = React.useState(false);
   const [selectedUser, setSelectedUser] = React.useState('');

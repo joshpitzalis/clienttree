@@ -5,7 +5,7 @@ import {
   handleCompleteTask,
   setFirebaseContactUpdate,
   inCompleteTask,
-} from './networkAPI';
+} from './peopleAPI';
 import { toast$ } from '../notifications/toast';
 import { ACTIVITY_COMPLETED, USER_UPDATED } from './networkConstants';
 import { handleActivityCompleted } from '../stats/statsHelpers';

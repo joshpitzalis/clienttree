@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
 import { createEpicMiddleware, combineEpics } from 'redux-observable';
-import { taskSlice } from '../features/network/taskSlice';
+import { catchError } from 'rxjs/operators';
+import { taskSlice } from '../features/people/taskSlice';
 import {
   updateStatsDetails,
   projectCompleted,
@@ -10,23 +11,31 @@ import {
 import {
   markActivityComplete,
   setNewUserTask,
-} from '../features/network/networkEpics';
+} from '../features/people/networkEpics';
 import { userSlice } from '../pages/Dashboard';
 import { onboardingEpic } from '../features/onboarding/onboardingEpics';
-
 import {
   decrementActivityStats,
   incrementActivityStats,
 } from '../features/stats/statsAPI';
+import { stageTitleUpdate } from '../features/projects/projectEpics';
+import { toast$ } from '../features/notifications/toast';
 
-export const rootEpic = combineEpics(
-  markActivityComplete,
-  onboardingEpic,
-  setNewUserTask,
-  updateStatsDetails,
-  projectCompleted,
-  leadContacted
-);
+export const rootEpic = (action$, store$, dependencies) =>
+  combineEpics(
+    markActivityComplete,
+    onboardingEpic,
+    setNewUserTask,
+    updateStatsDetails,
+    projectCompleted,
+    leadContacted,
+    stageTitleUpdate
+  )(action$, store$, dependencies).pipe(
+    catchError((error, source) => {
+      toast$.next({ type: 'ERROR', message: error.message || error });
+      return source;
+    })
+  );
 
 export const rootReducer = combineReducers({
   tasks: taskSlice.reducer,
@@ -40,7 +49,7 @@ const epicMiddleware = createEpicMiddleware({
     track: window && window.analytics && window.analytics.track,
   },
 });
-// Be sure to ONLY add this middleware in development!
+
 const middleware =
   process.env.NODE_ENV !== 'production'
     ? [

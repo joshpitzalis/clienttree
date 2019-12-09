@@ -11,7 +11,7 @@ import {
   handleAddTask,
   setActiveTaskCount,
   handleTracking,
-} from '../networkAPI';
+} from '../peopleAPI';
 import firebase from '../../../utils/firebase';
 import { ToDoList } from './ToDoList';
 import { ConfirmDelete } from './ConfirmDelete';

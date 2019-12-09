@@ -2,7 +2,7 @@ describe.skip('cms', () => {
   context('crud', () => {
     it('add a new stage', () => {});
 
-    it('update a stage', () => {});
+    it('edit name of a stage', () => {});
 
     it('delete a stage', () => {});
   });

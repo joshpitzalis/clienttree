@@ -7,9 +7,9 @@ import AvatarGenerator from 'react-avatar-generator';
 import { AutoComplete, Progress } from 'antd';
 import { collection } from 'rxfire/firestore';
 import { map, catchError } from 'rxjs/operators';
-import { HelpfulTaskList } from '../network/components/UniversalTaskList';
+import { HelpfulTaskList } from '../people/components/UniversalTaskList';
 import { GettingStarted } from './GettingStarted';
-import { USER_UPDATED } from '../network/networkConstants';
+import { USER_UPDATED } from '../people/networkConstants';
 import firebase from '../../utils/firebase';
 import { toast$ } from '../notifications/toast';
 
