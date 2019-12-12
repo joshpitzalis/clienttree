@@ -1,9 +1,13 @@
 import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
+import { TestScheduler } from 'rxjs/testing';
 import { SingleStage } from '../Stages';
 import { render } from '../../../utils/testSetup';
+import { stageTitleUpdate } from '../projectEpics';
+import { setTitle } from '../dashAPI';
 
+jest.mock('../dashAPI');
 const mockData = {
   stage: {
     title: 'exampleTitle',
@@ -47,7 +51,56 @@ it('lets me edit it stage title when I double click on it', () => {
   getByText(/exampleTitle/i);
 });
 
-it.only('updating stage title autosaves', () => {
+it.only('epic works as expected', () => {
+  const testScheduler = new TestScheduler((actual, expected) => {
+    expect(actual).toEqual(expected);
+    // mock a jest function
+    // expect(setTitle).toHaveBeenCalled();
+    // expect(setTitle).toHaveBeenCalledWith(5);
+  });
+
+  testScheduler.run(({ hot, cold, expectObservable }) => {
+    const action$ = hot('a', {
+      a: {
+        type: 'projects/updateTitle',
+        payload: {
+          title: 'example input',
+          stageId: 'stage1',
+        },
+      },
+    });
+    const state$ = {
+      value: {
+        user: {
+          userId: 'abc123',
+          dashboard: {
+            stages: {
+              stage1: {
+                id: 'stage1',
+                title: 'Potential Projects',
+                subtitle: ``,
+                people: [],
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const dependencies = {
+      setTitle: () => cold('a'),
+    };
+    const output$ = stageTitleUpdate(action$, state$, dependencies);
+
+    expectObservable(output$).toBe('1000ms a', {
+      a: {
+        type: 'projects/fetchFulfilled',
+      },
+    });
+  });
+});
+test.skip('test error state/throw error', () => false);
+it('updating stage title autosaves', () => {
   const { getByText, getByTestId, queryByTestId } = render(
     <SingleStage
       innerRef={mockData.innerRef}
@@ -67,9 +120,9 @@ it.only('updating stage title autosaves', () => {
   userEvent.type(getByTestId('editableTitle'), 'hello');
   // check function gets fired after a few seconds
 });
-
+test.skip('shows saving as it is saving', () => false);
+test.skip('when teh input prop updates, the edit box is closed', () => false);
 test.skip('auto saves updates', () => false);
-
 test.skip('doesnt accept null values', () => false);
 test.skip('collapsing stage should make state uneditable whenopening again', () =>
   false);

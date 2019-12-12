@@ -20,6 +20,7 @@ import {
 } from '../features/stats/statsAPI';
 import { stageTitleUpdate } from '../features/projects/projectEpics';
 import { toast$ } from '../features/notifications/toast';
+import { setTitle } from '../features/projects/dashAPI';
 
 export const rootEpic = (action$, store$, dependencies) =>
   combineEpics(
@@ -47,6 +48,7 @@ const epicMiddleware = createEpicMiddleware({
     decrementActivityStats,
     incrementActivityStats,
     track: window && window.analytics && window.analytics.track,
+    setTitle,
   },
 });
 

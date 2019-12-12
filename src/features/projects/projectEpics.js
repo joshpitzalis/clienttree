@@ -1,22 +1,38 @@
-import { from } from 'rxjs';
-import { switchMap, debounceTime, map } from 'rxjs/operators';
-
+import { switchMap, debounceTime, mapTo, catchError } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
+import { from } from 'rxjs';
+import produce from 'immer';
+import { toast$ } from '../notifications/toast';
 
-const later = (delay, value) =>
-  new Promise(resolve => setTimeout(resolve, delay, value));
+// memoize this tk
+const getCurrentUser = store => store.value.user.userId;
 
-export function fetchFulfilled(beers) {
-  return {
-    type: 'FETCH_FULFILLED',
-    payload: beers,
-  };
-}
+const getDashboardWithNewTitle = (store, payload) => {
+  const { dashboard } = store.value.user;
+  const { title, stageId } = payload;
+  // const newDashboard = { ...dashboard };
+  // console.log({ stageId, newDashboard });
+  // newDashboard.stages[stageId].title = title;
+  // return newDashboard;
+  return produce(dashboard, draft => {
+    draft.stages[stageId].title = title;
+  });
+};
 
-export const stageTitleUpdate = action$ =>
+export const stageTitleUpdate = (action$, store, { setTitle }) =>
   action$.pipe(
     ofType('projects/updateTitle'),
     debounceTime(1000),
-    switchMap(({ payload }) => from(later(2000, payload))),
-    map(res => fetchFulfilled(res))
+    switchMap(({ payload }) =>
+      from(
+        setTitle({
+          dashboard: getDashboardWithNewTitle(store, payload),
+          userId: getCurrentUser(store),
+        })
+      )
+    ),
+    mapTo({ type: 'projects/fetchFulfilled' }),
+    catchError(error =>
+      toast$.next({ type: 'ERROR', message: error.message || error })
+    )
   );

@@ -87,7 +87,7 @@ export const SingleStage = ({
         <>
           <EditableTitle
             dragHandleProps={provided.dragHandleProps}
-            title={stage.title}
+            stage={stage}
           />
 
           {/* <small className="f5 db lh-copy measure gray">
@@ -150,7 +150,8 @@ SingleStage.propTypes = {
 
 SingleStage.defaultProps = {};
 
-function EditableTitle({ dragHandleProps, title }) {
+function EditableTitle({ dragHandleProps, stage }) {
+  const { title, id } = stage;
   const [editable, setEditable] = useState(false);
   const dispatch = useDispatch();
   return (
@@ -166,7 +167,10 @@ function EditableTitle({ dragHandleProps, title }) {
             onChange={e =>
               dispatch({
                 type: 'projects/updateTitle',
-                payload: e.target.value,
+                payload: {
+                  title: e.target.value,
+                  stageId: id,
+                },
               })
             }
           />
@@ -188,7 +192,10 @@ function EditableTitle({ dragHandleProps, title }) {
 
 EditableTitle.propTypes = {
   dragHandleProps: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
+  stage: PropTypes.shape({
+    title: PropTypes.string,
+    id: PropTypes.string,
+  }).isRequired,
 };
 
 EditableTitle.defaultProps = {};

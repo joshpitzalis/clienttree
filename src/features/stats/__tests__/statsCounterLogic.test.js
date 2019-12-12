@@ -1171,34 +1171,34 @@ describe('stats counter logic', () => {
       expect(fakeProps.decrementActivityStats).not.toHaveBeenCalled();
     });
 
-    test.skip('markActivityComplete epic produces correct actions', () => {
-      const testScheduler = new TestScheduler((actual, expected) => {
-        expect(actual).toEqual(expected);
-      });
+    // test.skip('markActivityComplete epic produces correct actions', () => {
+    //   const testScheduler = new TestScheduler((actual, expected) => {
+    //     expect(actual).toEqual(expected);
+    //   });
 
-      testScheduler.run(({ hot, cold, expectObservable }) => {
-        const action$ = hot('a', {
-          a: {
-            type: ACTIVITY_COMPLETED,
-            payload: { checked: true },
-          },
-        });
-        const state$ = null;
+    //   testScheduler.run(({ hot, cold, expectObservable }) => {
+    //     const action$ = hot('a', {
+    //       a: {
+    //         type: ACTIVITY_COMPLETED,
+    //         payload: { checked: true },
+    //       },
+    //     });
+    //     const state$ = null;
 
-        const dependencies = {
-          decrementActivityStats: jest.fn(),
-        };
-        const output$ = markActivityComplete(action$, state$, dependencies);
+    //     const dependencies = {
+    //       decrementActivityStats: jest.fn(),
+    //     };
+    //     const output$ = markActivityComplete(action$, state$, dependencies);
 
-        expectObservable(output$).toBe('a', {
-          a: { type: 'done' },
-        });
+    //     expectObservable(output$).toBe('a', {
+    //       a: { type: 'done' },
+    //     });
 
-        // output$.toArray().subscribe(() => {
-        //   expect(dependencies.decrementActivityStats).toHaveBeenCalled();
-        // });
-      });
-    });
+    //     // output$.toArray().subscribe(() => {
+    //     //   expect(dependencies.decrementActivityStats).toHaveBeenCalled();
+    //     // });
+    //   });
+    // });
 
     test('stats should start off with minimum ratios 3:10', done => {
       setStatDefaults.mockResolvedValueOnce();

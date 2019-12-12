@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Route, Link, useLocation } from 'react-router-dom';
 import { doc } from 'rxfire/firestore';
 // import { PrivateRoute } from '../features/auth/PrivateRoute';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createSlice } from 'redux-starter-kit';
 import { catchError } from 'rxjs/operators';
 import { NavPanel, NavLink, ContainerHorizontal } from '@duik/it';
@@ -22,10 +22,32 @@ export const userSlice = createSlice({
   name: 'user',
   initialState: {},
   reducers: {
-    setProfile(store, action) {
+    setProfile(state, action) {
       const { payload } = action;
       return payload;
+      // state.clients = payload.clients;
+      // state.designation = payload.designation;
+      // state.name = payload.name;
+      // state.service = payload.service;
+      // state.userId = payload.userId;
+      // state.website = payload.website;
     },
+    // setStats(state, action) {
+    //   const { payload } = action;
+    //   state.stats = payload;
+    // },
+    // setServices(state, action) {
+    //   const { payload } = action;
+    //   state.services = payload;
+    // },
+    // setOnboarding(state, action) {
+    //   const { payload } = action;
+    //   state.onboarding = payload;
+    // },
+    // setDashboard(state, action) {
+    //   const { payload } = action;
+    //   state.dashboard = payload;
+    // },
   },
 });
 
@@ -34,14 +56,68 @@ const propTypes = { userId: PropTypes.string };
 const defaultProps = { userId: '' };
 
 export function Dashboard({ userId }) {
-  const [welcomeMessage, setWelcomeMessage] = React.useState({
-    header: 'Welcome!',
-    byline: '',
-  });
+  // const [welcomeMessage, setWelcomeMessage] = React.useState({
+  //   header: 'Welcome!',
+  //   byline: '',
+  // });
   const dispatch = useDispatch();
+  const userState = useSelector(store => store.user);
+  console.log({ userState });
 
   React.useEffect(() => {
     if (userId) {
+      // const subscription = firebase
+      //   .firestore()
+      //   .collection('users')
+      //   .doc(userId)
+      //   .onSnapshot(snap => {
+      //     const {
+      //       setProfile,
+      //       setStats,
+      //       setServices,
+      //       setOnboarding,
+      //       setDashboard,
+      //     } = userSlice.actions;
+
+      //     const payload = snap.data();
+
+      //     const {
+      //       clients,
+      //       designation,
+      //       name,
+      //       service,
+      //       userId: uid,
+      //       website,
+      //       dashboard,
+      //     } = payload;
+      //     const oldProfile = '';
+      //     // tk get old profile from state
+
+      //     const profileChanged =
+      //       oldProfile !==
+      //       {
+      //         clients,
+      //         designation,
+      //         name,
+      //         service,
+      //         uid,
+      //         website,
+      //       };
+      //     if (profileChanged) {
+      //       dispatch(setDashboard({ dashboard }));
+      //       dispatch(
+      //         setProfile({
+      //           clients,
+      //           designation,
+      //           name,
+      //           service,
+      //           uid,
+      //           website,
+      //         })
+      //       );
+      //     }
+      //   });
+
       const subscription = doc(
         firebase
           .firestore()
@@ -54,8 +130,11 @@ export function Dashboard({ userId }) {
           )
         )
         .subscribe(user => {
-          dispatch(userSlice.actions.setProfile(user.data()));
+          const { setProfile } = userSlice.actions;
+          const newUser = user.data();
+          dispatch(setProfile(newUser));
         });
+
       return () => subscription.unsubscribe();
     }
   }, [dispatch, userId]);
@@ -64,7 +143,9 @@ export function Dashboard({ userId }) {
 
   return (
     <ContainerHorizontal>
-      <ConfettiBanner setWelcomeMessage={setWelcomeMessage} />
+      <ConfettiBanner
+      // setWelcomeMessage={setWelcomeMessage}
+      />
       <div className="flex w-100 justify-between min-h-100 bg-base">
         <NavPanel dark className="flex flex-column justify-between min-vh-100">
           <div className="mt5">
@@ -111,7 +192,7 @@ export function Dashboard({ userId }) {
               render={props => (
                 <CRM
                   {...props}
-                  welcomeMessage={welcomeMessage}
+                  // welcomeMessage={welcomeMessage}
                   userId={userId}
                 />
               )}
