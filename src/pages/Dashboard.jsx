@@ -25,99 +25,19 @@ export const userSlice = createSlice({
     setProfile(state, action) {
       const { payload } = action;
       return payload;
-      // state.clients = payload.clients;
-      // state.designation = payload.designation;
-      // state.name = payload.name;
-      // state.service = payload.service;
-      // state.userId = payload.userId;
-      // state.website = payload.website;
     },
-    // setStats(state, action) {
-    //   const { payload } = action;
-    //   state.stats = payload;
-    // },
-    // setServices(state, action) {
-    //   const { payload } = action;
-    //   state.services = payload;
-    // },
-    // setOnboarding(state, action) {
-    //   const { payload } = action;
-    //   state.onboarding = payload;
-    // },
-    // setDashboard(state, action) {
-    //   const { payload } = action;
-    //   state.dashboard = payload;
-    // },
   },
 });
 
 const propTypes = { userId: PropTypes.string };
-
 const defaultProps = { userId: '' };
 
 export function Dashboard({ userId }) {
-  // const [welcomeMessage, setWelcomeMessage] = React.useState({
-  //   header: 'Welcome!',
-  //   byline: '',
-  // });
   const dispatch = useDispatch();
   const userState = useSelector(store => store.user);
-  console.log({ userState });
 
   React.useEffect(() => {
     if (userId) {
-      // const subscription = firebase
-      //   .firestore()
-      //   .collection('users')
-      //   .doc(userId)
-      //   .onSnapshot(snap => {
-      //     const {
-      //       setProfile,
-      //       setStats,
-      //       setServices,
-      //       setOnboarding,
-      //       setDashboard,
-      //     } = userSlice.actions;
-
-      //     const payload = snap.data();
-
-      //     const {
-      //       clients,
-      //       designation,
-      //       name,
-      //       service,
-      //       userId: uid,
-      //       website,
-      //       dashboard,
-      //     } = payload;
-      //     const oldProfile = '';
-      //     // tk get old profile from state
-
-      //     const profileChanged =
-      //       oldProfile !==
-      //       {
-      //         clients,
-      //         designation,
-      //         name,
-      //         service,
-      //         uid,
-      //         website,
-      //       };
-      //     if (profileChanged) {
-      //       dispatch(setDashboard({ dashboard }));
-      //       dispatch(
-      //         setProfile({
-      //           clients,
-      //           designation,
-      //           name,
-      //           service,
-      //           uid,
-      //           website,
-      //         })
-      //       );
-      //     }
-      //   });
-
       const subscription = doc(
         firebase
           .firestore()
@@ -143,9 +63,7 @@ export function Dashboard({ userId }) {
 
   return (
     <ContainerHorizontal>
-      <ConfettiBanner
-      // setWelcomeMessage={setWelcomeMessage}
-      />
+      <ConfettiBanner />
       <div className="flex w-100 justify-between min-h-100 bg-base">
         <NavPanel dark className="flex flex-column justify-between min-vh-100">
           <div className="mt5">
@@ -159,16 +77,8 @@ export function Dashboard({ userId }) {
             >
               Projects
             </NavLink>
-
-            {/* <NavLink
-              leftEl="💸"
-              className={pathname === `/user/${userId}/profile` && 'active'}
-              Component={Link}
-              to={`/user/${userId}/profile`}
-            >
-              Services
-            </NavLink> */}
             <NavLink
+              // rightEl="🚝"
               leftEl={<People className="o-75 h1" />}
               Component={Link}
               to={`/user/${userId}/network`}
@@ -178,7 +88,6 @@ export function Dashboard({ userId }) {
             >
               People
             </NavLink>
-            {/* <NavLink rightEl="🚝">With left and right el</NavLink> */}
           </div>
 
           <StatsBox userId={userId} />
@@ -189,13 +98,7 @@ export function Dashboard({ userId }) {
             <Route
               exact
               path="/user/:uid/dashboard"
-              render={props => (
-                <CRM
-                  {...props}
-                  // welcomeMessage={welcomeMessage}
-                  userId={userId}
-                />
-              )}
+              render={props => <CRM {...props} userId={userId} />}
             />
           )}
           <Route

@@ -154,26 +154,46 @@ function EditableTitle({ dragHandleProps, stage }) {
   const { title, id } = stage;
   const [editable, setEditable] = useState(false);
   const dispatch = useDispatch();
+  const [saving, setSaving] = useState(false);
+  const [titleValue, setTitleValue] = useState(title);
+  React.useEffect(() => {
+    setSaving(false);
+    setEditable(false);
+    setTitleValue(title);
+  }, [title]);
   return (
     <>
       {editable ? (
-        <button
-          type="button"
-          onDoubleClick={() => setEditable(false)}
-          className="bn pointer"
-        >
-          <input
-            data-testid="editableTitle"
-            onChange={e =>
-              dispatch({
-                type: 'projects/updateTitle',
-                payload: {
-                  title: e.target.value,
-                  stageId: id,
-                },
-              })
-            }
-          />
+        <button type="button" className="bn pointer">
+          <div className="w-100">
+            <input
+              className="dib border-box hover-black  measure ba b--black-20 pa2 br2"
+              value={titleValue}
+              data-testid="editableTitle"
+              onChange={e => {
+                setSaving(true);
+                setTitleValue(e.target.value);
+                dispatch({
+                  type: 'projects/updateTitle',
+                  payload: {
+                    title: e.target.value,
+                    stageId: id,
+                  },
+                });
+              }}
+            />
+            {saving ? (
+              <small className="dib red ml3">Saving...</small>
+            ) : (
+              <button
+                type="button"
+                className="bn pointer ml3 dib"
+                onClick={() => setEditable(false)}
+              >
+                <small className="red">Close</small>
+              </button>
+            )}
+          </div>
         </button>
       ) : (
         <button

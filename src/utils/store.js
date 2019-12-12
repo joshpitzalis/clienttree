@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
 import { createEpicMiddleware, combineEpics } from 'redux-observable';
 import { catchError } from 'rxjs/operators';
+
 import { taskSlice } from '../features/people/taskSlice';
 import {
   updateStatsDetails,
