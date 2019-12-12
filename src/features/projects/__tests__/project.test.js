@@ -99,6 +99,7 @@ it.only('epic works as expected', () => {
     });
   });
 });
+test.skip('autofocus input when open', () => false);
 test.skip('title input should have existing title pre-filled, not an empty input', () =>
   false);
 test.skip('get rid of flash on dashboard when loading', () => false);
@@ -131,3 +132,16 @@ test.skip('collapsing stage should make state uneditable whenopening again', () 
   false);
 test.skip('opening one state shoudl close all others, or maybe just close them all on a timer of disuse', () =>
   false);
+test.skip('if I click outside a stage it should close editability', () =>
+  false);
+test.skip('remove awkward blue focus outline from stages', () => false);
+describe('stage CRUD', () => {
+  test.skip('add a step', () => false);
+  test.skip('add a step adds teh step to teh end', () => false);
+
+  test.skip('remove a step', () => false);
+
+  test.skip('you cannot destroy a step if there are people on it', () => false);
+  test.skip('removin a step preserves the step order', () => false);
+  test.skip('autofocus input when open', () => false);
+});

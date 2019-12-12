@@ -155,19 +155,24 @@ function EditableTitle({ dragHandleProps, stage }) {
   const [editable, setEditable] = useState(false);
   const dispatch = useDispatch();
   const [saving, setSaving] = useState(false);
+  const [confirm, setConfirm] = useState(false);
   const [titleValue, setTitleValue] = useState(title);
   React.useEffect(() => {
     setSaving(false);
     setEditable(false);
     setTitleValue(title);
   }, [title]);
+
+  const cond = stage.people.length;
+  console.log({ id, title });
+
   return (
     <>
       {editable ? (
-        <button type="button" className="bn pointer">
-          <div className="w-100">
+        <div className="w-100 flex justify-between">
+          <div className="">
             <input
-              className="dib border-box hover-black  measure ba b--black-20 pa2 br2"
+              className="dib border-box hover-black measure ba b--black-20 pa2 br2"
               value={titleValue}
               data-testid="editableTitle"
               onChange={e => {
@@ -190,11 +195,51 @@ function EditableTitle({ dragHandleProps, stage }) {
                 className="bn pointer ml3 dib"
                 onClick={() => setEditable(false)}
               >
-                <small className="red">Close</small>
+                <small className="">Close</small>
               </button>
             )}
           </div>
-        </button>
+          <div>
+            {confirm ? (
+              <div>
+                <button
+                  type="button"
+                  className="bn pointer mr3 dib"
+                  onClick={() => setConfirm(false)}
+                >
+                  {cond ? (
+                    <small className="red">
+                      Remove all people from this stage before you can delete
+                      it.
+                    </small>
+                  ) : (
+                    <small>Nevermind</small>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  className={cond ? 'dn' : 'b ph3 pv2 white bg-red pointer br1'}
+                  onClick={() =>
+                    dispatch({
+                      type: 'projects/destroyStage',
+                      payload: id,
+                    })
+                  }
+                >
+                  Confirm Destruction
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="bn pointer ml3 pt2 dib"
+                onClick={() => setConfirm(true)}
+              >
+                <small className="red">Remove Stage</small>
+              </button>
+            )}
+          </div>
+        </div>
       ) : (
         <button
           type="button"
@@ -215,6 +260,7 @@ EditableTitle.propTypes = {
   stage: PropTypes.shape({
     title: PropTypes.string,
     id: PropTypes.string,
+    people: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
 };
 

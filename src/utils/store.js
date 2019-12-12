@@ -2,7 +2,6 @@ import { combineReducers } from 'redux';
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
 import { createEpicMiddleware, combineEpics } from 'redux-observable';
 import { catchError } from 'rxjs/operators';
-
 import { taskSlice } from '../features/people/taskSlice';
 import {
   updateStatsDetails,
@@ -19,9 +18,13 @@ import {
   decrementActivityStats,
   incrementActivityStats,
 } from '../features/stats/statsAPI';
-import { stageTitleUpdate } from '../features/projects/projectEpics';
+import {
+  stageTitleUpdate,
+  newStageCreated,
+  stageDestroyed,
+} from '../features/projects/projectEpics';
 import { toast$ } from '../features/notifications/toast';
-import { setTitle } from '../features/projects/dashAPI';
+import { updateUserProfile } from '../features/projects/dashAPI';
 
 export const rootEpic = (action$, store$, dependencies) =>
   combineEpics(
@@ -31,7 +34,9 @@ export const rootEpic = (action$, store$, dependencies) =>
     updateStatsDetails,
     projectCompleted,
     leadContacted,
-    stageTitleUpdate
+    stageTitleUpdate,
+    newStageCreated,
+    stageDestroyed
   )(action$, store$, dependencies).pipe(
     catchError((error, source) => {
       toast$.next({ type: 'ERROR', message: error.message || error });
@@ -49,7 +54,7 @@ const epicMiddleware = createEpicMiddleware({
     decrementActivityStats,
     incrementActivityStats,
     track: window && window.analytics && window.analytics.track,
-    setTitle,
+    updateUserProfile,
   },
 });
 

@@ -56,14 +56,11 @@ export const removeChallenge = ({ title, link, id, userId, stageId }) =>
       { merge: true }
     );
 
-export const setTitle = payload => {
+export const updateUserProfile = payload => {
   const { dashboard, userId } = payload;
-  // throw new Error('xxx');
   return firebase
     .firestore()
     .collection('users')
     .doc(userId)
     .set({ dashboard }, { merge: true });
-
-  // return new Promise(resolve => setTimeout(resolve, 2000, payload));
 };
