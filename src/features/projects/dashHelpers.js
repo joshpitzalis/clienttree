@@ -10,7 +10,7 @@ export const getDashboardWithNewTitle = (store, payload) => {
 };
 export const getDashboardWithNewStage = (store, title) => {
   const { dashboard } = store.value.user;
-  const id = +new Date();
+  const id = `${+new Date()}`;
   return produce(dashboard, draft => {
     draft.stages[id] = {
       id,
@@ -21,11 +21,13 @@ export const getDashboardWithNewStage = (store, title) => {
   });
 };
 
-export const getDashboardWithoutStage = (store, id) =>
-  produce(store.value.user, draft => {
+export const getDashboardWithoutStage = (store, id) => {
+  const { dashboard } = store.value.user;
+  return produce(dashboard, draft => {
     delete draft.stages[id];
     draft.stageOrder.splice(draft.stageOrder.findIndex(todo => todo === id), 1);
   });
+};
 
 export const onDragEnd = ({
   result,

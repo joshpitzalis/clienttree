@@ -5,18 +5,18 @@ import { interpret } from 'xstate';
 import userEvent from '@testing-library/user-event';
 import { TestScheduler } from 'rxjs/testing';
 import { handleActivityCompleted } from '../statsHelpers';
-import { Modal } from '../../network/components/ContactModal';
+import { Modal } from '../../people/components/ContactModal';
 import { render } from '../../../utils/testSetup';
-import { NetworkProvider } from '../../network/NetworkContext';
+import { NetworkProvider } from '../../people/NetworkContext';
 import {
   incrementStats,
   handleTracking,
   getStage,
-} from '../../network/networkAPI';
+} from '../../people/peopleAPI';
 import { statsMachine } from '../StatsBox';
 import { setStatDefaults } from '../statsAPI';
-import { markActivityComplete } from '../../network/networkEpics';
-import { ACTIVITY_COMPLETED } from '../../network/networkConstants';
+import { markActivityComplete } from '../../people/networkEpics';
+import { ACTIVITY_COMPLETED } from '../../people/networkConstants';
 
 jest.mock('../statsAPI');
 

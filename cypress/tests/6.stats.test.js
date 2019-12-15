@@ -71,10 +71,15 @@ describe('stats box', () => {
       .findAllByText('11');
   });
 
-  it.skip('updates stats when I move people into or out of project started', () => {
-    cy.visit('/')
-      .findByTestId('salesDashboard')
-      .drag(fakeData.name, 5000, 500);
+  it('updates stats when I move people into or out of project started', () => {
+    cy.visit('/').findByTestId('salesDashboard');
+    cy.findByTestId('stage1').within(() => cy.findByTestId(fakeData.name));
+    cy.findByTestId(fakeData.name)
+      .focus()
+      .type(' ')
+      .type(`{downarrow}`)
+      .type(' ');
+    cy.findByTestId('stage2').within(() => cy.findByTestId(fakeData.name));
   });
 
   //   when columns are rearranged, leads are added to first column

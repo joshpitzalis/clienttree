@@ -2,12 +2,13 @@ import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { TestScheduler } from 'rxjs/testing';
-import { SingleStage } from '../Stages';
+import { SingleStage, EditableTitle } from '../Stages';
 import { render } from '../../../utils/testSetup';
 import { stageTitleUpdate } from '../projectEpics';
-import { setTitle } from '../dashAPI';
+import { updateUserProfile } from '../dashAPI';
 
 jest.mock('../dashAPI');
+
 const mockData = {
   stage: {
     title: 'exampleTitle',
@@ -43,15 +44,21 @@ it('lets me edit it stage title when I double click on it', () => {
   // does not work if you only click once
   userEvent.click(getByText(/exampleTitle/i));
   expect(queryByTestId('editableTitle')).not.toBeInTheDocument();
+  // works when you double click
   userEvent.dblClick(getByText(/exampleTitle/i));
   getByTestId('editableTitle');
   expect(queryByText(/exampleTitle/i)).not.toBeInTheDocument();
+
+  // double click to go back doesn't work
   userEvent.dblClick(getByTestId('editableTitle'));
-  expect(queryByTestId('editableTitle')).not.toBeInTheDocument();
+  expect(queryByTestId('editableTitle')).toBeInTheDocument();
+  // click on close
+  userEvent.click(getByTestId('closeTitle'));
+  expect(queryByText('editableTitle')).not.toBeInTheDocument();
   getByText(/exampleTitle/i);
 });
 
-it.only('epic works as expected', () => {
+it('epic produces the correct actions', () => {
   const testScheduler = new TestScheduler((actual, expected) => {
     expect(actual).toEqual(expected);
     // mock a jest function
@@ -88,22 +95,106 @@ it.only('epic works as expected', () => {
     };
 
     const dependencies = {
-      setTitle: () => cold('a'),
+      updateUserProfile: () => cold('a'),
+    };
+    const output$ = stageTitleUpdate(action$, state$, dependencies);
+
+    // 'projects/titleSaved' }),
+    //     catchError(error => ({
+    //       error: true,
+    //       type: 'projects/titleError',
+
+    expectObservable(output$).toBe('1000ms a', {
+      a: {
+        type: 'projects/titleSaved',
+      },
+    });
+  });
+});
+it('epic produces the correct error', () => {
+  const testScheduler = new TestScheduler((actual, expected) => {
+    expect(actual).toEqual(expected);
+  });
+
+  testScheduler.run(({ hot, cold, expectObservable }) => {
+    const action$ = hot('a', {
+      a: {
+        type: 'projects/updateTitle',
+        payload: {
+          title: 'example input',
+          stageId: 'stage1',
+        },
+      },
+    });
+    const state$ = {
+      value: {
+        user: {
+          userId: 'abc123',
+          dashboard: {
+            stages: {
+              stage1: {
+                id: 'stage1',
+                title: 'Potential Projects',
+                subtitle: ``,
+                people: [],
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const dependencies = {
+      updateUserProfile: () =>
+        cold('#', null, {
+          response: {
+            message: 'Ooops',
+          },
+        }),
     };
     const output$ = stageTitleUpdate(action$, state$, dependencies);
 
     expectObservable(output$).toBe('1000ms a', {
       a: {
-        type: 'projects/fetchFulfilled',
+        type: 'projects/titleError',
+        payload: 'Ooops',
+        error: true,
+        meta: {
+          source: 'stageTitleUpdate',
+        },
       },
     });
   });
 });
-test.skip('autofocus input when open', () => false);
-test.skip('title input should have existing title pre-filled, not an empty input', () =>
-  false);
+
+it('autofocuses on input when opened', () => {
+  const { getByText, queryByText, getByTestId } = render(
+    <EditableTitle
+      dragHandleProps={mockData.provided.dragHandleProps}
+      stage={mockData.stage}
+    />
+  );
+  userEvent.dblClick(getByText(/exampleTitle/i));
+  getByTestId('editableTitle');
+  expect(queryByText(/exampleTitle/i)).not.toBeInTheDocument();
+  expect(getByTestId('editableTitle')).toHaveFocus();
+});
+
+it('has the existing title pre-filled, not an empty input', () => {
+  const { getByText, getByTestId } = render(
+    <EditableTitle
+      dragHandleProps={mockData.provided.dragHandleProps}
+      stage={mockData.stage}
+    />
+  );
+  userEvent.dblClick(getByText(/exampleTitle/i));
+  expect(getByTestId('editableTitle').value).toEqual('exampleTitle');
+});
+
 test.skip('get rid of flash on dashboard when loading', () => false);
+
 test.skip('test error state/throw error', () => false);
+
 it('updating stage title autosaves', () => {
   const { getByText, getByTestId, queryByTestId } = render(
     <SingleStage
@@ -125,7 +216,8 @@ it('updating stage title autosaves', () => {
   // check function gets fired after a few seconds
 });
 test.skip('shows saving as it is saving', () => false);
-test.skip('when teh input prop updates, the edit box is closed', () => false);
+test.skip('when the input prop updates, the edit box is closed', () => false);
+
 test.skip('auto saves updates', () => false);
 test.skip('doesnt accept null values', () => false);
 test.skip('collapsing stage should make state uneditable whenopening again', () =>

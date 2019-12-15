@@ -81,7 +81,12 @@ export const SingleStage = ({
   provided,
   stage,
 }) => (
-  <li className="pa3 pa4-ns bb b--black-10" ref={innerRef} {...droppableProps}>
+  <li
+    className="pa3 pa4-ns bb b--black-10"
+    ref={innerRef}
+    {...droppableProps}
+    data-testid={stage.id}
+  >
     <details>
       <summary>
         <>
@@ -150,7 +155,7 @@ SingleStage.propTypes = {
 
 SingleStage.defaultProps = {};
 
-function EditableTitle({ dragHandleProps, stage }) {
+export const EditableTitle = ({ dragHandleProps, stage }) => {
   const { title, id } = stage;
   const [editable, setEditable] = useState(false);
   const dispatch = useDispatch();
@@ -164,7 +169,6 @@ function EditableTitle({ dragHandleProps, stage }) {
   }, [title]);
 
   const cond = stage.people.length;
-  console.log({ id, title });
 
   return (
     <>
@@ -172,6 +176,8 @@ function EditableTitle({ dragHandleProps, stage }) {
         <div className="w-100 flex justify-between">
           <div className="">
             <input
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus
               className="dib border-box hover-black measure ba b--black-20 pa2 br2"
               value={titleValue}
               data-testid="editableTitle"
@@ -192,10 +198,11 @@ function EditableTitle({ dragHandleProps, stage }) {
             ) : (
               <button
                 type="button"
+                data-testid="closeTitle"
                 className="bn pointer ml3 dib"
                 onClick={() => setEditable(false)}
               >
-                <small className="">Close</small>
+                <small>Close</small>
               </button>
             )}
           </div>
@@ -253,7 +260,7 @@ function EditableTitle({ dragHandleProps, stage }) {
       )}
     </>
   );
-}
+};
 
 EditableTitle.propTypes = {
   dragHandleProps: PropTypes.func.isRequired,

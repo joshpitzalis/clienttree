@@ -36,7 +36,7 @@ export function Peoples({
             setSelectedUser(id);
           }}
           role="button"
-          tabIndex={-1}
+          tabIndex={index}
           data-testid={name}
         >
           <img

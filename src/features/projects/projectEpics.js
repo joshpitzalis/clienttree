@@ -2,11 +2,11 @@ import {
   switchMap,
   debounceTime,
   mapTo,
+  map,
   catchError,
-  tap,
 } from 'rxjs/operators';
+import { of, from } from 'rxjs';
 import { ofType } from 'redux-observable';
-import { from } from 'rxjs';
 import {
   getDashboardWithNewTitle,
   getCurrentUser,
@@ -18,6 +18,15 @@ export const stageTitleUpdate = (action$, store, { updateUserProfile }) =>
   action$.pipe(
     ofType('projects/updateTitle'),
     debounceTime(1000),
+    map(action => {
+      // guard against empty input values
+      if (action.payload.title.trim() === '') {
+        const newAction = { ...action };
+        newAction.payload.title = 'Title cannot be blank';
+        return newAction;
+      }
+      return action;
+    }),
     switchMap(({ payload }) =>
       from(
         updateUserProfile({
@@ -26,12 +35,14 @@ export const stageTitleUpdate = (action$, store, { updateUserProfile }) =>
         })
       ).pipe(
         mapTo({ type: 'projects/titleSaved' }),
-        catchError(error => ({
-          error: true,
-          type: 'projects/titleError',
-          payload: error,
-          meta: { source: 'stageTitleUpdate' },
-        }))
+        catchError(error =>
+          of({
+            error: true,
+            type: 'projects/titleError',
+            payload: error.response.message,
+            meta: { source: 'stageTitleUpdate' },
+          })
+        )
       )
     )
   );
@@ -48,12 +59,14 @@ export const newStageCreated = (action$, store, { updateUserProfile }) =>
         })
       ).pipe(
         mapTo({ type: 'projects/stageCreated' }),
-        catchError(error => ({
-          error: true,
-          type: 'projects/stageCreationError',
-          payload: error,
-          meta: { source: 'newStageCreated' },
-        }))
+        catchError(error =>
+          of({
+            error: true,
+            type: 'projects/stageCreationError',
+            payload: error.response.message,
+            meta: { source: 'newStageCreated' },
+          })
+        )
       )
     )
   );
@@ -69,12 +82,14 @@ export const stageDestroyed = (action$, store, { updateUserProfile }) =>
         })
       ).pipe(
         mapTo({ type: 'projects/stageDestroyed' }),
-        catchError(error => ({
-          error: true,
-          type: 'projects/stageDestructionError',
-          payload: error,
-          meta: { source: 'stageDestroyed' },
-        }))
+        catchError(error =>
+          of({
+            error: true,
+            type: 'projects/stageDestructionError',
+            payload: error.response.message,
+            meta: { source: 'stageDestroyed' },
+          })
+        )
       )
     )
   );
