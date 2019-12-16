@@ -17,7 +17,6 @@ const defaultProps = {};
 
 const NetworkProvider = ({ children, uid }) => {
   const [contacts, setContacts] = React.useState([]);
-
   React.useEffect(() => {
     const subscription = collection(
       firebase

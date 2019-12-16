@@ -45,3 +45,5 @@ export const setNewUserTask = action$ =>
     ),
     mapTo({ type: 'done' })
   );
+
+// 'people/updateForm'

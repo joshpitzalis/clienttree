@@ -17,13 +17,13 @@ import { ToDoList } from './ToDoList';
 import { ConfirmDelete } from './ConfirmDelete';
 import { Input } from './Input';
 
-const modalPropTypes = {
+const modalPropTypess = {
   uid: PropTypes.string.isRequired,
   selectedUserUid: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   incrementStats: PropTypes.func,
 };
-const modalDefaultProps = {
+const modalDefaultPropss = {
   incrementStats: handleTracking,
 };
 
@@ -223,5 +223,5 @@ export function Modal({
     </div>
   );
 }
-Modal.propTypes = modalPropTypes;
-Modal.defaultProps = modalDefaultProps;
+Modal.propTypes = modalPropTypess;
+Modal.defaultProps = modalDefaultPropss;

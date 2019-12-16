@@ -1,12 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as Sentry from '@sentry/browser';
+import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
-import { App } from './App';
+import Routes from './Routes';
+import { UserProvider } from './features/auth/UserContext';
+import store from './utils/store';
+import './index.css';
+import '@duik/it/dist/styles.css';
 
-Sentry.init({
-  dsn: process.env.REACT_APP_SENTRY_DSN,
-});
+if (process.env.NODE_ENV === 'production') {
+  Sentry.init({
+    dsn: process.env.REACT_APP_SENTRY_DSN,
+    release: process.env.REACT_APP_VERSION,
+  });
+}
+
+const App = () => (
+  <Provider store={store}>
+    <UserProvider>
+      <Routes />
+    </UserProvider>
+  </Provider>
+);
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
