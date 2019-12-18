@@ -48,7 +48,7 @@ export function Network({ uid }) {
   }, [uid]);
 
   return (
-    <ErrorBoundary fallback="Oh no! The People bit is broken 🤕">
+    <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
       {/* {visible && (
         <Portal
           onClose={() => {
@@ -68,7 +68,7 @@ export function Network({ uid }) {
         </Portal>
       )} */}
 
-      <div className="pv3" data-testid="outreachPage">
+      <div className="pv4" data-testid="outreachPage">
         {visible ? (
           <PersonModal
             setVisibility={setVisibility}

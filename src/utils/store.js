@@ -25,6 +25,7 @@ import {
 } from '../features/projects/projectEpics';
 import { toast$ } from '../features/notifications/toast';
 import { updateUserProfile } from '../features/projects/dashAPI';
+import { setFirebaseContactUpdate } from '../features/people/peopleAPI';
 
 export const rootEpic = (action$, store$, dependencies) =>
   combineEpics(
@@ -37,6 +38,7 @@ export const rootEpic = (action$, store$, dependencies) =>
     stageTitleUpdate,
     newStageCreated,
     stageDestroyed
+    // setFirebaseContactUpdate
   )(action$, store$, dependencies).pipe(
     catchError((error, source) => {
       toast$.next({ type: 'ERROR', message: error.message || error });

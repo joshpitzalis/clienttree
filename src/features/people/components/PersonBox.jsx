@@ -1,11 +1,12 @@
 import React from 'react';
-import { TextArea } from '@duik/it';
+import { TextArea, Toggle } from '@duik/it';
 import { Timeline, Icon } from 'antd';
 import AvatarGenerator from 'react-avatar-generator';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 // import { doc } from 'rxfire/firestore';
 import { Input } from './Input';
+
 // import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
 // import { NetworkContext } from '../NetworkContext';
 // import { toast$ } from '../../notifications/toast';
@@ -111,37 +112,48 @@ export const PersonModal = ({
   const updates = [];
   return (
     <>
-      <div data-testid="contactModal" className="ba b--black-10 pa3 br2 mb3">
-        <div className="flex">
-          {state.photoURL ? (
-            <img
-              alt={state.name}
-              className="w2 h2 w3-ns h3-ns br-100"
-              src={state.photoURL}
+      <div
+        data-testid="contactModal"
+        className="
+        pa4 br2-bottom mb3 bg-layer1 b-top"
+      >
+        <div className="flex flex-row-ns flex-column justify-between items-center">
+          <div className="flex">
+            <div className="mr3">
+              {state.photoURL ? (
+                <img
+                  alt={state.name}
+                  className="w2 h2 w3-ns h3-ns br-100"
+                  src={state.photoURL}
+                />
+              ) : (
+                <AvatarGenerator
+                  ref={avatarRef}
+                  height="50"
+                  width="50"
+                  colors={['#333', '#222', '#ccc']}
+                />
+              )}
+            </div>
+            <Input
+              setState={setState}
+              state={state}
+              value={state.name}
+              name="click image to upload"
+              className="ml3"
+              placeholder="Their name..."
             />
-          ) : (
-            <AvatarGenerator
-              ref={avatarRef}
-              height="50"
-              width="50"
-              colors={['#333', '#222', '#ccc']}
-            />
-          )}
-
-          <Input
-            setState={setState}
-            state={state}
-            value={state.name}
-            name="name"
-            className="ml3"
-            placeholder="Their name..."
+          </div>
+          <Toggle
+            description={
+              <p className="text3">Track this person on the Dashboard</p>
+            }
+            label={<b className="text1">Projects Dashboard</b>}
           />
         </div>
         <TextArea placeholder="Add an update" rows={10} />
         <div className="flex justify-end items-center">
-          <span className="pb3 mr3">
-            <Icon type="delete" style={{ color: 'red' }} />
-          </span>
+          <p className="pb3 mr3 text3">Change the date?</p>
           <Input
             setState={setState}
             state={state}
@@ -153,7 +165,7 @@ export const PersonModal = ({
         </div>
         <Timeline>
           <Timeline.Item color="green" dot={<Icon type="plus-square" />}>
-            Add a task
+            Add a task <Icon type="delete" style={{ color: 'red' }} />
           </Timeline.Item>
 
           {updates.map(({ text, date }) => (
@@ -168,7 +180,10 @@ export const PersonModal = ({
           type="button"
           onClick={() => onClose()}
           data-testid="closeBox"
-          className="b ph3 pv2 ba b--black bg-transparent grow pointer f6 br1 mb4"
+          className="btn2 
+           ph3 pv2 bn pointer br1 
+           grow b
+          mb4"
         >
           Close
         </button>
@@ -176,7 +191,7 @@ export const PersonModal = ({
           type="button"
           onClick={() => onClose()}
           data-testid="deletePerson"
-          className="ph3 pv2 bn bg-transparent pointer f6 br1 mb4"
+          className="btn3  underline-hover ph3 pv2 bn bg-transparent pointer f6 br1 mb4"
         >
           Delete
         </button>

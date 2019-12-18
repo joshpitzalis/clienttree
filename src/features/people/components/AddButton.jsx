@@ -9,7 +9,7 @@ export function AddButton({ setVisibility, contactCount }) {
       <button
         type="button"
         onClick={() => setVisibility(true)}
-        className="b ph3 pv2 ba b--black bg-transparent grow pointer f6 br1"
+        className="btn1 b grow  ph3 pv2  pointer bn br1 white"
         data-testid="addPeopleButton"
         onMouseEnter={() => setRevealSupportText(true)}
         onMouseLeave={() => setRevealSupportText(false)}

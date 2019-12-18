@@ -1,9 +1,11 @@
 import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
+import { TestScheduler } from 'rxjs/testing';
 import { render } from '../../../utils/testSetup';
 import { Person } from '../components/Person';
 import { Network } from '../Network';
+import { updateContactEpic } from '../networkEpics';
 
 describe('people CRUD', () => {
   const mockData = {
@@ -11,14 +13,14 @@ describe('people CRUD', () => {
     setVisibility: jest.fn(),
     contact: {
       uid: '123',
-      lastContacted: 'string',
+      lastContacted: false,
       activeTaskCount: 3,
       name: 'name name',
       photoURL: 'string',
     },
     selectedUser: {
       uid: '456',
-      lastContacted: 'string',
+      lastContacted: false,
       activeTaskCount: 3,
       name: 'other name',
       photoURL: 'string',
@@ -62,7 +64,95 @@ describe('people CRUD', () => {
       getByTestId('outreachPage');
     });
 
-    test.only('add name', () => {
+    it.skip('epic produces the correct actions', () => {
+      const testScheduler = new TestScheduler((actual, expected) => {
+        expect(actual).toEqual(expected);
+        // mock a jest function
+        // expect(setTitle).toHaveBeenCalled();
+        // expect(setTitle).toHaveBeenCalledWith(5);
+      });
+
+      testScheduler.run(({ hot, cold, expectObservable }) => {
+        const action$ = hot('a', {
+          a: {
+            type: 'people/updateForm',
+            payload: {
+              title: 'example name',
+            },
+          },
+        });
+        const state$ = {
+          value: {},
+        };
+        const dependencies = {
+          setFirebaseContactUpdate: () => cold('b'),
+        };
+        const output$ = updateContactEpic(action$, state$, dependencies);
+
+        expectObservable(output$).toBe('1000ms c', {
+          c: {
+            type: 'people/formSaved',
+          },
+        });
+      });
+    });
+
+    it('epic produces the correct error', () => {
+      const testScheduler = new TestScheduler((actual, expected) => {
+        expect(actual).toEqual(expected);
+      });
+
+      testScheduler.run(({ hot, cold, expectObservable }) => {
+        const action$ = hot('a', {
+          a: {
+            type: 'projects/updateTitle',
+            payload: {
+              title: 'example input',
+              stageId: 'stage1',
+            },
+          },
+        });
+        const state$ = {
+          value: {
+            user: {
+              userId: 'abc123',
+              dashboard: {
+                stages: {
+                  stage1: {
+                    id: 'stage1',
+                    title: 'Potential Projects',
+                    subtitle: ``,
+                    people: [],
+                  },
+                },
+              },
+            },
+          },
+        };
+
+        const dependencies = {
+          updateUserProfile: () =>
+            cold('#', null, {
+              response: {
+                message: 'Ooops',
+              },
+            }),
+        };
+        const output$ = stageTitleUpdate(action$, state$, dependencies);
+
+        expectObservable(output$).toBe('1000ms a', {
+          a: {
+            type: 'projects/titleError',
+            payload: 'Ooops',
+            error: true,
+            meta: {
+              source: 'stageTitleUpdate',
+            },
+          },
+        });
+      });
+    });
+    test('add name', () => {
       const { getByTestId, getByPlaceholderText } = render(
         <Person
           setSelectedUser={mockData.setSelectedUser}
@@ -75,7 +165,6 @@ describe('people CRUD', () => {
       userEvent.type(getByPlaceholderText('Their name...'), 'Mr. Happy');
       // assert data is fired
     });
-
     test.skip('no blank names', () => {});
     test.skip('generated image by default', () => {});
     test.skip('add photo', () => {});
@@ -85,6 +174,7 @@ describe('people CRUD', () => {
     test.skip('add task', () => {});
     test.skip('date task', () => {});
     test.skip('show saving... and saved', () => {});
+    test.skip('lets me add people to dashboard', () => {});
   });
 
   describe('update someone on the system', () => {
@@ -103,7 +193,7 @@ describe('people CRUD', () => {
     test.skip('delete user', () => {});
     test.skip('cannot delete if pending tasks', () => {});
   });
-
+  test.skip('add add people button to project dashboard', () => {});
   test.skip('limit the number of task nibs to 5 or so', () => {
     const { getByLabelText } = render(
       <Person

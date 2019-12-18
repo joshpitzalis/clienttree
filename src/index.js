@@ -14,6 +14,13 @@ if (process.env.NODE_ENV === 'production') {
     dsn: process.env.REACT_APP_SENTRY_DSN,
     release: process.env.REACT_APP_VERSION,
   });
+} else {
+  const config = {
+    rules: [{ id: 'radiogroup', enabled: true }],
+  };
+  // eslint-disable-next-line
+  var axe = require('react-axe');
+  axe(React, ReactDOM, 1000, config);
 }
 
 const App = () => (
@@ -24,7 +31,12 @@ const App = () => (
   </Provider>
 );
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

@@ -1,9 +1,16 @@
-import { tap, mapTo, catchError } from 'rxjs/operators';
+import {
+  tap,
+  mapTo,
+  switchMap,
+  debounceTime,
+  map,
+  catchError,
+} from 'rxjs/operators';
+import { of, from } from 'rxjs';
 import { ofType } from 'redux-observable';
 import {
   getActivitiesLeft,
   handleCompleteTask,
-  setFirebaseContactUpdate,
   inCompleteTask,
 } from './peopleAPI';
 import { toast$ } from '../notifications/toast';
@@ -34,7 +41,7 @@ export const markActivityComplete = (
     mapTo({ type: 'done' })
   );
 
-export const setNewUserTask = action$ =>
+export const setNewUserTask = (action$, store, { setFirebaseContactUpdate }) =>
   action$.pipe(
     ofType(USER_UPDATED),
     tap(async ({ payload }) => {
@@ -46,4 +53,36 @@ export const setNewUserTask = action$ =>
     mapTo({ type: 'done' })
   );
 
-// 'people/updateForm'
+export const updateContactEpic = (
+  action$,
+  store,
+  { setFirebaseContactUpdate }
+) => {
+  const emptyGuard = (action, defaultTitle) => {
+    if (action.payload.title.trim() === '') {
+      const newAction = { ...action };
+      newAction.payload.title = defaultTitle;
+      return newAction;
+    }
+    return action;
+  };
+
+  return action$.pipe(
+    ofType('people/updateForm'),
+    debounceTime(1000),
+    map(action => emptyGuard(action, 'Name cannot be blank')),
+    switchMap(({ payload }) =>
+      from(setFirebaseContactUpdate(payload)).pipe(
+        mapTo({ type: 'people/formSaved' }),
+        catchError(error =>
+          of({
+            error: true,
+            type: 'people/formError',
+            payload: error.response.message,
+            meta: { source: 'updateContactEpic' },
+          })
+        )
+      )
+    )
+  );
+};
