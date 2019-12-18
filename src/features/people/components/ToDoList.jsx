@@ -1,6 +1,6 @@
 import React from 'react';
 import { collectionData } from 'rxfire/firestore';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { handleDeleteTask } from '../peopleAPI';
 import firebase from '../../../utils/firebase';
@@ -26,41 +26,43 @@ export const ToDoList = ({
   photoURL,
 }) => {
   const [task, setTask] = React.useState('');
-  const { actions } = taskSlice;
-  const { setTasks } = actions;
-  const dispatch = useDispatch();
+  // const { actions } = taskSlice;
+  // const { setTasks } = actions;
+  // const dispatch = useDispatch();
 
-  React.useEffect(() => {
-    const subscription = collectionData(
-      firebase
-        .firestore()
-        .collection('users')
-        .doc(myUid)
-        .collection('contacts')
-        .doc(theirUid)
-        .collection('helpfulTasks')
-    ).subscribe(tasks => {
-      const newActiveTaskCount = tasks.filter(_task => !_task.dateCompleted)
-        .length;
-      if (activeTaskCount !== newActiveTaskCount) {
-        _setActiveTaskCount(myUid, theirUid, newActiveTaskCount);
-      }
-      const newTasks = tasks.map(_task => ({
-        ..._task,
-        dateCreated: _task.dateCreated.nanoseconds,
-      }));
-      // dispatch(setTasks({ tasks: newTasks, theirUid }));
-    });
-    return () => subscription.unsubscribe();
-  }, [
-    activeTaskCount,
-    myUid,
-    _setActiveTaskCount,
-    theirUid,
-    dispatch,
-    setTasks,
-  ]);
-  const helpfulTasks = useSelector(state => state.tasks[theirUid]);
+  // React.useEffect(() => {
+  //   const subscription = collectionData(
+  //     firebase
+  //       .firestore()
+  //       .collection('users')
+  //       .doc(myUid)
+  //       .collection('contacts')
+  //       .doc(theirUid)
+  //       .collection('helpfulTasks')
+  //   ).subscribe(tasks => {
+  //     const newActiveTaskCount = tasks.filter(_task => !_task.dateCompleted)
+  //       .length;
+  //     if (activeTaskCount !== newActiveTaskCount) {
+  //       _setActiveTaskCount(myUid, theirUid, newActiveTaskCount);
+  //     }
+  //     const newTasks = tasks.map(_task => ({
+  //       ..._task,
+  //       dateCreated: _task.dateCreated.nanoseconds,
+  //     }));
+  //     // dispatch(setTasks({ tasks: newTasks, theirUid }));
+  //   });
+  //   return () => subscription.unsubscribe();
+  // }, [
+  //   activeTaskCount,
+  //   myUid,
+  //   _setActiveTaskCount,
+  //   theirUid,
+  //   dispatch,
+  //   setTasks,
+  // ]);
+  const helpfulTasks = useSelector(state =>
+    state.tasks.filter(item => item.completedFor === theirUid)
+  );
 
   return (
     <div className="center pl4 pt2">

@@ -488,3 +488,8 @@ export const handleTracking = async (
     });
   }
 };
+
+export const setContact = x => {
+  console.log({ x });
+  return new Promise(({ resolve }) => resolve(x));
+};

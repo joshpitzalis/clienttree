@@ -3,7 +3,7 @@ import { createSlice } from 'redux-starter-kit';
 
 export const taskSlice = createSlice({
   name: 'tasks',
-  initialState: {},
+  initialState: [],
   reducers: {
     setTasks(state, action) {
       const { payload } = action;

@@ -15,4 +15,5 @@ export {
   setFirebaseContactUpdate,
   handleContactDelete,
   handleTracking,
+  setContact,
 } from './contactsAPI';

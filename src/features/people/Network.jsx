@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import './networkAnimations.css';
+import { useSelector } from 'react-redux';
 import { Person } from './components/Person';
 
 import { PersonModal } from './components/PersonBox';
@@ -12,7 +13,6 @@ import ErrorBoundary from '../../utils/ErrorBoundary';
 // import Portal from '../../utils/Portal';
 // import { Modal } from './components/ContactModal';
 // import { NetworkContext } from './NetworkContext';
-
 const networkPropTypes = {
   uid: PropTypes.string.isRequired,
 };
@@ -20,11 +20,8 @@ const networkDefaultProps = {};
 
 export function Network({ uid }) {
   const [visible, setVisibility] = React.useState(false);
-
   const [selectedUser, setSelectedUser] = React.useState('');
-
-  const [contacts, setContacts] = React.useState([]);
-  // const [, setTasksCompleted] = React.useState(0);
+  const contacts = useSelector(store => store.contacts);
 
   return (
     <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
@@ -61,7 +58,7 @@ export function Network({ uid }) {
         ) : (
           <AddButton
             setVisibility={setVisibility}
-            contactCount={contacts.filter(c => c.uid).length}
+            contactCount={contacts && contacts.filter(c => c.uid).length}
           />
         )}
       </div>

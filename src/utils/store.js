@@ -11,7 +11,9 @@ import {
 import {
   markActivityComplete,
   setNewUserTask,
+  updateContactEpic,
 } from '../features/people/networkEpics';
+import { setContact } from '../features/people/peopleAPI';
 import {
   userSlice,
   fetchUserDataEpic,
@@ -41,7 +43,8 @@ export const rootEpic = (action$, store$, dependencies) =>
     stageTitleUpdate,
     newStageCreated,
     stageDestroyed,
-    fetchUserDataEpic
+    fetchUserDataEpic,
+    updateContactEpic
   )(action$, store$, dependencies).pipe(
     catchError((error, source) => {
       toast$.next({ type: 'ERROR', message: error.message || error });
@@ -61,6 +64,7 @@ const epicMiddleware = createEpicMiddleware({
     incrementActivityStats,
     track: window && window.analytics && window.analytics.track,
     updateUserProfile,
+    setContact,
   },
 });
 

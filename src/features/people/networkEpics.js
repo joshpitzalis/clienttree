@@ -53,15 +53,11 @@ export const setNewUserTask = (action$, store, { setFirebaseContactUpdate }) =>
     mapTo({ type: 'done' })
   );
 
-export const updateContactEpic = (
-  action$,
-  store,
-  { setFirebaseContactUpdate }
-) => {
+export const updateContactEpic = (action$, store, { setContact }) => {
   const emptyGuard = (action, defaultTitle) => {
-    if (action.payload.title.trim() === '') {
+    if (action.payload.name.trim() === '') {
       const newAction = { ...action };
-      newAction.payload.title = defaultTitle;
+      newAction.payload.name = defaultTitle;
       return newAction;
     }
     return action;
@@ -72,13 +68,13 @@ export const updateContactEpic = (
     debounceTime(1000),
     map(action => emptyGuard(action, 'Name cannot be blank')),
     switchMap(({ payload }) =>
-      from(setFirebaseContactUpdate(payload)).pipe(
-        mapTo({ type: 'people/formSaved' }),
+      from(setContact(payload)).pipe(
+        map(() => ({ type: 'people/formSaved' })),
         catchError(error =>
           of({
             error: true,
             type: 'people/formError',
-            payload: error.response.message,
+            payload: error,
             meta: { source: 'updateContactEpic' },
           })
         )

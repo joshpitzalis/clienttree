@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Link, useLocation } from 'react-router-dom';
 import { ofType } from 'redux-observable';
-import { map, catchError, switchMap, tap } from 'rxjs/operators';
+import { map, catchError, switchMap } from 'rxjs/operators';
 import { of, merge } from 'rxjs';
 import { doc, collection } from 'rxfire/firestore';
 // import { PrivateRoute } from '../features/auth/PrivateRoute';
@@ -35,7 +35,7 @@ export const userSlice = createSlice({
 });
 export const contactsSlice = createSlice({
   name: 'contacts',
-  initialState: {},
+  initialState: [],
   reducers: {
     setContacts: (state, action) => action.payload,
   },

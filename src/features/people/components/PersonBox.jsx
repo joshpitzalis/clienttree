@@ -50,10 +50,10 @@ export const PersonModal = ({
     activeTaskCount: 0,
   });
 
-  React.useEffect(
-    () => dispatch({ type: 'people/updateForm', payload: state }),
-    [dispatch, state]
-  );
+  React.useEffect(() => {
+    dispatch({ type: 'people/updateForm', payload: state });
+  }, [dispatch, state]);
+
   // React.useEffect(() => {
   //   if (selectedUserUid) {
   //     const subscription = doc(
@@ -117,13 +117,13 @@ export const PersonModal = ({
   ];
 
   return (
-    <>
+    <div>
       <div
         data-testid="contactModal"
         className="
         pa4 br2-bottom mb3 bg-layer1 
         bt-orange
-     
+    mb4
         "
       >
         <div className="flex flex-row-ns flex-column justify-between items-center mb4 mt0">
@@ -148,7 +148,7 @@ export const PersonModal = ({
               setState={setState}
               state={state}
               value={state.name}
-              name="click image to upload"
+              name="name"
               className="ml3"
               placeholder="Their name..."
             />
@@ -185,7 +185,7 @@ export const PersonModal = ({
           ))}
         </Timeline>
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-baseline">
         <button
           type="button"
           onClick={() => onClose()}
@@ -206,7 +206,7 @@ export const PersonModal = ({
           Delete
         </button>
       </div>
-    </>
+    </div>
   );
 };
 PersonModal.propTypes = personPropTypess;

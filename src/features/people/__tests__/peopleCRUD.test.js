@@ -2,11 +2,20 @@ import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { TestScheduler } from 'rxjs/testing';
+import { of } from 'rxjs';
+import { cleanup, wait, act } from '@testing-library/react';
 import { render } from '../../../utils/testSetup';
 import { Person } from '../components/Person';
 import { Network } from '../Network';
 import { updateContactEpic } from '../networkEpics';
+import { setContact } from '../peopleAPI';
 
+jest.mock('../peopleAPI');
+// jest.mock('../networkEpics');
+
+afterEach(() => {
+  cleanup();
+});
 describe('people CRUD', () => {
   const mockData = {
     setSelectedUser: jest.fn(),
@@ -26,7 +35,7 @@ describe('people CRUD', () => {
       photoURL: 'string',
     },
   };
-  it.only('click on a person open to an editable person box', () => {
+  it('click on a person open to an editable person box', () => {
     const { getByTestId } = render(
       // <Person
       //   setSelectedUser={mockData.setSelectedUser}
@@ -34,7 +43,8 @@ describe('people CRUD', () => {
       //   contact={mockData.contact}
       //   selectedUser={mockData.selectedUser}
       // />
-      <Network uid="123" />
+      <Network uid="123" />,
+      { initialState: { contacts: [mockData.contact] } }
     );
     // expect closed
     expect(getByTestId('closedPeopleBox'));
@@ -65,15 +75,19 @@ describe('people CRUD', () => {
       getByTestId('outreachPage');
     });
 
-    it.skip('epic produces the correct actions', () => {
+    it('epic produces the correct actions', () => {
+      setContact.mockReturnValue(of(''));
+
       const testScheduler = new TestScheduler((actual, expected) => {
         expect(actual).toEqual(expected);
         // mock a jest function
-        // expect(setTitle).toHaveBeenCalled();
-        // expect(setTitle).toHaveBeenCalledWith(5);
+        expect(setContact).toHaveBeenCalled();
+        expect(setContact).toHaveBeenCalledWith({
+          title: 'example name',
+        });
       });
 
-      testScheduler.run(({ hot, cold, expectObservable }) => {
+      testScheduler.run(({ hot, expectObservable }) => {
         const action$ = hot('a', {
           a: {
             type: 'people/updateForm',
@@ -86,7 +100,7 @@ describe('people CRUD', () => {
           value: {},
         };
         const dependencies = {
-          setFirebaseContactUpdate: () => cold('b'),
+          setContact,
         };
         const output$ = updateContactEpic(action$, state$, dependencies);
 
@@ -106,54 +120,36 @@ describe('people CRUD', () => {
       testScheduler.run(({ hot, cold, expectObservable }) => {
         const action$ = hot('a', {
           a: {
-            type: 'projects/updateTitle',
+            type: 'people/updateForm',
             payload: {
-              title: 'example input',
-              stageId: 'stage1',
+              title: 'example name',
             },
           },
         });
+
         const state$ = {
-          value: {
-            user: {
-              userId: 'abc123',
-              dashboard: {
-                stages: {
-                  stage1: {
-                    id: 'stage1',
-                    title: 'Potential Projects',
-                    subtitle: ``,
-                    people: [],
-                  },
-                },
-              },
-            },
-          },
+          value: {},
         };
 
         const dependencies = {
-          updateUserProfile: () =>
-            cold('#', null, {
-              response: {
-                message: 'Ooops',
-              },
-            }),
+          setContact: () => cold('#', null, 'Ooops'),
         };
-        const output$ = stageTitleUpdate(action$, state$, dependencies);
+
+        const output$ = updateContactEpic(action$, state$, dependencies);
 
         expectObservable(output$).toBe('1000ms a', {
           a: {
-            type: 'projects/titleError',
-            payload: 'Ooops',
             error: true,
-            meta: {
-              source: 'stageTitleUpdate',
-            },
+            type: 'people/formError',
+            payload: 'Ooops',
+            meta: { source: 'updateContactEpic' },
           },
         });
       });
     });
-    test('add name', () => {
+    it.only('add name', async () => {
+      setContact.mockReset();
+
       const { getByTestId, getByPlaceholderText } = render(
         <Person
           setSelectedUser={mockData.setSelectedUser}
@@ -163,8 +159,22 @@ describe('people CRUD', () => {
         />
       );
 
+      userEvent.click(getByTestId('openBox'));
+
       userEvent.type(getByPlaceholderText('Their name...'), 'Mr. Happy');
+      // asser the text shows up first
       // assert data is fired
+      act(() => {
+        expect(getByTestId('contactModal')).toHaveTextContent('Mr. Happy');
+      });
+      // await wait(
+      //   () =>
+      //   expect(setContact).toHaveBeenCalled()
+      // );
+      // expect(updateContactEpic).toHaveBeenCalled();
+      // expect(updateContactEpic).toHaveBeenCalledWith({
+      //   title: 'Mr. Happyzzz',
+      // });
     });
     test.skip('no blank names', () => {});
     test.skip('generated image by default', () => {});
@@ -176,28 +186,28 @@ describe('people CRUD', () => {
     test.skip('date task', () => {});
     test.skip('show saving... and saved', () => {});
     test.skip('lets me add people to dashboard', () => {});
-
-    it('click on a add some open to an editable person box', () => {
-    const { getByTestId } = render(
-      // <Person
-      //   setSelectedUser={mockData.setSelectedUser}
-      //   setVisibility={mockData.setVisibility}
-      //   contact={mockData.contact}
-      //   selectedUser={mockData.selectedUser}
-      // />
-      <Network uid="123" />
-    );
-    // expect closed
-    expect(getByTestId('closedPeopleBox'));
-    // userEvent click
-    userEvent.click(getByTestId('openBox'));
-    // expect open
-    expect(getByTestId('openedPeopleBox'));
-    // click again
-    userEvent.click(getByTestId('closeBox'));
-    // expect closed
-    expect(getByTestId('closedPeopleBox'));
-  });
+    test.skip('add a loading and null state for contacts in network page', () => {});
+    it.skip('click on a add some open to an editable person box', () => {
+      const { getByTestId } = render(
+        // <Person
+        //   setSelectedUser={mockData.setSelectedUser}
+        //   setVisibility={mockData.setVisibility}
+        //   contact={mockData.contact}
+        //   selectedUser={mockData.selectedUser}
+        // />
+        <Network uid="123" />
+      );
+      // expect closed
+      expect(getByTestId('closedPeopleBox'));
+      // userEvent click
+      userEvent.click(getByTestId('openBox'));
+      // expect open
+      expect(getByTestId('openedPeopleBox'));
+      // click again
+      userEvent.click(getByTestId('closeBox'));
+      // expect closed
+      expect(getByTestId('closedPeopleBox'));
+    });
   });
 
   describe('update someone on the system', () => {
