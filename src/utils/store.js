@@ -12,7 +12,11 @@ import {
   markActivityComplete,
   setNewUserTask,
 } from '../features/people/networkEpics';
-import { userSlice } from '../pages/Dashboard';
+import {
+  userSlice,
+  fetchUserDataEpic,
+  contactsSlice,
+} from '../pages/Dashboard';
 import { onboardingEpic } from '../features/onboarding/onboardingEpics';
 import {
   decrementActivityStats,
@@ -25,7 +29,6 @@ import {
 } from '../features/projects/projectEpics';
 import { toast$ } from '../features/notifications/toast';
 import { updateUserProfile } from '../features/projects/dashAPI';
-import { setFirebaseContactUpdate } from '../features/people/peopleAPI';
 
 export const rootEpic = (action$, store$, dependencies) =>
   combineEpics(
@@ -37,8 +40,8 @@ export const rootEpic = (action$, store$, dependencies) =>
     leadContacted,
     stageTitleUpdate,
     newStageCreated,
-    stageDestroyed
-    // setFirebaseContactUpdate
+    stageDestroyed,
+    fetchUserDataEpic
   )(action$, store$, dependencies).pipe(
     catchError((error, source) => {
       toast$.next({ type: 'ERROR', message: error.message || error });
@@ -49,6 +52,7 @@ export const rootEpic = (action$, store$, dependencies) =>
 export const rootReducer = combineReducers({
   tasks: taskSlice.reducer,
   user: userSlice.reducer,
+  contacts: contactsSlice.reducer,
 });
 
 const epicMiddleware = createEpicMiddleware({

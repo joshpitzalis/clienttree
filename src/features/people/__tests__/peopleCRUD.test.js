@@ -26,7 +26,7 @@ describe('people CRUD', () => {
       photoURL: 'string',
     },
   };
-  it('click on a person open to an editable person box', () => {
+  it.only('click on a person open to an editable person box', () => {
     const { getByTestId } = render(
       // <Person
       //   setSelectedUser={mockData.setSelectedUser}
@@ -176,6 +176,28 @@ describe('people CRUD', () => {
     test.skip('date task', () => {});
     test.skip('show saving... and saved', () => {});
     test.skip('lets me add people to dashboard', () => {});
+
+    it('click on a add some open to an editable person box', () => {
+    const { getByTestId } = render(
+      // <Person
+      //   setSelectedUser={mockData.setSelectedUser}
+      //   setVisibility={mockData.setVisibility}
+      //   contact={mockData.contact}
+      //   selectedUser={mockData.selectedUser}
+      // />
+      <Network uid="123" />
+    );
+    // expect closed
+    expect(getByTestId('closedPeopleBox'));
+    // userEvent click
+    userEvent.click(getByTestId('openBox'));
+    // expect open
+    expect(getByTestId('openedPeopleBox'));
+    // click again
+    userEvent.click(getByTestId('closeBox'));
+    // expect closed
+    expect(getByTestId('closedPeopleBox'));
+  });
   });
 
   describe('update someone on the system', () => {
@@ -198,6 +220,8 @@ describe('people CRUD', () => {
   test.skip('add add people button to project dashboard', () => {});
 
   test.skip(' add people button on project dashboard disappears if people are there', () => {});
+
+  test.skip(' if I add someone  from teh dashboar teh toggle is on by default', () => {});
 
   test.skip('limit the number of task nibs to 5 or so', () => {
     const { getByLabelText } = render(

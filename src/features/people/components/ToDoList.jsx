@@ -49,7 +49,7 @@ export const ToDoList = ({
         ..._task,
         dateCreated: _task.dateCreated.nanoseconds,
       }));
-      dispatch(setTasks({ tasks: newTasks, theirUid }));
+      // dispatch(setTasks({ tasks: newTasks, theirUid }));
     });
     return () => subscription.unsubscribe();
   }, [

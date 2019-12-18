@@ -7,8 +7,13 @@ export const taskSlice = createSlice({
   reducers: {
     setTasks(state, action) {
       const { payload } = action;
-      const { theirUid, tasks: dbTasks } = payload;
-      state[theirUid] = dbTasks;
+      // flatten nested timestamps coming from firestore
+      const newTasks = payload.map(_task => ({
+        ..._task,
+        dateCreated: _task.dateCreated && _task.dateCreated.nanoseconds,
+        dateCompleted: _task.dateCompleted && _task.dateCompleted.nanoseconds,
+      }));
+      return newTasks;
     },
   },
 });

@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Link, useLocation } from 'react-router-dom';
-import { doc } from 'rxfire/firestore';
+import { ofType } from 'redux-observable';
+import { map, catchError, switchMap, tap } from 'rxjs/operators';
+import { of, merge } from 'rxjs';
+import { doc, collection } from 'rxfire/firestore';
 // import { PrivateRoute } from '../features/auth/PrivateRoute';
 import { useDispatch } from 'react-redux';
 import { createSlice } from 'redux-starter-kit';
-import { catchError } from 'rxjs/operators';
 import {
   NavPanel,
   NavLink,
@@ -16,27 +18,101 @@ import {
 import People from '../images/People';
 import Home from '../images/Home';
 import firebase from '../utils/firebase';
-import { toast$ } from '../features/notifications/toast';
 import { Network } from '../features/people/Network';
 import { Profile } from '../features/profile/Profile';
 import { CRM } from '../features/projects/dashboard';
 import { ConfettiBanner } from '../features/onboarding/confetti';
 import { Onboarding } from '../features/onboarding/ActivityList';
 import StatsBox from '../features/stats/StatsBox';
+import { taskSlice } from '../features/people/taskSlice';
 
 export const userSlice = createSlice({
   name: 'user',
   initialState: {},
   reducers: {
-    setProfile(state, action) {
-      const { payload } = action;
-      return payload;
-    },
+    setProfile: (state, action) => action.payload,
+  },
+});
+export const contactsSlice = createSlice({
+  name: 'contacts',
+  initialState: {},
+  reducers: {
+    setContacts: (state, action) => action.payload,
   },
 });
 
 const propTypes = { userId: PropTypes.string };
 const defaultProps = { userId: '' };
+
+export const fetchUserDataEpic = (
+  action$
+  // store,
+  // { setFirebaseContactUpdate }
+) =>
+  action$.pipe(
+    ofType('dashboard/fetchUserData'),
+    switchMap(({ payload }) => {
+      const userId = payload;
+      return merge(
+        doc(
+          firebase
+            .firestore()
+            .collection('users')
+            .doc(userId)
+        ).pipe(
+          map(user => userSlice.actions.setProfile(user.data())),
+          catchError(error =>
+            of({
+              error: true,
+              type: 'dashboard/userDataError',
+              payload: error,
+              meta: { source: 'fetchUserDataEpic' },
+            })
+          )
+        ),
+        collection(
+          firebase
+            .firestore()
+            .collectionGroup('helpfulTasks')
+            .where('connectedTo', '==', userId)
+        ).pipe(
+          map(docs => {
+            const helpfulTasks = docs.map(d => d.data());
+            return taskSlice.actions.setTasks(helpfulTasks);
+          }),
+          catchError(error =>
+            of({
+              error: true,
+              type: 'dashboard/helpfulTaskError',
+              payload: error,
+              meta: { source: 'fetchUserDataEpic' },
+            })
+          )
+        ),
+
+        collection(
+          firebase
+            .firestore()
+            .collection('users')
+            .doc(userId)
+            .collection('contacts')
+        ).pipe(
+          map(docs => {
+            const contacts = docs.map(d => d.data());
+            return contactsSlice.actions.setContacts(contacts);
+          }),
+          catchError(error =>
+            of({
+              error: true,
+              type: 'dashboard/contactError',
+              payload: error,
+              meta: { source: 'fetchUserDataEpic' },
+            })
+          )
+        )
+      );
+    })
+  );
 
 export function Dashboard({ userId }) {
   const dispatch = useDispatch();
@@ -44,24 +120,7 @@ export function Dashboard({ userId }) {
 
   React.useEffect(() => {
     if (userId) {
-      const subscription = doc(
-        firebase
-          .firestore()
-          .collection('users')
-          .doc(userId)
-      )
-        .pipe(
-          catchError(error =>
-            toast$.next({ type: 'ERROR', message: error.message || error })
-          )
-        )
-        .subscribe(user => {
-          const { setProfile } = userSlice.actions;
-          const newUser = user.data();
-          dispatch(setProfile(newUser));
-        });
-
-      return () => subscription.unsubscribe();
+      dispatch({ type: 'dashboard/fetchUserData', payload: userId });
     }
   }, [dispatch, userId]);
 

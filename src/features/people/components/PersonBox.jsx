@@ -201,7 +201,7 @@ export const PersonModal = ({
           type="button"
           onClick={() => onClose()}
           data-testid="deletePerson"
-          className="btn3  underline-hover ph3 pv2 bn bg-transparent pointer f6 br1 mb4"
+          className="red underline-hover ph3 pv2 bn bg-transparent pointer f6 br1 mb4"
         >
           Delete
         </button>

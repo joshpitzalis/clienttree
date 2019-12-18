@@ -62,7 +62,7 @@ export function Input({
   if (type === 'textarea') {
     return (
       <div className={` ${className}`}>
-        <label htmlFor={name} className="f6 b db mb2">
+        <label htmlFor={name} className="f6 b db mb2 text3">
           {name}
           <textarea
             name={name}
