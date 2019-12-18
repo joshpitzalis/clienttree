@@ -5,6 +5,7 @@ import AvatarGenerator from 'react-avatar-generator';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 // import { doc } from 'rxfire/firestore';
+
 import { Input } from './Input';
 
 // import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
@@ -109,16 +110,24 @@ export const PersonModal = ({
   //   throw new Error();
   // }
 
-  const updates = [];
+  const updates = [
+    { text: 'example  update', date: 'yesterday' },
+    { text: 'another example', date: 'last week' },
+    { text: 'another example  update', date: '45 days ago' },
+  ];
+
   return (
     <>
       <div
         data-testid="contactModal"
         className="
-        pa4 br2-bottom mb3 bg-layer1 b-top"
+        pa4 br2-bottom mb3 bg-layer1 
+        bt-orange
+     
+        "
       >
-        <div className="flex flex-row-ns flex-column justify-between items-center">
-          <div className="flex">
+        <div className="flex flex-row-ns flex-column justify-between items-center mb4 mt0">
+          <div className="flex ">
             <div className="mr3">
               {state.photoURL ? (
                 <img
@@ -151,9 +160,9 @@ export const PersonModal = ({
             label={<b className="text1">Projects Dashboard</b>}
           />
         </div>
-        <TextArea placeholder="Add an update" rows={10} />
-        <div className="flex justify-end items-center">
-          <p className="pb3 mr3 text3">Change the date?</p>
+        <TextArea placeholder="Add an update" rows={10} className="mb0" />
+        <div className="flex justify-end items-baseline mt0 pa0 mb3">
+          <p className="pb3 mr3 text3 mt0">Change the date?</p>
           <Input
             setState={setState}
             state={state}
@@ -161,16 +170,17 @@ export const PersonModal = ({
             name="lastContacted"
             placeholder="Last contacted..."
             type="date"
+            className="mt0"
           />
         </div>
         <Timeline>
-          <Timeline.Item color="green" dot={<Icon type="plus-square" />}>
-            Add a task <Icon type="delete" style={{ color: 'red' }} />
-          </Timeline.Item>
-
           {updates.map(({ text, date }) => (
-            <Timeline.Item color="gray">
-              {text} {date}
+            <Timeline.Item color="green" style={{}}>
+              {date} | {text}
+              <Icon
+                type="delete"
+                style={{ color: 'red', paddingLeft: '5px' }}
+              />
             </Timeline.Item>
           ))}
         </Timeline>

@@ -21,10 +21,12 @@ const inputPropTypes = {
     imgString: PropTypes.string,
   }),
   type: PropTypes.string,
+  className: PropTypes.string,
 };
 const inputDefaultProps = {
   type: 'text',
   state: {},
+  className: 'mb4',
 };
 
 function isValidDate(date) {
@@ -35,10 +37,18 @@ function isValidDate(date) {
   );
 }
 
-export function Input({ setState, state, value, name, placeholder, type }) {
+export function Input({
+  setState,
+  state,
+  value,
+  name,
+  placeholder,
+  type,
+  className,
+}) {
   if (type === 'date') {
     return (
-      <div className="mb4">
+      <div className={` ${className}`}>
         <DatePicker
           size="large"
           format="DD-MM-YYYY"
@@ -51,7 +61,7 @@ export function Input({ setState, state, value, name, placeholder, type }) {
   }
   if (type === 'textarea') {
     return (
-      <div className="mb4">
+      <div className={` ${className}`}>
         <label htmlFor={name} className="f6 b db mb2">
           {name}
           <textarea
@@ -69,7 +79,7 @@ export function Input({ setState, state, value, name, placeholder, type }) {
     );
   }
   return (
-    <div className="mt3 mb4 ">
+    <div className={`mt3  ${className}`}>
       <label className="db fw6 lh-copy f6 ttc " htmlFor="name">
         {name}
         <input

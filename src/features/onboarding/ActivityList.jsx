@@ -13,6 +13,8 @@ import { USER_UPDATED } from '../people/networkConstants';
 import firebase from '../../utils/firebase';
 import { toast$ } from '../notifications/toast';
 
+import { Input } from '../people/components/Input';
+
 const propTypes = {
   uid: PropTypes.string.isRequired,
 };
@@ -43,15 +45,16 @@ export function Onboarding({ uid }) {
 
   return (
     <div className="pa4">
-      <fieldset className="bn">
-        <details data-testid="detailBox">
+      <fieldset className="bn ma0 pa0">
+        {/* <details data-testid="detailBox">
           <summary>
             <legend className="fw7 mb2 dib" data-testid="toggleAddBox">
               {onboardingComplete ? 'Activities' : 'Getting Started'}
             </legend>
           </summary>
           <AddBox setUser={setUser} userId={uid} />
-        </details>
+        </details> */}
+        <OnePersonActivities />
         {!onboardingComplete && (
           <div className="mb4">
             <Progress percent={completePercentage} />
@@ -257,3 +260,36 @@ export function AddBox({ setUser, userId }) {
 
 AddBox.propTypes = addPropTypes;
 AddBox.defaultProps = addDefaultProps;
+
+const PpropTypes = {};
+const PdefaultProps = {};
+
+const OnePersonActivities = () => {
+  const [state, setState] = React.useState({
+    activity: '',
+    date: '',
+  });
+
+  return (
+    <form className="ma0 pa0 bb b--black-10 mb4">
+      <Input
+        setState={setState}
+        state={state}
+        value={state.activity}
+        name="activity"
+        placeholder="Add an activity.."
+        className="mb0"
+      />
+      <Input
+        setState={setState}
+        state={state}
+        value={state.date}
+        name="date"
+        type="date"
+      />
+    </form>
+  );
+};
+
+OnePersonActivities.propTypes = PpropTypes;
+OnePersonActivities.defaultProps = PdefaultProps;

@@ -19,17 +19,13 @@ body {
   --border-color-main: #44444e;
   --border-color-highlight: #64646e;
 
-
-  --button-primary: hsl(83, 70%, 34%);
-  --button-secondary: hsl(84, 77%, 86%);
-  --button-tertiary: transparent;
- 
-  --green: #91bb5c;
+  --primary: hsl(83, 70%, 34%) !important; 
+  --green: hsl(83, 70%, 34%); 
   --blue	: #32549d;
   --indigo: #5083f4;
   --orange: #ffb42a;
-  --red: #e64948;
-  --success: #91bb5c;
+  --red: #e64948; 
+  --success:  hsl(83, 34%, 89%);
   --primary:#32549d;
   --warning	: #ffb42a;
   --danger: #e64948;
@@ -44,6 +40,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+ul *:not(:last-child) {
+  margin-bottom: 0px !important;
+}
+
 input{
   background-color: hsl(0, 0%, 88%);
   border: none !important;
@@ -55,7 +55,7 @@ textarea{
 }
 
 .bg-client-green {
-  background-color:var(--green);
+  background-color:var(--primary);
 }
 
 .bg-black {
@@ -63,7 +63,7 @@ textarea{
 }
 
 .green {
-  color: var(--green) ;
+  color: var(--primary) ;
 }
 
 .bg-base {
@@ -86,28 +86,31 @@ textarea{
   color: var(--text-tertiary) ;
 }
 .btn1{
-  background-color: var(--button-primary) ;
+  background-color: var(--primary) ;
 }
 
 .btn2{
-  background-color: var(--button-secondary) ;
-  color: hsl(83, 70%, 34%);
+  background-color: var(--success) ;
+  color: var(--primary)
 }
 
 .btn3{
-  background-color: var(--button-tertiary) ;
-  color: hsl(83, 70%, 34%);
+  background-color: transparent ;
+  color: var(--primary)
 }
 
-.b-top{
+.bt-orange{
   border-top: 3px var(--orange) solid;
+}
+
+.bt-green{
+  border-top: 3px var(--primary) solid;
 }
 
 .taskStyle {
   -webkit-font-smoothing: antialiased;
 
 cursor: pointer;
-
 box-sizing: border-box;
 border-radius: 15px;
 display: inline-block;

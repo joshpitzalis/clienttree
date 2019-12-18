@@ -24,10 +24,10 @@ const App = () => {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <main>
-          <div className="">
-            <Banner />
-            <Navbar authStatus={authStatus} />
+        <>
+          <Banner />
+          <Navbar authStatus={authStatus} />
+          <main>
             <Route
               exact
               path="/"
@@ -69,8 +69,8 @@ const App = () => {
               path="/refer/:uid"
               render={referProps => <Refer {...referProps} userId={userId} />}
             />
-          </div>
-        </main>
+          </main>
+        </>
       </BrowserRouter>
     </ErrorBoundary>
   );

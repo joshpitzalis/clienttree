@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Route, Link, useLocation, useParams } from 'react-router-dom';
+import { Route, Link, useLocation } from 'react-router-dom';
 import { doc } from 'rxfire/firestore';
 // import { PrivateRoute } from '../features/auth/PrivateRoute';
 import { useDispatch } from 'react-redux';

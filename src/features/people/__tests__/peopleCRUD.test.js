@@ -28,12 +28,13 @@ describe('people CRUD', () => {
   };
   it('click on a person open to an editable person box', () => {
     const { getByTestId } = render(
-      <Person
-        setSelectedUser={mockData.setSelectedUser}
-        setVisibility={mockData.setVisibility}
-        contact={mockData.contact}
-        selectedUser={mockData.selectedUser}
-      />
+      // <Person
+      //   setSelectedUser={mockData.setSelectedUser}
+      //   setVisibility={mockData.setVisibility}
+      //   contact={mockData.contact}
+      //   selectedUser={mockData.selectedUser}
+      // />
+      <Network uid="123" />
     );
     // expect closed
     expect(getByTestId('closedPeopleBox'));
@@ -193,7 +194,11 @@ describe('people CRUD', () => {
     test.skip('delete user', () => {});
     test.skip('cannot delete if pending tasks', () => {});
   });
+
   test.skip('add add people button to project dashboard', () => {});
+
+  test.skip(' add people button on project dashboard disappears if people are there', () => {});
+
   test.skip('limit the number of task nibs to 5 or so', () => {
     const { getByLabelText } = render(
       <Person
