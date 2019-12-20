@@ -3,7 +3,7 @@ import { TextArea, Toggle } from '@duik/it';
 import { Timeline, Icon } from 'antd';
 import AvatarGenerator from 'react-avatar-generator';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // import { doc } from 'rxfire/firestore';
 
 import { Input } from './Input';
@@ -22,7 +22,7 @@ import {
 // import { ConfirmDelete } from './ConfirmDelete';
 
 const personPropTypess = {
-  uid: PropTypes.string.isRequired,
+  contactId: PropTypes.string.isRequired,
   // selectedUserUid: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   incrementStats: PropTypes.func,
@@ -32,83 +32,23 @@ const personDefaultPropss = {
 };
 
 export const PersonModal = ({
-  uid,
-  // selectedUserUid,
+  contactId,
   onClose,
   incrementStats = handleTracking,
 }) => {
   const dispatch = useDispatch();
-  const [state, setState] = React.useState({
-    userId: uid,
-    name: '',
-    summary: '',
-    tracked: false,
-    lastContacted: '',
-    contactId: '',
-    photoURL: '',
-    imgString: '',
-    activeTaskCount: 0,
-  });
+
+  const contact = useSelector(store =>
+    store.contacts.find(person => person.uid === contactId)
+  );
+
+  const [state, setState] = React.useState({ saving: false });
 
   React.useEffect(() => {
-    dispatch({ type: 'people/updateForm', payload: state });
-  }, [dispatch, state]);
+    setState({ ...contact, saving: false });
+  }, [contact]);
 
-  // React.useEffect(() => {
-  //   if (selectedUserUid) {
-  //     const subscription = doc(
-  //       firebase
-  //         .firestore()
-  //         .collection('users')
-  //         .doc(uid)
-  //         .collection('contacts')
-  //         .doc(selectedUserUid)
-  //     ).subscribe(user => {
-  //       setState({ ...user.data() });
-  //     });
-  //     return () => subscription.unsubscribe();
-  //   }
-  // }, [selectedUserUid, uid]);
-  // const { setContact } = React.useContext(NetworkContext);
   const avatarRef = React.useRef(null);
-  // const handleDelete = async (_name, _uid, _userId) => {
-  //   try {
-  //     await handleContactDelete(_uid, _userId);
-  //     onClose();
-  //   } catch (error) {
-  //     toast$.next({ type: 'ERROR', message: error.message || error });
-  //   }
-  // };
-  // const handleAddingTask = (task, myUid, theirUid, photoURL) => {
-  //   handleAddTask(task, myUid, theirUid, photoURL).catch(error =>
-  //     toast$.next({ type: 'ERROR', message: error.message || error })
-  //   );
-  // };
-  // const handleUpdateUser = async e => {
-  //   e.preventDefault();
-  //   // tk validity check goes here
-  //   try {
-  //     const newUser = !state.photoURL;
-  //     if (newUser) {
-  //       const imgString = await avatarRef.current.getImageData();
-  //       dispatch({
-  //         type: ONBOARDING_STEP_COMPLETED,
-  //         payload: { userId: uid, onboardingStep: 'addedSomeone' },
-  //       });
-  //       await setContact({ ...state, imgString, userId: uid });
-  //       onClose();
-  //       return;
-  //     }
-  //     await setContact({ ...state, userId: uid, contactId: state.uid });
-  //     onClose();
-  //   } catch (error) {
-  //     toast$.next({ type: 'ERROR', message: error.message || error });
-  //   }
-  // };
-  //
-  // if (true) {
-  //   throw new Error();
-  // }
 
   const updates = [
     { text: 'example  update', date: 'yesterday' },
@@ -120,16 +60,14 @@ export const PersonModal = ({
     <div>
       <div
         data-testid="contactModal"
-        className="
-        pa4 br2-bottom mb3 bg-layer1 
-        bt-orange
-    mb4
-        "
+        className={`pa4 br2-bottom bg-layer1 ${
+          state.saving && state.saving ? 'bt-orange' : 'bt-green'
+        }`}
       >
-        <div className="flex flex-row-ns flex-column justify-between items-center mb4 mt0">
-          <div className="flex ">
+        <div className="flex flex-row-ns flex-column justify-between items-center pb4 mt0">
+          <div className="flex">
             <div className="mr3">
-              {state.photoURL ? (
+              {state.photoURL && state.photoURL ? (
                 <img
                   alt={state.name}
                   className="w2 h2 w3-ns h3-ns br-100"
@@ -144,14 +82,31 @@ export const PersonModal = ({
                 />
               )}
             </div>
-            <Input
-              setState={setState}
-              state={state}
-              value={state.name}
-              name="name"
-              className="ml3"
-              placeholder="Their name..."
-            />
+
+            <label className="db lh-copy ttc ml3 " htmlFor="name">
+              <span className="text3">Name</span>
+              <input
+                className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2"
+                type="text"
+                name="name"
+                id="name"
+                data-testid="contactName"
+                placeholder="Their name..."
+                value={state.name}
+                onChange={e => {
+                  const payload = {
+                    ...state,
+                    name: e.target.value,
+                    saving: true,
+                  };
+                  setState({ ...payload });
+                  dispatch({
+                    type: 'people/updateForm',
+                    payload,
+                  });
+                }}
+              />
+            </label>
           </div>
           <Toggle
             description={
@@ -185,7 +140,7 @@ export const PersonModal = ({
           ))}
         </Timeline>
       </div>
-      <div className="flex justify-between items-baseline">
+      <div className="flex justify-between items-baseline mv4">
         <button
           type="button"
           onClick={() => onClose()}
@@ -211,3 +166,42 @@ export const PersonModal = ({
 };
 PersonModal.propTypes = personPropTypess;
 PersonModal.defaultProps = personDefaultPropss;
+
+// const handleDelete = async (_name, _uid, _userId) => {
+//   try {
+//     await handleContactDelete(_uid, _userId);
+//     onClose();
+//   } catch (error) {
+//     toast$.next({ type: 'ERROR', message: error.message || error });
+//   }
+// };
+// const handleAddingTask = (task, myUid, theirUid, photoURL) => {
+//   handleAddTask(task, myUid, theirUid, photoURL).catch(error =>
+//     toast$.next({ type: 'ERROR', message: error.message || error })
+//   );
+// };
+// const handleUpdateUser = async e => {
+//   e.preventDefault();
+//   // tk validity check goes here
+//   try {
+//     const newUser = !state.photoURL;
+//     if (newUser) {
+//       const imgString = await avatarRef.current.getImageData();
+//       dispatch({
+//         type: ONBOARDING_STEP_COMPLETED,
+//         payload: { userId: uid, onboardingStep: 'addedSomeone' },
+//       });
+//       await setContact({ ...state, imgString, userId: uid });
+//       onClose();
+//       return;
+//     }
+//     await setContact({ ...state, userId: uid, contactId: state.uid });
+//     onClose();
+//   } catch (error) {
+//     toast$.next({ type: 'ERROR', message: error.message || error });
+//   }
+// };
+//
+// if (true) {
+//   throw new Error();
+// }

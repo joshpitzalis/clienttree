@@ -489,7 +489,24 @@ export const handleTracking = async (
   }
 };
 
-export const setContact = x => {
-  console.log({ x });
-  return new Promise(({ resolve }) => resolve(x));
-};
+export const setContact = (
+  userId,
+  { uid, name, summary, lastContacted, photoURL, downloadURL }
+) =>
+  firebase
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('contacts')
+    .doc(uid)
+    .set(
+      {
+        name,
+        summary,
+        uid,
+        lastContacted: lastContacted || null,
+        photoURL: downloadURL || photoURL,
+        activeTaskCount: 1,
+      },
+      { merge: true }
+    );

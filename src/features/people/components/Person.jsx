@@ -6,22 +6,27 @@ import { useMachine } from '@xstate/react';
 import { Machine } from 'xstate';
 import { PersonModal } from './PersonBox';
 
-const peopleMachine = Machine({
-  id: 'people',
-  initial: 'closed',
-  states: {
-    closed: {
-      on: {
-        OPENED: 'opened',
+const peopleMachine = Machine(
+  {
+    id: 'people',
+    initial: 'closed',
+    states: {
+      closed: {
+        on: {
+          OPENED: 'opened',
+        },
       },
-    },
-    opened: {
-      on: {
-        CLOSED: 'closed',
+      opened: {
+        on: {
+          CLOSED: 'closed',
+        },
       },
     },
   },
-});
+  {
+    actions: {},
+  }
+);
 
 const isValidDate = timestamp => new Date(timestamp).getTime() > 0;
 
@@ -96,8 +101,7 @@ export const Person = ({
       return (
         <li key={contact.uid} className="mb3" data-testid="openedPeopleBox">
           <PersonModal
-            uid={contact.uid}
-            selectedUserUid={selectedUser}
+            contactId={contact.uid}
             onClose={() => send({ type: 'CLOSED' })}
           />
         </li>

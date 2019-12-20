@@ -13,38 +13,40 @@ import {
   setNewUserTask,
   updateContactEpic,
 } from '../features/people/networkEpics';
-import { setContact } from '../features/people/peopleAPI';
 import {
   userSlice,
   fetchUserDataEpic,
   contactsSlice,
 } from '../pages/Dashboard';
 import { onboardingEpic } from '../features/onboarding/onboardingEpics';
-import {
-  decrementActivityStats,
-  incrementActivityStats,
-} from '../features/stats/statsAPI';
+
 import {
   stageTitleUpdate,
   newStageCreated,
   stageDestroyed,
 } from '../features/projects/projectEpics';
 import { toast$ } from '../features/notifications/toast';
+import {
+  decrementActivityStats,
+  incrementActivityStats,
+} from '../features/stats/statsAPI';
 import { updateUserProfile } from '../features/projects/dashAPI';
+import { setContact } from '../features/people/peopleAPI';
 
 export const rootEpic = (action$, store$, dependencies) =>
   combineEpics(
     markActivityComplete,
-    onboardingEpic,
     setNewUserTask,
     updateStatsDetails,
+    updateContactEpic,
+    // ###
     projectCompleted,
     leadContacted,
     stageTitleUpdate,
     newStageCreated,
     stageDestroyed,
     fetchUserDataEpic,
-    updateContactEpic
+    onboardingEpic
   )(action$, store$, dependencies).pipe(
     catchError((error, source) => {
       toast$.next({ type: 'ERROR', message: error.message || error });
@@ -58,17 +60,26 @@ export const rootReducer = combineReducers({
   contacts: contactsSlice.reducer,
 });
 
-const epicMiddleware = createEpicMiddleware({
-  dependencies: {
-    decrementActivityStats,
-    incrementActivityStats,
-    track: window && window.analytics && window.analytics.track,
-    updateUserProfile,
-    setContact,
-  },
+export const dependencies = {
+  decrementActivityStats,
+  incrementActivityStats,
+  track: window && window.analytics && window.analytics.track,
+  updateUserProfile,
+  setContact,
+};
+
+export const epicMiddleware = createEpicMiddleware({
+  dependencies,
+  // : {
+  //   decrementActivityStats,
+  //   incrementActivityStats,
+  //   track: window && window.analytics && window.analytics.track,
+  //   updateUserProfile,
+  //   setContact,
+  // },
 });
 
-const middleware =
+export const middleware =
   process.env.NODE_ENV !== 'production'
     ? [
         // eslint-disable-next-line global-require

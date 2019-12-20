@@ -2,15 +2,16 @@ import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { TestScheduler } from 'rxjs/testing';
-import { of } from 'rxjs';
-import { cleanup, wait, act } from '@testing-library/react';
+import { cleanup, wait } from '@testing-library/react';
 import { render } from '../../../utils/testSetup';
 import { Person } from '../components/Person';
 import { Network } from '../Network';
 import { updateContactEpic } from '../networkEpics';
 import { setContact } from '../peopleAPI';
 
-jest.mock('../peopleAPI');
+jest.mock('../peopleAPI', () => ({
+  setContact: jest.fn(),
+}));
 // jest.mock('../networkEpics');
 
 afterEach(() => {
@@ -76,35 +77,38 @@ describe('people CRUD', () => {
     });
 
     it('epic produces the correct actions', () => {
-      setContact.mockReturnValue(of(''));
+      // setContact.mockResolvedValue(of(''));
 
       const testScheduler = new TestScheduler((actual, expected) => {
         expect(actual).toEqual(expected);
-        // mock a jest function
-        expect(setContact).toHaveBeenCalled();
-        expect(setContact).toHaveBeenCalledWith({
-          title: 'example name',
-        });
+        // // mock a jest function
+        // expect(setContact).toHaveBeenCalled();
+        // expect(setContact).toHaveBeenCalledWith({
+        //   title: 'example name',
+        // });
       });
 
-      testScheduler.run(({ hot, expectObservable }) => {
+      testScheduler.run(({ hot, cold, expectObservable }) => {
         const action$ = hot('a', {
           a: {
             type: 'people/updateForm',
             payload: {
-              title: 'example name',
+              name: 'example name',
             },
           },
         });
         const state$ = {
-          value: {},
+          value: { user: { userId: '123' } },
         };
         const dependencies = {
-          setContact,
+          setContact: () =>
+            cold('-a', {
+              a: '',
+            }),
         };
         const output$ = updateContactEpic(action$, state$, dependencies);
 
-        expectObservable(output$).toBe('1000ms c', {
+        expectObservable(output$).toBe('1000ms -c', {
           c: {
             type: 'people/formSaved',
           },
@@ -122,13 +126,13 @@ describe('people CRUD', () => {
           a: {
             type: 'people/updateForm',
             payload: {
-              title: 'example name',
+              name: 'example name',
             },
           },
         });
 
         const state$ = {
-          value: {},
+          value: { user: { userId: '123' } },
         };
 
         const dependencies = {
@@ -147,9 +151,30 @@ describe('people CRUD', () => {
         });
       });
     });
-    it.only('add name', async () => {
+    it('add name', async () => {
       setContact.mockReset();
+      const { getByTestId, getByPlaceholderText } = render(
+        <Person
+          setSelectedUser={mockData.setSelectedUser}
+          setVisibility={mockData.setVisibility}
+          contact={mockData.contact}
+          selectedUser={mockData.selectedUser}
+        />
+      );
 
+      userEvent.click(getByTestId('openBox'));
+      userEvent.type(getByPlaceholderText('Their name...'), 'Mr. Happy');
+      // assert the text shows up first
+      expect(getByTestId('contactName').value).toEqual('Mr. Happy');
+      await wait(() => {
+        expect(setContact).toHaveBeenCalled();
+        expect(setContact).toHaveBeenCalledWith(undefined, {
+          name: 'Mr. Happy',
+          saving: true,
+        });
+      });
+    });
+    it.skip('no blank names', () => {
       const { getByTestId, getByPlaceholderText } = render(
         <Person
           setSelectedUser={mockData.setSelectedUser}
@@ -161,22 +186,10 @@ describe('people CRUD', () => {
 
       userEvent.click(getByTestId('openBox'));
 
-      userEvent.type(getByPlaceholderText('Their name...'), 'Mr. Happy');
-      // asser the text shows up first
-      // assert data is fired
-      act(() => {
-        expect(getByTestId('contactModal')).toHaveTextContent('Mr. Happy');
-      });
-      // await wait(
-      //   () =>
-      //   expect(setContact).toHaveBeenCalled()
-      // );
-      // expect(updateContactEpic).toHaveBeenCalled();
-      // expect(updateContactEpic).toHaveBeenCalledWith({
-      //   title: 'Mr. Happyzzz',
-      // });
+      userEvent.type(getByPlaceholderText('Their name...'), '');
+      // assert the text shows up first
+      expect(getByTestId('contactName').value).toEqual('Mr. Happy');
     });
-    test.skip('no blank names', () => {});
     test.skip('generated image by default', () => {});
     test.skip('add photo', () => {});
     test.skip('add text update', () => {});

@@ -19,7 +19,7 @@ body {
   --border-color-main: #44444e;
   --border-color-highlight: #64646e;
 
-  --primary: hsl(83, 74%, 27%) !important; 
+  --primary: hsl(83, 70%, 34%) !important; 
   --green: hsl(83, 70%, 34%); 
   --blue	: #32549d;
   --indigo: #5083f4;
@@ -124,9 +124,6 @@ margin: 0 2px;
 transition: box-shadow 150ms cubic-bezier(.2, .6, .6, 1), opacity 150ms cubic-bezier(.2, .6, .6, 1);
 vertical-align: middle;
 white-space: nowrap;
-
-
-
 }
 
 

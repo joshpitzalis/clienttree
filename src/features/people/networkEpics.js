@@ -5,6 +5,7 @@ import {
   debounceTime,
   map,
   catchError,
+  ignoreElements,
 } from 'rxjs/operators';
 import { of, from } from 'rxjs';
 import { ofType } from 'redux-observable';
@@ -24,7 +25,7 @@ export const markActivityComplete = (
 ) =>
   action$.pipe(
     ofType(ACTIVITY_COMPLETED),
-    tap(async ({ payload }) => {
+    tap(({ payload }) => {
       handleActivityCompleted(
         payload,
         inCompleteTask,
@@ -53,7 +54,7 @@ export const setNewUserTask = (action$, store, { setFirebaseContactUpdate }) =>
     mapTo({ type: 'done' })
   );
 
-export const updateContactEpic = (action$, store, { setContact }) => {
+export const updateContactEpic = (action$, state$, { setContact }) => {
   const emptyGuard = (action, defaultTitle) => {
     if (action.payload.name.trim() === '') {
       const newAction = { ...action };
@@ -67,9 +68,14 @@ export const updateContactEpic = (action$, store, { setContact }) => {
     ofType('people/updateForm'),
     debounceTime(1000),
     map(action => emptyGuard(action, 'Name cannot be blank')),
-    switchMap(({ payload }) =>
-      from(setContact(payload)).pipe(
+    switchMap(({ payload }) => {
+      // get your user Id from the store
+      const { userId } = state$.value.user;
+      // update contact on firebase
+      return from(setContact(userId, payload)).pipe(
+        // success message
         map(() => ({ type: 'people/formSaved' })),
+        // error handling
         catchError(error =>
           of({
             error: true,
@@ -78,7 +84,7 @@ export const updateContactEpic = (action$, store, { setContact }) => {
             meta: { source: 'updateContactEpic' },
           })
         )
-      )
-    )
+      );
+    })
   );
 };

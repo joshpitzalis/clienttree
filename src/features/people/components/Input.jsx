@@ -80,7 +80,7 @@ export function Input({
   }
   return (
     <div className={`mt3  ${className}`}>
-      <label className="db fw6 lh-copy f6 ttc " htmlFor="name">
+      <label className="db fw6 lh-copy f6 ttc " htmlFor={name}>
         {name}
         <input
           className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2"
