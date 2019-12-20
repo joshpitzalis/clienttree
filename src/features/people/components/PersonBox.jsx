@@ -79,29 +79,43 @@ export const PersonModal = ({
   const setImagePreview = async e => {
     if (e.target.files[0]) {
       const imageFile = e.target.files[0];
-      setState(prevState => ({ ...prevState, saving: true }));
-      setProgress('Uploading...');
-      setProfileImage({
-        imageFile,
-        contactId,
-      })
-        .then(photoURL => {
-          setProgress('Click on image to upload.');
+      const { size, type } = imageFile;
+      if (
+        type !== 'image/jpeg' &&
+        type !== 'image/gif' &&
+        type !== 'image/jpg' &&
+        type !== 'image/png'
+      ) {
+        setProgress('Images can only be jpeg, jpg, png or gif');
+        return;
+      }
+      if (size > 5000000) {
+        setProgress('Images can only be 5mb or less');
+        return;
+      }
+
+      try {
+        setState(prevState => ({ ...prevState, saving: true }));
+        setProgress('Uploading...');
+        setProfileImage({
+          imageFile,
+          contactId,
+        }).then(photoURL => {
+          setProgress('Almost done...');
           setState(prevState => ({ ...prevState, photoURL }));
-        })
-        .catch(error => {
-          setState({ ...state, saving: false });
-          setProgress('Click on image to upload.');
-          toast$.next({
-            type: 'ERROR',
-            message: error,
-            from: 'PersonBox/setImagePreview',
-          });
+          setTimeout(() => setProgress('Click on image to upload.'), 3000);
         });
+      } catch (error) {
+        setState({ ...state, saving: false });
+        setProgress('Click on image to upload.');
+        toast$.next({
+          type: 'ERROR',
+          message: error,
+          from: 'PersonBox/setImagePreview',
+        });
+      }
     }
   };
-
-  console.log({ name: state.name });
 
   return (
     <div>
@@ -118,7 +132,7 @@ export const PersonModal = ({
                 {state.photoURL && state.photoURL ? (
                   <img
                     alt="profile-preview"
-                    className="w2 h2 w3-ns h3-ns br-100"
+                    className="w2 h-auto w3-ns h-auto-ns br-100"
                     src={state.photoURL}
                   />
                 ) : (
@@ -131,7 +145,7 @@ export const PersonModal = ({
                 )}
                 <input
                   type="file"
-                  // accept=".jpg,.jpeg,.png,.gif"
+                  accept=".jpg,.jpeg,.png,.gif"
                   className="dn"
                   id="uploader"
                   data-testid="profileImageUploader"
@@ -150,25 +164,25 @@ export const PersonModal = ({
                 placeholder="Their name..."
                 value={state.name}
                 onChange={e => {
-                  // const payload = {
-                  //   ...state,
-                  //   name: e.target.value,
-                  //   saving: true,
-                  // };
-
                   const name = e.target.value;
                   setState(prevState => ({
                     ...prevState,
                     name,
                     saving: true,
                   }));
-                  // dispatch({
-                  //   type: 'people/updateForm',
-                  //   payload,
-                  // });
                 }}
               />
-              <small className="text3 o-50">{progress}</small>
+              <small
+                className="text3 o-50"
+                style={{
+                  color:
+                    (progress === 'Images can only be jpeg, jpg, png or gif' ||
+                      progress === 'Images can only be 5mb or less') &&
+                    'red',
+                }}
+              >
+                {progress}
+              </small>
             </label>
           </div>
           <Toggle

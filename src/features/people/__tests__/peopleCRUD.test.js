@@ -11,9 +11,9 @@ import { setContact, setProfileImage } from '../peopleAPI';
 
 jest.mock('../peopleAPI', () => ({
   setContact: jest.fn(),
-  setProfileImage: jest.fn(),
+  setProfileImage: jest.fn().mockResolvedValueOnce('photoURL'),
 }));
-// jest.mock('../networkEpics');
+
 
 afterEach(() => {
   cleanup();
@@ -224,24 +224,8 @@ describe('people CRUD', () => {
       await wait(() => {
         expect(setProfileImage).toHaveBeenCalled();
       });
-
-      // await wait(() => getByAltText('profile-preview'));
-      // const dataURL = getByAltText('image-preview').src;
-      // expect(dataURL).toMatchSnapshot(
-      //   'data url in the image-preview src for this string: "(⌐□_□)"'
-      // );
-
-      // // ensure the form is submittable
-      // expect(getByText('Upload Image').type).toBe('submit');
-
-      // // submit the form
-      // Simulate.submit(container.querySelector('form'));
-      // expect(mockClient.request).toHaveBeenCalledTimes(1);
-      // expect(mockClient.request).toHaveBeenCalledWith(expect.any(String), {
-      //   dataURL,
-      // });
     });
-    it.skip('errors if photo file is not jpg or png', async () => {
+    it.only('errors if photo file is not jpg or png', async () => {
       const { getByTestId } = render(
         <Person
           setSelectedUser={mockData.setSelectedUser}
@@ -252,7 +236,7 @@ describe('people CRUD', () => {
       );
 
       const file = new File(['(⌐□_□)'], 'chucknorris.png', {
-        type: 'image/png',
+        type: 'image/xxx',
       });
 
       userEvent.click(getByTestId('openBox'));
