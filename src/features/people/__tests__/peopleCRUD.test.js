@@ -273,6 +273,8 @@ describe('people CRUD', () => {
 
     test.skip('show saving... and saved', () => {});
     test.skip('add a loading and null state for contacts in network page', () => {});
+
+    test.skip('upload image, then update name should preserve both changes', () => {});
   });
 
   describe('update someone on the system', () => {

@@ -49,12 +49,14 @@ export const PersonModal = ({
 
   React.useEffect(() => {
     setState({ ...contact, saving: false });
-    const delayedUpdate = setTimeout(
-      () => setProgress('Click on image to upload.'),
-      4000
-    );
-    return () => clearTimeout(delayedUpdate);
   }, [contact]);
+
+  React.useEffect(() => {
+    dispatch({
+      type: 'people/updateForm',
+      payload: state,
+    });
+  }, [dispatch, state]);
 
   const avatarRef = React.useRef(null);
 
@@ -77,29 +79,29 @@ export const PersonModal = ({
   const setImagePreview = async e => {
     if (e.target.files[0]) {
       const imageFile = e.target.files[0];
-      setState({ ...state, saving: true });
+      setState(prevState => ({ ...prevState, saving: true }));
       setProgress('Uploading...');
-      try {
-        const photoURL = await setProfileImage({
-          imageFile,
-          contactId,
+      setProfileImage({
+        imageFile,
+        contactId,
+      })
+        .then(photoURL => {
+          setProgress('Click on image to upload.');
+          setState(prevState => ({ ...prevState, photoURL }));
+        })
+        .catch(error => {
+          setState({ ...state, saving: false });
+          setProgress('Click on image to upload.');
+          toast$.next({
+            type: 'ERROR',
+            message: error,
+            from: 'PersonBox/setImagePreview',
+          });
         });
-        setProgress('Still uploading...');
-        dispatch({
-          type: 'people/updateForm',
-          payload: { ...state, photoURL },
-        });
-      } catch (error) {
-        setState({ ...state, saving: false });
-        setProgress('Click on image to upload.');
-        toast$.next({
-          type: 'ERROR',
-          message: error,
-          from: 'PersonBox/setImagePreview',
-        });
-      }
     }
   };
+
+  console.log({ name: state.name });
 
   return (
     <div>
@@ -148,16 +150,22 @@ export const PersonModal = ({
                 placeholder="Their name..."
                 value={state.name}
                 onChange={e => {
-                  const payload = {
-                    ...state,
-                    name: e.target.value,
+                  // const payload = {
+                  //   ...state,
+                  //   name: e.target.value,
+                  //   saving: true,
+                  // };
+
+                  const name = e.target.value;
+                  setState(prevState => ({
+                    ...prevState,
+                    name,
                     saving: true,
-                  };
-                  setState({ ...payload });
-                  dispatch({
-                    type: 'people/updateForm',
-                    payload,
-                  });
+                  }));
+                  // dispatch({
+                  //   type: 'people/updateForm',
+                  //   payload,
+                  // });
                 }}
               />
               <small className="text3 o-50">{progress}</small>
