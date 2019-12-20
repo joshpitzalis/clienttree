@@ -55,3 +55,12 @@ export const removeChallenge = ({ title, link, id, userId, stageId }) =>
       },
       { merge: true }
     );
+
+export const updateUserProfile = payload => {
+  const { dashboard, userId } = payload;
+  return firebase
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .set({ dashboard }, { merge: true });
+};

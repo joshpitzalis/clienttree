@@ -1,3 +1,34 @@
+import produce from 'immer';
+// memoize this tk
+export const getCurrentUser = store => store.value.user.userId;
+export const getDashboardWithNewTitle = (store, payload) => {
+  const { dashboard } = store.value.user;
+  const { title, stageId } = payload;
+  return produce(dashboard, draft => {
+    draft.stages[stageId].title = title;
+  });
+};
+export const getDashboardWithNewStage = (store, title) => {
+  const { dashboard } = store.value.user;
+  const id = `${+new Date()}`;
+  return produce(dashboard, draft => {
+    draft.stages[id] = {
+      id,
+      title,
+      people: [],
+    };
+    draft.stageOrder.push(id);
+  });
+};
+
+export const getDashboardWithoutStage = (store, id) => {
+  const { dashboard } = store.value.user;
+  return produce(dashboard, draft => {
+    delete draft.stages[id];
+    draft.stageOrder.splice(draft.stageOrder.findIndex(todo => todo === id), 1);
+  });
+};
+
 export const onDragEnd = ({
   result,
   state,

@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
 import { createEpicMiddleware, combineEpics } from 'redux-observable';
-import { taskSlice } from '../features/network/taskSlice';
+import { catchError } from 'rxjs/operators';
+import { taskSlice } from '../features/people/taskSlice';
 import {
   updateStatsDetails,
   projectCompleted,
@@ -10,23 +11,38 @@ import {
 import {
   markActivityComplete,
   setNewUserTask,
-} from '../features/network/networkEpics';
+} from '../features/people/networkEpics';
 import { userSlice } from '../pages/Dashboard';
 import { onboardingEpic } from '../features/onboarding/onboardingEpics';
-
 import {
   decrementActivityStats,
   incrementActivityStats,
 } from '../features/stats/statsAPI';
+import {
+  stageTitleUpdate,
+  newStageCreated,
+  stageDestroyed,
+} from '../features/projects/projectEpics';
+import { toast$ } from '../features/notifications/toast';
+import { updateUserProfile } from '../features/projects/dashAPI';
 
-export const rootEpic = combineEpics(
-  markActivityComplete,
-  onboardingEpic,
-  setNewUserTask,
-  updateStatsDetails,
-  projectCompleted,
-  leadContacted
-);
+export const rootEpic = (action$, store$, dependencies) =>
+  combineEpics(
+    markActivityComplete,
+    onboardingEpic,
+    setNewUserTask,
+    updateStatsDetails,
+    projectCompleted,
+    leadContacted,
+    stageTitleUpdate,
+    newStageCreated,
+    stageDestroyed
+  )(action$, store$, dependencies).pipe(
+    catchError((error, source) => {
+      toast$.next({ type: 'ERROR', message: error.message || error });
+      return source;
+    })
+  );
 
 export const rootReducer = combineReducers({
   tasks: taskSlice.reducer,
@@ -38,9 +54,10 @@ const epicMiddleware = createEpicMiddleware({
     decrementActivityStats,
     incrementActivityStats,
     track: window && window.analytics && window.analytics.track,
+    updateUserProfile,
   },
 });
-// Be sure to ONLY add this middleware in development!
+
 const middleware =
   process.env.NODE_ENV !== 'production'
     ? [

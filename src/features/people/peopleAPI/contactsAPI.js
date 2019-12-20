@@ -1,7 +1,7 @@
 import firebase from '../../../utils/firebase';
 import { helpfulTaskRef, setTaskDetails, newDocRef } from './APIcalls';
 import { toast$ } from '../../notifications/toast';
-import { initialData } from '../../crm/initialData';
+import { initialData } from '../../projects/initialData';
 
 const contactRef = (userId, uid) =>
   firebase

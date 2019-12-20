@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Route, Link, useLocation } from 'react-router-dom';
 import { doc } from 'rxfire/firestore';
 // import { PrivateRoute } from '../features/auth/PrivateRoute';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createSlice } from 'redux-starter-kit';
 import { catchError } from 'rxjs/operators';
 import { NavPanel, NavLink, ContainerHorizontal } from '@duik/it';
@@ -11,9 +11,9 @@ import People from '../images/People';
 import Home from '../images/Home';
 import firebase from '../utils/firebase';
 import { toast$ } from '../features/notifications/toast';
-import { Network } from '../features/network/Network';
-import { Profile } from '../features/services/Profile';
-import { CRM } from '../features/crm/CRM';
+import { Network } from '../features/people/Network';
+import { Profile } from '../features/profile/Profile';
+import { CRM } from '../features/projects/dashboard';
 import { ConfettiBanner } from '../features/onboarding/confetti';
 import { Onboarding } from '../features/onboarding/ActivityList';
 import StatsBox from '../features/stats/StatsBox';
@@ -22,7 +22,7 @@ export const userSlice = createSlice({
   name: 'user',
   initialState: {},
   reducers: {
-    setProfile(store, action) {
+    setProfile(state, action) {
       const { payload } = action;
       return payload;
     },
@@ -30,15 +30,11 @@ export const userSlice = createSlice({
 });
 
 const propTypes = { userId: PropTypes.string };
-
 const defaultProps = { userId: '' };
 
 export function Dashboard({ userId }) {
-  const [welcomeMessage, setWelcomeMessage] = React.useState({
-    header: 'Welcome!',
-    byline: '',
-  });
   const dispatch = useDispatch();
+  const userState = useSelector(store => store.user);
 
   React.useEffect(() => {
     if (userId) {
@@ -54,8 +50,11 @@ export function Dashboard({ userId }) {
           )
         )
         .subscribe(user => {
-          dispatch(userSlice.actions.setProfile(user.data()));
+          const { setProfile } = userSlice.actions;
+          const newUser = user.data();
+          dispatch(setProfile(newUser));
         });
+
       return () => subscription.unsubscribe();
     }
   }, [dispatch, userId]);
@@ -64,7 +63,7 @@ export function Dashboard({ userId }) {
 
   return (
     <ContainerHorizontal>
-      <ConfettiBanner setWelcomeMessage={setWelcomeMessage} />
+      <ConfettiBanner />
       <div className="flex w-100 justify-between min-h-100 bg-base">
         <NavPanel dark className="flex flex-column justify-between min-vh-100">
           <div className="mt5">
@@ -78,16 +77,8 @@ export function Dashboard({ userId }) {
             >
               Projects
             </NavLink>
-
-            {/* <NavLink
-              leftEl="💸"
-              className={pathname === `/user/${userId}/profile` && 'active'}
-              Component={Link}
-              to={`/user/${userId}/profile`}
-            >
-              Services
-            </NavLink> */}
             <NavLink
+              // rightEl="🚝"
               leftEl={<People className="o-75 h1" />}
               Component={Link}
               to={`/user/${userId}/network`}
@@ -97,7 +88,6 @@ export function Dashboard({ userId }) {
             >
               People
             </NavLink>
-            {/* <NavLink rightEl="🚝">With left and right el</NavLink> */}
           </div>
 
           <StatsBox userId={userId} />
@@ -108,13 +98,7 @@ export function Dashboard({ userId }) {
             <Route
               exact
               path="/user/:uid/dashboard"
-              render={props => (
-                <CRM
-                  {...props}
-                  welcomeMessage={welcomeMessage}
-                  userId={userId}
-                />
-              )}
+              render={props => <CRM {...props} userId={userId} />}
             />
           )}
           <Route

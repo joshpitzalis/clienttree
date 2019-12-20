@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { doc } from 'rxfire/firestore';
 import { catchError } from 'rxjs/operators';
 import { useDispatch } from 'react-redux';
 import { initialData } from './initialData';
-import { setStateToDB } from './crmAPI';
+import { setStateToDB } from './dashAPI';
 import { toast$ } from '../notifications/toast';
 import firebase from '../../utils/firebase';
 import Portal from '../../utils/Portal';
-import { Modal } from '../network/components/ContactModal';
+import { Modal } from '../people/components/ContactModal';
 import { Stages } from './Stages';
-import { onDragEnd } from './crmHelpers';
+import { onDragEnd } from './dashHelpers';
 
 const crmPropTypes = {
   welcomeMessage: PropTypes.shape({
@@ -22,7 +22,7 @@ const crmPropTypes = {
 };
 const crmDefaultProps = {};
 
-export function CRM({ welcomeMessage, userId = '' }) {
+export function CRM({ userId = '' }) {
   const [state, setState] = React.useState(initialData);
   const [visible, setVisibility] = React.useState(false);
   const [selectedUser, setSelectedUser] = React.useState('');
@@ -113,6 +113,7 @@ export function CRM({ welcomeMessage, userId = '' }) {
                   })}
               </ul>
               {placeholder}
+              <AddStage state={state} />
             </div>
           )}
         </Droppable>
@@ -139,3 +140,61 @@ CRM.defaultProps = crmDefaultProps;
 //   }).isRequired,
 // };
 // WelcomeHeader.defaultProps = {};
+
+function AddStage({ state }) {
+  const dispatch = useDispatch();
+  const [editable, setEditable] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [titleValue, setTitleValue] = useState('');
+  React.useEffect(() => {
+    setSaving(false);
+    setEditable(false);
+  }, [state]);
+  return (
+    <div className="w-100 pa4 flex justify-center">
+      {editable ? (
+        <>
+          <input
+            className="dib border-box hover-black measure ba b--black-20 pa2 br2"
+            value={titleValue}
+            data-testid="editableTitle"
+            placeholder="Name your new stage..."
+            onChange={e => {
+              setSaving(true);
+              const payload = e.target.value;
+              setTitleValue(payload);
+              dispatch({
+                type: 'projects/createNewStage',
+                payload,
+              });
+            }}
+          />
+          {saving ? (
+            <small className="dib red ml3">Saving...</small>
+          ) : (
+            <button
+              type="button"
+              className="bn pointer ml3 dib bg-transparent"
+              onClick={() => setEditable(false)}
+            >
+              <small className="red ">Close</small>
+            </button>
+          )}
+        </>
+      ) : (
+        <button
+          type="button"
+          className="b ph3 pv2 ba b--black bg-transparent grow pointer f6 br1"
+          onClick={() => setEditable(true)}
+        >
+          Add a New Stage
+        </button>
+      )}
+    </div>
+  );
+}
+
+AddStage.propTypes = {
+  state: PropTypes.any.isRequired,
+};
+AddStage.defaultProps = {};

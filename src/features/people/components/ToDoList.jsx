@@ -2,7 +2,7 @@ import React from 'react';
 import { collectionData } from 'rxfire/firestore';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { handleDeleteTask } from '../networkAPI';
+import { handleDeleteTask } from '../peopleAPI';
 import firebase from '../../../utils/firebase';
 import { taskSlice } from '../taskSlice';
 import { HelpfulTask } from './HelpfulTask';

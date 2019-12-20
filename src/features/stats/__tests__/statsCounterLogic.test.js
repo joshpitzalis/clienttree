@@ -5,18 +5,18 @@ import { interpret } from 'xstate';
 import userEvent from '@testing-library/user-event';
 import { TestScheduler } from 'rxjs/testing';
 import { handleActivityCompleted } from '../statsHelpers';
-import { Modal } from '../../network/components/ContactModal';
+import { Modal } from '../../people/components/ContactModal';
 import { render } from '../../../utils/testSetup';
-import { NetworkProvider } from '../../network/NetworkContext';
+import { NetworkProvider } from '../../people/NetworkContext';
 import {
   incrementStats,
   handleTracking,
   getStage,
-} from '../../network/networkAPI';
+} from '../../people/peopleAPI';
 import { statsMachine } from '../StatsBox';
 import { setStatDefaults } from '../statsAPI';
-import { markActivityComplete } from '../../network/networkEpics';
-import { ACTIVITY_COMPLETED } from '../../network/networkConstants';
+import { markActivityComplete } from '../../people/networkEpics';
+import { ACTIVITY_COMPLETED } from '../../people/networkConstants';
 
 jest.mock('../statsAPI');
 
@@ -1171,34 +1171,34 @@ describe('stats counter logic', () => {
       expect(fakeProps.decrementActivityStats).not.toHaveBeenCalled();
     });
 
-    test.skip('markActivityComplete epic produces correct actions', () => {
-      const testScheduler = new TestScheduler((actual, expected) => {
-        expect(actual).toEqual(expected);
-      });
+    // test.skip('markActivityComplete epic produces correct actions', () => {
+    //   const testScheduler = new TestScheduler((actual, expected) => {
+    //     expect(actual).toEqual(expected);
+    //   });
 
-      testScheduler.run(({ hot, cold, expectObservable }) => {
-        const action$ = hot('a', {
-          a: {
-            type: ACTIVITY_COMPLETED,
-            payload: { checked: true },
-          },
-        });
-        const state$ = null;
+    //   testScheduler.run(({ hot, cold, expectObservable }) => {
+    //     const action$ = hot('a', {
+    //       a: {
+    //         type: ACTIVITY_COMPLETED,
+    //         payload: { checked: true },
+    //       },
+    //     });
+    //     const state$ = null;
 
-        const dependencies = {
-          decrementActivityStats: jest.fn(),
-        };
-        const output$ = markActivityComplete(action$, state$, dependencies);
+    //     const dependencies = {
+    //       decrementActivityStats: jest.fn(),
+    //     };
+    //     const output$ = markActivityComplete(action$, state$, dependencies);
 
-        expectObservable(output$).toBe('a', {
-          a: { type: 'done' },
-        });
+    //     expectObservable(output$).toBe('a', {
+    //       a: { type: 'done' },
+    //     });
 
-        // output$.toArray().subscribe(() => {
-        //   expect(dependencies.decrementActivityStats).toHaveBeenCalled();
-        // });
-      });
-    });
+    //     // output$.toArray().subscribe(() => {
+    //     //   expect(dependencies.decrementActivityStats).toHaveBeenCalled();
+    //     // });
+    //   });
+    // });
 
     test('stats should start off with minimum ratios 3:10', done => {
       setStatDefaults.mockResolvedValueOnce();
