@@ -5,8 +5,9 @@ import AvatarGenerator from 'react-avatar-generator';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 // import { doc } from 'rxfire/firestore';
-
+import { toast$ } from '../../notifications/toast';
 import { Input } from './Input';
+import firebase from '../../../utils/firebase';
 
 // import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
 // import { NetworkContext } from '../NetworkContext';
@@ -16,6 +17,7 @@ import {
   // handleAddTask,
   // setActiveTaskCount,
   handleTracking,
+  setProfileImage,
 } from '../peopleAPI';
 // import firebase from '../../../utils/firebase';
 // import { ToDoList } from './ToDoList';
@@ -43,18 +45,61 @@ export const PersonModal = ({
   );
 
   const [state, setState] = React.useState({ saving: false });
+  const [progress, setProgress] = React.useState('Click on image to upload.');
 
   React.useEffect(() => {
     setState({ ...contact, saving: false });
+    const delayedUpdate = setTimeout(
+      () => setProgress('Click on image to upload.'),
+      4000
+    );
+    return () => clearTimeout(delayedUpdate);
   }, [contact]);
 
   const avatarRef = React.useRef(null);
+
+  // React.useEffect(() => {
+  //   async function generateAvatar() {
+  //     const photoURL = await avatarRef.current.getImageData();
+  //     setState({ ...state, photoURL });
+  //   }
+  //   if (!state.photoURL) {
+  //     generateAvatar();
+  //   }
+  // }, [avatarRef, state]);
 
   const updates = [
     { text: 'example  update', date: 'yesterday' },
     { text: 'another example', date: 'last week' },
     { text: 'another example  update', date: '45 days ago' },
   ];
+
+  const setImagePreview = async e => {
+    if (e.target.files[0]) {
+      const imageFile = e.target.files[0];
+      setState({ ...state, saving: true });
+      setProgress('Uploading...');
+      try {
+        const photoURL = await setProfileImage({
+          imageFile,
+          contactId,
+        });
+        setProgress('Still uploading...');
+        dispatch({
+          type: 'people/updateForm',
+          payload: { ...state, photoURL },
+        });
+      } catch (error) {
+        setState({ ...state, saving: false });
+        setProgress('Click on image to upload.');
+        toast$.next({
+          type: 'ERROR',
+          message: error,
+          from: 'PersonBox/setImagePreview',
+        });
+      }
+    }
+  };
 
   return (
     <div>
@@ -65,24 +110,33 @@ export const PersonModal = ({
         }`}
       >
         <div className="flex flex-row-ns flex-column justify-between items-center pb4 mt0">
-          <div className="flex">
-            <div className="mr3">
-              {state.photoURL && state.photoURL ? (
-                <img
-                  alt={state.name}
-                  className="w2 h2 w3-ns h3-ns br-100"
-                  src={state.photoURL}
+          <div className="flex items-center">
+            <div className="mr3 flex flex-column">
+              <label htmlFor="uploader" className="pointer tc center">
+                {state.photoURL && state.photoURL ? (
+                  <img
+                    alt="profile-preview"
+                    className="w2 h2 w3-ns h3-ns br-100"
+                    src={state.photoURL}
+                  />
+                ) : (
+                  <AvatarGenerator
+                    ref={avatarRef}
+                    height="50"
+                    width="50"
+                    colors={['#333', '#222', '#ccc']}
+                  />
+                )}
+                <input
+                  type="file"
+                  // accept=".jpg,.jpeg,.png,.gif"
+                  className="dn"
+                  id="uploader"
+                  data-testid="profileImageUploader"
+                  onChange={setImagePreview}
                 />
-              ) : (
-                <AvatarGenerator
-                  ref={avatarRef}
-                  height="50"
-                  width="50"
-                  colors={['#333', '#222', '#ccc']}
-                />
-              )}
+              </label>
             </div>
-
             <label className="db lh-copy ttc ml3 " htmlFor="name">
               <span className="text3">Name</span>
               <input
@@ -106,6 +160,7 @@ export const PersonModal = ({
                   });
                 }}
               />
+              <small className="text3 o-50">{progress}</small>
             </label>
           </div>
           <Toggle
@@ -180,6 +235,7 @@ PersonModal.defaultProps = personDefaultPropss;
 //     toast$.next({ type: 'ERROR', message: error.message || error })
 //   );
 // };
+
 // const handleUpdateUser = async e => {
 //   e.preventDefault();
 //   // tk validity check goes here

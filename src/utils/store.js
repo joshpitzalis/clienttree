@@ -33,7 +33,7 @@ import {
 import { updateUserProfile } from '../features/projects/dashAPI';
 import { setContact } from '../features/people/peopleAPI';
 
-export const rootEpic = (action$, store$, dependencies) =>
+export const rootEpic = (action$, store$, _dependencies) =>
   combineEpics(
     markActivityComplete,
     setNewUserTask,
@@ -47,7 +47,7 @@ export const rootEpic = (action$, store$, dependencies) =>
     stageDestroyed,
     fetchUserDataEpic,
     onboardingEpic
-  )(action$, store$, dependencies).pipe(
+  )(action$, store$, _dependencies).pipe(
     catchError((error, source) => {
       toast$.next({ type: 'ERROR', message: error.message || error });
       return source;

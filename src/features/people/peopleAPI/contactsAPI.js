@@ -510,3 +510,10 @@ export const setContact = (
       },
       { merge: true }
     );
+
+export const setProfileImage = ({ imageFile, contactId }) =>
+  firebase
+    .storage()
+    .ref(`contacts/${contactId}.png`)
+    .put(imageFile)
+    .then(({ ref }) => ref.getDownloadURL());

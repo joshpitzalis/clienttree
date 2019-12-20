@@ -16,4 +16,5 @@ export {
   handleContactDelete,
   handleTracking,
   setContact,
+  setProfileImage,
 } from './contactsAPI';

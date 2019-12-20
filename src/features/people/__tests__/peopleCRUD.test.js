@@ -2,15 +2,16 @@ import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { TestScheduler } from 'rxjs/testing';
-import { cleanup, wait } from '@testing-library/react';
+import { cleanup, wait, fireEvent } from '@testing-library/react';
 import { render } from '../../../utils/testSetup';
 import { Person } from '../components/Person';
 import { Network } from '../Network';
 import { updateContactEpic } from '../networkEpics';
-import { setContact } from '../peopleAPI';
+import { setContact, setProfileImage } from '../peopleAPI';
 
 jest.mock('../peopleAPI', () => ({
   setContact: jest.fn(),
+  setProfileImage: jest.fn(),
 }));
 // jest.mock('../networkEpics');
 
@@ -36,28 +37,6 @@ describe('people CRUD', () => {
       photoURL: 'string',
     },
   };
-  it('click on a person open to an editable person box', () => {
-    const { getByTestId } = render(
-      // <Person
-      //   setSelectedUser={mockData.setSelectedUser}
-      //   setVisibility={mockData.setVisibility}
-      //   contact={mockData.contact}
-      //   selectedUser={mockData.selectedUser}
-      // />
-      <Network uid="123" />,
-      { initialState: { contacts: [mockData.contact] } }
-    );
-    // expect closed
-    expect(getByTestId('closedPeopleBox'));
-    // userEvent click
-    userEvent.click(getByTestId('openBox'));
-    // expect open
-    expect(getByTestId('openedPeopleBox'));
-    // click again
-    userEvent.click(getByTestId('closeBox'));
-    // expect closed
-    expect(getByTestId('closedPeopleBox'));
-  });
 
   describe('add someone new to the system', () => {
     it('add button creates a new person box', () => {
@@ -75,7 +54,6 @@ describe('people CRUD', () => {
       userEvent.click(getByTestId('closeBox'));
       getByTestId('outreachPage');
     });
-
     it('epic produces the correct actions', () => {
       // setContact.mockResolvedValue(of(''));
 
@@ -115,7 +93,6 @@ describe('people CRUD', () => {
         });
       });
     });
-
     it('epic produces the correct error', () => {
       const testScheduler = new TestScheduler((actual, expected) => {
         expect(actual).toEqual(expected);
@@ -159,7 +136,14 @@ describe('people CRUD', () => {
           setVisibility={mockData.setVisibility}
           contact={mockData.contact}
           selectedUser={mockData.selectedUser}
-        />
+        />,
+        {
+          initialState: {
+            user: {
+              userId: '123',
+            },
+          },
+        }
       );
 
       userEvent.click(getByTestId('openBox'));
@@ -168,14 +152,59 @@ describe('people CRUD', () => {
       expect(getByTestId('contactName').value).toEqual('Mr. Happy');
       await wait(() => {
         expect(setContact).toHaveBeenCalled();
-        expect(setContact).toHaveBeenCalledWith(undefined, {
+        expect(setContact).toHaveBeenCalledWith('123', {
           name: 'Mr. Happy',
           saving: true,
         });
       });
     });
-    it.skip('no blank names', () => {
+    it('no blank names', async () => {
+      setContact.mockReset();
       const { getByTestId, getByPlaceholderText } = render(
+        <Person
+          setSelectedUser={mockData.setSelectedUser}
+          setVisibility={mockData.setVisibility}
+          contact={mockData.contact}
+          selectedUser={mockData.selectedUser}
+        />,
+        {
+          initialState: {
+            user: {
+              userId: '123',
+            },
+          },
+        }
+      );
+
+      userEvent.click(getByTestId('openBox'));
+      userEvent.type(getByPlaceholderText('Their name...'), 'hello');
+      userEvent.type(getByTestId('contactName'), ' ');
+
+      // assert the text shows up first
+      expect(getByTestId('contactName').value).toEqual(' ');
+      await wait(() => {
+        expect(setContact).toHaveBeenCalled();
+        expect(setContact).toHaveBeenCalledWith('123', {
+          name: 'Name cannot be blank',
+          saving: true,
+        });
+      });
+    });
+    it('generated image by default', () => {
+      const { container, getByTestId } = render(
+        <Person
+          setSelectedUser={mockData.setSelectedUser}
+          setVisibility={mockData.setVisibility}
+          contact={mockData.contact}
+          selectedUser={mockData.selectedUser}
+        />
+      );
+      userEvent.click(getByTestId('openBox'));
+      const canvas = container.querySelector('canvas');
+      expect(getByTestId('contactModal')).toContainElement(canvas);
+    });
+    it('add photo', async () => {
+      const { getByTestId } = render(
         <Person
           setSelectedUser={mockData.setSelectedUser}
           setVisibility={mockData.setVisibility}
@@ -184,23 +213,70 @@ describe('people CRUD', () => {
         />
       );
 
-      userEvent.click(getByTestId('openBox'));
+      const file = new File(['(⌐□_□)'], 'chucknorris.png', {
+        type: 'image/png',
+      });
 
-      userEvent.type(getByPlaceholderText('Their name...'), '');
-      // assert the text shows up first
-      expect(getByTestId('contactName').value).toEqual('Mr. Happy');
+      userEvent.click(getByTestId('openBox'));
+      fireEvent.change(getByTestId('profileImageUploader'), {
+        target: { files: [file] },
+      });
+      await wait(() => {
+        expect(setProfileImage).toHaveBeenCalled();
+      });
+
+      // await wait(() => getByAltText('profile-preview'));
+      // const dataURL = getByAltText('image-preview').src;
+      // expect(dataURL).toMatchSnapshot(
+      //   'data url in the image-preview src for this string: "(⌐□_□)"'
+      // );
+
+      // // ensure the form is submittable
+      // expect(getByText('Upload Image').type).toBe('submit');
+
+      // // submit the form
+      // Simulate.submit(container.querySelector('form'));
+      // expect(mockClient.request).toHaveBeenCalledTimes(1);
+      // expect(mockClient.request).toHaveBeenCalledWith(expect.any(String), {
+      //   dataURL,
+      // });
     });
-    test.skip('generated image by default', () => {});
-    test.skip('add photo', () => {});
-    test.skip('add text update', () => {});
+    it.skip('errors if photo file is not jpg or png', async () => {
+      const { getByTestId } = render(
+        <Person
+          setSelectedUser={mockData.setSelectedUser}
+          setVisibility={mockData.setVisibility}
+          contact={mockData.contact}
+          selectedUser={mockData.selectedUser}
+        />
+      );
+
+      const file = new File(['(⌐□_□)'], 'chucknorris.png', {
+        type: 'image/png',
+      });
+
+      userEvent.click(getByTestId('openBox'));
+      fireEvent.change(getByTestId('profileImageUploader'), {
+        target: { files: [file] },
+      });
+      await wait(() => {
+        expect(setProfileImage).toHaveBeenCalled();
+      });
+    });
+    test.skip('add a note', () => {});
     test.skip('if no date update then it defaults to today', () => {});
     test.skip('date text update', () => {});
+    test.skip('lets me add people to dashboard', () => {});
+
     test.skip('add task', () => {});
     test.skip('date task', () => {});
+
     test.skip('show saving... and saved', () => {});
-    test.skip('lets me add people to dashboard', () => {});
     test.skip('add a loading and null state for contacts in network page', () => {});
-    it.skip('click on a add some open to an editable person box', () => {
+  });
+
+  describe('update someone on the system', () => {
+    it('click on a person open to an editable person box', () => {
       const { getByTestId } = render(
         // <Person
         //   setSelectedUser={mockData.setSelectedUser}
@@ -208,7 +284,8 @@ describe('people CRUD', () => {
         //   contact={mockData.contact}
         //   selectedUser={mockData.selectedUser}
         // />
-        <Network uid="123" />
+        <Network uid="123" />,
+        { initialState: { contacts: [mockData.contact] } }
       );
       // expect closed
       expect(getByTestId('closedPeopleBox'));
@@ -221,9 +298,6 @@ describe('people CRUD', () => {
       // expect closed
       expect(getByTestId('closedPeopleBox'));
     });
-  });
-
-  describe('update someone on the system', () => {
     test.skip('is filled when opened', () => {});
     test.skip('update name', () => {});
     test.skip('uplaod photo', () => {});
@@ -239,21 +313,19 @@ describe('people CRUD', () => {
     test.skip('delete user', () => {});
     test.skip('cannot delete if pending tasks', () => {});
   });
-
-  test.skip('add add people button to project dashboard', () => {});
-
-  test.skip(' add people button on project dashboard disappears if people are there', () => {});
-
-  test.skip(' if I add someone  from teh dashboar teh toggle is on by default', () => {});
-
-  test.skip('limit the number of task nibs to 5 or so', () => {
-    const { getByLabelText } = render(
-      <Person
-        setSelectedUser={mockData.setSelectedUser}
-        setVisibility={mockData.setVisibility}
-        contact={mockData.contact}
-      />
-    );
-    expect(getByLabelText(/Sign up to Client Tree/i)).toBeEnabled();
+  describe('other', () => {
+    test.skip('add add people button to project dashboard', () => {});
+    test.skip(' add people button on project dashboard disappears if people are there', () => {});
+    test.skip(' if I add someone  from teh dashboar teh toggle is on by default', () => {});
+    test.skip('limit the number of task nibs to 5 or so', () => {
+      const { getByLabelText } = render(
+        <Person
+          setSelectedUser={mockData.setSelectedUser}
+          setVisibility={mockData.setVisibility}
+          contact={mockData.contact}
+        />
+      );
+      expect(getByLabelText(/Sign up to Client Tree/i)).toBeEnabled();
+    });
   });
 });
