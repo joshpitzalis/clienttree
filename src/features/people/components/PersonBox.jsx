@@ -206,16 +206,16 @@ export const PersonModal = ({
         </div>
 
         <Timeline>
-          {Object.values(notes).map(note => {
-            console.log(note.id);
-            return (
+          {Object.values(notes).map(note =>  (
               <Timeline.Item
                 color="green"
                 className="pointer"
                 onClick={() => setActiveNote(note.id)}
               >
                 {note.id === 1 ? (
-                  <small className="i">Add an update </small>
+                  <small className="i" data-testid="addUpdate">
+                    Add an update{' '}
+                  </small>
                 ) : (
                   <TimeUpdate lastUpdated={note.lastUpdated} />
                 )}
@@ -233,8 +233,7 @@ export const PersonModal = ({
                   )}
                 </div>
               </Timeline.Item>
-            );
-          })}
+            ))}
         </Timeline>
       </div>
       <div className="flex justify-between items-baseline mv4">

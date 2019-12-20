@@ -50,8 +50,7 @@ describe('people CRUD', () => {
       expect(queryByTestId('addPeopleButton')).not.toBeInTheDocument();
       // assert name is blank
       expect(getByPlaceholderText('Their name...')).toBeEmpty();
-      // assert text area is blank
-      expect(getByPlaceholderText('Add an update')).toBeEmpty();
+
       userEvent.click(getByTestId('closeBox'));
       getByTestId('outreachPage');
     });
@@ -325,12 +324,14 @@ describe('people CRUD', () => {
       );
     });
 
-    test.only('add a note', () => {
-      false;
-    });
+    test.skip('add a note', () => {});
+    test.skip('only one field open at a time', () => {});
+    test.skip('sort notes chronologocally', () => {});
+    test.skip('first notes always appears by default', () => {});
+    test.skip('add note alwats visible when editing a note', () => {});
     test.skip('date text update', () => {});
     test.skip('if no date update then it defaults to today', () => {});
-    
+
     test.skip('add task', () => {});
     test.skip('date task', () => {});
 
