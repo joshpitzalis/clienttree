@@ -1,14 +1,11 @@
 import React from 'react';
-import { TextArea, Toggle } from '@duik/it';
+import { TextArea, Toggle, Datepicker, DatepickerContainer } from '@duik/it';
 import { Timeline, Icon } from 'antd';
 import AvatarGenerator from 'react-avatar-generator';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-// import { doc } from 'rxfire/firestore';
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { toast$ } from '../../notifications/toast';
-import { Input } from './Input';
-import firebase from '../../../utils/firebase';
-
 // import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
 // import { NetworkContext } from '../NetworkContext';
 // import { toast$ } from '../../notifications/toast';
@@ -16,9 +13,10 @@ import {
   // handleContactDelete,
   // handleAddTask,
   // setActiveTaskCount,
-  handleTracking,
+  handleTracking as _handleTracking,
   setProfileImage,
 } from '../peopleAPI';
+
 // import firebase from '../../../utils/firebase';
 // import { ToDoList } from './ToDoList';
 // import { ConfirmDelete } from './ConfirmDelete';
@@ -27,22 +25,24 @@ const personPropTypess = {
   contactId: PropTypes.string.isRequired,
   // selectedUserUid: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  incrementStats: PropTypes.func,
+  handleTracking: PropTypes.func,
 };
 const personDefaultPropss = {
-  incrementStats: handleTracking,
+  handleTracking: _handleTracking,
 };
 
 export const PersonModal = ({
   contactId,
   onClose,
-  incrementStats = handleTracking,
+  handleTracking = _handleTracking,
 }) => {
   const dispatch = useDispatch();
 
   const contact = useSelector(store =>
     store.contacts.find(person => person.uid === contactId)
   );
+
+  const userId = useSelector(store => store.user.userId);
 
   const [state, setState] = React.useState({ saving: false });
   const [progress, setProgress] = React.useState('Click on image to upload.');
@@ -60,51 +60,32 @@ export const PersonModal = ({
 
   const avatarRef = React.useRef(null);
 
-  // React.useEffect(() => {
-  //   async function generateAvatar() {
-  //     const photoURL = await avatarRef.current.getImageData();
-  //     setState({ ...state, photoURL });
-  //   }
-  //   if (!state.photoURL) {
-  //     generateAvatar();
-  //   }
-  // }, [avatarRef, state]);
-
-  const updates = [
-    { text: 'example  update', date: 'yesterday' },
-    { text: 'another example', date: 'last week' },
-    { text: 'another example  update', date: '45 days ago' },
-  ];
-
-  const setImagePreview = async e => {
-    if (e.target.files[0]) {
-      const imageFile = e.target.files[0];
-      const { size, type } = imageFile;
-      if (
-        type !== 'image/jpeg' &&
-        type !== 'image/gif' &&
-        type !== 'image/jpg' &&
-        type !== 'image/png'
-      ) {
-        setProgress('Images can only be jpeg, jpg, png or gif');
-        return;
-      }
-      if (size > 5000000) {
-        setProgress('Images can only be 5mb or less');
-        return;
-      }
-
+  const setImage = async e => {
+    const imageFile = e.target.files && e.target.files[0];
+    const { size, type } = imageFile;
+    if (
+      type !== 'image/jpeg' &&
+      type !== 'image/gif' &&
+      type !== 'image/jpg' &&
+      type !== 'image/png'
+    ) {
+      setProgress('Images can only be jpeg, jpg, png or gif');
+      return;
+    }
+    if (size > 5000000) {
+      setProgress('Images can only be 5mb or less');
+      return;
+    }
+    if (imageFile) {
       try {
         setState(prevState => ({ ...prevState, saving: true }));
         setProgress('Uploading...');
-        setProfileImage({
+        const photoURL = await setProfileImage({
           imageFile,
           contactId,
-        }).then(photoURL => {
-          setProgress('Almost done...');
-          setState(prevState => ({ ...prevState, photoURL }));
-          setTimeout(() => setProgress('Click on image to upload.'), 3000);
         });
+        setProgress('Click on image to upload.');
+        setState(prevState => ({ ...prevState, photoURL }));
       } catch (error) {
         setState({ ...state, saving: false });
         setProgress('Click on image to upload.');
@@ -116,6 +97,18 @@ export const PersonModal = ({
       }
     }
   };
+
+  // ###
+
+  const [notes, setNotes] = React.useState({
+    1: {
+      id: 1,
+      text: '',
+      lastUpdated: +new Date(),
+    },
+  });
+
+  const [activeNote, setActiveNote] = React.useState(1);
 
   return (
     <div>
@@ -149,7 +142,7 @@ export const PersonModal = ({
                   className="dn"
                   id="uploader"
                   data-testid="profileImageUploader"
-                  onChange={setImagePreview}
+                  onChange={setImage}
                 />
               </label>
             </div>
@@ -187,48 +180,85 @@ export const PersonModal = ({
           </div>
           <Toggle
             description={
-              <p className="text3">Track this person on the Dashboard</p>
+              <p className="text3">
+                {state.tracked
+                  ? 'This person is on your dashboard'
+                  : 'This person is not on your Dashboard'}
+              </p>
             }
-            label={<b className="text1">Projects Dashboard</b>}
+            checked={state.tracked}
+            onChange={e =>
+              handleTracking(
+                e.target.checked,
+                userId,
+                contactId,
+                state.name,
+                state.photoURL
+              )
+            }
+            data-testid="dashSwitch"
+            label={
+              <b className="text1">
+                {state.tracked ? 'Remove from Dashbord' : 'Add to Dashboard'}
+              </b>
+            }
           />
         </div>
-        <TextArea placeholder="Add an update" rows={10} className="mb0" />
-        <div className="flex justify-end items-baseline mt0 pa0 mb3">
-          <p className="pb3 mr3 text3 mt0">Change the date?</p>
-          <Input
-            setState={setState}
-            state={state}
-            value={state.lastContacted}
-            name="lastContacted"
-            placeholder="Last contacted..."
-            type="date"
-            className="mt0"
-          />
-        </div>
+
         <Timeline>
-          {updates.map(({ text, date }) => (
-            <Timeline.Item color="green" style={{}}>
-              {date} | {text}
-              <Icon
-                type="delete"
-                style={{ color: 'red', paddingLeft: '5px' }}
-              />
-            </Timeline.Item>
-          ))}
+          {Object.values(notes).map(note => {
+            console.log(note.id);
+            return (
+              <Timeline.Item
+                color="green"
+                className="pointer"
+                onClick={() => setActiveNote(note.id)}
+              >
+                {note.id === 1 ? (
+                  <small className="i">Add an update </small>
+                ) : (
+                  <TimeUpdate lastUpdated={note.lastUpdated} />
+                )}
+
+                <div>
+                  {activeNote === note.id ? (
+                    <EditBox
+                      setNotes={setNotes}
+                      note={note}
+                      notes={notes}
+                      setActiveNote={setActiveNote}
+                    />
+                  ) : (
+                    <p>{note.id === 1 ? 'Click to edit...' : note.text}</p>
+                  )}
+                </div>
+              </Timeline.Item>
+            );
+          })}
         </Timeline>
       </div>
       <div className="flex justify-between items-baseline mv4">
-        <button
-          type="button"
-          onClick={() => onClose()}
-          data-testid="closeBox"
-          className="btn2 
+        <div className="flex items-baseline">
+          <button
+            type="button"
+            onClick={() => onClose()}
+            data-testid="closeBox"
+            className="btn2 
            ph3 pv2 bn pointer br1 
            grow b
           mb4"
-        >
-          Close
-        </button>
+          >
+            Close
+          </button>
+          {/* <small
+            className="text3 o-50 ml3"
+            style={{
+              color: true && 'red',
+            }}
+          >
+            {true ? 'Saving...' : 'Saved'}
+          </small> */}
+        </div>
         <button
           type="button"
           onClick={() => onClose()}
@@ -252,6 +282,7 @@ PersonModal.defaultProps = personDefaultPropss;
 //     toast$.next({ type: 'ERROR', message: error.message || error });
 //   }
 // };
+
 // const handleAddingTask = (task, myUid, theirUid, photoURL) => {
 //   handleAddTask(task, myUid, theirUid, photoURL).catch(error =>
 //     toast$.next({ type: 'ERROR', message: error.message || error })
@@ -283,3 +314,112 @@ PersonModal.defaultProps = personDefaultPropss;
 // if (true) {
 //   throw new Error();
 // }
+
+function EditBox({ setNotes, note, notes, setActiveNote }) {
+  const { id, text, lastUpdated } = note;
+
+  const [message, setMessage] = React.useState(text);
+
+  const [saving, setSaving] = React.useState(false);
+
+  React.useEffect(() => {
+    setSaving(false);
+  }, [note]);
+
+  return (
+    <div>
+      <TextArea
+        placeholder="Click to edit..."
+        rows={10}
+        className="mb0"
+        onChange={e => {
+          setSaving(true);
+          setMessage(e.target.value);
+          const newTimestamp = +new Date();
+          const newId = id === 1 ? newTimestamp : id;
+          const newNotes = {
+            ...notes,
+            [newId]: {
+              id: newId,
+              text: e.target.value,
+              lastUpdated: id === 1 ? newTimestamp : lastUpdated,
+            },
+          };
+          setNotes(newNotes);
+          setActiveNote(newId);
+        }}
+        value={message}
+      />
+      {note.id !== 1 && (
+        <div className="flex justify-between items-start mt0 pa0 mb3">
+          <small
+            className="text3 o-50 mr3"
+            style={{
+              color: saving && 'red',
+            }}
+          >
+            {saving ? 'Saving...' : 'Saved'}
+          </small>
+          <Icon
+            className="o-50"
+            type="delete"
+            style={{
+              color: 'red',
+            }}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+EditBox.propTypes = {
+  setNotes: PropTypes.func.isRequired,
+  note: PropTypes.shape({
+    id: PropTypes.string,
+    text: PropTypes.string,
+    lastUpdated: PropTypes.string,
+  }).isRequired,
+
+  notes: PropTypes.any.isRequired,
+  setActiveNote: PropTypes.func.isRequired,
+};
+
+EditBox.defaultProps = {};
+
+function TimeUpdate({ lastUpdated }) {
+  const [visible, setVisible] = React.useState(false);
+
+  return (
+    <div>
+      {visible ? (
+        <DatepickerContainer>
+          <Datepicker
+            value={new Date(lastUpdated)}
+            onDateChange={x => {
+              console.log(+new Date(x));
+              setVisible(false);
+            }}
+            maxDate={new Date()}
+          />
+        </DatepickerContainer>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setVisible(true)}
+          className="bn text3 underline-hover pointer"
+        >
+          {formatDistanceToNow(new Date(lastUpdated), {
+            addSuffix: true,
+          })}
+        </button>
+      )}
+    </div>
+  );
+}
+
+TimeUpdate.propTypes = {
+  lastUpdated: PropTypes.string.isRequired,
+};
+
+TimeUpdate.defaultProps = {};

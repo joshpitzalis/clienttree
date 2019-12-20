@@ -7,16 +7,17 @@ import { render } from '../../../utils/testSetup';
 import { Person } from '../components/Person';
 import { Network } from '../Network';
 import { updateContactEpic } from '../networkEpics';
-import { setContact, setProfileImage } from '../peopleAPI';
+import { setContact, setProfileImage, handleTracking } from '../peopleAPI';
 
 jest.mock('../peopleAPI', () => ({
   setContact: jest.fn(),
   setProfileImage: jest.fn().mockResolvedValueOnce('photoURL'),
+  handleTracking: jest.fn(),
 }));
 
-
-afterEach(() => {
+beforeEach(() => {
   cleanup();
+  jest.restoreAllMocks();
 });
 describe('people CRUD', () => {
   const mockData = {
@@ -129,7 +130,6 @@ describe('people CRUD', () => {
       });
     });
     it('add name', async () => {
-      setContact.mockReset();
       const { getByTestId, getByPlaceholderText } = render(
         <Person
           setSelectedUser={mockData.setSelectedUser}
@@ -203,6 +203,69 @@ describe('people CRUD', () => {
       const canvas = container.querySelector('canvas');
       expect(getByTestId('contactModal')).toContainElement(canvas);
     });
+
+    it('errors if photo file is not jpg or png', () => {
+      const { getByTestId } = render(
+        <Person
+          setSelectedUser={mockData.setSelectedUser}
+          setVisibility={mockData.setVisibility}
+          contact={mockData.contact}
+          selectedUser={mockData.selectedUser}
+        />
+      );
+
+      const file = new File(['(⌐□_□)'], 'chucknorris.png', {
+        type: 'image/xxx',
+      });
+
+      userEvent.click(getByTestId('openBox'));
+      fireEvent.change(getByTestId('profileImageUploader'), {
+        target: { files: [file] },
+      });
+      expect(setProfileImage).not.toHaveBeenCalled();
+      expect(getByTestId('contactModal')).toHaveTextContent(
+        'Images can only be jpeg, jpg, png or gif'
+      );
+    });
+    it('errors if photo file is too large', () => {
+      const { getByTestId } = render(
+        <Person
+          setSelectedUser={mockData.setSelectedUser}
+          setVisibility={mockData.setVisibility}
+          contact={mockData.contact}
+          selectedUser={mockData.selectedUser}
+        />
+      );
+
+      function MockFile(name, size, mimeType) {
+        name = name || 'mock.png';
+        size = size || 1024;
+        mimeType = mimeType || 'image/png';
+
+        function range(count) {
+          let output = '';
+          for (let i = 0; i < count; i++) {
+            output += 'a';
+          }
+          return output;
+        }
+
+        const blob = new Blob([range(size)], { type: mimeType });
+        blob.lastModifiedDate = new Date();
+        blob.name = name;
+
+        return blob;
+      }
+      const file = MockFile('mock.png', 5000001);
+      userEvent.click(getByTestId('openBox'));
+      fireEvent.change(getByTestId('profileImageUploader'), {
+        target: { files: [file] },
+      });
+      expect(setProfileImage).not.toHaveBeenCalled();
+      expect(getByTestId('contactModal')).toHaveTextContent(
+        'Images can only be 5mb or less'
+      );
+    });
     it('add photo', async () => {
       const { getByTestId } = render(
         <Person
@@ -225,33 +288,49 @@ describe('people CRUD', () => {
         expect(setProfileImage).toHaveBeenCalled();
       });
     });
-    it.only('errors if photo file is not jpg or png', async () => {
+    it('lets me add people to dashboard', () => {
       const { getByTestId } = render(
         <Person
           setSelectedUser={mockData.setSelectedUser}
           setVisibility={mockData.setVisibility}
           contact={mockData.contact}
           selectedUser={mockData.selectedUser}
-        />
+        />,
+        {
+          initialState: {
+            user: {
+              userId: 'userId123',
+            },
+            contacts: [
+              {
+                uid: '123',
+                lastContacted: false,
+                activeTaskCount: 3,
+                name: 'name',
+                photoURL: 'photo',
+              },
+            ],
+          },
+        }
       );
-
-      const file = new File(['(⌐□_□)'], 'chucknorris.png', {
-        type: 'image/xxx',
-      });
-
       userEvent.click(getByTestId('openBox'));
-      fireEvent.change(getByTestId('profileImageUploader'), {
-        target: { files: [file] },
-      });
-      await wait(() => {
-        expect(setProfileImage).toHaveBeenCalled();
-      });
+      userEvent.click(getByTestId('dashSwitch'));
+      expect(handleTracking).toHaveBeenCalled();
+      expect(handleTracking).toHaveBeenCalledWith(
+        true,
+        'userId123',
+        '123',
+        'name',
+        'photo'
+      );
     });
-    test.skip('add a note', () => {});
-    test.skip('if no date update then it defaults to today', () => {});
-    test.skip('date text update', () => {});
-    test.skip('lets me add people to dashboard', () => {});
 
+    test.only('add a note', () => {
+      false;
+    });
+    test.skip('date text update', () => {});
+    test.skip('if no date update then it defaults to today', () => {});
+    
     test.skip('add task', () => {});
     test.skip('date task', () => {});
 
@@ -284,6 +363,7 @@ describe('people CRUD', () => {
       // expect closed
       expect(getByTestId('closedPeopleBox'));
     });
+    test.skip('lets me remove people to dashboard', () => {});
     test.skip('is filled when opened', () => {});
     test.skip('update name', () => {});
     test.skip('uplaod photo', () => {});

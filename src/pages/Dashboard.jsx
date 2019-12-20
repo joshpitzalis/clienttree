@@ -174,7 +174,7 @@ const MobileNav = ({ userId }) => {
         className={`${pathname === `/user/${userId}/dashboard` &&
           'active'}  tracked w-50 tc`}
       >
-        <Home className="o-75 h1" /> Projects
+        <Home className="o-75 h1" /> Dashboard
       </TabItem>
       <TabItem
         to={`/user/${userId}/network`}
@@ -211,7 +211,7 @@ function Navigation({ userId }) {
             className={`${pathname === `/user/${userId}/dashboard` &&
               'active'}  tracked pb2`}
           >
-            Projects
+            Dashboard
           </NavLink>
           <NavLink
             // rightEl="🚝"
