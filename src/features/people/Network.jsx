@@ -43,39 +43,41 @@ export function Network({ uid }) {
           />
         </Portal>
       )} */}
-
-      <div className="pv4" data-testid="outreachPage">
-        {visible ? (
-          <PersonModal
-            setVisibility={setVisibility}
-            uid={uid}
-            selectedUserUid={selectedUser}
-            onClose={() => {
-              setVisibility(false);
-              setSelectedUser('');
-            }}
-          />
-        ) : (
-          <AddButton
-            setVisibility={setVisibility}
-            contactCount={contacts && contacts.filter(c => c.uid).length}
-          />
-        )}
-      </div>
-      <ul className="list pl0 mt0">
-        {contacts &&
-          contacts.map(
-            contact =>
-              contact.uid && (
-                <Person
-                  setSelectedUser={setSelectedUser}
-                  setVisibility={setVisibility}
-                  contact={contact}
-                  selectedUser={selectedUser}
-                />
-              )
+      <>
+        <div className="pv4" data-testid="outreachPage">
+          {visible ? (
+            <PersonModal
+              setVisibility={setVisibility}
+              uid={uid}
+              selectedUserUid={selectedUser}
+              onClose={() => {
+                setVisibility(false);
+                setSelectedUser('');
+              }}
+            />
+          ) : (
+            <AddButton
+              setVisibility={setVisibility}
+              contactCount={contacts && contacts.filter(c => c.uid).length}
+            />
           )}
-      </ul>
+        </div>
+        <ul className="list pl0 mt0">
+          {contacts &&
+            contacts.map(
+              contact =>
+                contact.uid && (
+                  <Person
+                    key={contact.uid}
+                    setSelectedUser={setSelectedUser}
+                    setVisibility={setVisibility}
+                    contact={contact}
+                    selectedUser={selectedUser}
+                  />
+                )
+            )}
+        </ul>
+      </>
     </ErrorBoundary>
   );
 }

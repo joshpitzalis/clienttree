@@ -22,13 +22,14 @@ import {
 // import { ConfirmDelete } from './ConfirmDelete';
 
 const personPropTypess = {
-  contactId: PropTypes.string.isRequired,
+  contactId: PropTypes.string,
   // selectedUserUid: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   handleTracking: PropTypes.func,
 };
 const personDefaultPropss = {
   handleTracking: _handleTracking,
+  contactId: '',
 };
 
 export const PersonModal = ({
@@ -146,25 +147,27 @@ export const PersonModal = ({
                 />
               </label>
             </div>
-            <label className="db lh-copy ttc ml3 " htmlFor="name">
-              <span className="text3">Name</span>
-              <input
-                className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2"
-                type="text"
-                name="name"
-                id="name"
-                data-testid="contactName"
-                placeholder="Their name..."
-                value={state.name}
-                onChange={e => {
-                  const name = e.target.value;
-                  setState(prevState => ({
-                    ...prevState,
-                    name,
-                    saving: true,
-                  }));
-                }}
-              />
+            <div className="db lh-copy ttc ml3 ">
+              <label htmlFor="name">
+                <span className="text3">Name</span>
+                <input
+                  className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2"
+                  type="text"
+                  name="name"
+                  id="name"
+                  data-testid="contactName"
+                  placeholder="Their name..."
+                  value={state.name || ''}
+                  onChange={event => {
+                    const name = event.target.value;
+                    return setState(prevState => ({
+                      ...prevState,
+                      name,
+                      saving: true,
+                    }));
+                  }}
+                />
+              </label>
               <small
                 className="text3 o-50"
                 style={{
@@ -176,15 +179,15 @@ export const PersonModal = ({
               >
                 {progress}
               </small>
-            </label>
+            </div>
           </div>
           <Toggle
             description={
-              <p className="text3">
+              <span className="text3">
                 {state.tracked
                   ? 'This person is on your dashboard'
                   : 'This person is not on your Dashboard'}
-              </p>
+              </span>
             }
             checked={state.tracked}
             onChange={e =>
@@ -204,36 +207,36 @@ export const PersonModal = ({
             }
           />
         </div>
-
         <Timeline>
-          {Object.values(notes).map(note =>  (
-              <Timeline.Item
-                color="green"
-                className="pointer"
-                onClick={() => setActiveNote(note.id)}
-              >
-                {note.id === 1 ? (
-                  <small className="i" data-testid="addUpdate">
-                    Add an update{' '}
-                  </small>
-                ) : (
-                  <TimeUpdate lastUpdated={note.lastUpdated} />
-                )}
+          {Object.values(notes).map(note => (
+            <Timeline.Item
+              color="green"
+              className="pointer"
+              key={note.id}
+              onClick={() => setActiveNote(note.id)}
+            >
+              {note.id === 1 ? (
+                <small className="i" data-testid="addUpdate">
+                  Add an update{' '}
+                </small>
+              ) : (
+                <TimeUpdate lastUpdated={note.lastUpdated} />
+              )}
 
-                <div>
-                  {activeNote === note.id ? (
-                    <EditBox
-                      setNotes={setNotes}
-                      note={note}
-                      notes={notes}
-                      setActiveNote={setActiveNote}
-                    />
-                  ) : (
-                    <p>{note.id === 1 ? 'Click to edit...' : note.text}</p>
-                  )}
-                </div>
-              </Timeline.Item>
-            ))}
+              <div>
+                {activeNote === note.id ? (
+                  <EditBox
+                    setNotes={setNotes}
+                    note={note}
+                    notes={notes}
+                    setActiveNote={setActiveNote}
+                  />
+                ) : (
+                  <p>{note.id === 1 ? 'Click to edit...' : note.text}</p>
+                )}
+              </div>
+            </Timeline.Item>
+          ))}
         </Timeline>
       </div>
       <div className="flex justify-between items-baseline mv4">
@@ -375,11 +378,10 @@ function EditBox({ setNotes, note, notes, setActiveNote }) {
 EditBox.propTypes = {
   setNotes: PropTypes.func.isRequired,
   note: PropTypes.shape({
-    id: PropTypes.string,
+    id: PropTypes.number,
     text: PropTypes.string,
-    lastUpdated: PropTypes.string,
+    lastUpdated: PropTypes.number,
   }).isRequired,
-
   notes: PropTypes.any.isRequired,
   setActiveNote: PropTypes.func.isRequired,
 };
@@ -418,7 +420,7 @@ function TimeUpdate({ lastUpdated }) {
 }
 
 TimeUpdate.propTypes = {
-  lastUpdated: PropTypes.string.isRequired,
+  lastUpdated: PropTypes.number.isRequired,
 };
 
 TimeUpdate.defaultProps = {};

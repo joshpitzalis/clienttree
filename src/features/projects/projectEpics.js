@@ -20,7 +20,7 @@ export const stageTitleUpdate = (action$, store, { updateUserProfile }) =>
     debounceTime(1000),
     map(action => {
       // guard against empty input values
-      if (action.payload.title.trim() === '') {
+      if (action.payload.title && action.payload.title.trim() === '') {
         const newAction = { ...action };
         newAction.payload.title = 'Title cannot be blank';
         return newAction;

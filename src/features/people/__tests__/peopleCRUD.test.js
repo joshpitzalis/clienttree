@@ -202,7 +202,6 @@ describe('people CRUD', () => {
       const canvas = container.querySelector('canvas');
       expect(getByTestId('contactModal')).toContainElement(canvas);
     });
-
     it('errors if photo file is not jpg or png', () => {
       const { getByTestId } = render(
         <Person
@@ -265,7 +264,7 @@ describe('people CRUD', () => {
         'Images can only be 5mb or less'
       );
     });
-    it('add photo', async () => {
+    it('lets you add a profile photo', async () => {
       const { getByTestId } = render(
         <Person
           setSelectedUser={mockData.setSelectedUser}
@@ -323,8 +322,25 @@ describe('people CRUD', () => {
         'photo'
       );
     });
+    it('add a note', () => {
+      const {
+        getByTestId,
+        getByPlaceholderText,
+        // debug
+      } = render(
+        <Person
+          setSelectedUser={mockData.setSelectedUser}
+          setVisibility={mockData.setVisibility}
+          selectedUser={mockData.selectedUser}
+          contact={mockData.contact}
+        />
+      );
+      userEvent.click(getByTestId('openBox'));
+      userEvent.type(getByPlaceholderText(/click to edit/i), 'lalala');
+      // debug();
+      expect(true).toBeFalsy()
+    });
 
-    test.skip('add a note', () => {});
     test.skip('only one field open at a time', () => {});
     test.skip('sort notes chronologocally', () => {});
     test.skip('first notes always appears by default', () => {});
@@ -394,5 +410,19 @@ describe('people CRUD', () => {
       );
       expect(getByLabelText(/Sign up to Client Tree/i)).toBeEnabled();
     });
+
+    test.skip('private routes', () => {});
+    test.skip('projects blank UI', () => {});
+    test.skip('people blank UI', () => {});
+    test.skip('cypress mobile tests', () => {});
+    test.skip('mobile view', () => {});
+    test.skip('ipad view', () => {});
+    test.skip('mobile hoz view', () => {});
+    test.skip('ipad hoz view', () => {});
+    test.skip('loading components for people', () => {});
+    test.skip('image uploads', () => {});
+    test.skip('firebase rules', () => {});
+    test.skip('cypress CI', () => {});
+    test.skip('test coverage in CI', () => {});
   });
 });

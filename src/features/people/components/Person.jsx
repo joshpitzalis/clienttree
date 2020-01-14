@@ -122,12 +122,15 @@ Person.propTypes = {
     name: PropTypes.string,
     photoURL: PropTypes.string,
   }).isRequired,
-  selectedUser: PropTypes.shape({
-    uid: PropTypes.string,
-    lastContacted: PropTypes.bool,
-    activeTaskCount: PropTypes.number,
-    name: PropTypes.string,
-    photoURL: PropTypes.string,
-  }).isRequired,
+  selectedUser: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.shape({
+      uid: PropTypes.string,
+      lastContacted: PropTypes.bool,
+      activeTaskCount: PropTypes.number,
+      name: PropTypes.string,
+      photoURL: PropTypes.string,
+    }),
+  ]),
 };
 Person.defaultProps = {};

@@ -56,7 +56,7 @@ export const setNewUserTask = (action$, store, { setFirebaseContactUpdate }) =>
 
 export const updateContactEpic = (action$, state$, { setContact }) => {
   const emptyGuard = (action, defaultTitle) => {
-    if (action.payload.name.trim() === '') {
+    if (action.payload.name && action.payload.name.trim() === '') {
       const newAction = { ...action };
       newAction.payload.name = defaultTitle;
       return newAction;
