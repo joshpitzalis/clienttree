@@ -25,7 +25,7 @@ const useConfetti = confettiStream$ => {
 };
 
 const propTypes = {
-  setWelcomeMessage: PropTypes.func.isRequired,
+  setWelcomeMessage: PropTypes.func,
 };
 
 const defaultProps = {};

@@ -5,6 +5,9 @@ import AvatarGenerator from 'react-avatar-generator';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { debounceTime, filter } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+
 import { toast$ } from '../../notifications/toast';
 // import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
 // import { NetworkContext } from '../NetworkContext';
@@ -45,12 +48,20 @@ export const PersonModal = ({
 
   const userId = useSelector(store => store.user.userId);
 
-  const [state, setState] = React.useState({ saving: false });
-  const [progress, setProgress] = React.useState('Click on image to upload.');
+  const [state, setState] = React.useState({
+    name: '',
+    notes: {
+      1: {
+        id: 1,
+        text: '',
+        lastUpdated: +new Date(),
+      },
+    },
+    tracked: false,
+    saving: false,
+  });
 
-  React.useEffect(() => {
-    setState({ ...contact, saving: false });
-  }, [contact]);
+  // whenever the state of this componnet gets updated it will debounce for one second then save the new state to firebase
 
   React.useEffect(() => {
     dispatch({
@@ -58,6 +69,15 @@ export const PersonModal = ({
       payload: state,
     });
   }, [dispatch, state]);
+
+  const [progress, setProgress] = React.useState('Click on image to upload.');
+
+  React.useEffect(() => {
+    setState({
+      ...contact,
+      saving: false,
+    });
+  }, [contact]);
 
   const avatarRef = React.useRef(null);
 
@@ -98,16 +118,6 @@ export const PersonModal = ({
       }
     }
   };
-
-  // ###
-
-  const [notes, setNotes] = React.useState({
-    1: {
-      id: 1,
-      text: '',
-      lastUpdated: +new Date(),
-    },
-  });
 
   const [activeNote, setActiveNote] = React.useState(1);
 
@@ -169,7 +179,7 @@ export const PersonModal = ({
                 />
               </label>
               <small
-                className="text3 o-50"
+                className="text3"
                 style={{
                   color:
                     (progress === 'Images can only be jpeg, jpg, png or gif' ||
@@ -208,7 +218,17 @@ export const PersonModal = ({
           />
         </div>
         <Timeline>
-          {Object.values(notes).map(note => (
+          {Object.values(
+            state.notes
+              ? state.notes
+              : {
+                  1: {
+                    id: 1,
+                    text: '',
+                    lastUpdated: +new Date(),
+                  },
+                }
+          ).map(note => (
             <Timeline.Item
               color="green"
               className="pointer"
@@ -226,10 +246,11 @@ export const PersonModal = ({
               <div>
                 {activeNote === note.id ? (
                   <EditBox
-                    setNotes={setNotes}
+                    // setNotes={setNotes}
                     note={note}
-                    notes={notes}
+                    notes={state.notes}
                     setActiveNote={setActiveNote}
+                    setState={setState}
                   />
                 ) : (
                   <p>{note.id === 1 ? 'Click to edit...' : note.text}</p>
@@ -276,6 +297,141 @@ export const PersonModal = ({
 PersonModal.propTypes = personPropTypess;
 PersonModal.defaultProps = personDefaultPropss;
 
+const events$ = new Subject();
+
+function EditBox({ note, notes, setActiveNote, setState }) {
+  const { text, lastUpdated, id } = note;
+
+  const [message, setMessage] = React.useState(text);
+
+  React.useEffect(() => {
+    const subscription = events$
+      .pipe(
+        filter(event => event.type === 'people/updateNotesTextarea'),
+        debounceTime(2000)
+      )
+      .subscribe(action => {
+        console.log({ action });
+        const newTimestamp = +new Date();
+        const newId = id === 1 ? newTimestamp : id;
+        // const newNotes = {
+        //   ...notes,
+        //   [newId]: {
+        //     id: newId,
+        //     text: action.payload,
+        //     lastUpdated: id === 1 ? newTimestamp : lastUpdated,
+        //   },
+        // };
+        // setNotes(newNotes);
+
+        setState(prevState => ({
+          ...prevState,
+          notes: {
+            ...prevState.notes,
+            [newId]: {
+              id: newId,
+              text: action.payload,
+              lastUpdated: id === 1 ? newTimestamp : lastUpdated,
+            },
+          },
+        }));
+
+        setActiveNote(newId);
+      });
+    return () => subscription.unsubscribe();
+  }, [id, lastUpdated, notes, setActiveNote, setState]);
+
+  return (
+    <div>
+      <TextArea
+        placeholder="Click to edit..."
+        rows={10}
+        aria-label="note"
+        className="mb0"
+        data-testid="notesTextarea"
+        onChange={event => {
+          const { value } = event.target;
+          // setSaving(true);
+          setState(prevState => ({ ...prevState, saving: true }));
+          setMessage(value);
+          events$.next({
+            type: 'people/updateNotesTextarea',
+            payload: value,
+          });
+        }}
+        value={message}
+      />
+      {note.id !== 1 && (
+        <div className="flex justify-between items-start mt0 pa0 mb3">
+          {/* <small
+            className="text3 o-50 mr3"
+            style={{
+              color: saving && 'red',
+            }}
+          >
+            {saving ? 'Saving...' : 'Saved'}
+          </small> */}
+          <Icon
+            className="o-50"
+            type="delete"
+            style={{
+              color: 'red',
+            }}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+EditBox.propTypes = {
+  // setNotes: PropTypes.func.isRequired,
+  note: PropTypes.shape({
+    id: PropTypes.number,
+    text: PropTypes.string,
+    lastUpdated: PropTypes.number,
+  }).isRequired,
+  notes: PropTypes.any.isRequired,
+  setActiveNote: PropTypes.func.isRequired,
+  setState: PropTypes.func.isRequired,
+};
+
+EditBox.defaultProps = {};
+
+function TimeUpdate({ lastUpdated }) {
+  const [visible, setVisible] = React.useState(false);
+
+  return (
+    <div>
+      {visible ? (
+        <DatepickerContainer>
+          <Datepicker
+            value={new Date(lastUpdated)}
+            onDateChange={() => setVisible(false)}
+            maxDate={new Date()}
+          />
+        </DatepickerContainer>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setVisible(true)}
+          className="bn text3 underline-hover pointer"
+        >
+          {formatDistanceToNow(new Date(lastUpdated), {
+            addSuffix: true,
+          })}
+        </button>
+      )}
+    </div>
+  );
+}
+
+TimeUpdate.propTypes = {
+  lastUpdated: PropTypes.number.isRequired,
+};
+
+TimeUpdate.defaultProps = {};
+
 // const handleDelete = async (_name, _uid, _userId) => {
 //   try {
 //     await handleContactDelete(_uid, _userId);
@@ -316,111 +472,3 @@ PersonModal.defaultProps = personDefaultPropss;
 // if (true) {
 //   throw new Error();
 // }
-
-function EditBox({ setNotes, note, notes, setActiveNote }) {
-  const { id, text, lastUpdated } = note;
-
-  const [message, setMessage] = React.useState(text);
-
-  const [saving, setSaving] = React.useState(false);
-
-  React.useEffect(() => {
-    setSaving(false);
-  }, [note]);
-
-  return (
-    <div>
-      <TextArea
-        placeholder="Click to edit..."
-        rows={10}
-        className="mb0"
-        onChange={e => {
-          setSaving(true);
-          setMessage(e.target.value);
-          const newTimestamp = +new Date();
-          const newId = id === 1 ? newTimestamp : id;
-          const newNotes = {
-            ...notes,
-            [newId]: {
-              id: newId,
-              text: e.target.value,
-              lastUpdated: id === 1 ? newTimestamp : lastUpdated,
-            },
-          };
-          setNotes(newNotes);
-          setActiveNote(newId);
-        }}
-        value={message}
-      />
-      {note.id !== 1 && (
-        <div className="flex justify-between items-start mt0 pa0 mb3">
-          <small
-            className="text3 o-50 mr3"
-            style={{
-              color: saving && 'red',
-            }}
-          >
-            {saving ? 'Saving...' : 'Saved'}
-          </small>
-          <Icon
-            className="o-50"
-            type="delete"
-            style={{
-              color: 'red',
-            }}
-          />
-        </div>
-      )}
-    </div>
-  );
-}
-
-EditBox.propTypes = {
-  setNotes: PropTypes.func.isRequired,
-  note: PropTypes.shape({
-    id: PropTypes.number,
-    text: PropTypes.string,
-    lastUpdated: PropTypes.number,
-  }).isRequired,
-  notes: PropTypes.any.isRequired,
-  setActiveNote: PropTypes.func.isRequired,
-};
-
-EditBox.defaultProps = {};
-
-function TimeUpdate({ lastUpdated }) {
-  const [visible, setVisible] = React.useState(false);
-
-  return (
-    <div>
-      {visible ? (
-        <DatepickerContainer>
-          <Datepicker
-            value={new Date(lastUpdated)}
-            onDateChange={x => {
-              console.log(+new Date(x));
-              setVisible(false);
-            }}
-            maxDate={new Date()}
-          />
-        </DatepickerContainer>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setVisible(true)}
-          className="bn text3 underline-hover pointer"
-        >
-          {formatDistanceToNow(new Date(lastUpdated), {
-            addSuffix: true,
-          })}
-        </button>
-      )}
-    </div>
-  );
-}
-
-TimeUpdate.propTypes = {
-  lastUpdated: PropTypes.number.isRequired,
-};
-
-TimeUpdate.defaultProps = {};

@@ -491,7 +491,7 @@ export const handleTracking = async (
 
 export const setContact = (
   userId,
-  { uid, name, summary, lastContacted, photoURL, downloadURL }
+  { uid, name, summary, lastContacted, photoURL, downloadURL, notes }
 ) =>
   firebase
     .firestore()
@@ -507,6 +507,7 @@ export const setContact = (
         lastContacted: lastContacted || null,
         photoURL: downloadURL || photoURL,
         activeTaskCount: 1,
+        notes,
       },
       { merge: true }
     );

@@ -322,12 +322,9 @@ describe('people CRUD', () => {
         'photo'
       );
     });
-    it('add a note', () => {
-      const {
-        getByTestId,
-        getByPlaceholderText,
-        // debug
-      } = render(
+    it('add a note', async () => {
+      const exampleInput = 'lalala';
+      const { getByTestId, getByPlaceholderText } = render(
         <Person
           setSelectedUser={mockData.setSelectedUser}
           setVisibility={mockData.setVisibility}
@@ -336,11 +333,17 @@ describe('people CRUD', () => {
         />
       );
       userEvent.click(getByTestId('openBox'));
-      userEvent.type(getByPlaceholderText(/click to edit/i), 'lalala');
-      // debug();
-      expect(true).toBeFalsy()
-    });
+      await userEvent.type(
+        getByPlaceholderText(/click to edit/i),
+        exampleInput
+      );
 
+      expect(getByTestId('notesTextarea').value).toEqual(exampleInput);
+    });
+    test.skip('should not let you enter a note in a new contact untill you have added a name', () => {});
+    test.skip('it should add teh new note to the beginning of the timeline not the end', () => {});
+    test.skip('should  show saving when you start editing a textarea', () => {});
+    test.skip('close button should say saving when  it is saving', () => {});
     test.skip('only one field open at a time', () => {});
     test.skip('sort notes chronologocally', () => {});
     test.skip('first notes always appears by default', () => {});

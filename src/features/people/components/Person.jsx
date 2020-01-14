@@ -49,20 +49,9 @@ export const Person = ({
             onKeyPress={() => send({ type: 'OPENED' })}
             role="button"
             data-testid="openBox"
-
-            // tabIndex={-1}
-            // role="button"
-            // onClick={() => {
-            //   setSelectedUser(contact.uid);
-            //   setVisibility(true);
-            // }}
-            // onKeyPress={() => {
-            //   setSelectedUser(contact.uid);
-            //   setVisibility(true);
-            // }}
           >
             <img
-              alt={contact.name}
+              alt={`${contact.name} avatar`}
               className="w2 h2 w3-ns h3-ns br-100"
               src={contact.photoURL}
             />
@@ -71,15 +60,12 @@ export const Person = ({
               <span className="f6 db black-70 i">
                 {contact.lastContacted &&
                 isValidDate(fromUnixTime(contact.lastContacted))
-                  ? `Last contacted ${
-                      formatDistanceToNow(fromUnixTime(contact.lastContacted), {
+                  ? `Last contacted ${formatDistanceToNow(
+                      fromUnixTime(contact.lastContacted),
+                      {
                         addSuffix: true,
-                      })
-                      // format(
-                      //   fromUnixTime(contact.lastContacted),
-                      //   'Do MMM YYYY'
-                      // )
-                    }`
+                      }
+                    )}`
                   : null}
               </span>
             </div>

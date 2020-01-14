@@ -39,7 +39,6 @@ export const rootEpic = (action$, store$, _dependencies) =>
     setNewUserTask,
     updateStatsDetails,
     updateContactEpic,
-    // ###
     projectCompleted,
     leadContacted,
     stageTitleUpdate,
