@@ -1,32 +1,16 @@
 import React from 'react';
-import { TextArea, Toggle, Datepicker, DatepickerContainer } from '@duik/it';
-import { Timeline, Icon } from 'antd';
+import { Toggle } from '@duik/it';
+import { Timeline } from 'antd';
 import AvatarGenerator from 'react-avatar-generator';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
-import { debounceTime, filter } from 'rxjs/operators';
-import { Subject } from 'rxjs';
-
-import { toast$ } from '../../notifications/toast';
-// import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
-// import { NetworkContext } from '../NetworkContext';
-// import { toast$ } from '../../notifications/toast';
-import {
-  // handleContactDelete,
-  // handleAddTask,
-  // setActiveTaskCount,
-  handleTracking as _handleTracking,
-  setProfileImage,
-} from '../peopleAPI';
-
-// import firebase from '../../../utils/firebase';
-// import { ToDoList } from './ToDoList';
-// import { ConfirmDelete } from './ConfirmDelete';
+import { useSelector } from 'react-redux';
+import { usePersonForm, setImage } from '../peopleHelpers/personBox';
+import { handleTracking as _handleTracking } from '../peopleAPI';
+import { EditBox } from './EditBox';
+import { TimeUpdate } from './TimeUpdate';
 
 const personPropTypess = {
   contactId: PropTypes.string,
-  // selectedUserUid: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   handleTracking: PropTypes.func,
 };
@@ -40,86 +24,17 @@ export const PersonModal = ({
   onClose,
   handleTracking = _handleTracking,
 }) => {
-  const dispatch = useDispatch();
+  // whenever the state of this component gets updated it will debounce for one second then save the new state to firebase
+  const [state, setState] = usePersonForm(contactId);
 
-  const contact = useSelector(store =>
-    store.contacts.find(person => person.uid === contactId)
-  );
-
+  // used to add a contact to the dashboard
   const userId = useSelector(store => store.user.userId);
-
-  const [state, setState] = React.useState({
-    name: '',
-    notes: {
-      1: {
-        id: 1,
-        text: '',
-        lastUpdated: +new Date(),
-      },
-    },
-    tracked: false,
-    saving: false,
-  });
-
-  // whenever the state of this componnet gets updated it will debounce for one second then save the new state to firebase
-
-  React.useEffect(() => {
-    dispatch({
-      type: 'people/updateForm',
-      payload: state,
-    });
-  }, [dispatch, state]);
-
-  const [progress, setProgress] = React.useState('Click on image to upload.');
-
-  React.useEffect(() => {
-    setState({
-      ...contact,
-      saving: false,
-    });
-  }, [contact]);
 
   const avatarRef = React.useRef(null);
 
-  const setImage = async e => {
-    const imageFile = e.target.files && e.target.files[0];
-    const { size, type } = imageFile;
-    if (
-      type !== 'image/jpeg' &&
-      type !== 'image/gif' &&
-      type !== 'image/jpg' &&
-      type !== 'image/png'
-    ) {
-      setProgress('Images can only be jpeg, jpg, png or gif');
-      return;
-    }
-    if (size > 5000000) {
-      setProgress('Images can only be 5mb or less');
-      return;
-    }
-    if (imageFile) {
-      try {
-        setState(prevState => ({ ...prevState, saving: true }));
-        setProgress('Uploading...');
-        const photoURL = await setProfileImage({
-          imageFile,
-          contactId,
-        });
-        setProgress('Click on image to upload.');
-        setState(prevState => ({ ...prevState, photoURL }));
-      } catch (error) {
-        setState({ ...state, saving: false });
-        setProgress('Click on image to upload.');
-        toast$.next({
-          type: 'ERROR',
-          message: error,
-          from: 'PersonBox/setImagePreview',
-        });
-      }
-    }
-  };
-
   const [activeNote, setActiveNote] = React.useState(1);
+
+  const [progress, setProgress] = React.useState('Click on image to upload.');
 
   return (
     <div>
@@ -153,7 +68,9 @@ export const PersonModal = ({
                   className="dn"
                   id="uploader"
                   data-testid="profileImageUploader"
-                  onChange={setImage}
+                  onChange={e =>
+                    setImage({ e, setProgress, setState, state, contactId })
+                  }
                 />
               </label>
             </div>
@@ -199,7 +116,7 @@ export const PersonModal = ({
                   : 'This person is not on your Dashboard'}
               </span>
             }
-            checked={state.tracked}
+            checked={state.tracked || null}
             onChange={e =>
               handleTracking(
                 e.target.checked,
@@ -297,140 +214,41 @@ export const PersonModal = ({
 PersonModal.propTypes = personPropTypess;
 PersonModal.defaultProps = personDefaultPropss;
 
-const events$ = new Subject();
+// const ProfileImage = (avatarRef, setProgress, setState, state, contactId) => (
+//   <label htmlFor="uploader" className="pointer tc center">
+//     {state.photoURL && state.photoURL ? (
+//       <img
+//         alt="profile-preview"
+//         className="w2 h-auto w3-ns h-auto-ns br-100"
+//         src={state.photoURL}
+//       />
+//     ) : (ß
+//       <AvatarGenerator
+//         ref={avatarRef}
+//         height="50"
+//         width="50"
+//         colors={['#333', '#222', '#ccc']}
+//       />
+//     )}
+//     <input
+//       type="file"
+//       accept=".jpg,.jpeg,.png,.gif"
+//       className="dn"
+//       id="uploader"
+//       data-testid="profileImageUploader"
+//       onChange={e => setImage({ e, setProgress, setState, state, contactId })}
+//     />
+//   </label>
+// );
 
-function EditBox({ note, notes, setActiveNote, setState }) {
-  const { text, lastUpdated, id } = note;
-
-  const [message, setMessage] = React.useState(text);
-
-  React.useEffect(() => {
-    const subscription = events$
-      .pipe(
-        filter(event => event.type === 'people/updateNotesTextarea'),
-        debounceTime(2000)
-      )
-      .subscribe(action => {
-        console.log({ action });
-        const newTimestamp = +new Date();
-        const newId = id === 1 ? newTimestamp : id;
-        // const newNotes = {
-        //   ...notes,
-        //   [newId]: {
-        //     id: newId,
-        //     text: action.payload,
-        //     lastUpdated: id === 1 ? newTimestamp : lastUpdated,
-        //   },
-        // };
-        // setNotes(newNotes);
-
-        setState(prevState => ({
-          ...prevState,
-          notes: {
-            ...prevState.notes,
-            [newId]: {
-              id: newId,
-              text: action.payload,
-              lastUpdated: id === 1 ? newTimestamp : lastUpdated,
-            },
-          },
-        }));
-
-        setActiveNote(newId);
-      });
-    return () => subscription.unsubscribe();
-  }, [id, lastUpdated, notes, setActiveNote, setState]);
-
-  return (
-    <div>
-      <TextArea
-        placeholder="Click to edit..."
-        rows={10}
-        aria-label="note"
-        className="mb0"
-        data-testid="notesTextarea"
-        onChange={event => {
-          const { value } = event.target;
-          // setSaving(true);
-          setState(prevState => ({ ...prevState, saving: true }));
-          setMessage(value);
-          events$.next({
-            type: 'people/updateNotesTextarea',
-            payload: value,
-          });
-        }}
-        value={message}
-      />
-      {note.id !== 1 && (
-        <div className="flex justify-between items-start mt0 pa0 mb3">
-          {/* <small
-            className="text3 o-50 mr3"
-            style={{
-              color: saving && 'red',
-            }}
-          >
-            {saving ? 'Saving...' : 'Saved'}
-          </small> */}
-          <Icon
-            className="o-50"
-            type="delete"
-            style={{
-              color: 'red',
-            }}
-          />
-        </div>
-      )}
-    </div>
-  );
-}
-
-EditBox.propTypes = {
-  // setNotes: PropTypes.func.isRequired,
-  note: PropTypes.shape({
-    id: PropTypes.number,
-    text: PropTypes.string,
-    lastUpdated: PropTypes.number,
-  }).isRequired,
-  notes: PropTypes.any.isRequired,
-  setActiveNote: PropTypes.func.isRequired,
-  setState: PropTypes.func.isRequired,
-};
-
-EditBox.defaultProps = {};
-
-function TimeUpdate({ lastUpdated }) {
-  const [visible, setVisible] = React.useState(false);
-
-  return (
-    <div>
-      {visible ? (
-        <DatepickerContainer>
-          <Datepicker
-            value={new Date(lastUpdated)}
-            onDateChange={() => setVisible(false)}
-            maxDate={new Date()}
-          />
-        </DatepickerContainer>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setVisible(true)}
-          className="bn text3 underline-hover pointer"
-        >
-          {formatDistanceToNow(new Date(lastUpdated), {
-            addSuffix: true,
-          })}
-        </button>
-      )}
-    </div>
-  );
-}
-
-TimeUpdate.propTypes = {
-  lastUpdated: PropTypes.number.isRequired,
-};
-
-TimeUpdate.defaultProps = {};
+// ProfileImage.propTypes = {
+//   avatarRef: PropTypes.func.isRequired,
+//   setProgress: PropTypes.func.isRequired,
+//   setState: PropTypes.func.isRequired,
+//   state: PropTypes.shape({}).isRequired,
+//   contactId: PropTypes.string.isRequired,
+// };
+// ProfileImage.defaultProps = {};
 
 // const handleDelete = async (_name, _uid, _userId) => {
 //   try {

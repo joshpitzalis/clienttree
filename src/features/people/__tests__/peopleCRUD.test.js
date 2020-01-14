@@ -235,14 +235,14 @@ describe('people CRUD', () => {
         />
       );
 
-      function MockFile(name, size, mimeType) {
-        name = name || 'mock.png';
-        size = size || 1024;
-        mimeType = mimeType || 'image/png';
-
+      function MockFile(
+        name = 'mock.png',
+        size = 1024,
+        mimeType = 'image/png'
+      ) {
         function range(count) {
           let output = '';
-          for (let i = 0; i < count; i++) {
+          for (let i = 0; i < count; i += 1) {
             output += 'a';
           }
           return output;
