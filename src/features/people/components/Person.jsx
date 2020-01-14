@@ -31,10 +31,10 @@ const peopleMachine = Machine(
 const isValidDate = timestamp => new Date(timestamp).getTime() > 0;
 
 export const Person = ({
-  setSelectedUser,
-  setVisibility,
+  // setSelectedUser,
+  // setVisibility,
   contact,
-  selectedUser,
+  // selectedUser,
 }) => {
   const [current, send] = useMachine(peopleMachine);
 
@@ -113,8 +113,8 @@ export const Person = ({
 };
 
 Person.propTypes = {
-  setVisibility: PropTypes.func.isRequired,
-  setSelectedUser: PropTypes.func.isRequired,
+  // setVisibility: PropTypes.func.isRequired,
+  // setSelectedUser: PropTypes.func.isRequired,
   contact: PropTypes.shape({
     uid: PropTypes.string,
     lastContacted: PropTypes.bool,
@@ -122,15 +122,15 @@ Person.propTypes = {
     name: PropTypes.string,
     photoURL: PropTypes.string,
   }).isRequired,
-  selectedUser: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.shape({
-      uid: PropTypes.string,
-      lastContacted: PropTypes.bool,
-      activeTaskCount: PropTypes.number,
-      name: PropTypes.string,
-      photoURL: PropTypes.string,
-    }),
-  ]),
+  // selectedUser: PropTypes.oneOfType([
+  //   PropTypes.string,
+  //   PropTypes.shape({
+  //     uid: PropTypes.string,
+  //     lastContacted: PropTypes.bool,
+  //     activeTaskCount: PropTypes.number,
+  //     name: PropTypes.string,
+  //     photoURL: PropTypes.string,
+  //   }),
+  // ]),
 };
 Person.defaultProps = {};

@@ -2,17 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 // import { filter } from 'rxjs/operators';
 import { useImmerReducer } from 'use-immer';
-import { useSelector, useDispatch } from 'react-redux';
+import {
+  useSelector,
+  // useDispatch
+} from 'react-redux';
 import AvatarGenerator from 'react-avatar-generator';
 import { AutoComplete, Progress } from 'antd';
 import { collection } from 'rxfire/firestore';
 import { map, catchError } from 'rxjs/operators';
 import { HelpfulTaskList } from '../people/components/UniversalTaskList';
 import { GettingStarted } from './GettingStarted';
-import { USER_UPDATED } from '../people/networkConstants';
+// import { USER_UPDATED } from '../people/networkConstants';
 import firebase from '../../utils/firebase';
 import { toast$ } from '../notifications/toast';
-
 import { Input } from '../people/components/Input';
 
 const propTypes = {
@@ -21,19 +23,19 @@ const propTypes = {
 const defaultProps = {};
 
 export function Onboarding({ uid }) {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   // gets user onboarding details
   const onboarding = useSelector(
     store => store.user && store.user.onboarding && store.user.onboarding
   );
 
-  const setUser = async payload => {
-    dispatch({
-      type: USER_UPDATED,
-      payload,
-    });
-  };
+  // const setUser = async payload => {
+  //   dispatch({
+  //     type: USER_UPDATED,
+  //     payload,
+  //   });
+  // };
 
   const onboardingComplete = onboarding && onboarding.complete === true;
 

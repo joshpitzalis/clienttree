@@ -1,18 +1,18 @@
 import React from 'react';
-import { collectionData } from 'rxfire/firestore';
+// import { collectionData } from 'rxfire/firestore';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { handleDeleteTask } from '../peopleAPI';
-import firebase from '../../../utils/firebase';
-import { taskSlice } from '../taskSlice';
+// import firebase from '../../../utils/firebase';
+// import { taskSlice } from '../taskSlice';
 import { HelpfulTask } from './HelpfulTask';
 
 export const propTypes = {
   myUid: PropTypes.string.isRequired,
   theirUid: PropTypes.string.isRequired,
   handleAddingTask: PropTypes.func.isRequired,
-  activeTaskCount: PropTypes.number.isRequired,
-  _setActiveTaskCount: PropTypes.func.isRequired,
+  // activeTaskCount: PropTypes.number.isRequired,
+  // _setActiveTaskCount: PropTypes.func.isRequired,
   photoURL: PropTypes.string.isRequired,
 };
 export const defaultProps = {};
@@ -21,8 +21,8 @@ export const ToDoList = ({
   myUid,
   theirUid,
   handleAddingTask,
-  activeTaskCount,
-  _setActiveTaskCount,
+  // activeTaskCount,
+  // _setActiveTaskCount,
   photoURL,
 }) => {
   const [task, setTask] = React.useState('');

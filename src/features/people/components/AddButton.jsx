@@ -1,9 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { CSSTransition } from 'react-transition-group';
+// import { CSSTransition } from 'react-transition-group';
 
-export function AddButton({ setVisibility, contactCount }) {
-  const [revealSupportText, setRevealSupportText] = React.useState(false);
+export function AddButton({
+  setVisibility,
+  //  contactCount
+}) {
+  const [
+    ,
+    // revealSupportText
+    setRevealSupportText,
+  ] = React.useState(false);
   return (
     <div>
       <button
@@ -37,8 +44,8 @@ export function AddButton({ setVisibility, contactCount }) {
 }
 AddButton.propTypes = {
   setVisibility: PropTypes.func.isRequired,
-  contactCount: PropTypes.number,
+  // contactCount: PropTypes.number,
 };
 AddButton.defaultProps = {
-  contactCount: 0,
+  // contactCount: 0,
 };
