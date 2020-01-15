@@ -33,24 +33,6 @@ export function Network({ uid }) {
 
   return (
     <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
-      {/* {visible && (
-        <Portal
-          onClose={() => {
-            setVisibility(false);
-            setSelectedUser('');
-          }}
-        >
-          <PersonModal
-            setVisibility={setVisibility}
-            uid={uid}
-            selectedUserUid={selectedUser}
-            onClose={() => {
-              setVisibility(false);
-              setSelectedUser('');
-            }}
-          />
-        </Portal>
-      )} */}
       <>
         <div className="pv4" data-testid="outreachPage">
           {visible ? (

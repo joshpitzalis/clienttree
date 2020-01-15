@@ -15,6 +15,7 @@ import {
   Tabs,
   TabItem,
 } from '@duik/it';
+import { Input } from '../features/people/components/Input';
 import { HelpfulTaskList as UniversalTaskList } from '../features/people/components/UniversalTaskList';
 import { SpecificTaskList } from '../features/people/components/SpecificTaskList';
 import People from '../images/People';
@@ -27,6 +28,8 @@ import { ConfettiBanner } from '../features/onboarding/confetti';
 import { Onboarding } from '../features/onboarding/ActivityList';
 import StatsBox from '../features/stats/StatsBox';
 import { taskSlice } from '../features/people/taskSlice';
+import Modal from '../features/people/components/ContactModal';
+import Portal from '../utils/Portal';
 
 export const userSlice = createSlice({
   name: 'user',
@@ -122,9 +125,6 @@ export const fetchUserDataEpic = (
 /** @param {{userId: string}} [Props] */
 export function Dashboard({ userId }) {
   const dispatch = useDispatch();
-  const contactSelected = useSelector(store => store.people.selectedContact);
-
-  console.log({ contactSelected });
 
   React.useEffect(() => {
     if (userId) {
@@ -132,9 +132,24 @@ export function Dashboard({ userId }) {
     }
   }, [dispatch, userId]);
 
+  const contactSelected = useSelector(store => store.people.selectedContact);
+
+  const [visible, setVisibility] = React.useState(false);
+
   return (
     <ContainerHorizontal>
       <ConfettiBanner />
+      {visible && (
+        <Portal onClose={() => setVisibility(false)}>
+          <Modal
+            uid={userId}
+            selectedUserUid={contactSelected && contactSelected.uid}
+            onClose={() => {
+              setVisibility(false);
+            }}
+          />
+        </Portal>
+      )}
       <div className="flex flex-row-ns flex-column w-100 justify-between min-h-100 bg-base">
         <Navigation userId={userId} />
         <main className="w-50-ns w-100 min-h-100">
@@ -161,10 +176,20 @@ export function Dashboard({ userId }) {
             <Onboarding uid={userId} contactSelected={contactSelected}>
               <>
                 {contactSelected ? (
-                  <SpecificTaskList
-                    myUid={userId}
-                    contactSelected={contactSelected}
-                  />
+                  <>
+                    <SpecificTaskList
+                      myUid={userId}
+                      contactSelected={contactSelected}
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => setVisibility(true)}
+                      className="btn2 ph4 pv3 bn pointer br1 grow b mv4"
+                    >
+                      Add A New Task
+                    </button>
+                  </>
                 ) : (
                   <UniversalTaskList myUid={userId} />
                 )}
@@ -250,3 +275,31 @@ function Navigation({ userId }) {
 
 Navigation.propTypes = { userId: PropTypes.string };
 Navigation.defaultProps = { userId: '' };
+
+const AddNewTask = () => {
+  const [state, setState] = React.useState({
+    activity: '',
+    date: '',
+  });
+
+  return (
+    <form className="ma0 pa0  mv4">
+      <Input
+        setState={setState}
+        state={state}
+        value={state.activity}
+        name="Add"
+        placeholder="Add an activity.."
+        className="mb0"
+      />
+      {/* <small className="text-3">Include Deadline</small> */}
+      {/* <Input
+        setState={setState}
+        state={state}
+        value={state.date}
+        name="date"
+        type="date"
+      /> */}
+    </form>
+  );
+};

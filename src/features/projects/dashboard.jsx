@@ -9,7 +9,7 @@ import { setStateToDB } from './dashAPI';
 import { toast$ } from '../notifications/toast';
 import firebase from '../../utils/firebase';
 import Portal from '../../utils/Portal';
-import { Modal } from '../people/components/ContactModal';
+import Modal from '../people/components/ContactModal';
 import { Stages } from './Stages';
 import { onDragEnd } from './dashHelpers';
 

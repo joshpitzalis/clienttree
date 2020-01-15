@@ -27,12 +27,12 @@ const modalDefaultPropss = {
   incrementStats: handleTracking,
 };
 
-export function Modal({
+const Modal = ({
   uid,
   selectedUserUid,
   onClose,
   incrementStats = handleTracking,
-}) {
+}) => {
   const dispatch = useDispatch();
 
   const [state, setState] = React.useState({
@@ -109,8 +109,8 @@ export function Modal({
   };
 
   return (
-    <div data-testid="contactModal">
-      <div className="w-100 tc">
+    <div data-testid="contactModal" className="z-999 relative">
+      {/* <div className="w- h3 tc">
         {state.photoURL ? (
           <img
             alt={state.name}
@@ -120,15 +120,16 @@ export function Modal({
         ) : (
           <AvatarGenerator
             ref={avatarRef}
+            className="w2 h2 w3-ns h3-ns br-100"
             height="100"
             width="100"
             colors={['#333', '#222', '#ccc']}
           />
         )}
-      </div>
+      </div> */}
 
       <div className="flex">
-        <form className=" w-50" onSubmit={handleUpdateUser}>
+        {/* <form className=" w-50" onSubmit={handleUpdateUser}>
           <fieldset id="contact" className="ba b--transparent ph0 mh0 tl">
             <legend className="f4 fw6 ph0 mh0 dn">Profile</legend>
             <div className="flex justify-center">
@@ -206,22 +207,24 @@ export function Modal({
               />
             )}
           </div>
-        </form>
-        {selectedUserUid && (
-          <div className="w-50">
-            <ToDoList
-              myUid={uid}
-              theirUid={selectedUserUid}
-              handleAddingTask={handleAddingTask}
-              activeTaskCount={state.activeTaskCount}
-              _setActiveTaskCount={setActiveTaskCount}
-              photoURL={state.photoURL}
-            />
-          </div>
-        )}
+        </form> */}
+        {/* {selectedUserUid && ( */}
+        <div className="w-50 center">
+          <ToDoList
+            myUid={uid}
+            theirUid={selectedUserUid}
+            handleAddingTask={handleAddingTask}
+            activeTaskCount={state.activeTaskCount}
+            _setActiveTaskCount={setActiveTaskCount}
+            photoURL={state.photoURL}
+          />
+        </div>
+        {/* )} */}
       </div>
     </div>
   );
-}
+};
 Modal.propTypes = modalPropTypess;
 Modal.defaultProps = modalDefaultPropss;
+
+export default Modal;

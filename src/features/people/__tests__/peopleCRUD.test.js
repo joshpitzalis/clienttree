@@ -21,6 +21,7 @@ beforeEach(() => {
   cleanup();
   jest.restoreAllMocks();
 });
+
 describe('people CRUD', () => {
   const mockData = {
     setSelectedUser: jest.fn(),
@@ -295,6 +296,7 @@ describe('people CRUD', () => {
       expect(getByTestId('notesTextarea')).toHaveTextContent(exampleInput);
     });
     test.skip('should not let you enter a note in a new contact untill you have added a name', () => {});
+    test.skip('clear sidebar when you unmount the person box', () => {});
     test.skip('add a contact', () => {});
     test.skip('it should add teh new note to the beginning of the timeline not the end', () => {});
     test.skip('should  show saving when you start editing a textarea', () => {});
@@ -315,7 +317,7 @@ describe('people CRUD', () => {
   });
 
   describe('tasks', () => {
-    test('clicking on a users reveals their specific tasks list in the sidebar', () => {
+    it('clicking on a users reveals their specific tasks list in the sidebar', () => {
       // load mock Dashboard
       const { getByTestId, getByText } = render(<Dashboard userId="123" />, {
         initialState: {
@@ -377,10 +379,14 @@ describe('people CRUD', () => {
       // fill out the task
       // check it got add to the user
     });
-    test.only('throw confetti every time you complete a task', () => {});
-    test.only('you must only be able to select one user at a time,two users cannot be open atthe same time.', () => {});
-    test.only('add task to a new contact', () => {});
+    test.skip('conform ompletion before you complete a task', () => {});
+    test.skip('gve people the option  to delete a task if it is no longer relevant', () => {});
+    test.skip('throw confetti every time you complete a task', () => {});
+    test.skip('you must only be able to select one user at a time,two users cannot be open atthe same time.', () => {});
+    test.skip('add task to a new contact', () => {});
     test.skip('date task', () => {});
+
+    test.skip('when you complete a task it forces you to create next task', () => {});
   });
 
   describe('login page', () => {
@@ -428,6 +434,11 @@ describe('people CRUD', () => {
     test.skip('cannot delete if pending tasks', () => {});
   });
   describe('other', () => {
+    test.skip('mobile version', () => {});
+    test.skip('mobile landscape', () => {});
+    test.skip('tablet version', () => {});
+    test.skip('tablet landscape', () => {});
+    test.skip('widescreen', () => {});
     test.skip('add add people button to project dashboard', () => {});
     test.skip(' add people button on project dashboard disappears if people are there', () => {});
     test.skip(' if I add someone  from teh dashboar teh toggle is on by default', () => {});
@@ -435,7 +446,6 @@ describe('people CRUD', () => {
       const { getByLabelText } = render(<Person contact={mockData.contact} />);
       expect(getByLabelText(/Sign up to Client Tree/i)).toBeEnabled();
     });
-
     test.skip('private routes', () => {});
     test.skip('projects blank UI', () => {});
     test.skip('people blank UI', () => {});

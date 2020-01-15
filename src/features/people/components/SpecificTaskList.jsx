@@ -5,12 +5,14 @@ import { map } from 'rxjs/operators';
 import { useDispatch } from 'react-redux';
 import { ACTIVITY_COMPLETED } from '../networkConstants';
 import firebase from '../../../utils/firebase';
-import { Modal } from './ContactModal';
+import Modal from './ContactModal';
 import Portal from '../../../utils/Portal';
 import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
 
-/** @param {{myUid: string, contactSelected: string }} [Props] */
-
+/** @param {{
+ * myUid: string,
+ * contactSelected: string
+ * }} [Props] */
 export const SpecificTaskList = ({ myUid, contactSelected }) => {
   const [helpfulTasks, setHelpfulTasks] = React.useState([]);
 

@@ -84,7 +84,6 @@ export function Onboarding({ uid, children, contactSelected }) {
 
         {children}
         {/* <HelpfulTaskList myUid={uid} /> */}
-        {contactSelected && <OnePersonActivities />}
       </fieldset>
     </div>
   );
@@ -274,37 +273,3 @@ export function Onboarding({ uid, children, contactSelected }) {
 
 // AddBox.propTypes = addPropTypes;
 // AddBox.defaultProps = addDefaultProps;
-
-const PpropTypes = {};
-const PdefaultProps = {};
-
-const OnePersonActivities = () => {
-  const [state, setState] = React.useState({
-    activity: '',
-    date: '',
-  });
-
-  return (
-    <form className="ma0 pa0  mv4">
-      <Input
-        setState={setState}
-        state={state}
-        value={state.activity}
-        name="Add"
-        placeholder="Add an activity.."
-        className="mb0"
-      />
-      {/* <small className="text-3">Include Deadline</small> */}
-      {/* <Input
-        setState={setState}
-        state={state}
-        value={state.date}
-        name="date"
-        type="date"
-      /> */}
-    </form>
-  );
-};
-
-OnePersonActivities.propTypes = PpropTypes;
-OnePersonActivities.defaultProps = PdefaultProps;

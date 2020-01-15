@@ -40,7 +40,7 @@ export default class Portal extends Component {
 
     return ReactDOM.createPortal(
       <div
-        className="fixed vh-100 w-100 bg-black-50 flex items-center justify-center"
+        className="fixed vh-100 w-100 bg-black-50 flex items-center justify-center z-2"
         onClick={onClose}
         onKeyPress={onClose}
         role="button"

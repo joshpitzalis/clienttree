@@ -65,7 +65,7 @@ export const ToDoList = ({
   );
 
   return (
-    <div className="center pl4 pt2">
+    <div className="center pl4 pt2 pb4">
       <form
         className=""
         onSubmit={e => {
@@ -77,12 +77,12 @@ export const ToDoList = ({
       >
         <fieldset id="help" className="ba b--transparent ph0 mh0">
           <legend className="ph0 mh0 fw6 clip"></legend>
-          <div className="mb3">
+          <div className="mb2">
             <label className="db fw4 lh-copy f6 " htmlFor="task">
               {/* <span className="db b">Ways you can help this person</span> */}
               <input
-                className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2 mt4"
-                placeholder="Add a way you can help this person..."
+                className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa3 br2 mb2 mt4"
+                placeholder="Add a new task here..."
                 type="text"
                 name="task"
                 id="task"
@@ -91,10 +91,15 @@ export const ToDoList = ({
               />
             </label>
           </div>
+          <input
+            type="submit"
+            value="Create New Task"
+            className="btn2 w-100 pv3 bn pointer br1 grow b mb4"
+          />
         </fieldset>
       </form>
 
-      {helpfulTasks &&
+      {/* {helpfulTasks &&
         !helpfulTasks.filter(_task => !_task.dateCompleted).length && (
           <small className="red">
             We recommend always having atleast one active task per contact. That
@@ -103,18 +108,20 @@ export const ToDoList = ({
           </small>
         )}
 
-      {helpfulTasks &&
-        helpfulTasks.map(({ name, taskId, dateCompleted }) => (
-          <HelpfulTask
-            key={taskId}
-            taskId={taskId}
-            name={name}
-            dateCompleted={dateCompleted}
-            myUid={myUid}
-            theirUid={theirUid}
-            _handleDeleteTask={handleDeleteTask}
-          />
-        ))}
+      <div className="h5 overflow-y-auto bg-white br1 pa3 tl">
+        {helpfulTasks &&
+          helpfulTasks.map(({ name, taskId, dateCompleted }) => (
+            <HelpfulTask
+              key={taskId}
+              taskId={taskId}
+              name={name}
+              dateCompleted={dateCompleted}
+              myUid={myUid}
+              theirUid={theirUid}
+              _handleDeleteTask={handleDeleteTask}
+            />
+          ))}
+      </div> */}
     </div>
   );
 };
