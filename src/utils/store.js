@@ -1,8 +1,9 @@
 import { combineReducers } from 'redux';
-import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import { createEpicMiddleware, combineEpics } from 'redux-observable';
 import { catchError } from 'rxjs/operators';
 import { taskSlice } from '../features/people/taskSlice';
+import peopleSlice from '../features/people/peopleSlice';
 import {
   updateStatsDetails,
   projectCompleted,
@@ -57,6 +58,7 @@ export const rootReducer = combineReducers({
   tasks: taskSlice.reducer,
   user: userSlice.reducer,
   contacts: contactsSlice.reducer,
+  people: peopleSlice.reducer,
 });
 
 export const dependencies = {
@@ -69,13 +71,6 @@ export const dependencies = {
 
 export const epicMiddleware = createEpicMiddleware({
   dependencies,
-  // : {
-  //   decrementActivityStats,
-  //   incrementActivityStats,
-  //   track: window && window.analytics && window.analytics.track,
-  //   updateUserProfile,
-  //   setContact,
-  // },
 });
 
 export const middleware =

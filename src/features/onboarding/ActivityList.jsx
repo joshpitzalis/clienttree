@@ -10,24 +10,26 @@ import AvatarGenerator from 'react-avatar-generator';
 import { AutoComplete, Progress } from 'antd';
 import { collection } from 'rxfire/firestore';
 import { map, catchError } from 'rxjs/operators';
-import { HelpfulTaskList } from '../people/components/UniversalTaskList';
+// import { HelpfulTaskList } from '../people/components/UniversalTaskList';
 import { GettingStarted } from './GettingStarted';
 // import { USER_UPDATED } from '../people/networkConstants';
 import firebase from '../../utils/firebase';
 import { toast$ } from '../notifications/toast';
 import { Input } from '../people/components/Input';
 
-const propTypes = {
-  uid: PropTypes.string.isRequired,
-};
-const defaultProps = {};
+/** @param {{uid:string, children: JSX.Element, contactSelected: string}} [Props] */
 
-export function Onboarding({ uid }) {
+export function Onboarding({ uid, children, contactSelected }) {
   // const dispatch = useDispatch();
 
   // gets user onboarding details
   const onboarding = useSelector(
     store => store.user && store.user.onboarding && store.user.onboarding
+  );
+  const contact = useSelector(
+    store =>
+      store.contacts &&
+      store.contacts.find(person => person.uid === contactSelected)
   );
 
   // const setUser = async payload => {
@@ -45,18 +47,28 @@ export function Onboarding({ uid }) {
       ((1 + Object.values(onboarding).filter(_x => !!_x).length) / 7) * 100
     );
 
+  const sidebarTitle = (_contactSelected, _onboardingComplete) => {
+    if (_contactSelected) {
+      return contact.name;
+    }
+    if (_onboardingComplete) {
+      return 'Activities';
+    }
+    return 'Getting Started';
+  };
+
   return (
     <div className="pa4">
       <fieldset className="bn ma0 pa0">
-        {/* <details data-testid="detailBox">
+        <details data-testid="detailBox">
           <summary>
-            <legend className="fw7 mb2 dib" data-testid="toggleAddBox">
-              {onboardingComplete ? 'Activities' : 'Getting Started'}
+            <legend className="fw7 mb3 dib " data-testid="toggleAddBox">
+              {sidebarTitle(contactSelected, onboardingComplete)}
             </legend>
           </summary>
-          <AddBox setUser={setUser} userId={uid} />
-        </details> */}
-        <OnePersonActivities />
+          {/* <AddBox setUser={setUser} userId={uid} /> */}
+        </details>
+
         {!onboardingComplete && (
           <div className="mb4">
             <Progress percent={completePercentage} />
@@ -66,202 +78,202 @@ export function Onboarding({ uid }) {
               The tasks above will disappear once you complete all of them. Take
               a few days to complete them, they're not meant to be done all at
               once.
-            </small> */}
+            </small>  */}
           </div>
         )}
-        <HelpfulTaskList myUid={uid} />
+
+        {children}
+        {/* <HelpfulTaskList myUid={uid} /> */}
+        {contactSelected && <OnePersonActivities />}
       </fieldset>
     </div>
   );
 }
 
-Onboarding.propTypes = propTypes;
-Onboarding.defaultProps = defaultProps;
+// function reducer(draft, action) {
+//   const { type, payload } = action;
 
-function reducer(draft, action) {
-  const { type, payload } = action;
+//   switch (type) {
+//     case 'nameUpdated':
+//       draft.name = payload;
+//       return draft;
+//     case 'activityUpdated':
+//       draft.activity = payload;
+//       return draft;
+//     case 'formSubmitted':
+//       draft.activity = '';
+//       draft.name = '';
+//       return draft;
+//     default:
+//       return draft;
+//   }
+// }
 
-  switch (type) {
-    case 'nameUpdated':
-      draft.name = payload;
-      return draft;
-    case 'activityUpdated':
-      draft.activity = payload;
-      return draft;
-    case 'formSubmitted':
-      draft.activity = '';
-      draft.name = '';
-      return draft;
-    default:
-      return draft;
-  }
-}
+// const addPropTypes = {
+//   setUser: PropTypes.func.isRequired,
+//   userId: PropTypes.string.isRequired,
+// };
+// const addDefaultProps = {};
 
-const addPropTypes = {
-  setUser: PropTypes.func.isRequired,
-  userId: PropTypes.string.isRequired,
-};
-const addDefaultProps = {};
+// export function AddBox({ setUser, userId }) {
+//   const [state, dispatch] = useImmerReducer(reducer, {
+//     name: '',
+//     activity: '',
+//   });
+//   const { name, activity } = state;
 
-export function AddBox({ setUser, userId }) {
-  const [state, dispatch] = useImmerReducer(reducer, {
-    name: '',
-    activity: '',
-  });
-  const { name, activity } = state;
+//   const avatarRef = React.useRef(null);
 
-  const avatarRef = React.useRef(null);
+//   const [allContacts, setAllContacts] = React.useState([]);
 
-  const [allContacts, setAllContacts] = React.useState([]);
+//   React.useEffect(() => {
+//     const getAllContacts = collection(
+//       firebase
+//         .firestore()
+//         .collection('users')
+//         .doc(userId)
+//         .collection('contacts')
+//     )
+//       .pipe(
+//         map(docs =>
+//           docs.map(d => {
+//             const { name: text, photoURL, uid: value } = d.data();
+//             const item = {
+//               value,
+//               text,
+//               photoURL,
+//             };
 
-  React.useEffect(() => {
-    const getAllContacts = collection(
-      firebase
-        .firestore()
-        .collection('users')
-        .doc(userId)
-        .collection('contacts')
-    )
-      .pipe(
-        map(docs =>
-          docs.map(d => {
-            const { name: text, photoURL, uid: value } = d.data();
-            const item = {
-              value,
-              text,
-              photoURL,
-            };
+//             return item;
+//           })
+//         ),
+//         catchError(error =>
+//           toast$.next({
+//             type: 'ERROR',
+//             message: error.message || error,
+//           })
+//         )
+//       )
+//       .subscribe(network => setAllContacts(network));
 
-            return item;
-          })
-        ),
-        catchError(error =>
-          toast$.next({
-            type: 'ERROR',
-            message: error.message || error,
-          })
-        )
-      )
-      .subscribe(network => setAllContacts(network));
+//     return () => getAllContacts.unsubscribe();
+//   }, [userId]);
 
-    return () => getAllContacts.unsubscribe();
-  }, [userId]);
+//   const [contacts, setContacts] = React.useState([]);
 
-  const [contacts, setContacts] = React.useState([]);
+//   const [contactId, setContactId] = React.useState('');
 
-  const [contactId, setContactId] = React.useState('');
+//   return (
+//     <form
+//       className="center mw5 mw6-ns br3 hidden ba b--black-10 mv4"
+//       data-testid="addBox"
+//       onSubmit={async e => {
+//         e.preventDefault();
+//         const imgString = await avatarRef.current.getImageData();
 
-  return (
-    <form
-      className="center mw5 mw6-ns br3 hidden ba b--black-10 mv4"
-      data-testid="addBox"
-      onSubmit={async e => {
-        e.preventDefault();
-        const imgString = await avatarRef.current.getImageData();
+//         setUser({
+//           userId,
+//           name,
+//           summary: '',
+//           lastContacted: '',
+//           taskName: activity,
+//           imgString,
+//           // if existing user
+//           photoURL: '',
+//           contactId,
+//           uid: '',
+//         });
 
-        setUser({
-          userId,
-          name,
-          summary: '',
-          lastContacted: '',
-          taskName: activity,
-          imgString,
-          // if existing user
-          photoURL: '',
-          contactId,
-          uid: '',
-        });
+//         dispatch({
+//           type: 'formSubmitted',
+//         });
+//       }}
+//     >
+//       <h1 className="f4 bg-near-white br3 br--top black-60 mv0 pv2 ph3 flex items-center">
+//         <AvatarGenerator
+//           ref={avatarRef}
+//           height="25"
+//           width="25"
+//           colors={['#333', '#222', '#ccc']}
+//         />{' '}
+//         Add an Activity
+//       </h1>
 
-        dispatch({
-          type: 'formSubmitted',
-        });
-      }}
-    >
-      <h1 className="f4 bg-near-white br3 br--top black-60 mv0 pv2 ph3 flex items-center">
-        <AvatarGenerator
-          ref={avatarRef}
-          height="25"
-          width="25"
-          colors={['#333', '#222', '#ccc']}
-        />{' '}
-        Add an Activity
-      </h1>
+//       <div className="pa3 bt b--black-10">
+//         {/* <label className="db fw4 lh-copy f6 " htmlFor="name"> */}
+//         {/* <span className="b">Name</span> */}
+//         <AutoComplete
+//           dataSource={contacts}
+//           id="name"
+//           name="name"
+//           className="b  input-reset  bg-transparent center br2 b--black-20"
+//           value={name}
+//           onChange={payload =>
+//             dispatch({
+//               type: 'nameUpdated',
+//               payload,
+//             })
+//           }
+//           onSelect={(id, opt) => {
+//             dispatch({
+//               type: 'nameUpdated',
+//               payload: opt.props.children,
+//             });
+//             setContactId(id);
+//           }}
+//           onSearch={searchText =>
+//             setContacts(
+//               !searchText
+//                 ? []
+//                 : allContacts.filter(
+//                     item =>
+//                       item.text &&
+//                       item.text.toLowerCase().includes(searchText.toLowerCase())
+//                   )
+//             )
+//           }
+//           placeholder="Name..."
+//         ></AutoComplete>
+//         {/* <input
+//             className="b pa2 input-reset ba bg-transparent center br2 b--black-20"
+//             placeholder="Name..."
+//             type="text"
+//             name="name"
+//             id="name"
+//             value={name}
+//             onChange={e =>
+//               dispatch({
+//                 type: 'nameUpdated',
+//                 payload: e.target.value,
+//               })
+//             }
+//           /> */}
+//         {/* </label> */}
+//         <label className="db fw4 lh-copy f6 mv3" htmlFor="activity">
+//           {/* <span className="b">Activity</span> */}
+//           <input
+//             className="b pa2 input-reset ba bg-transparent center br2 b--black-20"
+//             placeholder="Activity..."
+//             type="text"
+//             name="activity"
+//             id="activity"
+//             value={activity}
+//             onChange={e =>
+//               dispatch({
+//                 type: 'activityUpdated',
+//                 payload: e.target.value,
+//               })
+//             }
+//           />
+//         </label>
+//         <input type="submit" value="submit" data-testid="addBoxSubmitButton" />
+//       </div>
+//     </form>
+//   );
+// }
 
-      <div className="pa3 bt b--black-10">
-        {/* <label className="db fw4 lh-copy f6 " htmlFor="name"> */}
-        {/* <span className="b">Name</span> */}
-        <AutoComplete
-          dataSource={contacts}
-          id="name"
-          name="name"
-          className="b  input-reset  bg-transparent center br2 b--black-20"
-          value={name}
-          onChange={payload =>
-            dispatch({
-              type: 'nameUpdated',
-              payload,
-            })
-          }
-          onSelect={(id, opt) => {
-            dispatch({
-              type: 'nameUpdated',
-              payload: opt.props.children,
-            });
-            setContactId(id);
-          }}
-          onSearch={searchText =>
-            setContacts(
-              !searchText
-                ? []
-                : allContacts.filter(
-                    item =>
-                      item.text &&
-                      item.text.toLowerCase().includes(searchText.toLowerCase())
-                  )
-            )
-          }
-          placeholder="Name..."
-        ></AutoComplete>
-        {/* <input
-            className="b pa2 input-reset ba bg-transparent center br2 b--black-20"
-            placeholder="Name..."
-            type="text"
-            name="name"
-            id="name"
-            value={name}
-            onChange={e =>
-              dispatch({
-                type: 'nameUpdated',
-                payload: e.target.value,
-              })
-            }
-          /> */}
-        {/* </label> */}
-        <label className="db fw4 lh-copy f6 mv3" htmlFor="activity">
-          {/* <span className="b">Activity</span> */}
-          <input
-            className="b pa2 input-reset ba bg-transparent center br2 b--black-20"
-            placeholder="Activity..."
-            type="text"
-            name="activity"
-            id="activity"
-            value={activity}
-            onChange={e =>
-              dispatch({
-                type: 'activityUpdated',
-                payload: e.target.value,
-              })
-            }
-          />
-        </label>
-        <input type="submit" value="submit" data-testid="addBoxSubmitButton" />
-      </div>
-    </form>
-  );
-}
-
-AddBox.propTypes = addPropTypes;
-AddBox.defaultProps = addDefaultProps;
+// AddBox.propTypes = addPropTypes;
+// AddBox.defaultProps = addDefaultProps;
 
 const PpropTypes = {};
 const PdefaultProps = {};
@@ -273,22 +285,23 @@ const OnePersonActivities = () => {
   });
 
   return (
-    <form className="ma0 pa0 bb b--black-10 mb4">
+    <form className="ma0 pa0  mv4">
       <Input
         setState={setState}
         state={state}
         value={state.activity}
-        name="activity"
+        name="Add"
         placeholder="Add an activity.."
         className="mb0"
       />
-      <Input
+      {/* <small className="text-3">Include Deadline</small> */}
+      {/* <Input
         setState={setState}
         state={state}
         value={state.date}
         name="date"
         type="date"
-      />
+      /> */}
     </form>
   );
 };

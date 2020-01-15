@@ -6,8 +6,8 @@ import { map, catchError, switchMap } from 'rxjs/operators';
 import { of, merge } from 'rxjs';
 import { doc, collection } from 'rxfire/firestore';
 // import { PrivateRoute } from '../features/auth/PrivateRoute';
-import { useDispatch } from 'react-redux';
-import { createSlice } from 'redux-starter-kit';
+import { useDispatch, useSelector } from 'react-redux';
+import { createSlice } from '@reduxjs/toolkit';
 import {
   NavPanel,
   NavLink,
@@ -15,6 +15,8 @@ import {
   Tabs,
   TabItem,
 } from '@duik/it';
+import { HelpfulTaskList as UniversalTaskList } from '../features/people/components/UniversalTaskList';
+import { SpecificTaskList } from '../features/people/components/SpecificTaskList';
 import People from '../images/People';
 import Home from '../images/Home';
 import firebase from '../utils/firebase';
@@ -40,9 +42,6 @@ export const contactsSlice = createSlice({
     setContacts: (state, action) => action.payload,
   },
 });
-
-const propTypes = { userId: PropTypes.string };
-const defaultProps = { userId: '' };
 
 export const fetchUserDataEpic = (
   action$
@@ -78,7 +77,13 @@ export const fetchUserDataEpic = (
         ).pipe(
           map(docs => {
             const helpfulTasks = docs.map(d => d.data());
-            return taskSlice.actions.setTasks(helpfulTasks);
+            const serializedTasks = helpfulTasks.map(_task => ({
+              ..._task,
+              dateCreated: _task.dateCreated && _task.dateCreated.nanoseconds,
+              dateCompleted:
+                _task.dateCompleted && _task.dateCompleted.nanoseconds,
+            }));
+            return taskSlice.actions.setTasks(serializedTasks);
           }),
           catchError(error =>
             of({
@@ -114,9 +119,12 @@ export const fetchUserDataEpic = (
     })
   );
 
+/** @param {{userId: string}} [Props] */
 export function Dashboard({ userId }) {
   const dispatch = useDispatch();
-  // const userState = useSelector(store => store.user);
+  const contactSelected = useSelector(store => store.people.selectedContact);
+
+  console.log({ contactSelected });
 
   React.useEffect(() => {
     if (userId) {
@@ -150,7 +158,18 @@ export function Dashboard({ userId }) {
         </main>
         <aside className="dn dib-ns">
           <NavPanel onRight className="bn">
-            <Onboarding uid={userId} />
+            <Onboarding uid={userId} contactSelected={contactSelected}>
+              <>
+                {contactSelected ? (
+                  <SpecificTaskList
+                    myUid={userId}
+                    contactSelected={contactSelected}
+                  />
+                ) : (
+                  <UniversalTaskList myUid={userId} />
+                )}
+              </>
+            </Onboarding>
             <p className="tc f6 white ma0">
               Version {process.env.REACT_APP_VERSION}
             </p>
@@ -160,9 +179,6 @@ export function Dashboard({ userId }) {
     </ContainerHorizontal>
   );
 }
-
-Dashboard.propTypes = propTypes;
-Dashboard.defaultProps = defaultProps;
 
 const MobileNav = ({ userId }) => {
   const { pathname } = useLocation();
@@ -180,7 +196,7 @@ const MobileNav = ({ userId }) => {
         to={`/user/${userId}/network`}
         className={`${pathname === `/user/${userId}/network` &&
           'active'}  tracked w-50 tc`}
-        data-testid="networkPage"
+        data-testid="networkTab"
       >
         <People className="o-75 h1" /> People
       </TabItem>

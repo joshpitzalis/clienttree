@@ -19,6 +19,14 @@ const personDefaultPropss = {
   contactId: '',
 };
 
+/**
+ * @param {{
+  contactId: string,
+  onClose: function,
+  handleTracking : function,
+}}
+*/
+
 export const PersonModal = ({
   contactId,
   onClose,

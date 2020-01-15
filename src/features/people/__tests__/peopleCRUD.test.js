@@ -9,6 +9,8 @@ import { Network } from '../Network';
 import { updateContactEpic } from '../networkEpics';
 import { setContact, setProfileImage, handleTracking } from '../peopleAPI';
 
+import { Dashboard } from '../../../pages/Dashboard';
+
 jest.mock('../peopleAPI', () => ({
   setContact: jest.fn(),
   setProfileImage: jest.fn().mockResolvedValueOnce('photoURL'),
@@ -25,7 +27,7 @@ describe('people CRUD', () => {
     setVisibility: jest.fn(),
     contact: {
       uid: '123',
-      lastContacted: false,
+      lastContacted: 0,
       activeTaskCount: 3,
       name: 'name name',
       photoURL: 'string',
@@ -130,12 +132,7 @@ describe('people CRUD', () => {
     });
     it('add name', async () => {
       const { getByTestId, getByPlaceholderText } = render(
-        <Person
-          setSelectedUser={mockData.setSelectedUser}
-          setVisibility={mockData.setVisibility}
-          contact={mockData.contact}
-          selectedUser={mockData.selectedUser}
-        />,
+        <Person contact={mockData.contact} />,
         {
           initialState: {
             user: {
@@ -148,7 +145,7 @@ describe('people CRUD', () => {
       userEvent.click(getByTestId('openBox'));
       userEvent.type(getByPlaceholderText('Their name...'), 'Mr. Happy');
       // assert the text shows up first
-      expect(getByTestId('contactName').value).toEqual('Mr. Happy');
+      expect(getByTestId('contactName')).toHaveTextContent('Mr. Happy');
       await wait(() => {
         expect(setContact).toHaveBeenCalled();
         expect(setContact).toHaveBeenCalledWith('123', {
@@ -158,14 +155,10 @@ describe('people CRUD', () => {
       });
     });
     it('no blank names', async () => {
+      // @ts-ignore
       setContact.mockReset();
       const { getByTestId, getByPlaceholderText } = render(
-        <Person
-          setSelectedUser={mockData.setSelectedUser}
-          setVisibility={mockData.setVisibility}
-          contact={mockData.contact}
-          selectedUser={mockData.selectedUser}
-        />,
+        <Person contact={mockData.contact} />,
         {
           initialState: {
             user: {
@@ -180,7 +173,7 @@ describe('people CRUD', () => {
       userEvent.type(getByTestId('contactName'), ' ');
 
       // assert the text shows up first
-      expect(getByTestId('contactName').value).toEqual(' ');
+      expect(getByTestId('contactName')).toHaveTextContent(' ');
       await wait(() => {
         expect(setContact).toHaveBeenCalled();
         expect(setContact).toHaveBeenCalledWith('123', {
@@ -191,26 +184,14 @@ describe('people CRUD', () => {
     });
     it('generated image by default', () => {
       const { container, getByTestId } = render(
-        <Person
-          setSelectedUser={mockData.setSelectedUser}
-          setVisibility={mockData.setVisibility}
-          contact={mockData.contact}
-          selectedUser={mockData.selectedUser}
-        />
+        <Person contact={mockData.contact} />
       );
       userEvent.click(getByTestId('openBox'));
       const canvas = container.querySelector('canvas');
       expect(getByTestId('contactModal')).toContainElement(canvas);
     });
     it('errors if photo file is not jpg or png', () => {
-      const { getByTestId } = render(
-        <Person
-          setSelectedUser={mockData.setSelectedUser}
-          setVisibility={mockData.setVisibility}
-          contact={mockData.contact}
-          selectedUser={mockData.selectedUser}
-        />
-      );
+      const { getByTestId } = render(<Person contact={mockData.contact} />);
 
       const file = new File(['(⌐□_□)'], 'chucknorris.png', {
         type: 'image/xxx',
@@ -226,14 +207,7 @@ describe('people CRUD', () => {
       );
     });
     it('errors if photo file is too large', () => {
-      const { getByTestId } = render(
-        <Person
-          setSelectedUser={mockData.setSelectedUser}
-          setVisibility={mockData.setVisibility}
-          contact={mockData.contact}
-          selectedUser={mockData.selectedUser}
-        />
-      );
+      const { getByTestId } = render(<Person contact={mockData.contact} />);
 
       function MockFile(
         name = 'mock.png',
@@ -248,10 +222,11 @@ describe('people CRUD', () => {
           return output;
         }
 
+        /** @type {{lastModifiedDate: Date, name:string}} */
+        // @ts-ignore
         const blob = new Blob([range(size)], { type: mimeType });
         blob.lastModifiedDate = new Date();
         blob.name = name;
-
         return blob;
       }
       const file = MockFile('mock.png', 5000001);
@@ -265,14 +240,7 @@ describe('people CRUD', () => {
       );
     });
     it('lets you add a profile photo', async () => {
-      const { getByTestId } = render(
-        <Person
-          setSelectedUser={mockData.setSelectedUser}
-          setVisibility={mockData.setVisibility}
-          contact={mockData.contact}
-          selectedUser={mockData.selectedUser}
-        />
-      );
+      const { getByTestId } = render(<Person contact={mockData.contact} />);
 
       const file = new File(['(⌐□_□)'], 'chucknorris.png', {
         type: 'image/png',
@@ -287,30 +255,22 @@ describe('people CRUD', () => {
       });
     });
     it('lets me add people to dashboard', () => {
-      const { getByTestId } = render(
-        <Person
-          setSelectedUser={mockData.setSelectedUser}
-          setVisibility={mockData.setVisibility}
-          contact={mockData.contact}
-          selectedUser={mockData.selectedUser}
-        />,
-        {
-          initialState: {
-            user: {
-              userId: 'userId123',
-            },
-            contacts: [
-              {
-                uid: '123',
-                lastContacted: false,
-                activeTaskCount: 3,
-                name: 'name',
-                photoURL: 'photo',
-              },
-            ],
+      const { getByTestId } = render(<Person contact={mockData.contact} />, {
+        initialState: {
+          user: {
+            userId: 'userId123',
           },
-        }
-      );
+          contacts: [
+            {
+              uid: '123',
+              lastContacted: false,
+              activeTaskCount: 3,
+              name: 'name',
+              photoURL: 'photo',
+            },
+          ],
+        },
+      });
       userEvent.click(getByTestId('openBox'));
       userEvent.click(getByTestId('dashSwitch'));
       expect(handleTracking).toHaveBeenCalled();
@@ -322,25 +282,20 @@ describe('people CRUD', () => {
         'photo'
       );
     });
-    it('add a note', async () => {
+    it('edit notes on an existing contact', async () => {
       const exampleInput = 'lalala';
       const { getByTestId, getByPlaceholderText } = render(
-        <Person
-          setSelectedUser={mockData.setSelectedUser}
-          setVisibility={mockData.setVisibility}
-          selectedUser={mockData.selectedUser}
-          contact={mockData.contact}
-        />
+        <Person contact={mockData.contact} />
       );
       userEvent.click(getByTestId('openBox'));
       await userEvent.type(
         getByPlaceholderText(/click to edit/i),
         exampleInput
       );
-
-      expect(getByTestId('notesTextarea').value).toEqual(exampleInput);
+      expect(getByTestId('notesTextarea')).toHaveTextContent(exampleInput);
     });
     test.skip('should not let you enter a note in a new contact untill you have added a name', () => {});
+    test.skip('add a contact', () => {});
     test.skip('it should add teh new note to the beginning of the timeline not the end', () => {});
     test.skip('should  show saving when you start editing a textarea', () => {});
     test.skip('close button should say saving when  it is saving', () => {});
@@ -351,13 +306,86 @@ describe('people CRUD', () => {
     test.skip('date text update', () => {});
     test.skip('if no date update then it defaults to today', () => {});
 
-    test.skip('add task', () => {});
-    test.skip('date task', () => {});
-
     test.skip('show saving... and saved', () => {});
     test.skip('add a loading and null state for contacts in network page', () => {});
 
     test.skip('upload image, then update name should preserve both changes', () => {});
+
+    test.skip('restore space between vertical components on dasgbotd and people page', () => {});
+  });
+
+  describe('tasks', () => {
+    test('clicking on a users reveals their specific tasks list in the sidebar', () => {
+      // load mock Dashboard
+      const { getByTestId, getByText } = render(<Dashboard userId="123" />, {
+        initialState: {
+          contacts: [
+            {
+              activeTaskCount: 1,
+              lastContacted: null,
+              name: 'testUser',
+              photoURL: '',
+              summary: '',
+              uid: 'WvUe4wawAWMg6fk88Gzb',
+            },
+          ],
+        },
+      });
+
+      userEvent.click(getByTestId('networkPage'));
+      getByTestId('networkTab');
+      // establish generic sidebar
+      getByTestId('universalTaskList');
+
+      // click on contact
+      userEvent.click(getByText('testUser'));
+      // establish specific sidebar
+      getByTestId('specificTaskList');
+      // fill out the task
+      // check it got add to the user
+    });
+    test.only('add task to an existing contact', () => {
+      // load mock Dashboard
+      const { getByTestId, debug, getByText } = render(
+        <Dashboard userId="123" />,
+        {
+          initialState: {
+            contacts: [
+              {
+                activeTaskCount: 1,
+                lastContacted: null,
+                name: 'testUser',
+                photoURL:
+                  'https://firebasestorage.googleapis.com/v0/b/client-tree-dev.appspot.com/o/contacts%2FWvUe4wawAWMg6fk88Gzb.png?alt=media&token=10b9a175-73df-447e-851f-a04d4418a9cc',
+                summary: '',
+                uid: 'WvUe4wawAWMg6fk88Gzb',
+              },
+            ],
+          },
+        }
+      );
+
+      userEvent.click(getByTestId('networkPage'));
+      getByTestId('networkTab');
+      // establish generic sidebar
+      getByTestId('universalTaskList');
+      debug();
+      // click on contact
+      userEvent.click(getByText('testUser'));
+      // establish specific sidebar
+      getByTestId('specificTaskList');
+      // fill out the task
+      // check it got add to the user
+    });
+    test.only('throw confetti every time you complete a task', () => {});
+    test.only('you must only be able to select one user at a time,two users cannot be open atthe same time.', () => {});
+    test.only('add task to a new contact', () => {});
+    test.skip('date task', () => {});
+  });
+
+  describe('login page', () => {
+    test.skip('white text input', () => {});
+    test.skip('button back ground', () => {});
   });
 
   describe('update someone on the system', () => {
@@ -404,13 +432,7 @@ describe('people CRUD', () => {
     test.skip(' add people button on project dashboard disappears if people are there', () => {});
     test.skip(' if I add someone  from teh dashboar teh toggle is on by default', () => {});
     test.skip('limit the number of task nibs to 5 or so', () => {
-      const { getByLabelText } = render(
-        <Person
-          setSelectedUser={mockData.setSelectedUser}
-          setVisibility={mockData.setVisibility}
-          contact={mockData.contact}
-        />
-      );
+      const { getByLabelText } = render(<Person contact={mockData.contact} />);
       expect(getByLabelText(/Sign up to Client Tree/i)).toBeEnabled();
     });
 
@@ -427,5 +449,7 @@ describe('people CRUD', () => {
     test.skip('firebase rules', () => {});
     test.skip('cypress CI', () => {});
     test.skip('test coverage in CI', () => {});
+
+    test.skip('dont show dashboard unless there is someone on it.', () => {});
   });
 });

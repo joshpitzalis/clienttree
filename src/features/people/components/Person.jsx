@@ -1,42 +1,54 @@
 import React from 'react';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import fromUnixTime from 'date-fns/fromUnixTime';
-import PropTypes from 'prop-types';
 import { useMachine } from '@xstate/react';
 import { Machine } from 'xstate';
+import { useDispatch } from 'react-redux';
 import { PersonModal } from './PersonBox';
 
-const peopleMachine = Machine(
-  {
-    id: 'people',
-    initial: 'closed',
-    states: {
-      closed: {
-        on: {
-          OPENED: 'opened',
-        },
+const peopleMachine = Machine({
+  id: 'people',
+  initial: 'closed',
+  states: {
+    closed: {
+      on: {
+        OPENED: { target: 'opened', actions: ['setSelectedUser'] },
       },
-      opened: {
-        on: {
-          CLOSED: 'closed',
-        },
+    },
+    opened: {
+      on: {
+        CLOSED: { target: 'closed', actions: ['clearSelectedUser'] },
       },
     },
   },
-  {
-    actions: {},
-  }
-);
+});
 
+/**
+ * @param {Date} timestamp
+ */
 const isValidDate = timestamp => new Date(timestamp).getTime() > 0;
 
-export const Person = ({
-  // setSelectedUser,
-  // setVisibility,
-  contact,
-  // selectedUser,
-}) => {
-  const [current, send] = useMachine(peopleMachine);
+/**
+ * @param {{ 
+ * contact: {
+      uid: String,
+      lastContacted: Number,
+      activeTaskCount: Number,
+      name: String,
+      photoURL: String,
+    }
+  }} [Props] There used to be more parameters thats why it is still shaped as an object
+*/
+export const Person = ({ contact }) => {
+  const dispatch = useDispatch();
+
+  const [current, send] = useMachine(peopleMachine, {
+    actions: {
+      setSelectedUser: (ctx, event) =>
+        dispatch({ type: 'people/setSelectedUser', payload: event.payload }),
+      clearSelectedUser: () => dispatch({ type: 'people/clearSelectedUser' }),
+    },
+  });
 
   switch (current.value) {
     case 'closed':
@@ -44,9 +56,11 @@ export const Person = ({
         <li key={contact.uid} className="mb3" data-testid="closedPeopleBox">
           <div
             className="flex items-center lh-copy pa3 ph0-l bb b--black-10 pointer bg-white"
-            onClick={() => send({ type: 'OPENED' })}
+            onClick={() => {
+              send({ type: 'OPENED', payload: contact.uid });
+            }}
             tabIndex={-1}
-            onKeyPress={() => send({ type: 'OPENED' })}
+            onKeyPress={() => send({ type: 'OPENED', payload: contact.uid })}
             role="button"
             data-testid="openBox"
           >
@@ -73,7 +87,7 @@ export const Person = ({
               {!!contact.activeTaskCount &&
                 Array(contact.activeTaskCount)
                   .fill(null)
-                  .map((count, index) => (
+                  .map((_, index) => (
                     <div
                       key={`${index}+${+new Date()}`}
                       className="taskStyle "
@@ -97,26 +111,3 @@ export const Person = ({
     // tk throw an error here
   }
 };
-
-Person.propTypes = {
-  // setVisibility: PropTypes.func.isRequired,
-  // setSelectedUser: PropTypes.func.isRequired,
-  contact: PropTypes.shape({
-    uid: PropTypes.string,
-    lastContacted: PropTypes.bool,
-    activeTaskCount: PropTypes.number,
-    name: PropTypes.string,
-    photoURL: PropTypes.string,
-  }).isRequired,
-  // selectedUser: PropTypes.oneOfType([
-  //   PropTypes.string,
-  //   PropTypes.shape({
-  //     uid: PropTypes.string,
-  //     lastContacted: PropTypes.bool,
-  //     activeTaskCount: PropTypes.number,
-  //     name: PropTypes.string,
-  //     photoURL: PropTypes.string,
-  //   }),
-  // ]),
-};
-Person.defaultProps = {};

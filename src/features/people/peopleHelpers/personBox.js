@@ -3,6 +3,9 @@ import React from 'react';
 import { toast$ } from '../../notifications/toast';
 import { setProfileImage } from '../peopleAPI';
 
+/**
+ * @param {string} contactId - contact Id of selected user
+ */
 export const usePersonForm = contactId => {
   const dispatch = useDispatch();
   const contact = useSelector(store =>

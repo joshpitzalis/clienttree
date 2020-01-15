@@ -9,33 +9,32 @@ import { Modal } from './ContactModal';
 import Portal from '../../../utils/Portal';
 import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
 
-const helpfulPropTypes = {
-  myUid: PropTypes.string.isRequired,
-};
-const helpfulDefaultProps = {};
+/** @param {{myUid: string, contactSelected: string }} [Props] */
 
-export const HelpfulTaskList = ({ myUid }) => {
+export const SpecificTaskList = ({ myUid, contactSelected }) => {
   const [helpfulTasks, setHelpfulTasks] = React.useState([]);
 
   React.useEffect(() => {
     const subscription = collection(
       firebase
         .firestore()
-        .collectionGroup('helpfulTasks')
-        .where('connectedTo', '==', myUid)
-        .where('dateCompleted', '==', null)
+        .collection('users')
+        .doc(myUid)
+        .collection('contacts')
+        .doc(contactSelected)
+        .collection('helpfulTasks')
     )
       .pipe(map(docs => docs.map(d => d.data())))
       .subscribe(tasks => tasks && setHelpfulTasks(tasks));
     return () => subscription.unsubscribe();
-  }, [myUid]);
+  }, [contactSelected, myUid]);
 
   const [visible, setVisibility] = React.useState(false);
 
   const [selectedUser, setSelectedUser] = React.useState('');
 
   return (
-    <div data-testid="universalTaskList">
+    <div data-testid="specificTaskList">
       {visible && (
         <Portal
           onClose={() => {
@@ -75,9 +74,6 @@ export const HelpfulTaskList = ({ myUid }) => {
     </div>
   );
 };
-
-HelpfulTaskList.propTypes = helpfulPropTypes;
-HelpfulTaskList.defaultProps = helpfulDefaultProps;
 
 const propTypes = {
   taskId: PropTypes.string.isRequired,

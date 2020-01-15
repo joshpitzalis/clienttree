@@ -21,6 +21,14 @@ const networkDefaultProps = {};
 export function Network({ uid }) {
   const [visible, setVisibility] = React.useState(false);
   const [selectedUser, setSelectedUser] = React.useState('');
+
+  /** @type {[{
+    uid: string,
+    lastContacted: number,
+    activeTaskCount: number,
+    name: string,
+    photoURL: string
+  }]} contact */
   const contacts = useSelector(store => store.contacts);
 
   return (
@@ -66,15 +74,7 @@ export function Network({ uid }) {
           {contacts &&
             contacts.map(
               contact =>
-                contact.uid && (
-                  <Person
-                    key={contact.uid}
-                    setSelectedUser={setSelectedUser}
-                    setVisibility={setVisibility}
-                    contact={contact}
-                    selectedUser={selectedUser}
-                  />
-                )
+                contact.uid && <Person key={contact.uid} contact={contact} />
             )}
         </ul>
       </>
