@@ -314,9 +314,11 @@ describe('people CRUD', () => {
     test.skip('upload image, then update name should preserve both changes', () => {});
 
     test.skip('restore space between vertical components on dasgbotd and people page', () => {});
+    test.skip('click outside calendar in notes should close calendar', () => {});
+    test.skip('changing date should change the date', () => {});
   });
 
-  describe('tasks', () => {
+  describe('reminder', () => {
     it('clicking on a users reveals their specific tasks list in the sidebar', () => {
       // load mock Dashboard
       const { getByTestId, getByText } = render(<Dashboard userId="123" />, {
@@ -346,32 +348,29 @@ describe('people CRUD', () => {
       // fill out the task
       // check it got add to the user
     });
-    test.only('add task to an existing contact', () => {
+    test('add reminder to an existing contact', () => {
       // load mock Dashboard
-      const { getByTestId, debug, getByText } = render(
-        <Dashboard userId="123" />,
-        {
-          initialState: {
-            contacts: [
-              {
-                activeTaskCount: 1,
-                lastContacted: null,
-                name: 'testUser',
-                photoURL:
-                  'https://firebasestorage.googleapis.com/v0/b/client-tree-dev.appspot.com/o/contacts%2FWvUe4wawAWMg6fk88Gzb.png?alt=media&token=10b9a175-73df-447e-851f-a04d4418a9cc',
-                summary: '',
-                uid: 'WvUe4wawAWMg6fk88Gzb',
-              },
-            ],
-          },
-        }
-      );
+      const { getByTestId, getByText } = render(<Dashboard userId="123" />, {
+        initialState: {
+          contacts: [
+            {
+              activeTaskCount: 1,
+              lastContacted: null,
+              name: 'testUser',
+              photoURL:
+                'https://firebasestorage.googleapis.com/v0/b/client-tree-dev.appspot.com/o/contacts%2FWvUe4wawAWMg6fk88Gzb.png?alt=media&token=10b9a175-73df-447e-851f-a04d4418a9cc',
+              summary: '',
+              uid: 'WvUe4wawAWMg6fk88Gzb',
+            },
+          ],
+        },
+      });
 
       userEvent.click(getByTestId('networkPage'));
       getByTestId('networkTab');
       // establish generic sidebar
       getByTestId('universalTaskList');
-      debug();
+
       // click on contact
       userEvent.click(getByText('testUser'));
       // establish specific sidebar
@@ -379,14 +378,25 @@ describe('people CRUD', () => {
       // fill out the task
       // check it got add to the user
     });
-    test.skip('conform ompletion before you complete a task', () => {});
+    test.skip('conform ompletion before you complete a reminder', () => {});
     test.skip('gve people the option  to delete a task if it is no longer relevant', () => {});
     test.skip('throw confetti every time you complete a task', () => {});
     test.skip('you must only be able to select one user at a time,two users cannot be open atthe same time.', () => {});
     test.skip('add task to a new contact', () => {});
     test.skip('date task', () => {});
-
+    test.skip('if you have a name then pre fill the name field', () => {});
     test.skip('when you complete a task it forces you to create next task', () => {});
+    test.skip('default reminder date is next week ', () => {});
+    test.skip('there is an edit reminder to edit an existing reminder ', () => {});
+    test.skip('if you dont add a new task it doesn;t complete the previous task, if its teh last task ', () => {});
+    test.skip('editing an existing reminder lets you delete the reminder altogether ', () => {});
+  });
+
+  describe('email reminders', () => {
+    test.skip('reminder triggers an email', () => {});
+    test.skip('email is cancelled if reminder is cancelled ', () => {});
+    test.skip('email is cancelled if reminder is completed ', () => {});
+    test.skip('email is cancelled if date is changed', () => {});
   });
 
   describe('login page', () => {

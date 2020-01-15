@@ -120,8 +120,8 @@ export const PersonModal = ({
             description={
               <span className="text3">
                 {state.tracked
-                  ? 'This person is on your dashboard'
-                  : 'This person is not on your Dashboard'}
+                  ? 'You currently work with this person'
+                  : 'You do not work with this person'}
               </span>
             }
             checked={state.tracked || null}
@@ -137,7 +137,7 @@ export const PersonModal = ({
             data-testid="dashSwitch"
             label={
               <b className="text1">
-                {state.tracked ? 'Remove from Dashbord' : 'Add to Dashboard'}
+                {state.tracked ? 'Remove from Workboard' : 'Add to Workboard'}
               </b>
             }
           />

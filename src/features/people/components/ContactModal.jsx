@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import AvatarGenerator from 'react-avatar-generator';
 import { doc } from 'rxfire/firestore';
 import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
 import { NetworkContext } from '../NetworkContext';
@@ -13,9 +12,7 @@ import {
   handleTracking,
 } from '../peopleAPI';
 import firebase from '../../../utils/firebase';
-import { ToDoList } from './ToDoList';
-import { ConfirmDelete } from './ConfirmDelete';
-import { Input } from './Input';
+import { ReminderCreator } from './Reminder';
 
 const modalPropTypess = {
   uid: PropTypes.string.isRequired,
@@ -209,14 +206,15 @@ const Modal = ({
           </div>
         </form> */}
         {/* {selectedUserUid && ( */}
-        <div className="w-50 center">
-          <ToDoList
+        <div className="center" style={{ width: '258px' }}>
+          <ReminderCreator
             myUid={uid}
             theirUid={selectedUserUid}
             handleAddingTask={handleAddingTask}
             activeTaskCount={state.activeTaskCount}
             _setActiveTaskCount={setActiveTaskCount}
             photoURL={state.photoURL}
+            onClose={onClose}
           />
         </div>
         {/* )} */}

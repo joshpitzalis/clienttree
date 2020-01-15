@@ -187,7 +187,7 @@ function AddStage({ state }) {
           className="b ph3 pv2 ba b--black bg-transparent grow pointer f6 br1"
           onClick={() => setEditable(true)}
         >
-          Add a New Stage
+          Add a New Step
         </button>
       )}
     </div>

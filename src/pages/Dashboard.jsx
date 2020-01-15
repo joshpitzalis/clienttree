@@ -132,7 +132,7 @@ export function Dashboard({ userId }) {
     }
   }, [dispatch, userId]);
 
-  const contactSelected = useSelector(store => store.people.selectedContact);
+  const selectedUserUid = useSelector(store => store.people.selectedContact);
 
   const [visible, setVisibility] = React.useState(false);
 
@@ -143,7 +143,7 @@ export function Dashboard({ userId }) {
         <Portal onClose={() => setVisibility(false)}>
           <Modal
             uid={userId}
-            selectedUserUid={contactSelected && contactSelected.uid}
+            selectedUserUid={selectedUserUid}
             onClose={() => {
               setVisibility(false);
             }}
@@ -173,13 +173,13 @@ export function Dashboard({ userId }) {
         </main>
         <aside className="dn dib-ns">
           <NavPanel onRight className="bn">
-            <Onboarding uid={userId} contactSelected={contactSelected}>
+            <Onboarding uid={userId} contactSelected={selectedUserUid}>
               <>
-                {contactSelected ? (
+                {selectedUserUid ? (
                   <>
                     <SpecificTaskList
                       myUid={userId}
-                      contactSelected={contactSelected}
+                      contactSelected={selectedUserUid}
                     />
 
                     <button
@@ -187,7 +187,7 @@ export function Dashboard({ userId }) {
                       onClick={() => setVisibility(true)}
                       className="btn2 ph4 pv3 bn pointer br1 grow b mv4"
                     >
-                      Add A New Task
+                      Add A Reminder
                     </button>
                   </>
                 ) : (
@@ -215,7 +215,7 @@ const MobileNav = ({ userId }) => {
         className={`${pathname === `/user/${userId}/dashboard` &&
           'active'}  tracked w-50 tc`}
       >
-        <Home className="o-75 h1" /> Dashboard
+        <Home className="o-75 h1" /> Workboard
       </TabItem>
       <TabItem
         to={`/user/${userId}/network`}
@@ -252,7 +252,7 @@ function Navigation({ userId }) {
             className={`${pathname === `/user/${userId}/dashboard` &&
               'active'}  tracked pb2`}
           >
-            Dashboard
+            Workboard
           </NavLink>
           <NavLink
             // rightEl="🚝"
