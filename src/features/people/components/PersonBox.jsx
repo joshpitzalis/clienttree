@@ -35,8 +35,6 @@ export const PersonModal = ({
   handleTracking = _handleTracking,
 }) => {
   // whenever the state of this component gets updated it will debounce for one second then save the new state to firebase
-  console.log({ contactId });
-
   const [state, setState] = usePersonForm(contactId);
 
   const avatarRef = React.useRef(null);

@@ -14,8 +14,6 @@ export const usePersonForm = contactId => {
     store.contacts.find(person => person.uid === contactId)
   );
 
-  console.log({ contact, contactId });
-
   const [state, setState] = React.useState({
     uid: contactId,
     name: undefined,
@@ -23,7 +21,7 @@ export const usePersonForm = contactId => {
       1: {
         id: 1,
         text: '',
-        lastUpdated: +new Date(),
+        // lastUpdated: +new Date(),
       },
     },
     tracked: false,

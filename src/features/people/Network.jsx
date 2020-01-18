@@ -57,7 +57,6 @@ function _Network({ uid }) {
             <button
               type="button"
               onClick={() => {
-                console.log({ jj: newDoc.id });
                 setSelectedUser(newDoc.id);
                 setVisibility(true);
               }}
@@ -72,7 +71,9 @@ function _Network({ uid }) {
           {contacts &&
             contacts.map(
               contact =>
-                contact.uid && <Person key={contact.uid} contact={contact} />
+                contact.uid && (
+                  <Person key={contact.uid} contact={contact} uid={uid} />
+                )
             )}
         </ul>
       </>

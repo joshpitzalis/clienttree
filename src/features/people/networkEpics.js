@@ -64,51 +64,14 @@ export const updateContactEpic = (action$, state$, { setContact }) => {
     return action;
   };
 
-  const createUidForNewUser = async (_action, _userId) => {
-    if (_action.payload && _action.payload.uid) {
-      return _action;
-    }
-    if (_userId) {
-      const doc = await firebase
-        .firestore()
-        .collection('users')
-        .doc(_userId)
-        .collection('contacts')
-        .doc();
-
-      const newAction = {
-        ..._action,
-        payload: { ..._action.payload, uid: doc.id },
-      };
-
-      return newAction;
-    }
-    console.error('error on networkEpic.js updateContactEpic()');
-    return _action;
-  };
-
   return action$.pipe(
     ofType('people/updateForm'),
     debounceTime(1000),
-    // map(async action => {
-    //   const { userId } = state$.value.user;
-    //   const withName = emptyGuard(action, 'Name cannot be blank');
-    //   const newAction = await createUidForNewUser(withName, userId);
-    //   return newAction;
-    // }),
+    map(action => emptyGuard(action, 'Name cannot be blank')),
     switchMap(action => {
       const { payload } = action;
-      console.log({ action });
-
-      // if (payload.name === 'Name cannot be blank') {
-      //   mapTo({ type: 'PONG' });
-      // }
-
-      // if (payload.uid) {
-
       // get your user Id from the store
       const { userId } = state$.value.user;
-
       // update contact on firebase
       return from(setContact(userId, payload)).pipe(
         // success message
@@ -123,7 +86,6 @@ export const updateContactEpic = (action$, state$, { setContact }) => {
           })
         )
       );
-      // }
     })
   );
 };

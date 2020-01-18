@@ -17,7 +17,7 @@ jest.mock('../peopleAPI', () => ({
   handleTracking: jest.fn(),
 }));
 
-beforeEach(() => {
+afterEach(() => {
   cleanup();
   jest.restoreAllMocks();
 });
@@ -41,7 +41,56 @@ const mockData = {
   },
 };
 
-describe('add someone new to the system', () => {
+describe('create people', () => {
+  it('epic does not fire on open, it waits for a user interaction', async () => {
+    const mockContact = {
+      uid: '123',
+      name: null,
+      lastContacted: 0,
+      activeTaskCount: 3,
+      photoURL: 'string',
+    };
+
+    const { getByTestId } = render(<Person contact={mockContact} />, {
+      initialState: {
+        user: {
+          userId: '123',
+        },
+      },
+    });
+
+    userEvent.click(getByTestId('openBox'));
+    // userEvent.type(getByPlaceholderText('Their name...'), '');
+    await wait(() => {
+      expect(setContact).not.toHaveBeenCalled();
+    });
+  });
+  it('epic does not fire if no uid', async () => {
+    const mockContact = {
+      uid: '',
+      name: '',
+      lastContacted: 0,
+      activeTaskCount: 3,
+      photoURL: 'string',
+    };
+
+    const { getByTestId, getByPlaceholderText } = render(
+      <Person contact={mockContact} />,
+      {
+        initialState: {
+          user: {
+            userId: '123',
+          },
+        },
+      }
+    );
+
+    userEvent.click(getByTestId('openBox'));
+    userEvent.type(getByPlaceholderText('Their name...'), 'lala');
+    await wait(() => {
+      expect(setContact).not.toHaveBeenCalled();
+    });
+  });
   it('add button creates a new person box', () => {
     const { getByTestId, queryByTestId, getByPlaceholderText } = render(
       <Network uid="123" />
@@ -130,44 +179,15 @@ describe('add someone new to the system', () => {
       });
     });
   });
-  it('prevent the epic from firing when the person box first opens', () =>
-    false);
-  it('when you create a new contact it shoudl not also show up in the person lis, it shoudl just be teh item that is selected', () =>
-    false);
-  test('epic does not fire if no name or no uid', () => {
-    const testScheduler = new TestScheduler((actual, expected) => {
-      expect(actual).toEqual(expected);
-    });
-
-    testScheduler.run(({ hot, cold, expectObservable }) => {
-      const action$ = hot('a', {
-        a: {
-          type: 'people/updateForm',
-          payload: {
-            name: '',
-            uid: '',
-          },
-        },
-      });
-      const state$ = {
-        value: { user: { userId: '123' } },
-      };
-      const dependencies = {
-        setContact: () =>
-          cold('-a', {
-            a: '',
-          }),
-      };
-      const output$ = updateContactEpic(action$, state$, dependencies);
-
-      expectObservable(output$).toBe('1000ms -c', {
-        c: {
-          type: 'people/formSavedxxx',
-        },
-      });
-    });
-  });
   it('add name', async () => {
+    const expectedOutput = {
+      name: 'Mr. Happy',
+      notes: { '1': { id: 1, text: '' } },
+      saving: true,
+      tracked: false,
+      uid: '123',
+    };
+
     const { getByTestId, getByPlaceholderText } = render(
       <Person contact={mockData.contact} />,
       {
@@ -182,13 +202,11 @@ describe('add someone new to the system', () => {
     userEvent.click(getByTestId('openBox'));
     userEvent.type(getByPlaceholderText('Their name...'), 'Mr. Happy');
     // assert the text shows up first
-    expect(getByTestId('contactName')).toHaveTextContent('Mr. Happy');
+    expect(getByTestId('contactName').value).toEqual('Mr. Happy');
+
     await wait(() => {
       expect(setContact).toHaveBeenCalled();
-      expect(setContact).toHaveBeenCalledWith('123', {
-        name: 'Mr. Happy',
-        saving: true,
-      });
+      expect(setContact).toHaveBeenCalledWith('123', expectedOutput);
     });
   });
   it('no blank names', async () => {
@@ -209,13 +227,14 @@ describe('add someone new to the system', () => {
     userEvent.type(getByPlaceholderText('Their name...'), 'hello');
     userEvent.type(getByTestId('contactName'), ' ');
 
-    // assert the text shows up first
-    expect(getByTestId('contactName')).toHaveTextContent(' ');
     await wait(() => {
       expect(setContact).toHaveBeenCalled();
       expect(setContact).toHaveBeenCalledWith('123', {
         name: 'Name cannot be blank',
+        notes: { '1': { id: 1, text: '' } },
         saving: true,
+        tracked: false,
+        uid: '123',
       });
     });
   });
@@ -288,7 +307,10 @@ describe('add someone new to the system', () => {
     });
   });
   it('lets me add people to dashboard', () => {
-    const { getByTestId } = render(<Person contact={mockData.contact} />, {
+    const { getByTestId } = render(
+    <Person 
+    contact={mockData.contact}
+      uid='userId123' />, {
       initialState: {
         user: {
           userId: 'userId123',
@@ -315,6 +337,61 @@ describe('add someone new to the system', () => {
       'photo'
     );
   });
+
+  test.skip('only one person should be open at any given time', () => {});
+  test.skip('should  show saving when you start editing a textarea', () => {});
+  test.skip('close button should say saving when  it is saving', () => {});
+
+  test.skip('show saving... and saved', () => {});
+
+  test.skip('add a loading and null state for contacts in network page', () => {});
+
+  test.skip('upload image, then update name should preserve both changes', () => {});
+
+  test.skip('restore space between vertical components on dasgbotd and people page', () => {});
+
+  describe('update someone on the system', () => {
+    it('click on a person open to an editable person box', () => {
+      const { getByTestId } = render(
+        // <Person
+        //   setSelectedUser={mockData.setSelectedUser}
+        //   setVisibility={mockData.setVisibility}
+        //   contact={mockData.contact}
+        //   selectedUser={mockData.selectedUser}
+        // />
+        <Network uid="123" />,
+        { initialState: { contacts: [mockData.contact] } }
+      );
+      // expect closed
+      expect(getByTestId('closedPeopleBox'));
+      // userEvent click
+      userEvent.click(getByTestId('openBox'));
+      // expect open
+      expect(getByTestId('openedPeopleBox'));
+      // click again
+      userEvent.click(getByTestId('closeBox'));
+      // expect closed
+      expect(getByTestId('closedPeopleBox'));
+    });
+    test.skip('lets me remove people to dashboard', () => {});
+    test.skip('is filled when opened', () => {});
+    test.skip('update name', () => {});
+    test.skip('uplaod photo', () => {});
+    test.skip('update text update', () => {});
+    test.skip('update text date', () => {});
+    test.skip('update task', () => {});
+    test.skip('update task date', () => {});
+  });
+
+  describe('delete details from the system', () => {
+    test.skip('delete text update', () => {});
+    test.skip('delete task', () => {});
+    test.skip('delete user', () => {});
+    test.skip('cannot delete if pending tasks', () => {});
+  });
+});
+
+describe('create notes', () => {
   it('edit notes on an existing contact', async () => {
     const exampleInput = 'lalala';
     const { getByTestId, getByPlaceholderText } = render(
@@ -325,26 +402,22 @@ describe('add someone new to the system', () => {
     expect(getByTestId('notesTextarea')).toHaveTextContent(exampleInput);
   });
   test.skip('should not let you enter a note in a new contact untill you have added a name', () => {});
-  test.skip('clear sidebar when you unmount the person box', () => {});
-  test.skip('add a contact', () => {});
+
   test.skip('it should add teh new note to the beginning of the timeline not the end', () => {});
-  test.skip('should  show saving when you start editing a textarea', () => {});
-  test.skip('close button should say saving when  it is saving', () => {});
+
   test.skip('only one field open at a time', () => {});
   test.skip('sort notes chronologocally', () => {});
   test.skip('first notes always appears by default', () => {});
   test.skip('add note alwats visible when editing a note', () => {});
   test.skip('date text update', () => {});
   test.skip('if no date update then it defaults to today', () => {});
-  test.skip('show saving... and saved', () => {});
-  test.skip('add a loading and null state for contacts in network page', () => {});
-  test.skip('upload image, then update name should preserve both changes', () => {});
-  test.skip('restore space between vertical components on dasgbotd and people page', () => {});
   test.skip('click outside calendar in notes should close calendar', () => {});
   test.skip('changing date should change the date', () => {});
 });
 
-describe('reminder', () => {
+describe('create reminders', () => {
+  // REMINDER_CREATED
+  test.skip('clear sidebar when you unmount the person box', () => {});
   it('clicking on a users reveals their specific tasks list in the sidebar', () => {
     // load mock Dashboard
     const { getByTestId, getByText } = render(<Dashboard userId="123" />, {
@@ -374,6 +447,7 @@ describe('reminder', () => {
     // fill out the task
     // check it got add to the user
   });
+
   test('add reminder to an existing contact', () => {
     // load mock Dashboard
     const { getByTestId, getByText } = render(<Dashboard userId="123" />, {
@@ -404,11 +478,10 @@ describe('reminder', () => {
     // fill out the task
     // check it got add to the user
   });
-
   test.skip('edit a reminder', () => {});
   test.skip('complete a reminder', () => {});
   test.skip('conform completion before you complete a reminder', () => {});
-  test.skip('gve people the option  to delete a task if it is no longer relevant', () => {});
+  test.skip('gve people the option  to delete a reminder if it is no longer relevant', () => {});
   test.skip('throw confetti every time you complete a task', () => {});
   test.skip('you must only be able to select one user at a time,two users cannot be open atthe same time.', () => {});
   test.skip('add task to a new contact', () => {});
@@ -419,60 +492,20 @@ describe('reminder', () => {
   test.skip('there is an edit reminder to edit an existing reminder ', () => {});
   test.skip('if you dont add a new task it doesn;t complete the previous task, if its teh last task ', () => {});
   test.skip('editing an existing reminder lets you delete the reminder altogether ', () => {});
-});
-
-describe('email reminders', () => {
-  test.skip('reminder triggers an email', () => {});
-  test.skip('email is cancelled if reminder is cancelled ', () => {});
-  test.skip('email is cancelled if reminder is completed ', () => {});
-  test.skip('email is cancelled if date is changed', () => {});
-});
-
-describe('login page', () => {
-  test.skip('white text input', () => {});
-  test.skip('button back ground', () => {});
-});
-
-describe('update someone on the system', () => {
-  it('click on a person open to an editable person box', () => {
-    const { getByTestId } = render(
-      // <Person
-      //   setSelectedUser={mockData.setSelectedUser}
-      //   setVisibility={mockData.setVisibility}
-      //   contact={mockData.contact}
-      //   selectedUser={mockData.selectedUser}
-      // />
-      <Network uid="123" />,
-      { initialState: { contacts: [mockData.contact] } }
-    );
-    // expect closed
-    expect(getByTestId('closedPeopleBox'));
-    // userEvent click
-    userEvent.click(getByTestId('openBox'));
-    // expect open
-    expect(getByTestId('openedPeopleBox'));
-    // click again
-    userEvent.click(getByTestId('closeBox'));
-    // expect closed
-    expect(getByTestId('closedPeopleBox'));
+  describe('email reminders', () => {
+    test.skip('reminder triggers an email', () => {});
+    test.skip('email is cancelled if reminder is cancelled ', () => {});
+    test.skip('email is cancelled if reminder is completed ', () => {});
+    test.skip('email is cancelled if date is changed', () => {});
   });
-  test.skip('lets me remove people to dashboard', () => {});
-  test.skip('is filled when opened', () => {});
-  test.skip('update name', () => {});
-  test.skip('uplaod photo', () => {});
-  test.skip('update text update', () => {});
-  test.skip('update text date', () => {});
-  test.skip('update task', () => {});
-  test.skip('update task date', () => {});
 });
 
-describe('delete details from the system', () => {
-  test.skip('delete text update', () => {});
-  test.skip('delete task', () => {});
-  test.skip('delete user', () => {});
-  test.skip('cannot delete if pending tasks', () => {});
-});
 describe('other', () => {
+  describe('login page', () => {
+    test.skip('white text input', () => {});
+    test.skip('button back ground', () => {});
+  });
+
   test.skip('mobile version', () => {});
   test.skip('mobile landscape', () => {});
   test.skip('tablet version', () => {});

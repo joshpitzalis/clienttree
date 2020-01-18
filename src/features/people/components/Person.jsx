@@ -39,7 +39,7 @@ const isValidDate = timestamp => new Date(timestamp).getTime() > 0;
     }
   }} [Props] There used to be more parameters thats why it is still shaped as an object
 */
-export const Person = ({ contact }) => {
+export const Person = ({ contact, uid }) => {
   const dispatch = useDispatch();
 
   const [current, send] = useMachine(peopleMachine, {
@@ -99,6 +99,7 @@ export const Person = ({ contact }) => {
       return (
         <li key={contact.uid} className="mb3" data-testid="openedPeopleBox">
           <PersonModal
+            uid={uid}
             contactId={contact.uid}
             onClose={() => send({ type: 'CLOSED' })}
           />

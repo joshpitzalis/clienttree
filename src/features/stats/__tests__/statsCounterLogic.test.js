@@ -5,7 +5,7 @@ import { interpret } from 'xstate';
 import userEvent from '@testing-library/user-event';
 import { TestScheduler } from 'rxjs/testing';
 import { handleActivityCompleted } from '../statsHelpers';
-import { Modal } from '../../people/components/ContactModal';
+import { PersonModal } from '../../people/components/PersonBox';
 import { render } from '../../../utils/testSetup';
 import { NetworkProvider } from '../../people/NetworkContext';
 import {
@@ -27,26 +27,25 @@ describe('stats counter logic', () => {
     userId: '123',
     selectedUserUid: '456',
     onClose: jest.fn(),
-    incrementStats: jest.fn(),
+    handleTracking: jest.fn(),
   };
 
   describe('incrementing numbers', () => {
-    test('when added to first column increment project stats', () => {
+    test.only('when added to first column increment project stats', () => {
       const { getByTestId } = render(
-        <NetworkProvider uid={fakeData.userId}>
-          <Modal
-            uid={fakeData.userId}
-            selectedUserUid={fakeData.selectedUserUid}
-            onClose={fakeData.onClose}
-            incrementStats={fakeData.incrementStats}
-          />
-        </NetworkProvider>
+        <PersonModal
+          uid={fakeData.userId}
+          contactId={fakeData.selectedUserUid}
+          onClose={fakeData.onClose}
+          handleTracking={fakeData.handleTracking}
+        />
       );
 
-      expect(getByTestId('leadToggle')).toBeInTheDocument();
-      userEvent.click(getByTestId('leadToggle'));
-      expect(fakeData.incrementStats).toHaveBeenCalled();
+      expect(getByTestId('dashSwitch')).toBeInTheDocument();
+      userEvent.click(getByTestId('dashSwitch'));
+      expect(fakeData.handleTracking).toHaveBeenCalled();
     });
+
     test('handleTracking increments stats', async () => {
       const fakeProps = {
         checked: false,
