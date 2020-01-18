@@ -21,6 +21,7 @@ const personDefaultPropss = {
 
 /**
  * @param {{
+ * uid:string,
   contactId: string,
   onClose: function,
   handleTracking : function,
@@ -28,15 +29,15 @@ const personDefaultPropss = {
 */
 
 export const PersonModal = ({
+  uid,
   contactId,
   onClose,
   handleTracking = _handleTracking,
 }) => {
   // whenever the state of this component gets updated it will debounce for one second then save the new state to firebase
-  const [state, setState] = usePersonForm(contactId);
+  console.log({ contactId });
 
-  // used to add a contact to the dashboard
-  const userId = useSelector(store => store.user.userId);
+  const [state, setState] = usePersonForm(contactId);
 
   const avatarRef = React.useRef(null);
 
@@ -128,7 +129,7 @@ export const PersonModal = ({
             onChange={e =>
               handleTracking(
                 e.target.checked,
-                userId,
+                uid,
                 contactId,
                 state.name,
                 state.photoURL
@@ -219,6 +220,7 @@ export const PersonModal = ({
     </div>
   );
 };
+
 PersonModal.propTypes = personPropTypess;
 PersonModal.defaultProps = personDefaultPropss;
 

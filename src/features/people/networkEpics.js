@@ -5,7 +5,6 @@ import {
   debounceTime,
   map,
   catchError,
-  // ignoreElements,
 } from 'rxjs/operators';
 import { of, from } from 'rxjs';
 import { ofType } from 'redux-observable';
@@ -17,6 +16,7 @@ import {
 import { toast$ } from '../notifications/toast';
 import { ACTIVITY_COMPLETED, USER_UPDATED } from './networkConstants';
 import { handleActivityCompleted } from '../stats/statsHelpers';
+import firebase from '../../utils/firebase';
 
 export const markActivityComplete = (
   action$,
@@ -56,7 +56,7 @@ export const setNewUserTask = (action$, store, { setFirebaseContactUpdate }) =>
 
 export const updateContactEpic = (action$, state$, { setContact }) => {
   const emptyGuard = (action, defaultTitle) => {
-    if (action.payload.name && action.payload.name.trim() === '') {
+    if (!action.payload.name || action.payload.name.trim() === '') {
       const newAction = { ...action };
       newAction.payload.name = defaultTitle;
       return newAction;
@@ -64,13 +64,51 @@ export const updateContactEpic = (action$, state$, { setContact }) => {
     return action;
   };
 
+  const createUidForNewUser = async (_action, _userId) => {
+    if (_action.payload && _action.payload.uid) {
+      return _action;
+    }
+    if (_userId) {
+      const doc = await firebase
+        .firestore()
+        .collection('users')
+        .doc(_userId)
+        .collection('contacts')
+        .doc();
+
+      const newAction = {
+        ..._action,
+        payload: { ..._action.payload, uid: doc.id },
+      };
+
+      return newAction;
+    }
+    console.error('error on networkEpic.js updateContactEpic()');
+    return _action;
+  };
+
   return action$.pipe(
     ofType('people/updateForm'),
     debounceTime(1000),
-    map(action => emptyGuard(action, 'Name cannot be blank')),
-    switchMap(({ payload }) => {
+    // map(async action => {
+    //   const { userId } = state$.value.user;
+    //   const withName = emptyGuard(action, 'Name cannot be blank');
+    //   const newAction = await createUidForNewUser(withName, userId);
+    //   return newAction;
+    // }),
+    switchMap(action => {
+      const { payload } = action;
+      console.log({ action });
+
+      // if (payload.name === 'Name cannot be blank') {
+      //   mapTo({ type: 'PONG' });
+      // }
+
+      // if (payload.uid) {
+
       // get your user Id from the store
       const { userId } = state$.value.user;
+
       // update contact on firebase
       return from(setContact(userId, payload)).pipe(
         // success message
@@ -85,6 +123,7 @@ export const updateContactEpic = (action$, state$, { setContact }) => {
           })
         )
       );
+      // }
     })
   );
 };

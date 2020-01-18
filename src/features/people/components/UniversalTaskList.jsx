@@ -105,11 +105,19 @@ function TaskDetails({
 }) {
   const dispatch = useDispatch();
 
+  // <li className={s.container}>
+  //     <input className={s.input} type="checkbox" id={id} onChange={handleChange} checked={checked} />
+  //     <label className={s.label} htmlFor={id}>
+  //       <h3 className={s.title}>{title}</h3>
+  //       <p className={s.description}>{description}</p>
+  //     </label>
+  //   </li>
+
   return (
     <div className="flex items-baseline mb2" key={taskId}>
-      <label htmlFor={name} className="lh-copy flex items-baseline">
+      <label htmlFor={name} className="lh-copy flex items-baseline label">
         <input
-          className="mr2"
+          className="mr2 input"
           type="checkbox"
           id={name}
           value={name}
@@ -134,7 +142,9 @@ function TaskDetails({
             });
           }}
         />
-        <p className={`w-100 pr2 ${dateCompleted && 'strike'}`}>{name}</p>
+        {/*  eslint-disable   */}
+      
+        <p className={`w-100 pr2 title ${dateCompleted && 'strike'}`}>{name}</p>
         <img src={photoURL} alt={name} height="25" className=" br-100" />
       </label>
     </div>

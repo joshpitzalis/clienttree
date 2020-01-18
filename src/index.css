@@ -33,7 +33,9 @@ body {
 
   --orange: hsl(22, 78%, 55%);
  
-  font-family: 'Roboto',-apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen",
+  font-family: 'Roboto',-apple-system, 
+  
+  BlinkMacSystemFont, "Segoe UI", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -135,3 +137,72 @@ white-space: nowrap;
 details summary::-webkit-details-marker {
   display:none;
 }
+
+
+ 
+/* input boxes */
+/* 
+.container {
+  display: flex;
+  margin-left: calc(48px + 4px * -1);
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+}
+
+ .label  {
+  position: relative;
+  cursor: pointer;
+  padding-left: calc(48px + 4px);
+}
+
+
+
+ .label:before  {
+  content: '';
+  position: absolute;
+  top: 10;
+  left: 0;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  color: var(--primary) !important;
+  background-color: var(--bg-base) !important;
+  border-radius: 2px;
+  transition: all ease .15s;
+}
+
+.label:before  {
+  box-shadow: var(--bg-base) 0 0 0 2px, var(--primary) 0 0 0 4px;
+}
+
+.label:before  {
+  background: var(--primary);
+}
+
+.label:after   {
+  opacity: 0;
+  transition: var(.15s);
+  content: '';
+  position: absolute;
+  display: inline-block;
+  left: 10px;
+  top: 6px;
+  width: 6px;
+  height: 12px;
+  transform: rotate(45deg);
+  border-style: solid;
+  border-color: var(--primary);
+  border-image: initial;
+  border-width: 0px 2px 2px 0px;
+}
+
+ .label:after > .input:checked  {
+  opacity: 1;
+} 
+
+ */
+
+

@@ -2,18 +2,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import React from 'react';
 import { toast$ } from '../../notifications/toast';
 import { setProfileImage } from '../peopleAPI';
-
 /**
  * @param {string} contactId - contact Id of selected user
  */
 export const usePersonForm = contactId => {
   const dispatch = useDispatch();
+
+  const userId = useSelector(store => store.user.userId);
+
   const contact = useSelector(store =>
     store.contacts.find(person => person.uid === contactId)
   );
 
+  console.log({ contact, contactId });
+
   const [state, setState] = React.useState({
-    name: '',
+    uid: contactId,
+    name: undefined,
     notes: {
       1: {
         id: 1,
@@ -26,6 +31,10 @@ export const usePersonForm = contactId => {
   });
 
   React.useEffect(() => {
+    // prevent the epic from firing when the person box first opens
+    if (state.name === undefined) {
+      return;
+    }
     dispatch({
       type: 'people/updateForm',
       payload: state,
@@ -33,10 +42,11 @@ export const usePersonForm = contactId => {
   }, [dispatch, state]);
 
   React.useEffect(() => {
-    setState({
+    setState(prevstate => ({
+      ...prevstate,
       ...contact,
       saving: false,
-    });
+    }));
   }, [contact]);
 
   return [state, setState];

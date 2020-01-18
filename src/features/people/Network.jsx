@@ -9,6 +9,8 @@ import { PersonModal } from './components/PersonBox';
 
 import { AddButton } from './components/AddButton';
 import ErrorBoundary from '../../utils/ErrorBoundary';
+import firebase from '../../utils/firebase';
+
 // import { Button } from '@duik/it';
 // import Portal from '../../utils/Portal';
 // import { Modal } from './components/ContactModal';
@@ -18,7 +20,7 @@ const networkPropTypes = {
 };
 const networkDefaultProps = {};
 
-export function Network({ uid }) {
+function _Network({ uid }) {
   const [visible, setVisibility] = React.useState(false);
   const [selectedUser, setSelectedUser] = React.useState('');
 
@@ -31,25 +33,39 @@ export function Network({ uid }) {
   }]} contact */
   const contacts = useSelector(store => store.contacts);
 
+  const newDoc = firebase
+    .firestore()
+    .collection('users')
+    .doc(uid)
+    .collection('contacts')
+    .doc();
+
   return (
     <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
       <>
         <div className="pv4" data-testid="outreachPage">
           {visible ? (
             <PersonModal
-              setVisibility={setVisibility}
               uid={uid}
-              selectedUserUid={selectedUser}
+              contactId={selectedUser}
               onClose={() => {
                 setVisibility(false);
                 setSelectedUser('');
               }}
             />
           ) : (
-            <AddButton
-              setVisibility={setVisibility}
-              contactCount={contacts && contacts.filter(c => c.uid).length}
-            />
+            <button
+              type="button"
+              onClick={() => {
+                console.log({ jj: newDoc.id });
+                setSelectedUser(newDoc.id);
+                setVisibility(true);
+              }}
+              className="btn1 b grow  ph3 pv2  pointer bn br1 white"
+              data-testid="addPeopleButton"
+            >
+              Add Someone New
+            </button>
           )}
         </div>
         <ul className="list pl0 mt0">
@@ -63,5 +79,7 @@ export function Network({ uid }) {
     </ErrorBoundary>
   );
 }
-Network.propTypes = networkPropTypes;
-Network.defaultProps = networkDefaultProps;
+_Network.propTypes = networkPropTypes;
+_Network.defaultProps = networkDefaultProps;
+
+export const Network = React.memo(_Network);

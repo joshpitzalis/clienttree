@@ -76,9 +76,7 @@ export const Person = ({ contact }) => {
                 isValidDate(fromUnixTime(contact.lastContacted))
                   ? `Last contacted ${formatDistanceToNow(
                       fromUnixTime(contact.lastContacted),
-                      {
-                        addSuffix: true,
-                      }
+                      { addSuffix: true }
                     )}`
                   : null}
               </span>

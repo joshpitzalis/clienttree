@@ -1,3 +1,4 @@
+import { compose } from 'redux';
 import firebase from '../../../utils/firebase';
 import { helpfulTaskRef, setTaskDetails, newDocRef } from './APIcalls';
 import { toast$ } from '../../notifications/toast';
@@ -491,7 +492,15 @@ export const handleTracking = async (
 
 export const setContact = (
   userId,
-  { uid, name, summary, lastContacted, photoURL, downloadURL, notes }
+  {
+    uid,
+    name,
+    summary = '',
+    lastContacted = '',
+    photoURL = '',
+    downloadURL = '',
+    notes = {},
+  }
 ) =>
   firebase
     .firestore()
