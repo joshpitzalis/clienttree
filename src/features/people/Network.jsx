@@ -67,15 +67,7 @@ function _Network({ uid }) {
             </button>
           )}
         </div>
-        <ul className="list pl0 mt0">
-          {contacts &&
-            contacts.map(
-              contact =>
-                contact.uid && (
-                  <Person key={contact.uid} contact={contact} uid={uid} />
-                )
-            )}
-        </ul>
+        <ContactsBox contacts={contacts} uid={uid}></ContactsBox>
       </>
     </ErrorBoundary>
   );
@@ -84,3 +76,25 @@ _Network.propTypes = networkPropTypes;
 _Network.defaultProps = networkDefaultProps;
 
 export const Network = React.memo(_Network);
+
+export default function ContactsBox({ contacts, uid }) {
+  if (!contacts) {
+    return <p data-testid="loader">Loading...</p>;
+  }
+  return (
+    <React.Fragment>
+      {contacts.length ? (
+        <ul className="list pl0 mt0">
+          {contacts.map(
+            contact =>
+              contact.uid && (
+                <Person key={contact.uid} contact={contact} uid={uid} />
+              )
+          )}
+        </ul>
+      ) : (
+        <p data-testid="emptyContacts">No Contacts</p>
+      )}
+    </React.Fragment>
+  );
+}

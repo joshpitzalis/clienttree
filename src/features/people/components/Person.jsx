@@ -30,6 +30,7 @@ const isValidDate = timestamp => new Date(timestamp).getTime() > 0;
 
 /**
  * @param {{ 
+ * uid: string,
  * contact: {
       uid: String,
       lastContacted: Number,

@@ -64,7 +64,7 @@ textarea{
 }
 
 .green {
-  color: var(--primary) ;
+  color: var(--primary) !important;
 }
 
 .bg-base {
@@ -102,6 +102,10 @@ textarea{
 
 .bt-orange{
   border-top: 3px var(--orange) solid;
+}
+
+.orange{
+  color:  var(--orange) ;
 }
 
 .bt-green{

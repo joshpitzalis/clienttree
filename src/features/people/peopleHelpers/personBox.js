@@ -8,15 +8,15 @@ import { setProfileImage } from '../peopleAPI';
 export const usePersonForm = contactId => {
   const dispatch = useDispatch();
 
-  const userId = useSelector(store => store.user.userId);
-
-  const contact = useSelector(store =>
-    store.contacts.find(person => person.uid === contactId)
+  const contact = useSelector(
+    store =>
+      store.contacts && store.contacts.find(person => person.uid === contactId)
   );
 
   const [state, setState] = React.useState({
     uid: contactId,
-    name: undefined,
+    name: null,
+    photoURL: null,
     notes: {
       1: {
         id: 1,
@@ -25,7 +25,7 @@ export const usePersonForm = contactId => {
       },
     },
     tracked: false,
-    saving: false,
+    saving: null,
   });
 
   React.useEffect(() => {
@@ -40,11 +40,17 @@ export const usePersonForm = contactId => {
   }, [dispatch, state]);
 
   React.useEffect(() => {
-    setState(prevstate => ({
-      ...prevstate,
-      ...contact,
-      saving: false,
-    }));
+    setState(prevState => {
+      // this prevents the form from saving on first load
+      if (prevState.saving === true) {
+        return {
+          ...prevState,
+          ...contact,
+          saving: false,
+        };
+      }
+      return prevState;
+    });
   }, [contact]);
 
   return [state, setState];

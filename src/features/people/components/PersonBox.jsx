@@ -34,10 +34,12 @@ export const PersonModal = ({
   onClose,
   handleTracking = _handleTracking,
 }) => {
-  // whenever the state of this component gets updated it will debounce for one second then save the new state to firebase
-  const [state, setState] = usePersonForm(contactId);
-
   const avatarRef = React.useRef(null);
+
+  // whenever the state of this component gets updated it will debounce for one second then save the new state to firebase
+  const [state, setState] = usePersonForm(contactId, avatarRef);
+
+  const avatarImageURL = avatarRef.current.getImageData();
 
   const [activeNote, setActiveNote] = React.useState(1);
 
@@ -48,14 +50,14 @@ export const PersonModal = ({
       <div
         data-testid="contactModal"
         className={`pa4 br2-bottom bg-layer1 ${
-          state.saving && state.saving ? 'bt-orange' : 'bt-green'
+          state && state.saving && state.saving ? 'bt-orange' : 'bt-green'
         }`}
       >
         <div className="flex flex-row-ns flex-column justify-between items-center pb4 mt0">
           <div className="flex items-center">
             <div className="mr3 flex flex-column">
               <label htmlFor="uploader" className="pointer tc center">
-                {state.photoURL && state.photoURL ? (
+                {state && state.photoURL && state.photoURL ? (
                   <img
                     alt="profile-preview"
                     className="w2 h-auto w3-ns h-auto-ns br-100"
@@ -98,6 +100,10 @@ export const PersonModal = ({
                       ...prevState,
                       name,
                       saving: true,
+                      photoURL:
+                        prevState.photoURL === null
+                          ? avatarImageURL
+                          : prevState.photoURL,
                     }));
                   }}
                 />
@@ -197,14 +203,15 @@ export const PersonModal = ({
           >
             Close
           </button>
-          {/* <small
-            className="text3 o-50 ml3"
-            style={{
-              color: true && 'red',
-            }}
-          >
-            {true ? 'Saving...' : 'Saved'}
-          </small> */}
+          {state.saving !== null && (
+            <small
+              data-testid="saveIndicator"
+              className="text3 o-50 ml3"
+              style={{ color: state.saving ? 'orange' : 'green' }}
+            >
+              {state.saving ? 'Saving...' : 'Saved'}
+            </small>
+          )}
         </div>
         <button
           type="button"

@@ -185,19 +185,10 @@ describe('create people', () => {
       notes: { '1': { id: 1, text: '' } },
       saving: true,
       tracked: false,
-      uid: '123',
-    };
+      uid: '123',    };
 
     const { getByTestId, getByPlaceholderText } = render(
-      <Person contact={mockData.contact} />,
-      {
-        initialState: {
-          user: {
-            userId: '123',
-          },
-        },
-      }
-    );
+      <Person contact={mockData.contact} />
 
     userEvent.click(getByTestId('openBox'));
     userEvent.type(getByPlaceholderText('Their name...'), 'Mr. Happy');
@@ -306,26 +297,26 @@ describe('create people', () => {
       expect(setProfileImage).toHaveBeenCalled();
     });
   });
-  it('lets me add people to dashboard', () => {
+  it.only('lets me add people to dashboard', () => {
     const { getByTestId } = render(
-    <Person 
-    contact={mockData.contact}
-      uid='userId123' />, {
-      initialState: {
-        user: {
-          userId: 'userId123',
-        },
-        contacts: [
-          {
-            uid: '123',
-            lastContacted: false,
-            activeTaskCount: 3,
-            name: 'name',
-            photoURL: 'photo',
+      <Person contact={mockData.contact} uid="userId123" />,
+      {
+        initialState: {
+          user: {
+            userId: 'userId123',
           },
-        ],
-      },
-    });
+          contacts: [
+            {
+              uid: '123',
+              lastContacted: false,
+              activeTaskCount: 3,
+              name: 'name',
+              photoURL: 'photo',
+            },
+          ],
+        },
+      }
+    );
     userEvent.click(getByTestId('openBox'));
     userEvent.click(getByTestId('dashSwitch'));
     expect(handleTracking).toHaveBeenCalled();
@@ -333,22 +324,55 @@ describe('create people', () => {
       true,
       'userId123',
       '123',
-      'name',
-      'photo'
+      null,
+      null
     );
   });
+  test('show saving... and saved', async () => {
+    const { getByTestId, getByPlaceholderText } = render(
+      <Person contact={mockData.contact} />,
+      {
+        initialState: {
+          user: {
+            userId: '123',
+          },
+        },
+      }
+    );
+    userEvent.click(getByTestId('openBox'));
+    userEvent.type(getByPlaceholderText('Their name...'), 'Mr. Happy');
+    expect(getByTestId('saveIndicator')).toHaveTextContent(/saving/i);
+    // await wait(() => {
+    //   getByTestId('saveIndicator');
+    //   expect(getByTestId('saveIndicator')).toHaveTextContent(/saving/i);
+    // });
+  });
+  test('doesnt say saved for the first test', () => {
+    const { queryByTestId } = render(<Person contact={mockData.contact} />, {
+      initialState: {
+        user: {
+          userId: '123',
+        },
+      },
+    });
+    userEvent.click(queryByTestId('openBox'));
+    expect(queryByTestId('saveIndicator')).not.toBeInTheDocument();
+  });
+  test('add a loading for contacts in network page', () => {
+    const { getByTestId } = render(<Network uid="123" />);
 
-  test.skip('only one person should be open at any given time', () => {});
-  test.skip('should  show saving when you start editing a textarea', () => {});
-  test.skip('close button should say saving when  it is saving', () => {});
+    expect(getByTestId('loader')).toBeInTheDocument();
+  });
+  test('add an empty state for contacts in network page', () => {
+    const { getByTestId } = render(<Network uid="123" />, {
+      initialState: { contacts: [] },
+    });
 
-  test.skip('show saving... and saved', () => {});
-
-  test.skip('add a loading and null state for contacts in network page', () => {});
-
-  test.skip('upload image, then update name should preserve both changes', () => {});
-
-  test.skip('restore space between vertical components on dasgbotd and people page', () => {});
+    expect(getByTestId('emptyContacts')).toBeInTheDocument();
+  });
+  test.skip('when name is blurred avarat image gets saved', () => false);
+  test.skip('upload image, then update name should preserve both changes', () => false);
+  test.skip('restore space between vertical components on dashboard and people page', () => {});
 
   describe('update someone on the system', () => {
     it('click on a person open to an editable person box', () => {
@@ -378,6 +402,8 @@ describe('create people', () => {
     test.skip('update name', () => {});
     test.skip('uplaod photo', () => {});
     test.skip('update text update', () => {});
+
+    test.skip('should show saving when you start editing a textarea', () => {});
     test.skip('update text date', () => {});
     test.skip('update task', () => {});
     test.skip('update task date', () => {});
@@ -405,7 +431,7 @@ describe('create notes', () => {
 
   test.skip('it should add teh new note to the beginning of the timeline not the end', () => {});
 
-  test.skip('only one field open at a time', () => {});
+  test.skip('only one note open at a time', () => {});
   test.skip('sort notes chronologocally', () => {});
   test.skip('first notes always appears by default', () => {});
   test.skip('add note alwats visible when editing a note', () => {});

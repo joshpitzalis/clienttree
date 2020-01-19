@@ -40,7 +40,7 @@ export const userSlice = createSlice({
 });
 export const contactsSlice = createSlice({
   name: 'contacts',
-  initialState: [],
+  initialState: null,
   reducers: {
     setContacts: (state, action) => action.payload,
   },
