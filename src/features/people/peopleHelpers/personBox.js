@@ -30,7 +30,7 @@ export const usePersonForm = contactId => {
 
   React.useEffect(() => {
     // prevent the epic from firing when the person box first opens
-    if (state.name === undefined) {
+    if (state.name === null) {
       return;
     }
     dispatch({

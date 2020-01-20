@@ -180,25 +180,22 @@ describe('create people', () => {
     });
   });
   it('add name', async () => {
-    const expectedOutput = {
-      name: 'Mr. Happy',
-      notes: { '1': { id: 1, text: '' } },
-      saving: true,
-      tracked: false,
-      uid: '123',    };
-
     const { getByTestId, getByPlaceholderText } = render(
-      <Person contact={mockData.contact} />
+      <Person contact={mockData.contact} uid="" />,
+      { initialState: { user: { userId: '123' } } }
+    );
 
     userEvent.click(getByTestId('openBox'));
     userEvent.type(getByPlaceholderText('Their name...'), 'Mr. Happy');
-    // assert the text shows up first
-    expect(getByTestId('contactName').value).toEqual('Mr. Happy');
 
-    await wait(() => {
-      expect(setContact).toHaveBeenCalled();
-      expect(setContact).toHaveBeenCalledWith('123', expectedOutput);
-    });
+    await wait(() =>
+      expect(setContact).toHaveBeenCalledWith(
+        '123',
+        expect.objectContaining({
+          name: 'Mr. Happy',
+        })
+      )
+    );
   });
   it('no blank names', async () => {
     // @ts-ignore
@@ -220,13 +217,12 @@ describe('create people', () => {
 
     await wait(() => {
       expect(setContact).toHaveBeenCalled();
-      expect(setContact).toHaveBeenCalledWith('123', {
-        name: 'Name cannot be blank',
-        notes: { '1': { id: 1, text: '' } },
-        saving: true,
-        tracked: false,
-        uid: '123',
-      });
+      expect(setContact).toHaveBeenCalledWith(
+        '123',
+        expect.objectContaining({
+          name: 'Name cannot be blank',
+        })
+      );
     });
   });
   it('generated image by default', () => {
@@ -297,7 +293,7 @@ describe('create people', () => {
       expect(setProfileImage).toHaveBeenCalled();
     });
   });
-  it.only('lets me add people to dashboard', () => {
+  it('lets me add people to dashboard', () => {
     const { getByTestId } = render(
       <Person contact={mockData.contact} uid="userId123" />,
       {
@@ -318,6 +314,7 @@ describe('create people', () => {
       }
     );
     userEvent.click(getByTestId('openBox'));
+
     userEvent.click(getByTestId('dashSwitch'));
     expect(handleTracking).toHaveBeenCalled();
     expect(handleTracking).toHaveBeenCalledWith(
@@ -371,7 +368,8 @@ describe('create people', () => {
     expect(getByTestId('emptyContacts')).toBeInTheDocument();
   });
   test.skip('when name is blurred avarat image gets saved', () => false);
-  test.skip('upload image, then update name should preserve both changes', () => false);
+  test.skip('upload image, then update name should preserve both changes', () =>
+    false);
   test.skip('restore space between vertical components on dashboard and people page', () => {});
 
   describe('update someone on the system', () => {

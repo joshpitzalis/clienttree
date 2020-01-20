@@ -37,9 +37,9 @@ export const PersonModal = ({
   const avatarRef = React.useRef(null);
 
   // whenever the state of this component gets updated it will debounce for one second then save the new state to firebase
-  const [state, setState] = usePersonForm(contactId, avatarRef);
+  const [state, setState] = usePersonForm(contactId);
 
-  const avatarImageURL = avatarRef.current.getImageData();
+  const avatarImageURL = avatarRef.current && avatarRef.current.getImageData();
 
   const [activeNote, setActiveNote] = React.useState(1);
 
