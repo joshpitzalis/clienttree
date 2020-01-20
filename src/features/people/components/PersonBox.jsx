@@ -3,16 +3,12 @@ import { Toggle } from '@duik/it';
 import { Timeline } from 'antd';
 import AvatarGenerator from 'react-avatar-generator';
 import PropTypes from 'prop-types';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { usePersonForm, setImage } from '../peopleHelpers/personBox';
-import {
-  handleTracking as _handleTracking,
-  handleContactDelete,
-} from '../peopleAPI';
+import { handleTracking as _handleTracking } from '../peopleAPI';
 import { EditBox } from './EditBox';
 import { TimeUpdate } from './TimeUpdate';
 import { ConfirmDelete } from './ConfirmDelete';
-import { toast$ } from '../../notifications/toast';
 
 const personPropTypess = {
   contactId: PropTypes.string,
@@ -30,6 +26,7 @@ const personDefaultPropss = {
   contactId: string,
   onClose: function,
   handleTracking : function,
+  handleDelete: function,
 }}
 */
 
@@ -38,8 +35,8 @@ export const PersonModal = ({
   contactId,
   onClose,
   handleTracking = _handleTracking,
+  handleDelete,
 }) => {
-  const dispatch = useDispatch();
   const avatarRef = React.useRef(null);
   // whenever the state of this component gets updated
   // it will debounce for one second then save the new state to firebase
@@ -57,16 +54,6 @@ export const PersonModal = ({
         task => task.completedFor === state.uid && task.dateCompleted === null
       )
   );
-
-  const handleDelete = async (_name, _uid, _userId) => {
-    try {
-      dispatch({ type: 'people/clearSelectedUser' });
-      await handleContactDelete(_uid, _userId);
-      onClose();
-    } catch (error) {
-      toast$.next({ type: 'ERROR', message: error.message || error });
-    }
-  };
 
   return (
     <div>
@@ -241,7 +228,7 @@ export const PersonModal = ({
           testid="deletePerson"
           handleDelete={() => handleDelete(state.name, state.uid, uid)}
           title={state.name}
-          activeTaskCount={activeTasks}
+          activeTaskCount={activeTasks.length}
         />
       </div>
     </div>

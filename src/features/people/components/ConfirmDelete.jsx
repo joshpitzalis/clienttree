@@ -15,8 +15,6 @@ export const ConfirmDelete = ({
   className,
   testid,
 }) => {
-  console.log({ activeTaskCount });
-
   const [confirmDelete, setConfirmDelete] = React.useState(false);
   return (
     <div>
@@ -58,7 +56,7 @@ function Confirmation({
   setConfirmDelete,
   activeTaskCount,
 }) {
-  if (activeTaskCount.length) {
+  if (activeTaskCount) {
     return (
       <small className="f6 black-70 small-caps" data-testid="deleteGuard">
         You must complete or remove all active tasks before you can delete this

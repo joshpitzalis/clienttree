@@ -2,13 +2,13 @@ import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { TestScheduler } from 'rxjs/testing';
-import { cleanup, wait, fireEvent } from '@testing-library/react';
+import { cleanup, wait, fireEvent, act } from '@testing-library/react';
 import { render } from '../../../utils/testSetup';
 import { Person } from '../components/Person';
 import { Network } from '../Network';
 import { updateContactEpic } from '../networkEpics';
 import { setContact, setProfileImage, handleTracking } from '../peopleAPI';
-
+import { PersonModal } from '../components/PersonBox';
 import { Dashboard } from '../../../pages/Dashboard';
 
 jest.mock('../peopleAPI', () => ({
@@ -387,9 +387,28 @@ describe('create people', () => {
   });
 
   describe('delete details from the system', () => {
-    test.skip('delete user', () => {
-      // assert their tasks get deleted
+    test.only('delete user', async () => {
+      const mockDelete = jest.fn();
+
+      const { getByText } = render(
+        <PersonModal
+          contactId={mockData.contact.uid}
+          handleDelete={mockDelete}
+          uid="123"
+          onClose={jest.fn()}
+          handleTracking={jest.fn()}
+        />,
+        {
+          initialState: { contacts: [mockData.contact] },
+        }
+      );
+
+      act(() => userEvent.click(getByText(/delete null/i)));
+      userEvent.click(getByText(/confirm delete null/i));
+      // expect(mockDelete).toBeCalledWith(55);
+      // (_name, _uid, _userId)
     });
+    test.skip('cannot delete user if pending tasks', () => {});
     test.skip('delete text update', () => {});
     test.skip('delete task', () => {});
     test.skip('cannot delete if pending tasks', () => {});
@@ -428,14 +447,11 @@ describe('create people', () => {
     test.skip('update text date', () => {});
     test.skip('update task', () => {});
     test.skip('update task date', () => {});
-    
   });
-
-  
 
   test.skip('upload image, then update name should preserve both changes', () =>
     false);
-    it.skip('if you edit note, name turns into cannot be blank automatically, make sure it adds photo image by default', () =>
+  it.skip('if you edit note, name turns into cannot be blank automatically, make sure it adds photo image by default', () =>
     false);
 });
 

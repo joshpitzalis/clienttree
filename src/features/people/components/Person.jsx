@@ -5,6 +5,9 @@ import { useMachine } from '@xstate/react';
 import { Machine } from 'xstate';
 import { useDispatch } from 'react-redux';
 import { PersonModal } from './PersonBox';
+import { handleContactDelete } from '../peopleAPI';
+
+import { toast$ } from '../../notifications/toast';
 
 const peopleMachine = Machine({
   id: 'people',
@@ -50,6 +53,16 @@ export const Person = ({ contact, uid }) => {
       clearSelectedUser: () => dispatch({ type: 'people/clearSelectedUser' }),
     },
   });
+
+  const handleDelete = async (_name, _uid, _userId) => {
+    try {
+      dispatch({ type: 'people/clearSelectedUser' });
+      await handleContactDelete(_uid, _userId);
+      send({ type: 'CLOSED' });
+    } catch (error) {
+      toast$.next({ type: 'ERROR', message: error.message || error });
+    }
+  };
 
   switch (current.value) {
     case 'closed':
@@ -103,6 +116,7 @@ export const Person = ({ contact, uid }) => {
             uid={uid}
             contactId={contact.uid}
             onClose={() => send({ type: 'CLOSED' })}
+            handleDelete={handleDelete}
           />
         </li>
       );
