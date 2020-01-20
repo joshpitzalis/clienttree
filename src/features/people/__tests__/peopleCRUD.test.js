@@ -409,6 +409,7 @@ describe('create people', () => {
       // expect closed
       expect(getByTestId('closedPeopleBox'));
     });
+    test.skip('latest update first', () => {});
     test.skip('lets me remove people from dashboard', () => {});
     test.skip('is filled when opened', () => {});
     test.skip('update name', () => {});
@@ -508,7 +509,7 @@ describe('create notes', () => {
   test.skip('changing date should change the date', () => {});
 });
 
-describe('create reminders', () => {
+describe('create tasks', () => {
   // REMINDER_CREATED
   test.skip('clear sidebar when you unmount the person box', () => {});
   it('clicking on a users reveals their specific tasks list in the sidebar', () => {

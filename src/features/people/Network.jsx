@@ -32,6 +32,7 @@ function _Network({ uid }) {
     photoURL: string
   }]} contact */
   const contacts = useSelector(store => store.contacts);
+  console.log({ contacts });
 
   const newDoc = firebase
     .firestore()
@@ -93,7 +94,7 @@ export default function ContactsBox({ contacts, uid }) {
           )}
         </ul>
       ) : (
-        <p data-testid="emptyContacts">No Contacts</p>
+        <p data-testid="emptyContacts">No Contacts Yet.</p>
       )}
     </React.Fragment>
   );

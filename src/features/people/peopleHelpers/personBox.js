@@ -7,25 +7,24 @@ import { setProfileImage } from '../peopleAPI';
  */
 export const usePersonForm = contactId => {
   const dispatch = useDispatch();
-
   const contact = useSelector(
     store =>
       store.contacts && store.contacts.find(person => person.uid === contactId)
   );
-
   const [state, setState] = React.useState({
-    ...contact,
     uid: contactId,
     name: null,
     photoURL: null,
     notes: {
-      1: {
-        id: 1,
+      9007199254740991: {
+        id: 9007199254740991,
         text: '',
+        lastUpdated: 9007199254740991,
       },
     },
     tracked: false,
     saving: null,
+    ...contact,
   });
 
   React.useEffect(() => {
@@ -33,7 +32,6 @@ export const usePersonForm = contactId => {
     if (state.name === null) {
       return;
     }
-
     dispatch({
       type: 'people/updateForm',
       payload: state,

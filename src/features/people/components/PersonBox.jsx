@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { usePersonForm, setImage } from '../peopleHelpers/personBox';
 import { handleTracking as _handleTracking } from '../peopleAPI';
 import { EditBox } from './EditBox';
-import { TimeUpdate } from './TimeUpdate';
+// import { TimeUpdate } from './TimeUpdate';
 import { ConfirmDelete } from './ConfirmDelete';
 
 const personPropTypess = {
@@ -43,7 +43,7 @@ export const PersonModal = ({
   // the new state then streams in through rxjs firebase listeners setup at the root
   const [state, setState] = usePersonForm(contactId);
 
-  const [activeNote, setActiveNote] = React.useState(1);
+  const [activeNote, setActiveNote] = React.useState(9007199254740991);
 
   const [progress, setProgress] = React.useState('Click on image to upload.');
 
@@ -162,42 +162,66 @@ export const PersonModal = ({
             state.notes
               ? state.notes
               : {
-                  1: {
-                    id: 1,
+                  9007199254740991: {
+                    id: 9007199254740991,
                     text: '',
-                    lastUpdated: +new Date(),
+                    lastUpdated: 9007199254740991,
                   },
                 }
-          ).map(note => (
-            <Timeline.Item
-              color="green"
-              className="pointer"
-              key={note.id}
-              onClick={() => setActiveNote(note.id)}
-            >
-              {note.id === 1 ? (
-                <small className="i" data-testid="addUpdate">
-                  Add an update{' '}
-                </small>
-              ) : (
-                <TimeUpdate lastUpdated={note.lastUpdated} />
-              )}
-
-              <div>
-                {activeNote === note.id ? (
-                  <EditBox
-                    // setNotes={setNotes}
-                    note={note}
-                    notes={state.notes}
-                    setActiveNote={setActiveNote}
-                    setState={setState}
-                  />
+          )
+            .sort((a, b) => {
+              if (b.lastUpdated < a.lastUpdated) {
+                return -1;
+              }
+              if (b.lastUpdated > a.lastUpdated) {
+                return 1;
+              }
+              return 0;
+            })
+            .map(note => (
+              <Timeline.Item
+                color="green"
+                className="pointer"
+                key={note.id}
+                onClick={() => setActiveNote(note.id)}
+              >
+                {/* {note.id === 9007199254740991 ? (
+                  <small
+                    className={`i ${activeNote !== 9007199254740991 &&
+                      'underline pointer'}`}
+                    data-testid="addUpdate"
+                  >
+                    Add a new update{' '}
+                  </small>
                 ) : (
-                  <p>{note.id === 1 ? 'Click to edit...' : note.text}</p>
+                  <TimeUpdate lastUpdated={note.lastUpdated} />
+                )} */}
+
+                {note.id === 9007199254740991 && (
+                  <small
+                    className={`i ${activeNote !== 9007199254740991 &&
+                      'underline pointer'}`}
+                    data-testid="addUpdate"
+                  >
+                    Add a new update{' '}
+                  </small>
                 )}
-              </div>
-            </Timeline.Item>
-          ))}
+
+                <div>
+                  {activeNote === note.id ? (
+                    <EditBox
+                      note={note}
+                      notes={state.notes}
+                      setActiveNote={setActiveNote}
+                      setState={setState}
+                      state={state}
+                    />
+                  ) : (
+                    <p>{note.id === 1 ? 'Click to edit...' : note.text}</p>
+                  )}
+                </div>
+              </Timeline.Item>
+            ))}
         </Timeline>
       </div>
       <div className="flex justify-between items-baseline mv4">

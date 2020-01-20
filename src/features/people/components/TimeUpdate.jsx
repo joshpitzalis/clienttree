@@ -24,9 +24,10 @@ export const TimeUpdate = ({ lastUpdated }) => {
           onClick={() => setVisible(true)}
           className="bn text3 underline-hover pointer"
         >
-          {formatDistanceToNow(new Date(lastUpdated), {
-            addSuffix: true,
-          })}
+          {lastUpdated &&
+            formatDistanceToNow(new Date(lastUpdated), {
+              addSuffix: true,
+            })}
         </button>
       )}
     </div>
