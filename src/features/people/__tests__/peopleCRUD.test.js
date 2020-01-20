@@ -197,6 +197,24 @@ describe('create people', () => {
       )
     );
   });
+  it('saves avatar image when name is blurred', async () => {
+    const { getByTestId, getByPlaceholderText } = render(
+      <Person contact={mockData.contact} uid="" />,
+      { initialState: { user: { userId: '123' } } }
+    );
+
+    userEvent.click(getByTestId('openBox'));
+    userEvent.type(getByPlaceholderText('Their name...'), 'x');
+
+    await wait(() =>
+      expect(setContact).toHaveBeenCalledWith(
+        '123',
+        expect.not.objectContaining({
+          photoURL: null,
+        })
+      )
+    );
+  });
   it('no blank names', async () => {
     // @ts-ignore
     setContact.mockReset();
@@ -325,7 +343,7 @@ describe('create people', () => {
       null
     );
   });
-  test('show saving... and saved', async () => {
+  it('shows saving... and saved', async () => {
     const { getByTestId, getByPlaceholderText } = render(
       <Person contact={mockData.contact} />,
       {
@@ -344,7 +362,7 @@ describe('create people', () => {
     //   expect(getByTestId('saveIndicator')).toHaveTextContent(/saving/i);
     // });
   });
-  test('doesnt say saved for the first test', () => {
+  it('does not say saved for the first test', () => {
     const { queryByTestId } = render(<Person contact={mockData.contact} />, {
       initialState: {
         user: {
@@ -355,25 +373,30 @@ describe('create people', () => {
     userEvent.click(queryByTestId('openBox'));
     expect(queryByTestId('saveIndicator')).not.toBeInTheDocument();
   });
-  test('add a loading for contacts in network page', () => {
+  it('adds a loading for contacts in network page', () => {
     const { getByTestId } = render(<Network uid="123" />);
 
     expect(getByTestId('loader')).toBeInTheDocument();
   });
-  test('add an empty state for contacts in network page', () => {
+  it('adds an empty state for contacts in network page', () => {
     const { getByTestId } = render(<Network uid="123" />, {
       initialState: { contacts: [] },
     });
 
     expect(getByTestId('emptyContacts')).toBeInTheDocument();
   });
-  test.skip('when name is blurred avarat image gets saved', () => false);
-  test.skip('upload image, then update name should preserve both changes', () =>
-    false);
-  test.skip('restore space between vertical components on dashboard and people page', () => {});
+
+  describe('delete details from the system', () => {
+    test.skip('delete user', () => {
+      // assert their tasks get deleted
+    });
+    test.skip('delete text update', () => {});
+    test.skip('delete task', () => {});
+    test.skip('cannot delete if pending tasks', () => {});
+  });
 
   describe('update someone on the system', () => {
-    it('click on a person open to an editable person box', () => {
+    it('opens an editable person box when you click on a person ', () => {
       const { getByTestId } = render(
         // <Person
         //   setSelectedUser={mockData.setSelectedUser}
@@ -395,7 +418,7 @@ describe('create people', () => {
       // expect closed
       expect(getByTestId('closedPeopleBox'));
     });
-    test.skip('lets me remove people to dashboard', () => {});
+    test.skip('lets me remove people from dashboard', () => {});
     test.skip('is filled when opened', () => {});
     test.skip('update name', () => {});
     test.skip('uplaod photo', () => {});
@@ -405,14 +428,15 @@ describe('create people', () => {
     test.skip('update text date', () => {});
     test.skip('update task', () => {});
     test.skip('update task date', () => {});
+    
   });
 
-  describe('delete details from the system', () => {
-    test.skip('delete text update', () => {});
-    test.skip('delete task', () => {});
-    test.skip('delete user', () => {});
-    test.skip('cannot delete if pending tasks', () => {});
-  });
+  
+
+  test.skip('upload image, then update name should preserve both changes', () =>
+    false);
+    it.skip('if you edit note, name turns into cannot be blank automatically, make sure it adds photo image by default', () =>
+    false);
 });
 
 describe('create notes', () => {

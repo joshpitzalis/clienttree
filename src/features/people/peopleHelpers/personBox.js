@@ -13,6 +13,8 @@ export const usePersonForm = contactId => {
       store.contacts && store.contacts.find(person => person.uid === contactId)
   );
 
+  const userId = useSelector(store => store.user && store.user.userId);
+
   const [state, setState] = React.useState({
     uid: contactId,
     name: null,
@@ -33,6 +35,7 @@ export const usePersonForm = contactId => {
     if (state.name === null) {
       return;
     }
+
     dispatch({
       type: 'people/updateForm',
       payload: state,

@@ -8,7 +8,15 @@ export const confirmDeletePropTypes = {
 };
 export const confirmDeleteDefaultProps = {};
 
-export const ConfirmDelete = ({ handleDelete, title, activeTaskCount }) => {
+export const ConfirmDelete = ({
+  handleDelete,
+  title,
+  activeTaskCount,
+  className,
+  testid,
+}) => {
+  console.log({ activeTaskCount });
+
   const [confirmDelete, setConfirmDelete] = React.useState(false);
   return (
     <div>
@@ -21,10 +29,10 @@ export const ConfirmDelete = ({ handleDelete, title, activeTaskCount }) => {
         />
       ) : (
         <button
-          className="f6  small-caps bn pointer"
+          className={className}
           type="button"
           onClick={() => setConfirmDelete(true)}
-          data-testid="deleteContact"
+          data-testid={testid}
         >
           {`Delete ${title}`}
         </button>
@@ -50,7 +58,7 @@ function Confirmation({
   setConfirmDelete,
   activeTaskCount,
 }) {
-  if (activeTaskCount) {
+  if (activeTaskCount.length) {
     return (
       <small className="f6 black-70 small-caps" data-testid="deleteGuard">
         You must complete or remove all active tasks before you can delete this
@@ -60,9 +68,9 @@ function Confirmation({
   }
   return (
     <div>
-      <small className="f6 black-70 small-caps">
+      {/* <small className="f6 black-70 small-caps">
         {`Are you sure you want to delete ${title} ?`}
-      </small>
+      </small> */}
       <div className="mv3">
         <button
           className="f6 red small-caps pointer link dim ba bw1 ph3 pv2 mb2 dib b--red"

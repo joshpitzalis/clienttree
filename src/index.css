@@ -41,7 +41,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-ul *:not(:last-child) {
+ul .ant-timeline *:not(:last-child) {
   margin-bottom: 0px !important;
 }
 
