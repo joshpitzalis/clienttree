@@ -13,9 +13,8 @@ export const usePersonForm = contactId => {
       store.contacts && store.contacts.find(person => person.uid === contactId)
   );
 
-  const userId = useSelector(store => store.user && store.user.userId);
-
   const [state, setState] = React.useState({
+    ...contact,
     uid: contactId,
     name: null,
     photoURL: null,
@@ -23,7 +22,6 @@ export const usePersonForm = contactId => {
       1: {
         id: 1,
         text: '',
-        // lastUpdated: +new Date(),
       },
     },
     tracked: false,

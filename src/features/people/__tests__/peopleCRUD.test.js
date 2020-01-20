@@ -385,35 +385,7 @@ describe('create people', () => {
 
     expect(getByTestId('emptyContacts')).toBeInTheDocument();
   });
-
-  describe('delete details from the system', () => {
-    test.only('delete user', async () => {
-      const mockDelete = jest.fn();
-
-      const { getByText } = render(
-        <PersonModal
-          contactId={mockData.contact.uid}
-          handleDelete={mockDelete}
-          uid="123"
-          onClose={jest.fn()}
-          handleTracking={jest.fn()}
-        />,
-        {
-          initialState: { contacts: [mockData.contact] },
-        }
-      );
-
-      act(() => userEvent.click(getByText(/delete null/i)));
-      userEvent.click(getByText(/confirm delete null/i));
-      // expect(mockDelete).toBeCalledWith(55);
-      // (_name, _uid, _userId)
-    });
-    test.skip('cannot delete user if pending tasks', () => {});
-    test.skip('delete text update', () => {});
-    test.skip('delete task', () => {});
-    test.skip('cannot delete if pending tasks', () => {});
-  });
-
+  it.skip('be ble to add tasks when adding someone new', () => false);
   describe('update someone on the system', () => {
     it('opens an editable person box when you click on a person ', () => {
       const { getByTestId } = render(
@@ -447,6 +419,63 @@ describe('create people', () => {
     test.skip('update text date', () => {});
     test.skip('update task', () => {});
     test.skip('update task date', () => {});
+  });
+
+  describe('delete details from the system', () => {
+    test('delete user', () => {
+      const mockDelete = jest.fn();
+
+      const { getByText } = render(
+        <PersonModal
+          contactId="123"
+          handleDelete={mockDelete}
+          uid="1234"
+          onClose={jest.fn()}
+          handleTracking={jest.fn()}
+        />,
+        {
+          initialState: {
+            contacts: [mockData.contact],
+          },
+        }
+      );
+
+      userEvent.click(getByText(/delete null/i));
+      getByText(/confirm delete null/i);
+      // expect(mockDelete).toBeCalledWith(55);
+      // (_name, _uid, _userId)
+    });
+    test('cannot delete user if pending tasks', () => {
+      const mockDelete = jest.fn();
+
+      const { getByText } = render(
+        <PersonModal
+          contactId="123"
+          handleDelete={mockDelete}
+          uid="1234"
+          onClose={jest.fn()}
+          handleTracking={jest.fn()}
+        />,
+        {
+          initialState: {
+            contacts: [mockData.contact],
+            tasks: [
+              {
+                completedFor: mockData.contact.uid,
+                dateCompleted: null,
+              },
+            ],
+          },
+        }
+      );
+
+      userEvent.click(getByText(/delete null/i));
+      getByText(/You must complete or remove all active tasks before/i);
+      // expect(mockDelete).toBeCalledWith(55);
+      // (_name, _uid, _userId)
+    });
+    test.skip('delete text update', () => {});
+    test.skip('delete task', () => {});
   });
 
   test.skip('upload image, then update name should preserve both changes', () =>
