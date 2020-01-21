@@ -5,7 +5,45 @@ describe('stats box', () => {
 
   it('lets me add stats', () => {
     cy.visit('/')
+      //  create a contact
       .findByTestId('salesDashboard')
+      .findByTestId('networkPage')
+      .click()
+      .findByTestId(/outreachPage/i)
+      .findByText(/Add someone new/i)
+      .click()
+      .findByTestId(/contactModal/i)
+      .findByPlaceholderText(/Their name/i)
+      .type('fakeData.name')
+      // .pickDate()
+      // .findByPlaceholderText(/click to edit/i)
+      // .type(fakeData.description)
+      .findByText(/saved/i)
+      .findByText(/close/i)
+      .click()
+      .queryByTestId(/contactModal/i)
+      .should('not.exist')
+
+      .findByText('fakeData.name')
+      .click()
+
+      // create and complete reminder
+      .findByTestId('addreminder')
+      .click()
+      .findByTestId('reminderBox')
+      .findByPlaceholderText('What?')
+      .type('last task')
+      .findByText(/create reminder/i)
+      .click()
+      .queryByTestId('reminderBox')
+      .should('not.exist')
+      .findByTestId('last task')
+      .check()
+
+      .findByText(/close/i)
+      .click()
+      // proceed to hustle
+
       .findByText(/configure your hustle meter/i)
       .click()
       .findByTestId('incomeStatement')
@@ -29,7 +67,7 @@ describe('stats box', () => {
       .findByText('$ 2465')
       .findByTestId('statsTitle')
       .trigger('mouseover')
-      .findByText('120')
+      .findByText('117')
       .findByText('12')
       .findByText('4');
   });

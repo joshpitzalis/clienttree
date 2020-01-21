@@ -2,6 +2,7 @@ describe('onboarding', () => {
   it('shows first task completed when you start', () => {
     cy.visit('/')
       .login()
+      .wait(5000)
       .findByTestId('salesDashboard')
       .findByLabelText(/Sign up to Client Tree/i)
       .should('be.checked');

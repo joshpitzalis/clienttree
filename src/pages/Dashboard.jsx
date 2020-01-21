@@ -184,6 +184,7 @@ export function Dashboard({ userId }) {
 
                     <button
                       type="button"
+                      data-testid="addreminder"
                       onClick={() => setVisibility(true)}
                       className="btn2 ph4 pv3 bn pointer br1 grow b mv4"
                     >

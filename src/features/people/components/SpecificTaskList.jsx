@@ -111,6 +111,7 @@ function TaskDetails({
           className="mr2"
           type="checkbox"
           id={name}
+          data-testid={name}
           value={name}
           checked={dateCompleted}
           onChange={() => {

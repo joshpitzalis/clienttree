@@ -21,7 +21,7 @@ export const ReminderCreator = ({
 
   // if you have the contacts uid then prefill the name field and disable it
   const handleAddReminder = (_name, _task, _date) => {
-    console.log(_name, _task, _date);
+    // console.log(_name, _task, _date);
     handleAddingTask(_task, myUid, theirUid, photoURL);
   };
 
@@ -38,7 +38,11 @@ export const ReminderCreator = ({
           onClose();
         }}
       >
-        <fieldset id="help" className="ba b--transparent ph0 mh0">
+        <fieldset
+          id="help"
+          className="ba b--transparent ph0 mh0"
+          data-testid="reminderBox"
+        >
           <legend className="ph0 mh0 fw6 clip">Create A Reminder</legend>
           <div className="">
             <label className="db fw4 lh-copy f6 " htmlFor="name">
@@ -69,9 +73,9 @@ export const ReminderCreator = ({
               />
             </label>
           </div>
-          <div className="mb2">
+          {/* <div className="mb2">
             <DateBox date={date} setDate={setDate} />
-          </div>
+          </div> */}
           <input
             type="submit"
             value="Create Reminder"

@@ -18,8 +18,8 @@ describe('outreach', () => {
       .findByPlaceholderText(/Their name/i)
       .type(fakeData.name)
       // .pickDate()
-      .findByPlaceholderText(/click to edit/i)
-      .type(fakeData.description)
+      // .findByPlaceholderText(/click to edit/i)
+      // .type(fakeData.description)
       .findByText(/saved/i)
       .findByText(/close/i)
       .click()
@@ -50,6 +50,52 @@ describe('outreach', () => {
       .findByText(fakeData.updatedName)
       .queryByText(fakeData.name)
       .should('not.exist');
+  });
+
+  it('creates a task and completes a task  ', () => {
+    cy.visit('/')
+      .findByTestId('salesDashboard')
+      .findByTestId('networkPage')
+      .click()
+      .findByTestId(/outreachPage/i)
+      .findByText(fakeData.updatedName)
+      .click()
+      .findByTestId('addreminder')
+      .click()
+      .findByTestId('reminderBox')
+      .findByPlaceholderText('What?')
+      .type('last task')
+      .findByText(/create reminder/i)
+      .click()
+      .queryByTestId('reminderBox')
+      .should('not.exist')
+      .findByTestId('last task')
+      .check()
+      .queryByTestId('reminderBox');
+  });
+  // it.skip('complete a task', () => {
+  //   cy.visit('/').login();
+  // });
+
+  context.skip('notes', () => {
+    it.skip('creates a note', () => {
+      cy.visit('/').login();
+    });
+    it.skip('notes show up most recent first', () => {
+      cy.visit('/').login();
+    });
+    it.skip('update a note', () => {
+      cy.visit('/').login();
+    });
+    it.skip('change date on a note', () => {
+      cy.visit('/').login();
+    });
+    it.skip('close date by clicking outside of box', () => {
+      cy.visit('/').login();
+    });
+    it.skip('delete a note', () => {
+      cy.visit('/').login();
+    });
   });
 
   it('lets you delete a contact', () => {
@@ -86,11 +132,7 @@ describe('outreach', () => {
       .should('not.exist');
   });
 
-  it.skip('creates a task', () => {
-    cy.visit('/').login();
-  });
-
-  context.skip('skipped', () => {
+  context.skip('skip', () => {
     it.skip('delete buttons only show up for existing users', () => {
       cy.visit('/').login();
     });
