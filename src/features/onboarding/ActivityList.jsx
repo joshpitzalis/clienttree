@@ -48,7 +48,7 @@ export function Onboarding({ uid, children, contactSelected }) {
     );
 
   const sidebarTitle = (_contactSelected, _onboardingComplete) => {
-    if (_contactSelected) {
+    if (_contactSelected && contact.name) {
       return contact.name;
     }
     if (_onboardingComplete) {
@@ -69,7 +69,7 @@ export function Onboarding({ uid, children, contactSelected }) {
           {/* <AddBox setUser={setUser} userId={uid} /> */}
         </details>
 
-        {!onboardingComplete && (
+        {!onboardingComplete && !contactSelected && (
           <div className="mb4">
             <Progress percent={completePercentage} />
             <GettingStarted uid={uid} onboarding={onboarding} />

@@ -32,7 +32,6 @@ function _Network({ uid }) {
     photoURL: string
   }]} contact */
   const contacts = useSelector(store => store.contacts);
-  console.log({ contacts });
 
   const newDoc = firebase
     .firestore()

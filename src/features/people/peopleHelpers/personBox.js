@@ -11,6 +11,7 @@ export const usePersonForm = contactId => {
     store =>
       store.contacts && store.contacts.find(person => person.uid === contactId)
   );
+  const userId = useSelector(store => store.user && store.user.userId);
   const [state, setState] = React.useState({
     uid: contactId,
     name: null,
@@ -32,11 +33,17 @@ export const usePersonForm = contactId => {
     if (state.name === null) {
       return;
     }
-    dispatch({
-      type: 'people/updateForm',
-      payload: state,
-    });
-  }, [dispatch, state]);
+    if (userId) {
+      dispatch({
+        type: 'ONBOARDING_STEP_COMPLETED',
+        payload: { userId, onboardingStep: 'addedSomeone' },
+      });
+      dispatch({
+        type: 'people/updateForm',
+        payload: state,
+      });
+    }
+  }, [dispatch, state, userId]);
 
   React.useEffect(() => {
     setState(prevState => {

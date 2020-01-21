@@ -70,7 +70,7 @@ export const updateContactEpic = (action$, state$, { setContact }) => {
     map(action => emptyGuard(action, 'Name cannot be blank')),
     switchMap(action => {
       const { payload } = action;
-      console.log({ payload });
+      console.log({ action });
 
       // get your user Id from the store
       const { userId } = state$.value.user;

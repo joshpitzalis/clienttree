@@ -249,7 +249,7 @@ export const PersonModal = ({
         </div>
         <ConfirmDelete
           className="red underline-hover ph3 pv2 bn bg-transparent pointer f6 br1 mb4"
-          testid="deletePerson"
+          testid="deleteContact"
           handleDelete={() => handleDelete(state.name, state.uid, uid)}
           title={state.name}
           activeTaskCount={activeTasks.length}

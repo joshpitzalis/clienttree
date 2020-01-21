@@ -21,22 +21,21 @@ export const EditBox = ({ note, notes, setActiveNote, setState, state }) => {
       .subscribe(action => {
         const newTimestamp = +new Date();
         const newId = id === 9007199254740991 ? newTimestamp : id;
-        setState(prevState => ({
-          ...prevState,
+        setState({
+          ...state,
           notes: {
+            ...state.notes,
             [newId]: {
               id: newId,
               text: action.payload,
               lastUpdated: id === 9007199254740991 ? newTimestamp : lastUpdated,
             },
-            ...prevState.notes,
           },
-        }));
-
+        });
         return setActiveNote(newId);
       });
     return () => subscription.unsubscribe();
-  }, [id, lastUpdated, notes, setActiveNote, setState]);
+  }, [id, lastUpdated, notes, setActiveNote, setState, state]);
 
   return (
     <div>
@@ -49,7 +48,9 @@ export const EditBox = ({ note, notes, setActiveNote, setState, state }) => {
         onChange={event => {
           const { value } = event.target;
           setMessage(value);
-          setState(prevState => ({ ...prevState, saving: true }));
+          if (!state.saving) {
+            setState({ ...state, saving: true });
+          }
           events$.next({
             type: 'people/updateNotesTextarea',
             payload: value,

@@ -10,9 +10,10 @@ import Portal from '../../../utils/Portal';
 import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
 
 /** @param {{
- * myUid: string,
- * contactSelected: string
- * }} [Props] */
+  myUid: string,
+  contactSelected: string
+  }} [Props] */
+
 export const SpecificTaskList = ({ myUid, contactSelected }) => {
   const [helpfulTasks, setHelpfulTasks] = React.useState([]);
 

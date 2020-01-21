@@ -386,6 +386,7 @@ describe('create people', () => {
     expect(getByTestId('emptyContacts')).toBeInTheDocument();
   });
   it.skip('be ble to add tasks when adding someone new', () => false);
+  it.skip('when you create a person it should also create a task by default', () => false);
   describe('update someone on the system', () => {
     it('opens an editable person box when you click on a person ', () => {
       const { getByTestId } = render(
@@ -482,6 +483,9 @@ describe('create people', () => {
   test.skip('upload image, then update name should preserve both changes', () =>
     false);
   it.skip('if you edit note, name turns into cannot be blank automatically, make sure it adds photo image by default', () =>
+    false);
+
+    test.skip('dont show onboarding box if a contact is selected', () =>
     false);
 });
 

@@ -1,6 +1,6 @@
 describe('stats box', () => {
   const fakeData = {
-    name: 'Sick Rick',
+    name: 'Slick Rick',
   };
 
   it('lets me add stats', () => {
@@ -18,7 +18,7 @@ describe('stats box', () => {
       .type(2000)
       .wait(2000)
       .findByTestId('income')
-      .clear()
+      .clear({ force: true })
       .type(2465)
       .wait(2000)
       .findByText(
@@ -29,7 +29,7 @@ describe('stats box', () => {
       .findByText('$ 2465')
       .findByTestId('statsTitle')
       .trigger('mouseover')
-      .findByText('118')
+      .findByText('120')
       .findByText('12')
       .findByText('4');
   });
@@ -42,26 +42,27 @@ describe('stats box', () => {
       .findByTestId('outreachPage')
       .findByText(/add someone new/i)
       .click()
-      .findByLabelText('name')
+      .findByPlaceholderText(/their name/i)
       .type(fakeData.name)
-      .pickDate()
-      .findByPlaceholderText(/notes/i)
+      // .pickDate()
+      .findByPlaceholderText(/click to edit/i)
       .type('this is a note')
-      .queryByTestId('leadToggle')
-      .should('not.exist')
-      .findByText(/save/i)
-      .click()
-      .wait(5000)
-      .queryByTestId(/contactModal/i)
-      .should('not.exist')
-      .findAllByText(fakeData.name)
-      .first()
-      .click()
-      .findByTestId('leadToggle')
-      .click()
-      .findByTestId('close-button')
+      // .queryByTestId('leadToggle')
+      // .should('not.exist')
+      // .findByText(/save/i)
+      // .click()
+      // .wait(5000)
+      // .queryByTestId(/contactModal/i)
+      // .should('not.exist')
+      // .findAllByText(fakeData.name)
+      // .first()
+      // .click()
+      .findByTestId('dashSwitch')
+      .check({ force: true })
+      .wait(1000)
+      .findByTestId('closeBox')
       .click({ force: true })
-      .findByTestId('projectPage')
+      .get('[data-testid=projectPage] > .nav-link-text')
       .click()
       .findAllByTestId(fakeData.name)
       .findByText('$ 2465')
