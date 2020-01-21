@@ -1,12 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
-export const confirmDeletePropTypes = {
-  handleDelete: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  activeTaskCount: PropTypes.number.isRequired,
-};
-export const confirmDeleteDefaultProps = {};
+// export const confirmDeletePropTypes = {
+//   handleDelete: PropTypes.func.isRequired,
+//   title: PropTypes.string.isRequired,
+//   activeTaskCount: PropTypes.number.isRequired,
+// };
+// export const confirmDeleteDefaultProps = {};
 
 export const ConfirmDelete = ({
   handleDelete,
@@ -38,17 +38,17 @@ export const ConfirmDelete = ({
     </div>
   );
 };
-ConfirmDelete.propTypes = confirmDeletePropTypes;
-ConfirmDelete.defaultProps = confirmDeleteDefaultProps;
+// ConfirmDelete.propTypes = confirmDeletePropTypes;
+// ConfirmDelete.defaultProps = confirmDeleteDefaultProps;
 
-const confirmationPropTypes = {
-  title: PropTypes.string.isRequired,
-  handleDelete: PropTypes.func.isRequired,
-  setConfirmDelete: PropTypes.func.isRequired,
-  activeTaskCount: PropTypes.number.isRequired,
-};
+// const confirmationPropTypes = {
+//   title: PropTypes.string.isRequired,
+//   handleDelete: PropTypes.func.isRequired,
+//   setConfirmDelete: PropTypes.func.isRequired,
+//   activeTaskCount: PropTypes.number.isRequired,
+// };
 
-const confirmationDefaultProps = {};
+// const confirmationDefaultProps = {};
 
 function Confirmation({
   title,
@@ -93,5 +93,5 @@ function Confirmation({
   );
 }
 
-Confirmation.propTypes = confirmationPropTypes;
-Confirmation.defaultProps = confirmationDefaultProps;
+// Confirmation.propTypes = confirmationPropTypes;
+// Confirmation.defaultProps = confirmationDefaultProps;

@@ -339,8 +339,8 @@ describe('create people', () => {
       true,
       'userId123',
       '123',
-      null,
-      null
+      'name',
+      'photo'
     );
   });
   it('shows saving... and saved', async () => {
@@ -424,12 +424,52 @@ describe('create people', () => {
     test.skip('update task date', () => {});
   });
 
+  test.skip('notes in order', () => false);
+  test.skip('change date on note', () => false);
+  test.skip('close date box by clicking outside it', () => false);
+  test.skip('delete notes', () => false);
   // create a task
   // complete a task
   // it.skip('completing a task updates the onboarding module', () => {
   //   cy.visit('/').login();
   // });
 
+  // context.skip('notes', () => {
+  //   it.skip('creates a note', () => {
+  //     cy.visit('/').login();
+  //   });
+  //   it.skip('notes show up most recent first', () => {
+  //     cy.visit('/').login();
+  //   });
+  //   it.skip('update a note', () => {
+  //     cy.visit('/').login();
+  //   });
+  //   it.skip('change date on a note', () => {
+  //     cy.visit('/').login();
+  //   });
+  //   it.skip('close date by clicking outside of box', () => {
+  //     cy.visit('/').login();
+  //   });
+  //   it.skip('delete a note', () => {
+  //     cy.visit('/').login();
+  //   });
+  // });
+
+  test.skip('cannot delete a user if you are still on the dashboard', () =>
+    false);
+  test.skip('dont show gettings started when if someone is selected ', () =>
+    false);
+  test.skip('test that you can complete onboarding', () => false);
+  test.skip('creating a person doesnt generate a task anymore', () => false);
+  test.skip('adding someone should check onboarding task', () => false);
+  test.skip('delete notes', () => false);
+  test.skip('you cant delete new users before they are created', () => false);
+  test.skip('you shoudl be able to add a new task to a new person', () =>
+    false);
+  test.skip('delete notes', () => false);
+  test.skip('hide completed tasks', () => false);
+  test.skip('helping someone shoudl check the onboarding box', () => false);
+  test.skip('saving a note in a new contact does save ', () => false);
   // and ensure box shows up if last task
 
   describe('delete details from the system', () => {
@@ -451,8 +491,8 @@ describe('create people', () => {
         }
       );
 
-      userEvent.click(getByText(/delete null/i));
-      getByText(/confirm delete null/i);
+      userEvent.click(getByText(/delete name name/i));
+      getByText(/confirm delete name name/i);
       // expect(mockDelete).toBeCalledWith(55);
       // (_name, _uid, _userId)
     });
@@ -480,7 +520,7 @@ describe('create people', () => {
         }
       );
 
-      userEvent.click(getByText(/delete null/i));
+      userEvent.click(getByText(/delete name name/i));
       getByText(/You must complete or remove all active tasks before/i);
       // expect(mockDelete).toBeCalledWith(55);
       // (_name, _uid, _userId)

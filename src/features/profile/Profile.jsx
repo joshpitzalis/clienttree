@@ -112,7 +112,7 @@ export function Profile(props) {
             .then(() => {
               // track event in amplitude
               const { analytics } = window;
-              analytics.track('Profile Updated');
+              analytics && analytics.track('Profile Updated');
             })
             .catch(error =>
               toast$.next({ type: 'ERROR', message: error.message || error })

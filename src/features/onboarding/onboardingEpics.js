@@ -18,9 +18,10 @@ export const onboardingEpic = action$ =>
           .set({ onboarding: { [onboardingStep]: false } }, { merge: true });
         // this is to track user progress in customer io
         // true means the emails still needs to be sent
-        analytics.identify(userId, {
-          [onboardingStep]: true,
-        });
+        analytics &&
+          analytics.identify(userId, {
+            [onboardingStep]: true,
+          });
       } else {
         await firebase
           .firestore()
@@ -30,12 +31,13 @@ export const onboardingEpic = action$ =>
 
         // this is to track user progress in customer io
         // false means the emails has been sent, and therefore no longer needs to be sent
-        analytics.identify(userId, {
-          [onboardingStep]: false,
-        });
+        analytics &&
+          analytics.identify(userId, {
+            [onboardingStep]: false,
+          });
       }
       //  this is to track product retention in amplitude
-      analytics.track(onboardingStep);
+      analytics && analytics.track(onboardingStep);
     }),
     catchError(error =>
       toast$.next({ type: 'ERROR', message: error.message || error })

@@ -23,10 +23,11 @@ const UserProvider = ({ children }) => {
 
         const createdAt = parseInt(+new Date(metadata.creationTime)) / 1000;
 
-        analytics.identify(uid, {
-          email,
-          created_at: createdAt,
-        });
+        analytics &&
+          analytics.identify(uid, {
+            email,
+            created_at: createdAt,
+          });
         setUid(uid);
         setAuthStatus(true);
       } else {

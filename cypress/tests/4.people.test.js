@@ -73,30 +73,6 @@ describe('outreach', () => {
       .check()
       .queryByTestId('reminderBox');
   });
-  // it.skip('complete a task', () => {
-  //   cy.visit('/').login();
-  // });
-
-  context.skip('notes', () => {
-    it.skip('creates a note', () => {
-      cy.visit('/').login();
-    });
-    it.skip('notes show up most recent first', () => {
-      cy.visit('/').login();
-    });
-    it.skip('update a note', () => {
-      cy.visit('/').login();
-    });
-    it.skip('change date on a note', () => {
-      cy.visit('/').login();
-    });
-    it.skip('close date by clicking outside of box', () => {
-      cy.visit('/').login();
-    });
-    it.skip('delete a note', () => {
-      cy.visit('/').login();
-    });
-  });
 
   it('lets you delete a contact', () => {
     cy.visit('/')
