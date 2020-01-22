@@ -49,6 +49,7 @@ function _Network({ uid }) {
                 setVisibility(false);
                 setSelectedUser('');
               }}
+              newPerson
             />
           ) : (
             <button

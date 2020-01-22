@@ -25,6 +25,7 @@ export const usePersonForm = contactId => {
         lastUpdated: 9007199254740991,
       },
     },
+    lastContacted: +new Date(),
     tracked: false,
     saving: null,
     ...contact,

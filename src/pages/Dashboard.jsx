@@ -208,16 +208,9 @@ export function Dashboard({ userId }) {
 
 const MobileNav = ({ userId }) => {
   const { pathname } = useLocation();
+  const contacts = useSelector(store => store.contacts);
   return (
     <Tabs>
-      <TabItem
-        data-testid="projectPage"
-        to={`/user/${userId}/dashboard`}
-        className={`${pathname === `/user/${userId}/dashboard` &&
-          'active'}  tracked w-50 tc`}
-      >
-        <Home className="o-75 h1" /> Workboard
-      </TabItem>
       <TabItem
         to={`/user/${userId}/network`}
         className={`${pathname === `/user/${userId}/network` &&
@@ -226,6 +219,16 @@ const MobileNav = ({ userId }) => {
       >
         <People className="o-75 h1" /> People
       </TabItem>
+      {contacts && !!contacts.length && (
+        <TabItem
+          data-testid="projectPage"
+          to={`/user/${userId}/dashboard`}
+          className={`${pathname === `/user/${userId}/dashboard` &&
+            'active'}  tracked w-50 tc`}
+        >
+          <Home className="o-75 h1" /> Workboard
+        </TabItem>
+      )}
     </Tabs>
   );
 };
@@ -235,6 +238,8 @@ MobileNav.defaultProps = { userId: '' };
 
 function Navigation({ userId }) {
   const { pathname } = useLocation();
+
+  const contacts = useSelector(store => store.contacts);
   return (
     <>
       <div className="dn-ns">
@@ -246,16 +251,6 @@ function Navigation({ userId }) {
       >
         <div className="mt5">
           <NavLink
-            leftEl={<Home className="o-75 h1" />}
-            Component={Link}
-            data-testid="projectPage"
-            to={`/user/${userId}/dashboard`}
-            className={`${pathname === `/user/${userId}/dashboard` &&
-              'active'}  tracked pb2`}
-          >
-            Workboard
-          </NavLink>
-          <NavLink
             // rightEl="🚝"
             leftEl={<People className="o-75 h1" />}
             Component={Link}
@@ -266,6 +261,20 @@ function Navigation({ userId }) {
           >
             People
           </NavLink>
+          {contacts && !!contacts.length && (
+            <NavLink
+              leftEl={<Home className="o-75 h1" />}
+              Component={Link}
+              data-testid="projectPage"
+              to={`/user/${userId}/dashboard`}
+              className={`${pathname === `/user/${userId}/dashboard` &&
+                'active'}  tracked pb2 `}
+            >
+              <span className="relative" style={{ bottom: '1px' }}>
+                Workboard
+              </span>
+            </NavLink>
+          )}
         </div>
 
         <StatsBox userId={userId} />
@@ -284,7 +293,7 @@ const AddNewTask = () => {
   });
 
   return (
-    <form className="ma0 pa0  mv4">
+    <form className="ma0 pa0 mv4">
       <Input
         setState={setState}
         state={state}

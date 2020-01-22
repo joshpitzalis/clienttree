@@ -14,6 +14,7 @@ export const ConfirmDelete = ({
   activeTaskCount,
   className,
   testid,
+  tracked,
 }) => {
   const [confirmDelete, setConfirmDelete] = React.useState(false);
   return (
@@ -24,6 +25,7 @@ export const ConfirmDelete = ({
           handleDelete={handleDelete}
           setConfirmDelete={setConfirmDelete}
           activeTaskCount={activeTaskCount}
+          tracked={tracked}
         />
       ) : (
         <button
@@ -55,12 +57,19 @@ function Confirmation({
   handleDelete,
   setConfirmDelete,
   activeTaskCount,
+  tracked,
 }) {
+  if (tracked) {
+    return (
+      <small className="f6 black-70 small-caps" data-testid="deleteGuard">
+        {`You must remove ${title} from the workboard before you can delete this contact.`}
+      </small>
+    );
+  }
   if (activeTaskCount) {
     return (
       <small className="f6 black-70 small-caps" data-testid="deleteGuard">
-        You must complete or remove all active tasks before you can delete this
-        contact.
+        {`You must complete or remove all active tasks before you can delete ${title}.`}
       </small>
     );
   }

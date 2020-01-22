@@ -388,10 +388,9 @@ describe('create people', () => {
     expect(getByTestId('emptyContacts')).toBeInTheDocument();
   });
 
-  test.skip('dont show dashboard unless there is someone on it.', () => {});
-  test.skip('cannot delete a user if you are still on the dashboard', () =>
+  it.skip('default image should be saved to state when opened', () => {});
+  test.skip('if generated name is unchanged, and nothing else is added don;t save, actually delete, the name on close', () =>
     false);
-
   it.skip('clear sidebar when you unmount the person box, like when you jump to sales page from open contact', () =>
     // load  dashboard
     // open a contact
@@ -596,6 +595,7 @@ describe('delete details from the system', () => {
     // expect(mockDelete).toBeCalledWith(55);
     // (_name, _uid, _userId)
   });
+
   test('cannot delete user if pending tasks', () => {
     const mockDelete = jest.fn();
 
@@ -621,12 +621,42 @@ describe('delete details from the system', () => {
     );
 
     userEvent.click(getByText(/delete name name/i));
-    getByText(/You must complete or remove all active tasks before/i);
+    getByText(
+      /You must complete or remove all active tasks before you can delete name name/i
+    );
+    // expect(mockDelete).toBeCalledWith(55);
+    // (_name, _uid, _userId)
+  });
+
+  test('cannot delete a user if you are still on the dashboard', () => {
+    const mockDelete = jest.fn();
+
+    const { getByText } = render(
+      <PersonModal
+        contactId="123"
+        handleDelete={mockDelete}
+        uid="1234"
+        onClose={jest.fn()}
+        handleTracking={jest.fn()}
+      />,
+      {
+        initialState: {
+          contacts: [{ ...mockData.contact, tracked: true }],
+          tasks: [],
+        },
+      }
+    );
+
+    userEvent.click(getByText(/delete name name/i));
+    getByText(
+      `You must remove name name from the workboard before you can delete this contact.`
+    );
     // expect(mockDelete).toBeCalledWith(55);
     // (_name, _uid, _userId)
   });
   test.skip('delete text update', () => {});
   test.skip('delete task', () => {});
+  test.skip('you shoudl be able to delete new people aswell as existing contact', () => {});
 });
 
 describe('create notes', () => {
@@ -729,6 +759,10 @@ describe('create tasks', () => {
 });
 
 describe('other', () => {
+  test.skip('dont show dashboard unless there is someone on it.', () => {});
+  test.skip('organise contact by teh order they were last contacted in', () => {});
+  test.skip('when you create a not it updates the last contacted field on the closed box', () => {});
+
   test.skip('you must only be able to select one user at a time,two users cannot be open atthe same time', () => {});
   test.skip('add add people button to project dashboard', () => {});
   test.skip(' add people button on project dashboard disappears if people are there', () => {});

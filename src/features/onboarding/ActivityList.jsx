@@ -34,7 +34,7 @@ export function Onboarding({ uid, children, contactSelected }) {
       store.contacts &&
       store.contacts.find(person => person.uid === contactSelected)
   );
-  console.log({ contact });
+
   // const setUser = async payload => {
   //   dispatch({
   //     type: USER_UPDATED,

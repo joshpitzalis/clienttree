@@ -1,8 +1,4 @@
 export const generateName = () => {
-  function capFirst(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
   }
@@ -3914,10 +3910,8 @@ export const generateName = () => {
     'curtain',
   ];
 
-  const name = `${capFirst(
-    adjectives[getRandomInt(0, adjectives.length + 1)]
-  )}${nouns[getRandomInt(0, nouns.length + 1)]} ${capFirst(
-    name2[getRandomInt(0, name2.length + 1)]
-  )}`;
+  const name = `${adjectives[getRandomInt(0, adjectives.length + 1)]}${
+    nouns[getRandomInt(0, nouns.length + 1)]
+  } ${name2[getRandomInt(0, name2.length + 1)]}`;
   return name;
 };

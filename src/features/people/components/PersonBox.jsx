@@ -36,6 +36,7 @@ export const PersonModal = ({
   onClose,
   handleTracking = _handleTracking,
   handleDelete,
+  newPerson,
 }) => {
   const dispatch = useDispatch();
   const avatarRef = React.useRef(null);
@@ -43,6 +44,12 @@ export const PersonModal = ({
   // it will debounce for one second then save the new state to firebase
   // the new state then streams in through rxjs firebase listeners setup at the root
   const [state, setState] = usePersonForm(contactId);
+
+  React.useEffect(() => {
+    if (state.photoURL === null) {
+      setState({ ...state, photoURL: avatarRef.current.getImageData() });
+    }
+  }, [avatarRef, setState, state]);
 
   const [activeNote, setActiveNote] = React.useState(9007199254740991);
 
@@ -57,11 +64,10 @@ export const PersonModal = ({
   );
 
   React.useEffect(() => {
-    console.log('frog1');
+    // not sure how to just fire effect on unmount, removing the redundant function breaks tests
+    const redundant = () => {};
     return () => dispatch({ type: 'people/clearSelectedUser' });
   }, [dispatch]);
-
-  console.log('uid', state.uid);
 
   return (
     <div>
@@ -105,7 +111,7 @@ export const PersonModal = ({
               <label htmlFor="name">
                 <span className="text3">Name</span>
                 <input
-                  className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2"
+                  className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2 ttc"
                   type="text"
                   name="name"
                   id="name"
@@ -148,15 +154,20 @@ export const PersonModal = ({
               </span>
             }
             checked={state.tracked || null}
-            onChange={e =>
+            onChange={e => {
+              setState({
+                ...state,
+                tracked: e.target.checked,
+                saving: true,
+              });
               handleTracking(
                 e.target.checked,
                 uid,
                 contactId,
                 state.name,
                 state.photoURL
-              )
-            }
+              );
+            }}
             data-testid="dashSwitch"
             label={
               <b className="text1">
@@ -258,13 +269,16 @@ export const PersonModal = ({
             </small>
           )}
         </div>
-        <ConfirmDelete
-          className="red underline-hover ph3 pv2 bn bg-transparent pointer f6 br1 mb4"
-          testid="deleteContact"
-          handleDelete={() => handleDelete(state.name, state.uid, uid)}
-          title={state.name}
-          activeTaskCount={activeTasks.length}
-        />
+        {!newPerson && (
+          <ConfirmDelete
+            className="red underline-hover ph3 pv2 bn bg-transparent pointer f6 br1 mb4"
+            testid="deleteContact"
+            handleDelete={() => handleDelete(state.name, state.uid, uid)}
+            title={state.name}
+            activeTaskCount={activeTasks.length}
+            tracked={state.tracked}
+          />
+        )}
       </div>
     </div>
   );
