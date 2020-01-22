@@ -6,7 +6,6 @@ import { Machine } from 'xstate';
 import { useDispatch } from 'react-redux';
 import { PersonModal } from './PersonBox';
 import { handleContactDelete } from '../peopleAPI';
-
 import { toast$ } from '../../notifications/toast';
 
 const peopleMachine = Machine({

@@ -3,7 +3,7 @@ import { Toggle } from '@duik/it';
 import { Timeline } from 'antd';
 import AvatarGenerator from 'react-avatar-generator';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { usePersonForm, setImage } from '../peopleHelpers/personBox';
 import { handleTracking as _handleTracking } from '../peopleAPI';
 import { EditBox } from './EditBox';
@@ -37,6 +37,7 @@ export const PersonModal = ({
   handleTracking = _handleTracking,
   handleDelete,
 }) => {
+  const dispatch = useDispatch();
   const avatarRef = React.useRef(null);
   // whenever the state of this component gets updated
   // it will debounce for one second then save the new state to firebase
@@ -54,6 +55,13 @@ export const PersonModal = ({
         task => task.completedFor === state.uid && task.dateCompleted === null
       )
   );
+
+  React.useEffect(() => {
+    console.log('frog1');
+    return () => dispatch({ type: 'people/clearSelectedUser' });
+  }, [dispatch]);
+
+  console.log('uid', state.uid);
 
   return (
     <div>
@@ -179,17 +187,16 @@ export const PersonModal = ({
               return 0;
             })
             .map(note => (
-              <Timeline.Item
-                color="green"
-                className="pointer"
-                key={note.id}
-                onClick={() => setActiveNote(note.id)}
-              >
+              <Timeline.Item color="green" className="pointer" key={note.id}>
                 {note.id === 9007199254740991 ? (
                   <small
                     className={`i ${activeNote !== 9007199254740991 &&
                       'underline pointer'}`}
                     data-testid="addUpdate"
+                    onClick={() => setActiveNote(note.id)}
+                    onKeyDown={() => setActiveNote(note.id)}
+                    role="button"
+                    tabIndex={-1}
                   >
                     Add a new update{' '}
                   </small>
@@ -200,17 +207,6 @@ export const PersonModal = ({
                     note={note}
                   />
                 )}
-
-                {/* {note.id === 9007199254740991 && (
-                  <small
-                    className={`i ${activeNote !== 9007199254740991 &&
-                      'underline pointer'}`}
-                    data-testid="addUpdate"
-                  >
-                    Add a new update{' '}
-                  </small>
-                )} */}
-
                 <div>
                   {activeNote === note.id ? (
                     <EditBox
@@ -221,7 +217,18 @@ export const PersonModal = ({
                       state={state}
                     />
                   ) : (
-                    <p>{note.id === 1 ? 'Click to edit...' : note.text}</p>
+                    <p>
+                      <span
+                        onClick={() => setActiveNote(note.id)}
+                        onKeyDown={() => setActiveNote(note.id)}
+                        role="button"
+                        tabIndex={-1}
+                      >
+                        {note.id === 9007199254740991
+                          ? 'Click to edit...'
+                          : note.text}
+                      </span>
+                    </p>
                   )}
                 </div>
               </Timeline.Item>

@@ -1,8 +1,7 @@
 import React from 'react';
 import { TextArea } from '@duik/it';
 import { Icon } from 'antd';
-// import PropTypes from 'prop-types';
-import { debounceTime, filter, tap } from 'rxjs/operators';
+import { debounceTime, filter } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 const events$ = new Subject();
@@ -58,38 +57,108 @@ export const EditBox = ({ note, notes, setActiveNote, setState, state }) => {
         }}
         value={message}
       />
-      {/* {note.id !== 9007199254740991 && (
-        <div className="flex justify-between items-start mt0 pa0 mb3">
-          <Icon
-            className="o-50"
-            type="delete"
-            style={{
-              color: 'red',
-            }}
-          />
-        </div>
-      )} */}
+      {note.id !== 9007199254740991 && (
+        <DeleteNote
+          noteId={note.id}
+          setState={setState}
+          setActiveNote={setActiveNote}
+          state={state}
+        />
+      )}
     </div>
   );
 };
 
-// EditBox.propTypes = {
-//   note: PropTypes.shape({
-//     id: PropTypes.number,
-//     text: PropTypes.string,
-//     lastUpdated: PropTypes.number,
-//   }).isRequired,
-//   notes: PropTypes.any,
-//   setActiveNote: PropTypes.func.isRequired,
-//   setState: PropTypes.func.isRequired,
-// };
+function deleteReducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return { count: state.count + 1 };
+    case 'decrement':
+      return { count: state.count - 1 };
+    default:
+      throw new Error();
+  }
+}
 
-// EditBox.defaultProps = {
-//   notes: {
-//     1: {
-//       id: 1,
-//       text: '',
-//       lastUpdated: +new Date(),
-//     },
-//   },
-// };
+const handleDelete = ({
+  setDeleting,
+  state,
+  noteId,
+  setState,
+  setActiveNote,
+}) => {
+  // show deleting in progress...
+  setDeleting(true);
+  // actually delete note
+  try {
+    const newNotes = { ...state.notes };
+    delete newNotes[noteId];
+    const newState = { ...state, notes: newNotes, saving: true };
+    setState(newState);
+    // setActive Note once the existing active note is deleted
+    setActiveNote(9007199254740991);
+    setDeleting(false);
+  } catch (error) {
+    // make sure to catch any unforseen errors
+    console.error({ error });
+    setDeleting(false);
+  }
+};
+
+function DeleteNote({ noteId, setState, setActiveNote, state }) {
+  const [visible, setVisibility] = React.useState(false);
+  const [deleting, setDeleting] = React.useState(false);
+
+  // const [_state, dispatch] = React.useReducer(deleteReducer, {
+  //   deleting: false,
+  // });
+
+  if (deleting) {
+    return (
+      <button
+        className="f6 red pointer link dim bn ph3 pv2 mb2 dib"
+        type="button"
+        data-testid="deletingInProcess"
+        disabled
+      >
+        {`Deleting...`}
+      </button>
+    );
+  }
+
+  return visible ? (
+    <div>
+      <button
+        className="f6 red pointer link dim bn ph3 pv2 mb2 dib"
+        type="button"
+        // data-testid="confirmDeleteContact"
+        onClick={() =>
+          handleDelete({ setDeleting, state, noteId, setState, setActiveNote })
+        }
+      >
+        {`Confirm Delete`}
+      </button>
+      <button
+        className="f6  bn pointer ml3 "
+        type="button"
+        onClick={() => {
+          setVisibility(false);
+        }}
+        // data-testid="nevermindContactDelete"
+      >
+        Nevermind
+      </button>
+    </div>
+  ) : (
+    <div className="flex justify-between items-start mt0 pa0 mb3">
+      <Icon
+        className="o-50"
+        type="delete"
+        onClick={() => setVisibility(true)}
+        style={{
+          color: 'red',
+        }}
+      />
+    </div>
+  );
+}

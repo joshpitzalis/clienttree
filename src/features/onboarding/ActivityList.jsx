@@ -1,21 +1,24 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 // import { filter } from 'rxjs/operators';
-import { useImmerReducer } from 'use-immer';
+// import { useImmerReducer } from 'use-immer';
 import {
   useSelector,
   // useDispatch
 } from 'react-redux';
-import AvatarGenerator from 'react-avatar-generator';
-import { AutoComplete, Progress } from 'antd';
-import { collection } from 'rxfire/firestore';
-import { map, catchError } from 'rxjs/operators';
+// import AvatarGenerator from 'react-avatar-generator';
+import {
+  // AutoComplete,
+  Progress,
+} from 'antd';
+// import { collection } from 'rxfire/firestore';
+// import { map, catchError } from 'rxjs/operators';
 // import { HelpfulTaskList } from '../people/components/UniversalTaskList';
 import { GettingStarted } from './GettingStarted';
 // import { USER_UPDATED } from '../people/networkConstants';
-import firebase from '../../utils/firebase';
-import { toast$ } from '../notifications/toast';
-import { Input } from '../people/components/Input';
+// import firebase from '../../utils/firebase';
+// import { toast$ } from '../notifications/toast';
+// import { Input } from '../people/components/Input';
 
 /** @param {{uid:string, children: JSX.Element, contactSelected: string}} [Props] */
 
@@ -31,7 +34,7 @@ export function Onboarding({ uid, children, contactSelected }) {
       store.contacts &&
       store.contacts.find(person => person.uid === contactSelected)
   );
-
+  console.log({ contact });
   // const setUser = async payload => {
   //   dispatch({
   //     type: USER_UPDATED,
@@ -47,9 +50,12 @@ export function Onboarding({ uid, children, contactSelected }) {
       ((1 + Object.values(onboarding).filter(_x => !!_x).length) / 7) * 100
     );
 
-  const sidebarTitle = (_contactSelected, _onboardingComplete) => {
-    if (_contactSelected && contact.name) {
-      return contact.name;
+  const sidebarTitle = (_contactSelected, _onboardingComplete, _contact) => {
+    if (_contactSelected) {
+      if (_contact && _contact.name) {
+        return _contact.name;
+      }
+      return 'Reminders';
     }
     if (_onboardingComplete) {
       return 'Activities';
@@ -63,7 +69,7 @@ export function Onboarding({ uid, children, contactSelected }) {
         <details data-testid="detailBox">
           <summary>
             <legend className="fw7 mb3 dib " data-testid="toggleAddBox">
-              {sidebarTitle(contactSelected, onboardingComplete)}
+              {sidebarTitle(contactSelected, onboardingComplete, contact)}
             </legend>
           </summary>
           {/* <AddBox setUser={setUser} userId={uid} /> */}

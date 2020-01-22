@@ -1,13 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import './networkAnimations.css';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Person } from './components/Person';
-
 import { PersonModal } from './components/PersonBox';
-
-import { AddButton } from './components/AddButton';
+// import { AddButton } from './components/AddButton';
 import ErrorBoundary from '../../utils/ErrorBoundary';
 import firebase from '../../utils/firebase';
 
@@ -32,7 +29,7 @@ function _Network({ uid }) {
     photoURL: string
   }]} contact */
   const contacts = useSelector(store => store.contacts);
-
+  const dispatch = useDispatch();
   const newDoc = firebase
     .firestore()
     .collection('users')
@@ -58,6 +55,10 @@ function _Network({ uid }) {
               type="button"
               onClick={() => {
                 setSelectedUser(newDoc.id);
+                dispatch({
+                  type: 'people/setSelectedUser',
+                  payload: newDoc.id,
+                });
                 setVisibility(true);
               }}
               className="btn1 b grow  ph3 pv2  pointer bn br1 white"

@@ -496,7 +496,7 @@ export const setContact = (
     uid,
     name,
     summary = '',
-    lastContacted = '',
+    lastContacted = null,
     photoURL = '',
     downloadURL = '',
     notes = {},
@@ -508,18 +508,15 @@ export const setContact = (
     .doc(userId)
     .collection('contacts')
     .doc(uid)
-    .set(
-      {
-        name,
-        summary,
-        uid,
-        lastContacted: lastContacted || null,
-        photoURL: downloadURL || photoURL,
-        activeTaskCount: 1,
-        notes,
-      },
-      { merge: true }
-    );
+    .set({
+      name,
+      summary,
+      uid,
+      lastContacted,
+      photoURL: downloadURL || photoURL,
+      activeTaskCount: 1,
+      notes,
+    });
 
 export const setProfileImage = ({ imageFile, contactId }) =>
   firebase

@@ -2,6 +2,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import React from 'react';
 import { toast$ } from '../../notifications/toast';
 import { setProfileImage } from '../peopleAPI';
+import { generateName } from './randomNameGenerator';
+
 /**
  * @param {string} contactId - contact Id of selected user
  */
@@ -14,7 +16,7 @@ export const usePersonForm = contactId => {
   const userId = useSelector(store => store.user && store.user.userId);
   const [state, setState] = React.useState({
     uid: contactId,
-    name: null,
+    name: generateName(),
     photoURL: null,
     notes: {
       9007199254740991: {
