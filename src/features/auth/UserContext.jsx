@@ -23,18 +23,19 @@ const UserProvider = ({ children }) => {
 
         const createdAt = parseInt(+new Date(metadata.creationTime)) / 1000;
 
-        analytics &&
+        setUid(uid);
+        setAuthStatus(true);
+        return (
+          analytics &&
           analytics.identify(uid, {
             email,
             created_at: createdAt,
-          });
-        setUid(uid);
-        setAuthStatus(true);
-      } else {
-        // tk redirect to login here
-        setAuthStatus(false);
-        setUid('');
+          })
+        );
       }
+      // tk redirect to login here
+      setAuthStatus(false);
+      setUid('');
     });
   }, []);
 

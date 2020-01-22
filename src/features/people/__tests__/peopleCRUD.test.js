@@ -2,7 +2,8 @@ import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { TestScheduler } from 'rxjs/testing';
-import { cleanup, wait, fireEvent, act } from '@testing-library/react';
+import { cleanup, wait, fireEvent } from '@testing-library/react';
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { render } from '../../../utils/testSetup';
 import { Person } from '../components/Person';
 import { Network } from '../Network';
@@ -10,6 +11,7 @@ import { updateContactEpic } from '../networkEpics';
 import { setContact, setProfileImage, handleTracking } from '../peopleAPI';
 import { PersonModal } from '../components/PersonBox';
 import { Dashboard } from '../../../pages/Dashboard';
+import { TimeUpdate } from '../components/TimeUpdate';
 
 jest.mock('../peopleAPI', () => ({
   setContact: jest.fn(),
@@ -373,7 +375,7 @@ describe('create people', () => {
     userEvent.click(queryByTestId('openBox'));
     expect(queryByTestId('saveIndicator')).not.toBeInTheDocument();
   });
-  it('adds a loading for contacts in network page', () => {
+  it('adds a loading spinner for contacts in network page', () => {
     const { getByTestId } = render(<Network uid="123" />);
 
     expect(getByTestId('loader')).toBeInTheDocument();
@@ -385,10 +387,54 @@ describe('create people', () => {
 
     expect(getByTestId('emptyContacts')).toBeInTheDocument();
   });
-  it.skip('be ble to add tasks when adding someone new', () => false);
-  it.skip('when you create a person it should also create a task by default', () =>
-    false);
+
   describe('update someone on the system', () => {
+    test('close notes calendar box by clicking outside it', () => {
+      const mockContact = {
+        uid: '123',
+        name: 'hello',
+        lastContacted: 0,
+        activeTaskCount: 3,
+        photoURL: 'string',
+      };
+
+      const { getByTestId, getAllByTestId, getByText, queryByTestId } = render(
+        <Person contact={mockContact} uid="123" />,
+        {
+          initialState: {
+            contacts: [
+              {
+                uid: '123',
+                name: 'hello',
+                lastContacted: 0,
+                activeTaskCount: 3,
+                photoURL: 'string',
+                notes: {
+                  1: { id: 1, text: 'hello', lastUpdated: 1579605299501 },
+                  2: { id: 2, text: 'hello two', lastUpdated: 1579605299601 },
+                  9007199254740991: {
+                    id: 9007199254740991,
+                    text: '',
+                    lastUpdated: 9007199254740991,
+                  },
+                },
+              },
+            ],
+          },
+        }
+      );
+      userEvent.click(getByTestId('openBox'));
+      userEvent.click(getAllByTestId('timeBox')[0]);
+      getAllByTestId('calendarBox');
+      userEvent.click(getByText(/Click on image to upload/));
+      expect(queryByTestId('calendarBox')).not.toBeInTheDocument();
+    });
+
+    test.only('delete notes', () => {});
+
+    it.skip('be ble to add tasks when adding someone new', () => false);
+    it.skip('when you create a person it should also create a task by default', () =>
+      false);
     it('opens an editable person box when you click on a person ', () => {
       const { getByTestId } = render(
         // <Person
@@ -422,54 +468,33 @@ describe('create people', () => {
     test.skip('update text date', () => {});
     test.skip('update task', () => {});
     test.skip('update task date', () => {});
+
+    test.skip('notes in order', () => false);
+    test.skip('create a task', () => false);
+    test.skip('complete a task', () => false);
+    test.skip('completing a task updates the onboarding module', () => false);
+
+    test.skip('create a note', () => false);
+    test.skip('notes show up most recent first', () => false);
+    test.skip('update a note', () => false);
+    test.skip('create a note', () => false);
+    test.skip('cannot delete a user if you are still on the dashboard', () =>
+      false);
+    test.skip('dont show gettings started when if someone is selected ', () =>
+      false);
+    test.skip('test that you can complete onboarding', () => false);
+    test.skip('creating a person doesnt generate a task anymore', () => false);
+    test.skip('adding someone should check onboarding task', () => false);
+    test.skip('delete notes', () => false);
+    test.skip('you cant delete new users before they are created', () => false);
+    test.skip('you shoudl be able to add a new task to a new person', () =>
+      false);
+    test.skip('delete notes', () => false);
+    test.skip('hide completed tasks', () => false);
+    test.skip('helping someone shoudl check the onboarding box', () => false);
+    test.skip('saving a note in a new contact does save ', () => false);
   });
 
-  test.skip('notes in order', () => false);
-  test.skip('change date on note', () => false);
-  test.skip('close date box by clicking outside it', () => false);
-  test.skip('delete notes', () => false);
-  // create a task
-  // complete a task
-  // it.skip('completing a task updates the onboarding module', () => {
-  //   cy.visit('/').login();
-  // });
-
-  // context.skip('notes', () => {
-  //   it.skip('creates a note', () => {
-  //     cy.visit('/').login();
-  //   });
-  //   it.skip('notes show up most recent first', () => {
-  //     cy.visit('/').login();
-  //   });
-  //   it.skip('update a note', () => {
-  //     cy.visit('/').login();
-  //   });
-  //   it.skip('change date on a note', () => {
-  //     cy.visit('/').login();
-  //   });
-  //   it.skip('close date by clicking outside of box', () => {
-  //     cy.visit('/').login();
-  //   });
-  //   it.skip('delete a note', () => {
-  //     cy.visit('/').login();
-  //   });
-  // });
-
-  test.skip('cannot delete a user if you are still on the dashboard', () =>
-    false);
-  test.skip('dont show gettings started when if someone is selected ', () =>
-    false);
-  test.skip('test that you can complete onboarding', () => false);
-  test.skip('creating a person doesnt generate a task anymore', () => false);
-  test.skip('adding someone should check onboarding task', () => false);
-  test.skip('delete notes', () => false);
-  test.skip('you cant delete new users before they are created', () => false);
-  test.skip('you shoudl be able to add a new task to a new person', () =>
-    false);
-  test.skip('delete notes', () => false);
-  test.skip('hide completed tasks', () => false);
-  test.skip('helping someone shoudl check the onboarding box', () => false);
-  test.skip('saving a note in a new contact does save ', () => false);
   // and ensure box shows up if last task
 
   describe('delete details from the system', () => {
@@ -679,4 +704,52 @@ describe('other', () => {
   test.skip('test coverage in CI', () => {});
 
   test.skip('dont show dashboard unless there is someone on it.', () => {});
+});
+
+describe('work but just needs tests', () => {
+  test.skip('change date on note', async () => {
+    const mockContact = {
+      uid: '123',
+      name: 'hello',
+      lastContacted: 0,
+      activeTaskCount: 3,
+      photoURL: 'string',
+    };
+
+    const { getByTestId, getAllByTestId } = render(
+      <Person contact={mockContact} uid="123" />,
+      {
+        initialState: {
+          contacts: [
+            {
+              uid: '123',
+              name: 'hello',
+              lastContacted: 0,
+              activeTaskCount: 3,
+              photoURL: 'string',
+              notes: {
+                1: { id: 1, text: 'hello', lastUpdated: 1579605299501 },
+                2: { id: 2, text: 'hello two', lastUpdated: 1579605299601 },
+                9007199254740991: {
+                  id: 9007199254740991,
+                  text: '',
+                  lastUpdated: 9007199254740991,
+                },
+              },
+            },
+          ],
+        },
+      }
+    );
+    // get note
+    userEvent.click(getByTestId('openBox'));
+    userEvent.click(getAllByTestId('timeBox')[0]);
+
+    // get distance from 22 jan
+    // import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+
+    // use format to compare date to check
+    // change date
+    // conform date change
+  });
 });

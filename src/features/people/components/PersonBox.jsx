@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { usePersonForm, setImage } from '../peopleHelpers/personBox';
 import { handleTracking as _handleTracking } from '../peopleAPI';
 import { EditBox } from './EditBox';
-// import { TimeUpdate } from './TimeUpdate';
+import { TimeUpdate } from './TimeUpdate';
 import { ConfirmDelete } from './ConfirmDelete';
 
 const personPropTypess = {
@@ -185,7 +185,7 @@ export const PersonModal = ({
                 key={note.id}
                 onClick={() => setActiveNote(note.id)}
               >
-                {/* {note.id === 9007199254740991 ? (
+                {note.id === 9007199254740991 ? (
                   <small
                     className={`i ${activeNote !== 9007199254740991 &&
                       'underline pointer'}`}
@@ -194,10 +194,14 @@ export const PersonModal = ({
                     Add a new update{' '}
                   </small>
                 ) : (
-                  <TimeUpdate lastUpdated={note.lastUpdated} />
-                )} */}
+                  <TimeUpdate
+                    lastUpdated={note.lastUpdated}
+                    setState={setState}
+                    note={note}
+                  />
+                )}
 
-                {note.id === 9007199254740991 && (
+                {/* {note.id === 9007199254740991 && (
                   <small
                     className={`i ${activeNote !== 9007199254740991 &&
                       'underline pointer'}`}
@@ -205,7 +209,7 @@ export const PersonModal = ({
                   >
                     Add a new update{' '}
                   </small>
-                )}
+                )} */}
 
                 <div>
                   {activeNote === note.id ? (
