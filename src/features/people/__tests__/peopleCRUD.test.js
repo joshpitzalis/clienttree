@@ -416,6 +416,12 @@ describe('email reminders', () => {
   test.skip('email is cancelled if reminder is cancelled ', () => {});
   test.skip('email is cancelled if reminder is completed ', () => {});
   test.skip('email is cancelled if date is changed', () => {});
+  test.skip('can select a date next month', () => {});
+  test.skip('defaults to next week', () => {});
+  test.skip('can change/edit a reminder', () => {});
+  test.skip('cannot select date before yesterday', () => {});
+  test.skip('adding a date is not mandatory', () => {});
+  test.skip('no blank text in reminders', () => {});
 });
 
 describe('update someone on the system', () => {

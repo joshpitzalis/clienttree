@@ -17,7 +17,7 @@ export const ReminderCreator = ({
 
   const [name, setName] = React.useState(contact && contact.name);
   const [task, setTask] = React.useState('');
-  const [date, setDate] = React.useState(+new Date());
+  const [date, setDate] = React.useState(+new Date() + 604800000);
 
   // if you have the contacts uid then prefill the name field and disable it
   const handleAddReminder = (contactName, taskName, dueDate) => {
@@ -95,6 +95,7 @@ export const ReminderCreator = ({
 
 function DateBox({ date, setDate }) {
   const [visible, setVisible] = React.useState(false);
+
   return visible ? (
     <DatepickerContainer>
       <Datepicker
@@ -115,7 +116,7 @@ function DateBox({ date, setDate }) {
         name="date"
         id="date"
         onClick={() => setVisible(true)}
-        value={format(new Date(date), 'EEEE io MMMM yyyy')}
+        value={format(date, 'EEEE do MMMM yyyy')}
         onChange={e => setDate(e.target.value)}
       />
     </label>

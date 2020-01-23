@@ -153,6 +153,11 @@ export function Dashboard({ userId }) {
       <div className="flex flex-row-ns flex-column w-100 justify-between min-h-100 bg-base">
         <Navigation userId={userId} />
         <main className="w-50-ns w-100 min-h-100">
+          <Route
+            exact
+            path="/user/:uid/network"
+            render={props => <Network {...props} uid={userId} />}
+          />
           {userId && (
             <Route
               exact
@@ -165,11 +170,6 @@ export function Dashboard({ userId }) {
             path="/user/:uid/profile"
             render={props => <Profile {...props} />}
           />
-          <Route
-            exact
-            path="/user/:uid/network"
-            render={props => <Network {...props} uid={userId} />}
-          />
         </main>
         <aside className="dn dib-ns">
           <NavPanel onRight className="bn">
@@ -177,11 +177,6 @@ export function Dashboard({ userId }) {
               <>
                 {selectedUserUid ? (
                   <>
-                    <SpecificTaskList
-                      myUid={userId}
-                      contactSelected={selectedUserUid}
-                    />
-
                     <button
                       type="button"
                       data-testid="addreminder"
@@ -190,6 +185,10 @@ export function Dashboard({ userId }) {
                     >
                       Add A Reminder
                     </button>
+                    <SpecificTaskList
+                      myUid={userId}
+                      contactSelected={selectedUserUid}
+                    />
                   </>
                 ) : (
                   <UniversalTaskList myUid={userId} />
