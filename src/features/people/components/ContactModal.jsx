@@ -73,8 +73,22 @@ const Modal = ({
     }
   };
 
-  const handleAddingTask = (task, myUid, theirUid, photoURL) => {
-    handleAddTask(task, myUid, theirUid, photoURL).catch(error =>
+  const handleAddingTask = ({
+    taskName,
+    myUid,
+    theirUid,
+    photoURL,
+    dueDate,
+    contactName,
+  }) => {
+    handleAddTask({
+      taskName,
+      myUid,
+      theirUid,
+      photoURL,
+      dueDate,
+      contactName,
+    }).catch(error =>
       toast$.next({ type: 'ERROR', message: error.message || error })
     );
   };

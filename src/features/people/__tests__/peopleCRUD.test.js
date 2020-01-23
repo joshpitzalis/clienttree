@@ -777,6 +777,7 @@ describe('other', () => {
   test.skip('cypress mobile tests', () => {});
 
   test.skip('mobile version', () => {});
+  test.skip('now workboard tab on mobile', () => {});
   test.skip('mobile landscape', () => {});
   test.skip('tablet version', () => {});
   test.skip('tablet landscape', () => {});
@@ -785,6 +786,10 @@ describe('other', () => {
   test.skip('firebase rules', () => {});
   test.skip('cypress CI', () => {});
   test.skip('test coverage in CI', () => {});
+  test.skip('userID and 123 shoud not be shoing up when I run tests', () => {});
+  test.skip('test coverage in CI', () => {});
+  test.skip('what if people change their profile photo after they create a task, teh old tasks will show their previous photo', () => {});
+  test.skip('pay for the new logo', () => {});
 });
 
 describe('login page', () => {

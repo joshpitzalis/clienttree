@@ -1,2 +1,2 @@
 
-export { someoneSignedUp } from './auth'
+export { dailySummary } from './reminders'

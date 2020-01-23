@@ -242,9 +242,9 @@ function Navigation({ userId }) {
   const contacts = useSelector(store => store.contacts);
   return (
     <>
-      <div className="dn-ns">
+      {/* <div className="dn-ns">
         <MobileNav userId={userId} />
-      </div>
+      </div> */}
       <NavPanel
         dark
         className="flex-ns dn flex-column justify-between min-vh-100 "

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Datepicker, DatepickerContainer } from '@duik/it';
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import format from 'date-fns/format';
 
 export const ReminderCreator = ({
   myUid,
@@ -17,12 +17,18 @@ export const ReminderCreator = ({
 
   const [name, setName] = React.useState(contact && contact.name);
   const [task, setTask] = React.useState('');
-  const [date, setDate] = React.useState('');
+  const [date, setDate] = React.useState(+new Date());
 
   // if you have the contacts uid then prefill the name field and disable it
-  const handleAddReminder = (_name, _task, _date) => {
-    // console.log(_name, _task, _date);
-    handleAddingTask(_task, myUid, theirUid, photoURL);
+  const handleAddReminder = (contactName, taskName, dueDate) => {
+    handleAddingTask({
+      taskName,
+      myUid,
+      theirUid,
+      photoURL,
+      dueDate,
+      contactName,
+    });
   };
 
   return (
@@ -43,7 +49,7 @@ export const ReminderCreator = ({
           className="ba b--transparent ph0 mh0"
           data-testid="reminderBox"
         >
-          <legend className="ph0 mh0 fw6 clip">Create A Reminder</legend>
+          <legend className="ph0 mh0 fw6 ">Follow up with...</legend>
           <div className="">
             <label className="db fw4 lh-copy f6 " htmlFor="name">
               {/* <span className="db b">Ways you can help this person</span> */}
@@ -64,7 +70,7 @@ export const ReminderCreator = ({
               {/* <span className="db b">Ways you can help this person</span> */}
               <input
                 className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa3 br2 mb2 "
-                placeholder="What?"
+                placeholder="About What?"
                 type="text"
                 name="task"
                 id="task"
@@ -73,9 +79,9 @@ export const ReminderCreator = ({
               />
             </label>
           </div>
-          {/* <div className="mb2">
+          <div className="mb2">
             <DateBox date={date} setDate={setDate} />
-          </div> */}
+          </div>
           <input
             type="submit"
             value="Create Reminder"
@@ -92,8 +98,11 @@ function DateBox({ date, setDate }) {
   return visible ? (
     <DatepickerContainer>
       <Datepicker
-        value={new Date()}
-        onDateChange={() => setVisible(false)}
+        value={new Date(date)}
+        onDateChange={value => {
+          setDate(+new Date(value));
+          setVisible(false);
+        }}
         minDate={new Date()}
       />
     </DatepickerContainer>
@@ -106,7 +115,7 @@ function DateBox({ date, setDate }) {
         name="date"
         id="date"
         onClick={() => setVisible(true)}
-        value={date}
+        value={format(new Date(date), 'EEEE io MMMM yyyy')}
         onChange={e => setDate(e.target.value)}
       />
     </label>

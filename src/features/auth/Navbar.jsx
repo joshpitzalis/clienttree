@@ -45,7 +45,7 @@ export const Navbar = withRouter(({ history }) => {
       <TopBarSection>
         <TopBarTitle>
           <Link to={userId ? `/user/${userId}/dashboard` : '/'}>
-            <Tree classNames="ml4 pl2 b hover-white no-underline flex items-center pa3 " />
+            <Tree classNames="pa3" />
           </Link>
         </TopBarTitle>
       </TopBarSection>
