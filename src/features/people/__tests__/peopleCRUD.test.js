@@ -422,6 +422,8 @@ describe('email reminders', () => {
   test.skip('cannot select date before yesterday', () => {});
   test.skip('adding a date is not mandatory', () => {});
   test.skip('no blank text in reminders', () => {});
+  test.skip('show  overdue reminders', () => {});
+  test.skip('show how many day over due', () => {});
 });
 
 describe('update someone on the system', () => {

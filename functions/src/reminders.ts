@@ -12,9 +12,6 @@ const API_KEY = functions.config().sendgrid && functions.config().sendgrid.key;
 const TEMPLATE_ID = functions.config().sendgrid.template;
 sgMail.setApiKey(API_KEY);
 
-
-
-
 // Send a daily summary email to all users
 export const dailySummary = functions.pubsub
   .schedule('every 24 hours')
@@ -32,9 +29,9 @@ export const dailySummary = functions.pubsub
         const groupedData = data.reduce((result, item) => {
           // merge same emails together but accumulate their reminders
           const index = result.findIndex(
-            element => element.email === item.userEmail
+            (element: { email: string }) => element.email === item.userEmail
           );
-          console.log({ index });
+
 
           if (index >= 0) {
             // add to that item
@@ -48,7 +45,7 @@ export const dailySummary = functions.pubsub
                 },
               ],
               count: result[index].count + 1,
-              plural: true,
+              plural: 's',
             };
             return result;
           }
@@ -60,9 +57,9 @@ export const dailySummary = functions.pubsub
                 reminder: item.name,
               },
             ],
-            url: `/user/${item.connectedTo}`,
+            url: `/user/${item.connectedTo}/network`,
             count: 1,
-            plural: false,
+            plural: '',
           });
           return result;
         }, []);
@@ -75,7 +72,14 @@ export const dailySummary = functions.pubsub
 
 
     // for each email send the following message
-    return allReminders.forEach(person => {
+    return allReminders.forEach((person
+      : {
+        email: string
+        reminders: { person: string, reminder: string }[],
+        url: string,
+        count: number,
+        plural: boolean
+      }) => {
 
       const msg = {
         to: person.email,

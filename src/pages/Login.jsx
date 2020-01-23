@@ -37,10 +37,10 @@ export class Login extends Component {
     const { authStatus, userId } = this.props;
 
     if (authStatus && userId) {
-      return <Redirect to={`/user/${userId}/dashboard`} />;
+      return <Redirect to={`/user/${userId}/network`} />;
     }
     if (loggedInSuccessfully && uid) {
-      return <Redirect to={`/user/${uid}/dashboard`} />;
+      return <Redirect to={`/user/${uid}/network`} />;
     }
     return (
       <div>
