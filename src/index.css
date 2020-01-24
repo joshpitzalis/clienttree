@@ -128,12 +128,13 @@ textarea{
   border: 1px var(--red) solid;
 }
 
-.taskBorder[data-state="incomplete.overDue"] {
+.taskBorder[data-state="overDue"] {
   border: 1px var(--red) solid;
 }
 
-.taskBorder[data-state="incomplete.dueToday"] {
-  border: 1px var(--success) solid;
+.taskBorder[data-state="dueToday"] {
+
+  outline: 1px var(--success) solid;
 }
 
 .taskStyle {

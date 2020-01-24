@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as Sentry from '@sentry/browser';
 import { Provider } from 'react-redux';
+import { SplitProvider } from 'react-splitio';
 import * as serviceWorker from './serviceWorker';
 import Routes from './Routes';
 import { UserProvider } from './features/auth/UserContext';
@@ -23,12 +24,22 @@ if (process.env.NODE_ENV === 'production') {
   axe(React, ReactDOM, 1000, config);
 }
 
+const SDK_CONFIG_OBJECT = {
+  core: {
+    authorizationKey: 'a20q0ghml02lf7kksc5ba0e1tqv1vqm5p2cp',
+    key: 'CUSTOMER_ID',
+    trafficType: 'A_TRAFFIC_TYPE',
+  },
+};
+
 const App = () => (
-  <Provider store={store}>
-    <UserProvider>
-      <Routes />
-    </UserProvider>
-  </Provider>
+  <SplitProvider config={SDK_CONFIG_OBJECT}>
+    <Provider store={store}>
+      <UserProvider>
+        <Routes />
+      </UserProvider>
+    </Provider>
+  </SplitProvider>
 );
 
 ReactDOM.render(<App />, document.getElementById('root'));

@@ -3,50 +3,64 @@ import { useMachine } from '@xstate/react';
 import { Machine } from 'xstate';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import fromUnixTime from 'date-fns/fromUnixTime';
+import { assert } from 'chai';
 import { ACTIVITY_COMPLETED } from '../networkConstants';
 import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
-
 // state visualisation:
 // https://xstate.js.org/viz/?gist=7925b7b6f194989221d4a2da62731937
 
-const taskMachine = Machine({
+export const taskMachine = Machine({
   id: 'task',
   initial: 'incomplete',
   states: {
     incomplete: {
       initial: 'upcoming',
-      on: {
-        COMPLETED: 'complete',
-        DELETED: 'confirmation',
-      },
+      // on: {
+      //   COMPLETED: 'complete',
+      //   DELETED: 'confirmation',
+      // },
+
       states: {
         upcoming: {
           on: {
             TASK_OVERDUE: 'overDue',
             TASK_DUE_TODAY: 'dueToday',
           },
+          meta: {
+            test: ({ getByTestId }) => assert.ok(getByTestId('incomplete')),
+          },
         },
         dueToday: {
           on: {
-            CLOSED: { target: 'dueToday', actions: ['clearSelectedUser'] },
+            CLOSED: 'dueToday',
+          },
+          meta: {
+            test: ({ getByTestId }) => {
+              assert.ok(getByTestId('incomplete'));
+            },
           },
         },
         overDue: {
           on: {
-            CLOSED: { target: 'dueToday', actions: ['clearSelectedUser'] },
+            CLOSED: 'dueToday',
+          },
+          meta: {
+            test: ({ getByTestId }) => {
+              assert.ok(getByTestId('incomplete'));
+            },
           },
         },
       },
     },
-    confirmation: {
-      on: {
-        DELETED: 'complete',
-        CANCELLED: 'incomplete',
-      },
-    },
-    complete: {
-      type: 'final',
-    },
+    // confirmation: {
+    //   on: {
+    //     DELETED: 'complete',
+    //     CANCELLED: 'incomplete',
+    //   },
+    // },
+    // complete: {
+    //   type: 'final',
+    // },
   },
 });
 
@@ -77,9 +91,9 @@ export function TaskBox({
 }) {
   const [current, send] = useMachine(taskMachine, {
     actions: {
-      setSelectedUser: (ctx, event) =>
-        dispatch({ type: 'people/setSelectedUser', payload: event.payload }),
-      clearSelectedUser: () => dispatch({ type: 'people/clearSelectedUser' }),
+      // setSelectedUser: (ctx, event) =>
+      //   dispatch({ type: 'people/setSelectedUser', payload: event.payload }),
+      // clearSelectedUser: () => dispatch({ type: 'people/clearSelectedUser' }),
     },
   });
 
@@ -101,12 +115,16 @@ export function TaskBox({
   }, [dateCompleted, dueDate, send]);
 
   return (
-    <div className="mb3" key={taskId}>
+    <div
+      className="mb3 pa2 taskBorder br3 bg-white"
+      key={taskId}
+      data-state={current.value && current.value.incomplete}
+    >
       <label
         htmlFor={name}
-        data-state={current.value}
-        className="lh-copy flex items-center justify-around br3 bg-white taskBorder label relative pl3 pointer"
+        className="lh-copy flex items-center justify-around  label relative pl3 pointer"
         style={{ minWidth: '100%' }}
+        data-testid="incomplete"
       >
         <input
           className="taskBox"

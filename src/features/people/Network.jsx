@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSplit } from 'react-splitio';
 import './networkAnimations.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { Person } from './components/Person';
@@ -89,7 +90,7 @@ function _Network({ uid }) {
   //       console.log({ groupedData });
   //     });
   // }, []);
-
+  const [feature1] = useSplit('feature1');
   return (
     <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
       <>
@@ -122,6 +123,7 @@ function _Network({ uid }) {
             </button>
           )}
         </div>
+        {feature1 === 'on' && <p>split is working</p>}
         <ContactsBox contacts={contacts} uid={uid}></ContactsBox>
       </>
     </ErrorBoundary>
