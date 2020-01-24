@@ -25,6 +25,10 @@ describe.skip('network task features', () => {
 });
 
 describe.skip('sidebar task attributes', () => {
+  test('organise task by due date', () => false);
+  test('word  overflow', () => false);
+  test(' senetence overflow', () => false);
+  test('checkbox over flow', () => false);
   test('click checkbox to confirm complete', () => false);
   test('nevermind works', () => false);
   test('confirm complete works', () => false);

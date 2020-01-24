@@ -14,13 +14,14 @@ sgMail.setApiKey(API_KEY);
 
 // Send a daily summary email to all users
 export const dailySummary = functions.pubsub
-  .schedule('every 24 hours')
+  .schedule('every day 00:00')
+  .timeZone('Asia/Kolkata')
   .onRun(async context => {
     // get all upcoming reminders
     const allReminders = await db
       .collectionGroup('helpfulTasks')
       .where('dateCompleted', '==', null)
-      .where('dueDate', '>=', +new Date())
+      // .where('dueDate', '>=', +new Date())
       .where('dueDate', '<=', +new Date() + 86400000)
       .get()
       .then(results => {
