@@ -155,11 +155,11 @@ export const PersonModal = ({
             }
             checked={state.tracked || null}
             onChange={e => {
-              setState({
-                ...state,
-                tracked: e.target.checked,
-                saving: true,
-              });
+              // setState({
+              //   ...state,
+              //   tracked: e.target.checked,
+              //   saving: true,
+              // });
               handleTracking(
                 e.target.checked,
                 uid,

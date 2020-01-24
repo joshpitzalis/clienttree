@@ -8,6 +8,7 @@ import firebase from '../../../utils/firebase';
 import Modal from './ContactModal';
 import Portal from '../../../utils/Portal';
 import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
+import { TaskBox } from './TaskBox';
 
 const helpfulPropTypes = {
   myUid: PropTypes.string.isRequired,
@@ -16,7 +17,7 @@ const helpfulDefaultProps = {};
 
 export const HelpfulTaskList = ({ myUid }) => {
   const [helpfulTasks, setHelpfulTasks] = React.useState([]);
-
+  const dispatch = useDispatch();
   React.useEffect(() => {
     const subscription = collection(
       firebase
@@ -57,9 +58,9 @@ export const HelpfulTaskList = ({ myUid }) => {
 
       {helpfulTasks &&
         helpfulTasks.map(
-          ({ taskId, name, dateCompleted, completedFor, photoURL }) =>
+          ({ taskId, name, dateCompleted, completedFor, photoURL, dueDate }) =>
             completedFor && (
-              <TaskDetails
+              <TaskBox
                 key={taskId}
                 taskId={taskId}
                 name={name}
@@ -69,6 +70,8 @@ export const HelpfulTaskList = ({ myUid }) => {
                 setSelectedUser={setSelectedUser}
                 setVisibility={setVisibility}
                 photoURL={photoURL}
+                dispatch={dispatch}
+                dueDate={dueDate}
               />
             )
         )}
@@ -115,7 +118,7 @@ function TaskDetails({
 
   return (
     <div className="flex items-baseline mb2" key={taskId}>
-      <label htmlFor={name} className="lh-copy flex items-baseline label">
+      <label htmlFor={name} className="lh-copy flex items-baseline ">
         <input
           className="mr2 input"
           type="checkbox"

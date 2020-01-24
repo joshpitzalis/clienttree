@@ -55,6 +55,10 @@ textarea{
   border: none !important;
 }
 
+.bg-white {
+  background-color:var(--bg-main);
+}
+
 .bg-client-green {
   background-color:var(--primary);
 }
@@ -112,6 +116,26 @@ textarea{
   border-top: 3px var(--primary) solid;
 }
 
+.b--green{
+  border: 1px var(--success) solid;
+}
+
+.b--orange{
+  border: 1px var(--orange) solid;
+}
+
+.b--red{
+  border: 1px var(--red) solid;
+}
+
+.taskBorder[data-state="incomplete.overDue"] {
+  border: 1px var(--red) solid;
+}
+
+.taskBorder[data-state="incomplete.dueToday"] {
+  border: 1px var(--success) solid;
+}
+
 .taskStyle {
   -webkit-font-smoothing: antialiased;
 
@@ -143,70 +167,63 @@ details summary::-webkit-details-marker {
 }
 
 
- 
-/* input boxes */
-/* 
-.container {
-  display: flex;
-  margin-left: calc(48px + 4px * -1);
-}
 
-.input {
+
+/* checkboxes */
+
+/* Hide the browser's default checkbox */
+.label input, .taskBox {
   position: absolute;
   opacity: 0;
-}
-
- .label  {
-  position: relative;
   cursor: pointer;
-  padding-left: calc(48px + 4px);
+  height: 0;
+  width: 0;
 }
 
-
-
- .label:before  {
-  content: '';
+/* Create a custom checkbox */
+.checkBox {
   position: absolute;
-  top: 10;
   left: 0;
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  color: var(--primary) !important;
-  background-color: var(--bg-base) !important;
-  border-radius: 2px;
-  transition: all ease .15s;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 4px;
 }
 
-.label:before  {
-  box-shadow: var(--bg-base) 0 0 0 2px, var(--primary) 0 0 0 4px;
+/* On mouse-over, add a grey background color */
+.label:hover input ~ .checkBox {
+  background-color: #ccc;
 }
 
-.label:before  {
-  background: var(--primary);
+/* When the checkbox is checked, add a blue background */
+.label input:checked ~ .checkBox {
+  background-color: var(--primary);
 }
 
-.label:after   {
-  opacity: 0;
-  transition: var(.15s);
-  content: '';
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkBox:after {
+  content: "";
   position: absolute;
-  display: inline-block;
-  left: 10px;
-  top: 6px;
-  width: 6px;
-  height: 12px;
-  transform: rotate(45deg);
-  border-style: solid;
-  border-color: var(--primary);
-  border-image: initial;
-  border-width: 0px 2px 2px 0px;
+  display: none;
 }
 
- .label:after > .input:checked  {
-  opacity: 1;
-} 
+/* Show the checkmark when checked */
+.label input:checked ~ .checkBox:after {
+  display: block;
+}
 
- */
+/* Style the checkmark/indicator */
+.label .checkBox:after {
+  left: 10px;
+  top: 7px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
 
 

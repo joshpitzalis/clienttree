@@ -23,3 +23,39 @@ describe.skip('network task features', () => {
 
   test('new task is not added when a contact is updated', () => false);
 });
+
+describe.skip('sidebar task attributes', () => {
+  test('click checkbox to confirm complete', () => false);
+  test('nevermind works', () => false);
+  test('confirm complete works', () => false);
+  test('click to edit', () => false);
+  test('confetti on completion', () => false);
+  test('click to edit', () => false);
+  test('shows task details', () => false);
+  test('shows deadline', () => false);
+  test('shows green red organe based on how over due', () => false);
+  test('tasks with no names cannot be created', () => false);
+});
+
+describe.skip('create reminder options', () => {
+  test('remind me next week', () => false);
+  test('remind me next month', () => false);
+  test('remind me in 3 months', () => false);
+  test('remind me next year', () => false);
+});
+
+describe.skip('network page', () => {
+  test('after you have about 10 contacts make the rmeind button teh primary button and demphasize teh add peopel button', () =>
+    false);
+  test('organise contacts by people I ahve not contacted for teh longerst', () =>
+    false);
+  test('let me add a reminder from mobile and create new contact', () => false);
+  test('let me add a reminder from mobile on existing contact', () => false);
+  test('encourage people to add past clients first as that is low hanging fruit', () =>
+    false);
+});
+
+describe.skip('email reminders', () => {
+  test('shoudl show everything over due', () => false);
+  test('shoudl indicate how oevrdue they are somehow', () => false);
+});

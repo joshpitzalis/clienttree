@@ -152,7 +152,7 @@ export function Dashboard({ userId }) {
       )}
       <div className="flex flex-row-ns flex-column w-100 justify-between min-h-100 bg-base">
         <Navigation userId={userId} />
-        <main className="w-50-ns w-100 min-h-100">
+        <main className="dn db-ns w-50-ns w-100 min-h-100">
           <Route
             exact
             path="/user/:uid/network"
@@ -171,7 +171,7 @@ export function Dashboard({ userId }) {
             render={props => <Profile {...props} />}
           />
         </main>
-        <aside className="dn dib-ns">
+        <aside className="">
           <NavPanel onRight className="bn">
             <Onboarding uid={userId} contactSelected={selectedUserUid}>
               <>
