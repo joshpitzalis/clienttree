@@ -15,69 +15,100 @@ export const taskMachine = Machine({
   states: {
     incomplete: {
       initial: 'upcoming',
-      // on: {
-      //   COMPLETED: 'complete',
-      //   DELETED: 'confirmation',
-      // },
-
+      on: {
+        COMPLETED: 'confirmation',
+        // DELETED: 'deletion',
+        ALREADY_COMPLETED: 'complete',
+      },
       states: {
         upcoming: {
           on: {
             TASK_OVERDUE: 'overDue',
             TASK_DUE_TODAY: 'dueToday',
           },
-          meta: {
-            test: ({ getByTestId }) => assert.ok(getByTestId('incomplete')),
-          },
         },
-        dueToday: {
-          on: {
-            CLOSED: 'dueToday',
-          },
-          meta: {
-            test: ({ getByTestId }) => {
-              assert.ok(getByTestId('incomplete'));
-            },
-          },
-        },
-        overDue: {
-          on: {
-            CLOSED: 'dueToday',
-          },
-          meta: {
-            test: ({ getByTestId }) => {
-              assert.ok(getByTestId('incomplete'));
-            },
-          },
+        dueToday: {},
+        overDue: {},
+      },
+      meta: {
+        test: ({ getByTestId }) => {
+          assert.ok(getByTestId('incomplete'));
         },
       },
     },
-    // confirmation: {
+    confirmation: {
+      on: {
+        COMPLETED: 'complete',
+        CANCELLED: 'incomplete',
+      },
+      meta: {
+        test: ({ getByTestId }) => {
+          assert.ok(getByTestId('confirmation'));
+        },
+      },
+    },
+    // deletion: {
     //   on: {
-    //     DELETED: 'complete',
+    //     DELETED: 'deleted',
     //     CANCELLED: 'incomplete',
     //   },
+    //   meta: {
+    //     test: ({ getByTestId }) => {
+    //       assert.ok(getByTestId('deletion'));
+    //     },
+    //   },
     // },
-    // complete: {
+    complete: {
+      entry: 'handleComplete',
+      type: 'final',
+    },
+    // deleted: {
     //   type: 'final',
     // },
   },
 });
 
+const handleComplete = ({
+  dispatch,
+  taskId,
+  myUid,
+  completedFor,
+  setSelectedUser,
+  setVisibility,
+}) => {
+  dispatch({
+    type: ACTIVITY_COMPLETED,
+    payload: {
+      taskId,
+      myUid,
+      completedFor,
+      setSelectedUser,
+      setVisibility,
+    },
+  });
+  dispatch({
+    type: ONBOARDING_STEP_COMPLETED,
+    payload: {
+      userId: myUid,
+      onboardingStep: 'helpedSomeone',
+    },
+  });
+};
 /** @param {{
  taskId: string,
  name: string,
- dateCompleted:number,
+ dateCompleted?:number,
  myUid: string,
  completedFor: string,
+ photoURL: string,
+ dueDate: number
  setSelectedUser: function,
  setVisibility: function,
- photoURL: string,
  dispatch: function,
- dueDate: number
+ setComplete?: function,
 }} [Props] */
 
-export function TaskBox({
+export const TaskBox = ({
   taskId,
   name,
   dateCompleted,
@@ -88,12 +119,19 @@ export function TaskBox({
   photoURL,
   dispatch,
   dueDate,
-}) {
+  setComplete = handleComplete,
+}) => {
   const [current, send] = useMachine(taskMachine, {
     actions: {
-      // setSelectedUser: (ctx, event) =>
-      //   dispatch({ type: 'people/setSelectedUser', payload: event.payload }),
-      // clearSelectedUser: () => dispatch({ type: 'people/clearSelectedUser' }),
+      handleComplete: () =>
+        setComplete({
+          dispatch,
+          taskId,
+          myUid,
+          completedFor,
+          setSelectedUser,
+          setVisibility,
+        }),
     },
   });
 
@@ -102,23 +140,27 @@ export function TaskBox({
     const now = +new Date();
     const oneDayInMilliseconds = 86400000;
     //
+    if (dateCompleted) {
+      send('ALREADY_COMPLETED');
+    }
     if (dueDate < now) {
       send('TASK_OVERDUE');
     }
     if (dueDate < now + oneDayInMilliseconds) {
       send('TASK_DUE_TODAY');
     }
-
-    if (dateCompleted) {
-      send('COMPLETED');
-    }
   }, [dateCompleted, dueDate, send]);
 
   return (
     <div
-      className="mb3 pa2 taskBorder br3 bg-white"
+      className="mb3 pa2 taskBorder br3"
       key={taskId}
-      data-state={current.value && current.value.incomplete}
+      data-state={
+        current.value && current.value.incomplete
+          ? current.value.incomplete
+          : current.value
+      }
+      data-testid={current.value && current.value.incomplete}
     >
       <label
         htmlFor={name}
@@ -133,29 +175,14 @@ export function TaskBox({
           data-testid={name}
           value={name}
           checked={current.value === 'complete'}
-          onChange={() => {
-            dispatch({
-              type: ACTIVITY_COMPLETED,
-              payload: {
-                taskId,
-                myUid,
-                completedFor,
-                setSelectedUser,
-                setVisibility,
-              },
-            });
-            dispatch({
-              type: ONBOARDING_STEP_COMPLETED,
-              payload: {
-                userId: myUid,
-                onboardingStep: 'helpedSomeone',
-              },
-            });
-          }}
+          onChange={() => send('COMPLETED')}
         />
         <span className="checkBox" data-state={current.value}></span>
         <div className="ph3 tl w-100">
-          <p className={`${current.value === 'complete' && 'strike'}`}>
+          <p
+            className={`${current.matches('complete') && 'strike'}`}
+            data-testid={current.matches('complete') && 'complete'}
+          >
             {name}
           </p>
           <small className="text3">{`Due ${formatDistanceToNow(
@@ -165,6 +192,31 @@ export function TaskBox({
         </div>
         <img src={photoURL} alt={name} height="25" className="br-100" />
       </label>
+      {current.matches('confirmation') && (
+        <div
+          className="flex flex-column justify-center"
+          data-testid="confirmation"
+        >
+          <button
+            type="button"
+            onClick={() => send('COMPLETED')}
+            data-testid="confirmDelete"
+            className="btn2 
+           ph3 pv2 bn pointer br1 
+           grow b
+          "
+          >
+            Confirm Completed
+          </button>
+          <button
+            type="button"
+            onClick={() => send('CANCELLED')}
+            className="bn pointer pv2 text3"
+          >
+            Nevermind
+          </button>
+        </div>
+      )}
     </div>
   );
-}
+};

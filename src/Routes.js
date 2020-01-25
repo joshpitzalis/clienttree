@@ -24,7 +24,7 @@ const App = () => {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <>
+        <div className="">
           <Banner />
           <Navbar authStatus={authStatus} />
           <main>
@@ -70,7 +70,7 @@ const App = () => {
               render={referProps => <Refer {...referProps} userId={userId} />}
             />
           </main>
-        </>
+        </div>
       </BrowserRouter>
     </ErrorBoundary>
   );

@@ -1,20 +1,29 @@
 import React from 'react';
 import { createModel } from '@xstate/test';
-import {
-  cleanup,
-  // fireEvent
-} from '@testing-library/react';
+import { cleanup, fireEvent } from '@testing-library/react';
 // import userEvent from '@testing-library/user-event';
 import { TaskBox, taskMachine } from '../components/TaskBox';
 import { render } from '../../../utils/testSetup';
 
+const mockProps = {
+  taskId: '123',
+  name: 'example',
+  dateCompleted: null,
+  myUid: '1111',
+  completedFor: 'someone',
+  setSelectedUser: jest.fn(),
+  setVisibility: jest.fn(),
+  photoURL: 'string',
+  dispatch: jest.fn(),
+  dueDate: 157988670463899,
+};
 const statsModel = createModel(taskMachine).withEvents({
   TASK_OVERDUE: () => {},
   TASK_DUE_TODAY: () => {},
-  CLOSED: () => {},
-  // MODAL_OPENED: ({ getByTestId }) => {
-  //   fireEvent.click(getByTestId('incomplete-screen'));
-  // },
+  ALREADY_COMPLETED: () => {},
+  COMPLETED: ({ getByTestId }) => {
+    fireEvent.click(getByTestId(mockProps.name));
+  },
   // COMPLETE_MODAL_OPENED: ({ getByTestId }) => {
   //   fireEvent.click(getByTestId('statsTitle'));
   // },
@@ -39,23 +48,9 @@ testPlans.forEach(plan => {
     plan.paths.forEach(path => {
       it(path.description, async () => {
         // Test setup
-        const rendered = render(
-          <TaskBox
-            taskId="123"
-            name="example"
-            dateCompleted={2345}
-            myUid="1111"
-            completedFor="someone"
-            setSelectedUser={() => {}}
-            setVisibility={() => {}}
-            photoURL="string"
-            dispatch={() => {}}
-            dueDate={157988670463899}
-          />,
-          {
-            initialState: {},
-          }
-        );
+        const rendered = render(<TaskBox {...mockProps} />, {
+          initialState: {},
+        });
 
         // Test execution
         await path.test(rendered);

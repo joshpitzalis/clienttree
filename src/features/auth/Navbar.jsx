@@ -45,7 +45,7 @@ export const Navbar = withRouter(({ history }) => {
       <TopBarSection>
         <TopBarTitle>
           <Link to={userId ? `/user/${userId}/dashboard` : '/'}>
-            <Tree classNames="pa3" />
+            <Tree classNames="" />
           </Link>
         </TopBarTitle>
       </TopBarSection>

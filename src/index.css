@@ -5,6 +5,7 @@ body {
   background-color:var(--bg-base);
   font-size: 18px;
   color: hsl(0, 0%, 13%);
+  
   --text-base: hsl(0, 0%, 13%);
   --text-main: hsl(0, 0%, 13%);
   --text-secondary: hsl(0, 0%, 32%);
@@ -128,14 +129,6 @@ textarea{
   border: 1px var(--red) solid;
 }
 
-.taskBorder[data-state="overDue"] {
-  border: 1px var(--red) solid;
-}
-
-.taskBorder[data-state="dueToday"] {
-
-  outline: 1px var(--success) solid;
-}
 
 .taskStyle {
   -webkit-font-smoothing: antialiased;
@@ -157,7 +150,6 @@ white-space: nowrap;
 }
 
 
-
 .react-date-picker__wrapper {
   border: none !important;
   width: 100%;
@@ -165,6 +157,23 @@ white-space: nowrap;
 
 details summary::-webkit-details-marker {
   display:none;
+}
+
+/*TaskBox */
+
+.taskBorder[data-state="overDue"] {
+  border: 1px var(--red) solid;
+  background-color: #FFDFDF;
+}
+
+.taskBorder[data-state="dueToday"] {
+  border: 1px var(--primary) solid;
+  background-color: var(--success);
+}
+
+.taskBorder[data-state="confirmation"] {
+  border: 1px var(--primary) solid;
+  /* background-color: var(--success); */
 }
 
 
@@ -189,6 +198,7 @@ details summary::-webkit-details-marker {
   width: 25px;
   background-color: #eee;
   border-radius: 4px;
+  border: 1px #c1c1c1 dotted;
 }
 
 /* On mouse-over, add a grey background color */
