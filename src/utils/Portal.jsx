@@ -40,14 +40,14 @@ export default class Portal extends Component {
 
     return ReactDOM.createPortal(
       <div
-        className="fixed vh-100 w-100 bg-black-50 flex items-center justify-center z-2"
+        className="fixed h-100 w-100 bg-black-50 flex items-center justify-center z-2"
         onClick={onClose}
         onKeyPress={onClose}
         role="button"
         tabIndex={-1}
         data-testid="close-button"
       >
-        <article className="bg-base w-50 center pa3 tc  ma3 flex flex-column justify-center br2 br--bottom bt-green">
+        <article className="bg-base w-50-ns w-75 center pa3-ns tc ma3 flex flex-column justify-center br2 br--bottom bt-green">
           {onClose && (
             <button
               type="button"

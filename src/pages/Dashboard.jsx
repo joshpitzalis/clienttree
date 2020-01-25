@@ -180,34 +180,42 @@ export function Dashboard({ userId }) {
               render={props => <Profile {...props} />}
             />
           </main>
-          <aside className="">
-            <NavPanel onRight className="bn">
-              <Onboarding uid={userId} contactSelected={selectedUserUid}>
-                <>
-                  {selectedUserUid ? (
-                    <>
-                      <button
-                        type="button"
-                        data-testid="addreminder"
-                        onClick={() => setVisibility(true)}
-                        className="btn2 ph4 pv3 bn pointer br1 grow b mv4"
-                      >
-                        Add A Reminder
-                      </button>
-                      <SpecificTaskList
-                        myUid={userId}
-                        contactSelected={selectedUserUid}
-                      />
-                    </>
-                  ) : (
-                    <UniversalTaskList myUid={userId} />
-                  )}
-                </>
-              </Onboarding>
-              <p className="tc f6 white ma0">
-                Version {process.env.REACT_APP_VERSION}
-              </p>
-            </NavPanel>
+
+          <aside className="w-100 measure-narrow-ns bg-white-ns tc">
+            <button
+              type="button"
+              data-testid="mobileAddreminder"
+              onClick={() => setVisibility(true)}
+              className="btn2 ph5 pv4 bn pointer br1 grow b mv4 dn-ns"
+            >
+              Add A Reminder
+            </button>
+
+            <Onboarding uid={userId} contactSelected={selectedUserUid}>
+              <>
+                {selectedUserUid ? (
+                  <>
+                    <button
+                      type="button"
+                      data-testid="addreminder"
+                      onClick={() => setVisibility(true)}
+                      className="btn2 ph4 pv3 bn pointer br1 grow b mv4"
+                    >
+                      Add A Reminder
+                    </button>
+                    <SpecificTaskList
+                      myUid={userId}
+                      contactSelected={selectedUserUid}
+                    />
+                  </>
+                ) : (
+                  <UniversalTaskList myUid={userId} />
+                )}
+              </>
+            </Onboarding>
+            <p className="tc f6 white ma0">
+              Version {process.env.REACT_APP_VERSION}
+            </p>
           </aside>
         </div>
       </ContainerHorizontal>
@@ -215,35 +223,35 @@ export function Dashboard({ userId }) {
   );
 }
 
-const MobileNav = ({ userId }) => {
-  const { pathname } = useLocation();
-  const contacts = useSelector(store => store.contacts);
-  return (
-    <Tabs>
-      <TabItem
-        to={`/user/${userId}/network`}
-        className={`${pathname === `/user/${userId}/network` &&
-          'active'}  tracked w-50 tc`}
-        data-testid="networkTab"
-      >
-        <People className="o-75 h1" /> People
-      </TabItem>
-      {contacts && !!contacts.length && (
-        <TabItem
-          data-testid="projectPage"
-          to={`/user/${userId}/dashboard`}
-          className={`${pathname === `/user/${userId}/dashboard` &&
-            'active'}  tracked w-50 tc`}
-        >
-          <Home className="o-75 h1" /> Workboard
-        </TabItem>
-      )}
-    </Tabs>
-  );
-};
+// const MobileNav = ({ userId }) => {
+//   const { pathname } = useLocation();
+//   const contacts = useSelector(store => store.contacts);
+//   return (
+//     <Tabs>
+//       <TabItem
+//         to={`/user/${userId}/network`}
+//         className={`${pathname === `/user/${userId}/network` &&
+//           'active'}  tracked w-50 tc`}
+//         data-testid="networkTab"
+//       >
+//         <People className="o-75 h1" /> People
+//       </TabItem>
+//       {contacts && !!contacts.length && (
+//         <TabItem
+//           data-testid="projectPage"
+//           to={`/user/${userId}/dashboard`}
+//           className={`${pathname === `/user/${userId}/dashboard` &&
+//             'active'}  tracked w-50 tc`}
+//         >
+//           <Home className="o-75 h1" /> Workboard
+//         </TabItem>
+//       )}
+//     </Tabs>
+//   );
+// };
 
-MobileNav.propTypes = { userId: PropTypes.string };
-MobileNav.defaultProps = { userId: '' };
+// MobileNav.propTypes = { userId: PropTypes.string };
+// MobileNav.defaultProps = { userId: '' };
 
 function Navigation({ userId }) {
   const { pathname } = useLocation();

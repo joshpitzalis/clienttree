@@ -63,14 +63,16 @@ export const Navbar = withRouter(({ history }) => {
             >
               {({ handleClose }) => (
                 <div onMouseLeave={handleClose}>
-                  <DropdownItem
-                    Component={Link}
-                    to={`/user/${userId}/profile`}
-                    data-testid="goToProfilePage"
-                  >
-                    <Profile className="" />{' '}
-                    <p className="tracked pl2">Profile</p>
-                  </DropdownItem>
+                  <div className="dn db-ns">
+                    <DropdownItem
+                      Component={Link}
+                      to={`/user/${userId}/profile`}
+                      data-testid="goToProfilePage"
+                    >
+                      <Profile className="" />{' '}
+                      <p className="tracked pl2">Profile</p>
+                    </DropdownItem>
+                  </div>
                   <DropdownItem onClick={() => handleLogout(history)}>
                     <Logout className="" />{' '}
                     <p className="tracked pl2">Logout</p>

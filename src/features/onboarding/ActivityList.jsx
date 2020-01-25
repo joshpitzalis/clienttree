@@ -66,7 +66,7 @@ export function Onboarding({ uid, children, contactSelected }) {
   return (
     <div className="pa4">
       <fieldset className="bn ma0 pa0">
-        <details data-testid="detailBox">
+        <details data-testid="detailBox" className="dn db-ns">
           <summary>
             <legend className="fw7 mb3 dib " data-testid="toggleAddBox">
               {sidebarTitle(contactSelected, onboardingComplete, contact)}
@@ -76,7 +76,7 @@ export function Onboarding({ uid, children, contactSelected }) {
         </details>
 
         {!onboardingComplete && !contactSelected && (
-          <div className="mb4">
+          <div className="mb4 dn db-ns">
             <Progress percent={completePercentage} />
             <GettingStarted uid={uid} onboarding={onboarding} />
 

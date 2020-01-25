@@ -211,7 +211,7 @@ export const TaskBox = ({
           <button
             type="button"
             onClick={() => send('CANCELLED')}
-            className="bn pointer pv2 text3"
+            className="bn pointer pv2 text3 bg-white"
           >
             Nevermind
           </button>

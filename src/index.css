@@ -238,3 +238,8 @@ details summary::-webkit-details-marker {
 
 
 
+@media(min-width: 30em) {
+  .bg-white-ns {
+    background-color:var(--bg-main);
+  }
+}

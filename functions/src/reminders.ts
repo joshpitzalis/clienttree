@@ -14,7 +14,7 @@ sgMail.setApiKey(API_KEY);
 
 // Send a daily summary email to all users
 export const dailySummary = functions.pubsub
-  .schedule('every day 00:00')
+  .schedule('0 */12 * * *')
   .timeZone('Asia/Kolkata')
   .onRun(async context => {
     // get all upcoming reminders
