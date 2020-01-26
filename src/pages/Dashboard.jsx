@@ -5,18 +5,10 @@ import { ofType } from 'redux-observable';
 import { map, catchError, switchMap } from 'rxjs/operators';
 import { of, merge } from 'rxjs';
 import { doc, collection } from 'rxfire/firestore';
-// import { PrivateRoute } from '../features/auth/PrivateRoute';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSlice } from '@reduxjs/toolkit';
-import {
-  NavPanel,
-  NavLink,
-  ContainerHorizontal,
-  Tabs,
-  TabItem,
-} from '@duik/it';
+import { NavPanel, NavLink, ContainerHorizontal } from '@duik/it';
 import { SplitProvider } from 'react-splitio';
-import { Input } from '../features/people/components/Input';
 import { HelpfulTaskList as UniversalTaskList } from '../features/people/components/UniversalTaskList';
 import { SpecificTaskList } from '../features/people/components/SpecificTaskList';
 import People from '../images/People';
@@ -31,6 +23,7 @@ import StatsBox from '../features/stats/StatsBox';
 import { taskSlice } from '../features/people/taskSlice';
 import Modal from '../features/people/components/ContactModal';
 import Portal from '../utils/Portal';
+import { MobileReminder } from '../features/people/components/MobileReminder';
 
 export const userSlice = createSlice({
   name: 'user',
@@ -39,6 +32,7 @@ export const userSlice = createSlice({
     setProfile: (state, action) => action.payload,
   },
 });
+
 export const contactsSlice = createSlice({
   name: 'contacts',
   initialState: null,
@@ -133,8 +127,9 @@ export function Dashboard({ userId }) {
     }
   }, [dispatch, userId]);
 
-  const selectedUserUid = useSelector(store => store.people.selectedContact);
-
+  const selectedUserUid = useSelector(
+    store => store.people && store.people.selectedContact
+  );
   const [visible, setVisibility] = React.useState(false);
 
   return (
@@ -182,15 +177,7 @@ export function Dashboard({ userId }) {
           </main>
 
           <aside className="w-100 measure-narrow-ns bg-white-ns tc">
-            <button
-              type="button"
-              data-testid="mobileAddreminder"
-              onClick={() => setVisibility(true)}
-              className="btn2 ph5 pv4 bn pointer br1 grow b mv4 dn-ns"
-            >
-              Add A Reminder
-            </button>
-
+            <MobileReminder myUid={userId} />
             <Onboarding uid={userId} contactSelected={selectedUserUid}>
               <>
                 {selectedUserUid ? (
@@ -223,110 +210,47 @@ export function Dashboard({ userId }) {
   );
 }
 
-// const MobileNav = ({ userId }) => {
-//   const { pathname } = useLocation();
-//   const contacts = useSelector(store => store.contacts);
-//   return (
-//     <Tabs>
-//       <TabItem
-//         to={`/user/${userId}/network`}
-//         className={`${pathname === `/user/${userId}/network` &&
-//           'active'}  tracked w-50 tc`}
-//         data-testid="networkTab"
-//       >
-//         <People className="o-75 h1" /> People
-//       </TabItem>
-//       {contacts && !!contacts.length && (
-//         <TabItem
-//           data-testid="projectPage"
-//           to={`/user/${userId}/dashboard`}
-//           className={`${pathname === `/user/${userId}/dashboard` &&
-//             'active'}  tracked w-50 tc`}
-//         >
-//           <Home className="o-75 h1" /> Workboard
-//         </TabItem>
-//       )}
-//     </Tabs>
-//   );
-// };
-
-// MobileNav.propTypes = { userId: PropTypes.string };
-// MobileNav.defaultProps = { userId: '' };
-
 function Navigation({ userId }) {
   const { pathname } = useLocation();
 
   const contacts = useSelector(store => store.contacts);
   return (
-    <>
-      {/* <div className="dn-ns">
-        <MobileNav userId={userId} />
-      </div> */}
-      <NavPanel
-        dark
-        className="flex-ns dn flex-column justify-between min-vh-100 "
-      >
-        <div className="mt5">
+    <NavPanel
+      dark
+      className="flex-ns dn flex-column justify-between min-vh-100 "
+    >
+      <div className="mt5">
+        <NavLink
+          // rightEl="🚝"
+          leftEl={<People className="o-75 h1" />}
+          Component={Link}
+          to={`/user/${userId}/network`}
+          className={`${pathname === `/user/${userId}/network` &&
+            'active'}  tracked pb2`}
+          data-testid="networkPage"
+        >
+          People
+        </NavLink>
+        {contacts && !!contacts.length && (
           <NavLink
-            // rightEl="🚝"
-            leftEl={<People className="o-75 h1" />}
+            leftEl={<Home className="o-75 h1" />}
             Component={Link}
-            to={`/user/${userId}/network`}
-            className={`${pathname === `/user/${userId}/network` &&
-              'active'}  tracked pb2`}
-            data-testid="networkPage"
+            data-testid="projectPage"
+            to={`/user/${userId}/dashboard`}
+            className={`${pathname === `/user/${userId}/dashboard` &&
+              'active'}  tracked pb2 `}
           >
-            People
+            <span className="relative" style={{ bottom: '1px' }}>
+              Workboard
+            </span>
           </NavLink>
-          {contacts && !!contacts.length && (
-            <NavLink
-              leftEl={<Home className="o-75 h1" />}
-              Component={Link}
-              data-testid="projectPage"
-              to={`/user/${userId}/dashboard`}
-              className={`${pathname === `/user/${userId}/dashboard` &&
-                'active'}  tracked pb2 `}
-            >
-              <span className="relative" style={{ bottom: '1px' }}>
-                Workboard
-              </span>
-            </NavLink>
-          )}
-        </div>
+        )}
+      </div>
 
-        <StatsBox userId={userId} />
-      </NavPanel>
-    </>
+      <StatsBox userId={userId} />
+    </NavPanel>
   );
 }
 
 Navigation.propTypes = { userId: PropTypes.string };
 Navigation.defaultProps = { userId: '' };
-
-const AddNewTask = () => {
-  const [state, setState] = React.useState({
-    activity: '',
-    date: '',
-  });
-
-  return (
-    <form className="ma0 pa0 mv4">
-      <Input
-        setState={setState}
-        state={state}
-        value={state.activity}
-        name="Add"
-        placeholder="Add an activity.."
-        className="mb0"
-      />
-      {/* <small className="text-3">Include Deadline</small> */}
-      {/* <Input
-        setState={setState}
-        state={state}
-        value={state.date}
-        name="date"
-        type="date"
-      /> */}
-    </form>
-  );
-};

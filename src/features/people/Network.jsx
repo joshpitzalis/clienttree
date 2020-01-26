@@ -38,59 +38,7 @@ function _Network({ uid }) {
     .collection('contacts')
     .doc();
 
-  // React.useEffect(() => {
-  //   firebase
-  //     .firestore()
-  //     .collectionGroup('helpfulTasks')
-  //     .where('dateCompleted', '==', null)
-  //     .where('dueDate', '>=', +new Date())
-  //     .where('dueDate', '<=', +new Date() + 86400000)
-  //     .get()
-  //     .then(results => {
-  //       const data = results.docs.map(snap => snap.data());
-
-  //       const groupedData = data.reduce((result, item) => {
-  //         // merge same emails together but accumulate their reminders
-  //         const index = result.findIndex(
-  //           element => element.email === item.userEmail
-  //         );
-  //         console.log({ index });
-
-  //         if (index >= 0) {
-  //           // add to that item
-  //           result[index] = {
-  //             ...result[index],
-  //             reminders: [
-  //               ...result[index].reminders,
-  //               {
-  //                 person: item.contactName,
-  //                 reminder: item.name,
-  //               },
-  //             ],
-  //             count: result[index].count + 1,
-  //             plural: true,
-  //           };
-  //           return result;
-  //         }
-  //         result.push({
-  //           email: item.userEmail,
-  //           reminders: [
-  //             {
-  //               person: item.contactName,
-  //               reminder: item.name,
-  //             },
-  //           ],
-  //           url: `/user/${item.connectedTo}`,
-  //           count: 1,
-  //           plural: false,
-  //         });
-  //         return result;
-  //       }, []);
-
-  //       console.log({ groupedData });
-  //     });
-  // }, []);
-  const [feature1] = useSplit('feature1');
+  // const [feature1] = useSplit('feature1');
   return (
     <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
       <>
@@ -123,7 +71,7 @@ function _Network({ uid }) {
             </button>
           )}
         </div>
-        {feature1 === 'on' && <p>split is working</p>}
+        {/* {feature1 === 'on' && <p>split is working</p>} */}
         <ContactsBox contacts={contacts} uid={uid}></ContactsBox>
       </>
     </ErrorBoundary>

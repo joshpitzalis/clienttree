@@ -1,16 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
 import { doc } from 'rxfire/firestore';
-import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
-import { NetworkContext } from '../NetworkContext';
 import { toast$ } from '../../notifications/toast';
-import {
-  handleContactDelete,
-  handleAddTask,
-  setActiveTaskCount,
-  handleTracking,
-} from '../peopleAPI';
+import { handleAddTask, handleTracking } from '../peopleAPI';
 import firebase from '../../../utils/firebase';
 import { ReminderCreator } from './Reminder';
 
@@ -30,8 +22,6 @@ const Modal = ({
   onClose,
   incrementStats = handleTracking,
 }) => {
-  const dispatch = useDispatch();
-
   const [state, setState] = React.useState({
     userId: uid,
     name: '',
@@ -60,19 +50,6 @@ const Modal = ({
     }
   }, [selectedUserUid, uid]);
 
-  const { setContact } = React.useContext(NetworkContext);
-
-  const avatarRef = React.useRef(null);
-
-  const handleDelete = async (_name, _uid, _userId) => {
-    try {
-      await handleContactDelete(_uid, _userId);
-      onClose();
-    } catch (error) {
-      toast$.next({ type: 'ERROR', message: error.message || error });
-    }
-  };
-
   const handleAddingTask = ({
     taskName,
     myUid,
@@ -93,145 +70,18 @@ const Modal = ({
     );
   };
 
-  const handleUpdateUser = async e => {
-    e.preventDefault();
-
-    // tk validity check goes here
-
-    try {
-      const newUser = !state.photoURL;
-
-      if (newUser) {
-        const imgString = await avatarRef.current.getImageData();
-        dispatch({
-          type: ONBOARDING_STEP_COMPLETED,
-          payload: { userId: uid, onboardingStep: 'addedSomeone' },
-        });
-        await setContact({ ...state, imgString, userId: uid });
-        onClose();
-        return;
-      }
-
-      await setContact({ ...state, userId: uid, contactId: state.uid });
-      onClose();
-    } catch (error) {
-      toast$.next({ type: 'ERROR', message: error.message || error });
-    }
-  };
-
   return (
     <div data-testid="contactModal" className="z-999 relative">
-      {/* <div className="w- h3 tc">
-        {state.photoURL ? (
-          <img
-            alt={state.name}
-            className="w2 h2 w3-ns h3-ns br-100"
-            src={state.photoURL}
-          />
-        ) : (
-          <AvatarGenerator
-            ref={avatarRef}
-            className="w2 h2 w3-ns h3-ns br-100"
-            height="100"
-            width="100"
-            colors={['#333', '#222', '#ccc']}
-          />
-        )}
-      </div> */}
-
       <div className="flex">
-        {/* <form className=" w-50" onSubmit={handleUpdateUser}>
-          <fieldset id="contact" className="ba b--transparent ph0 mh0 tl">
-            <legend className="f4 fw6 ph0 mh0 dn">Profile</legend>
-            <div className="flex justify-center">
-              <div>
-                <Input
-                  setState={setState}
-                  state={state}
-                  value={state.name}
-                  name="name"
-                  placeholder="Their name..."
-                />
-
-                <Input
-                  setState={setState}
-                  state={state}
-                  value={state.lastContacted}
-                  name="lastContacted"
-                  placeholder="Last contacted..."
-                  type="date"
-                />
-
-                <Input
-                  setState={setState}
-                  state={state}
-                  value={state.summary}
-                  name="summary"
-                  placeholder="Notes..."
-                  type="textarea"
-                />
-                {selectedUserUid && (
-                  <label
-                    className="pa0 ma0 lh-copy f6 pointer"
-                    htmlFor="tracked"
-                  >
-                    <input
-                      type="checkbox"
-                      id="tracked"
-                      className="mr1"
-                      checked={state.tracked}
-                      data-testid="leadToggle"
-                      onChange={e =>
-                        incrementStats(
-                          e.target.checked,
-                          uid,
-                          selectedUserUid,
-                          state.name,
-                          state.photoURL
-                        )
-                      }
-                    />
-                    {state.tracked
-                      ? `Remove ${
-                          state.name ? state.name : 'this person'
-                        } from the dashboard`
-                      : `Add ${
-                          state.name ? state.name : 'this person'
-                        } to the project dashboard`}
-                  </label>
-                )}
-              </div>
-            </div>
-          </fieldset>
-          <div className="mt3 flex justify-around items-center">
-            <input
-              className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
-              type="submit"
-              value="Save"
-            />
-
-            {selectedUserUid && !state.tracked && (
-              <ConfirmDelete
-                handleDelete={() => handleDelete(state.name, state.uid, uid)}
-                title={state.name}
-                activeTaskCount={state.activeTaskCount}
-              />
-            )}
-          </div>
-        </form> */}
-        {/* {selectedUserUid && ( */}
         <div className="center" style={{ width: '258px' }}>
           <ReminderCreator
             myUid={uid}
             theirUid={selectedUserUid}
             handleAddingTask={handleAddingTask}
-            activeTaskCount={state.activeTaskCount}
-            _setActiveTaskCount={setActiveTaskCount}
             photoURL={state.photoURL}
             onClose={onClose}
           />
         </div>
-        {/* )} */}
       </div>
     </div>
   );

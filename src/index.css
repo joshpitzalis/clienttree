@@ -243,3 +243,15 @@ details summary::-webkit-details-marker {
     background-color:var(--bg-main);
   }
 }
+
+.autoComplete  .ant-select-selection {
+  background-color: hsl(0, 0%, 88%) !important;
+}
+
+.ant-select-selection__placeholder {
+  color: hsl(0, 0%, 13%)
+}
+
+.datepicker-nav-btn {
+  opacity: 0;
+}
