@@ -2,7 +2,8 @@ describe('authentication', () => {
   it('lets you sign in and logout', () => {
     cy.visit('/')
       .login()
-      .findByTestId('salesDashboard')
+      .wait(5000)
+      .findByTestId('outreachPage')
       .findByTestId('settings')
       .click()
       .findByText(/Logout/i)

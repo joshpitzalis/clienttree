@@ -6,14 +6,13 @@ describe('stats box', () => {
   it('lets me add stats', () => {
     cy.visit('/')
       //  create a contact
-      .findByTestId('salesDashboard')
-      .findByTestId('networkPage')
-      .click()
+
       .findByTestId(/outreachPage/i)
       .findByText(/Add someone new/i)
       .click()
       .findByTestId(/contactModal/i)
       .findByPlaceholderText(/Their name/i)
+      .clear()
       .type('fakeData.name')
       // .pickDate()
       // .findByPlaceholderText(/click to edit/i)
@@ -31,14 +30,15 @@ describe('stats box', () => {
       .findByTestId('addreminder')
       .click()
       .findByTestId('reminderBox')
-      .findByPlaceholderText('What?')
+      .findByPlaceholderText('About What?')
       .type('last task')
       .findByText(/create reminder/i)
       .click()
-      .queryByTestId('reminderBox')
-      .should('not.exist')
-      .findByTestId('last task')
-      .check()
+
+      .findByText(/last task/i)
+      .click()
+      .findByText(/confirm completed/i)
+      .click()
 
       .findByText(/close/i)
       .click()
@@ -74,13 +74,12 @@ describe('stats box', () => {
 
   it('updates stats when I move people into or out of leads', () => {
     cy.visit('/')
-      .findByTestId('salesDashboard')
-      .findByTestId('networkPage')
-      .click()
+
       .findByTestId('outreachPage')
       .findByText(/add someone new/i)
       .click()
       .findByPlaceholderText(/their name/i)
+      .clear()
       .type(fakeData.name)
       // .pickDate()
       .findByPlaceholderText(/click to edit/i)
@@ -111,8 +110,12 @@ describe('stats box', () => {
   });
 
   it('updates stats when I move people into or out of project started', () => {
-    cy.visit('/').findByTestId('salesDashboard');
-    cy.findByTestId('stage1').within(() => cy.findByTestId(fakeData.name));
+    cy.visit('/')
+      .wait(5000)
+      .findByTestId('projectPage')
+      .click()
+      .findByTestId('stage1')
+      .within(() => cy.findByTestId(fakeData.name));
     cy.findByTestId(fakeData.name)
       .focus()
       .type(' ')

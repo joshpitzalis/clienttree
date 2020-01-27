@@ -2,6 +2,7 @@
   "name": "clienttree",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://clienttree.io",
   "dependencies": {
     "@babel/core": "7.6.0",
     "@duik/it": "^0.4.1",

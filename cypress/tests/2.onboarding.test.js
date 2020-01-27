@@ -3,7 +3,7 @@ describe('onboarding', () => {
     cy.visit('/')
       .login()
       .wait(5000)
-      .findByTestId('salesDashboard')
+      .findByTestId('outreachPage')
       .findByLabelText(/Sign up to Client Tree/i)
       .should('be.checked');
   });
@@ -18,7 +18,7 @@ describe('onboarding', () => {
     };
 
     cy.visit('/')
-      .findByTestId('salesDashboard')
+      .findByTestId('outreachPage')
       .findByTestId('signature')
       .should('not.be.checked')
       .findByText(
@@ -70,7 +70,7 @@ describe('onboarding', () => {
 
   it('once you have create a signature the onboarding task is marked complete and this change is persisted', () => {
     cy.visit('/')
-      .findByTestId('salesDashboard')
+      .findByTestId('outreachPage')
       .findByLabelText(
         /Completed your profile and created a referrable email signature/i
       )
@@ -79,7 +79,7 @@ describe('onboarding', () => {
 
   it('you cannot uncheck signature step once persisted', () => {
     cy.visit('/')
-      .findByTestId('salesDashboard')
+      .findByTestId('outreachPage')
       .findByLabelText(
         /Completed your profile and created a referrable email signature/i
       )
