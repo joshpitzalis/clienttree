@@ -87,7 +87,7 @@ export const Person = ({ contact, uid }) => {
               <span className="f6 db black-70 i">
                 {contact.lastContacted &&
                 isValidDate(fromUnixTime(contact.lastContacted / 1000))
-                  ? `Last contacted ${formatDistanceToNow(
+                  ? `Last followed up ${formatDistanceToNow(
                       fromUnixTime(contact.lastContacted / 1000),
                       { addSuffix: true }
                     )}`

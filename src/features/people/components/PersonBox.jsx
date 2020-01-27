@@ -226,6 +226,8 @@ export const PersonModal = ({
                       setActiveNote={setActiveNote}
                       setState={setState}
                       state={state}
+                      theirId={contactId}
+                      myId={uid}
                     />
                   ) : (
                     <p>

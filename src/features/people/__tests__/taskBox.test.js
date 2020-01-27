@@ -96,6 +96,11 @@ describe.skip('create reminder options', () => {
 });
 
 describe.skip('network page', () => {
+  test('when task is complete update last contacted', () => false);
+  // test('when note is added update last contacted', () => false);
+  test('universal tasks ordered by dues date', () => false);
+  test('specific tasks ordered by dues date', () => false);
+  test('people ordered by  least contacted', () => false);
   test('after you have about 10 contacts make the rmeind button teh primary button and demphasize teh add peopel button', () =>
     false);
   test('organise contacts by people I ahve not contacted for teh longerst', () =>

@@ -92,13 +92,13 @@ export const fetchUserDataEpic = (
             })
           )
         ),
-
         collection(
           firebase
             .firestore()
             .collection('users')
             .doc(userId)
             .collection('contacts')
+            .orderBy('lastContacted')
         ).pipe(
           map(docs => {
             const contacts = docs.map(d => d.data());

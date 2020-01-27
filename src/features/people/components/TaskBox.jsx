@@ -6,9 +6,10 @@ import fromUnixTime from 'date-fns/fromUnixTime';
 import { assert } from 'chai';
 import { ACTIVITY_COMPLETED } from '../networkConstants';
 import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
+import { updateLastContacted } from '../peopleAPI/contactsAPI';
+
 // state visualisation:
 // https://xstate.js.org/viz/?gist=7925b7b6f194989221d4a2da62731937
-
 export const taskMachine = Machine({
   id: 'task',
   initial: 'incomplete',
@@ -38,7 +39,7 @@ export const taskMachine = Machine({
     },
     confirmation: {
       on: {
-        COMPLETED: 'complete',
+        COMPLETED: { target: 'complete', actions: 'handleComplete' },
         CANCELLED: 'incomplete',
       },
       meta: {
@@ -59,7 +60,6 @@ export const taskMachine = Machine({
     //   },
     // },
     complete: {
-      entry: 'handleComplete',
       type: 'final',
     },
     // deleted: {
@@ -93,6 +93,8 @@ const handleComplete = ({
       onboardingStep: 'helpedSomeone',
     },
   });
+  updateLastContacted(myUid, completedFor);
+  // tk try catch
 };
 /** @param {{
  taskId: string,

@@ -24,6 +24,7 @@ export const SpecificTaskList = ({ myUid, contactSelected }) => {
         .collection('contacts')
         .doc(contactSelected)
         .collection('helpfulTasks')
+        .orderBy('dueDate')
     )
       .pipe(map(docs => docs.map(d => d.data())))
       .subscribe(tasks => tasks && setHelpfulTasks(tasks));
@@ -36,7 +37,8 @@ export const SpecificTaskList = ({ myUid, contactSelected }) => {
   const dispatch = useDispatch();
   return (
     <div data-testid="specificTaskList">
-      {visible && (
+      {/* i think this feature was for adding teh next task when there are no tasks left */}
+      {/* {visible && (
         <Portal
           onClose={() => {
             setVisibility(false);
@@ -53,7 +55,7 @@ export const SpecificTaskList = ({ myUid, contactSelected }) => {
             }}
           />
         </Portal>
-      )}
+      )} */}
 
       {helpfulTasks &&
         helpfulTasks.map(

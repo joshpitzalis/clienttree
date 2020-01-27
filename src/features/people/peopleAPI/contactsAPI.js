@@ -490,6 +490,20 @@ export const handleTracking = async (
   }
 };
 
+export const updateLastContacted = (userId, uid) =>
+  firebase
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('contacts')
+    .doc(uid)
+    .set(
+      {
+        lastContacted: +new Date(),
+      },
+      { merge: true }
+    );
+
 export const setContact = (
   userId,
   {

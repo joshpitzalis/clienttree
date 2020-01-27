@@ -17,12 +17,14 @@ const helpfulDefaultProps = {};
 
 export const HelpfulTaskList = ({ myUid }) => {
   const [helpfulTasks, setHelpfulTasks] = React.useState([]);
+
   const dispatch = useDispatch();
   React.useEffect(() => {
     const subscription = collection(
       firebase
         .firestore()
         .collectionGroup('helpfulTasks')
+        .orderBy('dueDate')
         .where('connectedTo', '==', myUid)
         .where('dateCompleted', '==', null)
     )
@@ -37,7 +39,8 @@ export const HelpfulTaskList = ({ myUid }) => {
 
   return (
     <div data-testid="universalTaskList">
-      {visible && (
+      {/* for adding the next task when there are no tasks left */}
+      {/* {visible && (
         <Portal
           onClose={() => {
             setVisibility(false);
@@ -54,7 +57,7 @@ export const HelpfulTaskList = ({ myUid }) => {
             }}
           />
         </Portal>
-      )}
+      )} */}
 
       {helpfulTasks &&
         helpfulTasks.map(

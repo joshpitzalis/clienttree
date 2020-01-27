@@ -128,10 +128,17 @@ const ReminderCreator = ({ myUid, handleAddingTask, send }) => {
       uid: theirUid,
       name,
       summary: '',
-      lastContacted: null,
+      lastContacted: +new Date(),
       photoURL,
       downloadURL: '',
-      notes: {},
+      notes: {
+        9007199254740991: {
+          id: 9007199254740991,
+          text: '',
+          lastUpdated: 9007199254740991,
+        },
+      },
+      tracked: false,
     };
 
     if (!existingContact) {

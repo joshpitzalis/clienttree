@@ -6,7 +6,15 @@ import { Subject } from 'rxjs';
 
 const events$ = new Subject();
 
-export const EditBox = ({ note, notes, setActiveNote, setState, state }) => {
+export const EditBox = ({
+  note,
+  notes,
+  setActiveNote,
+  setState,
+  state,
+  theirId,
+  myId,
+}) => {
   const { text, lastUpdated, id } = note;
 
   const [message, setMessage] = React.useState(text);
@@ -31,10 +39,10 @@ export const EditBox = ({ note, notes, setActiveNote, setState, state }) => {
             },
           },
         });
-        return setActiveNote(newId);
+        setActiveNote(newId);
       });
     return () => subscription.unsubscribe();
-  }, [id, lastUpdated, notes, setActiveNote, setState, state]);
+  }, [id, lastUpdated, myId, notes, setActiveNote, setState, state, theirId]);
 
   return (
     <div>
