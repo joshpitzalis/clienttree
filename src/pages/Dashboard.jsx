@@ -176,7 +176,10 @@ export function Dashboard({ userId }) {
             />
           </main>
 
-          <aside className="w-100 measure-narrow-ns bg-white-ns tc">
+          <aside
+            className="w-100 measure-narrow-ns bg-white-ns tc"
+            data-testid="sidebar"
+          >
             <MobileReminder myUid={userId} />
             <Onboarding uid={userId} contactSelected={selectedUserUid}>
               <>

@@ -17,7 +17,7 @@ const mockProps = {
   dispatch: jest.fn(),
   dueDate: 157988670463899,
 };
-const statsModel = createModel(taskMachine).withEvents({
+const taskModel = createModel(taskMachine).withEvents({
   TASK_OVERDUE: () => {},
   TASK_DUE_TODAY: () => {},
   ALREADY_COMPLETED: () => {},
@@ -38,7 +38,7 @@ const statsModel = createModel(taskMachine).withEvents({
   // },
 });
 
-const testPlans = statsModel.getSimplePathPlans();
+const testPlans = taskModel.getSimplePathPlans();
 
 testPlans.forEach(plan => {
   describe(plan.description, () => {
@@ -58,5 +58,3 @@ testPlans.forEach(plan => {
     });
   });
 });
-
-xit('coverage', () => statsModel.testCoverage());

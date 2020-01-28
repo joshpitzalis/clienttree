@@ -94,14 +94,31 @@ describe('onboarding', () => {
       .should('be.checked');
   });
 
-  context.skip('hook up onboarding steps to email and services', () => {
-    it.skip('lets me mark send email complete', () => {});
-    it.skip('modal pops  up after signature explaining you can send to josh', () => {});
-    it.skip('let people mark sending email complete', () => {});
-    it.skip('complete referrla page once servicea  are  added', () => {});
-    it.skip('complete crm task when one client is added to network', () => {});
-    it.skip('add a helpful task to a client', () => {});
-    it.skip('mark a helpful task complete', () => {});
-    it.skip('set up financials', () => {});
+  context('can complete onboarding', () => {
+    it('lets me mark send email complete', () => {
+      cy.visit('/')
+        .findByTestId('outreachPage')
+        .findByTestId('email')
+        .should('not.be.checked')
+        .findByTestId('email')
+        .check()
+        .wait(5000)
+        .findByTestId('email')
+        .should('be.checked');
+    });
+
+    it('lets me mark outreach complete', () => {
+      cy.visit('/')
+        .findByTestId('outreachPage')
+        .findByTestId('reachOut')
+        .should('not.be.checked')
+        .findByTestId('reachOut')
+        .check()
+        .wait(5000)
+        .findByTestId('reachOut')
+        .should('be.checked');
+    });
+
+    // 'hides onboarding box when complete' test is in people.test
   });
 });

@@ -59,9 +59,7 @@ export const taskMachine = Machine({
     //     },
     //   },
     // },
-    complete: {
-      type: 'final',
-    },
+    complete: { type: 'final' },
     // deleted: {
     //   type: 'final',
     // },

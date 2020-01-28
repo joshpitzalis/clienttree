@@ -160,6 +160,7 @@ function DeleteNote({ noteId, setState, setActiveNote, state }) {
   ) : (
     <div className="flex justify-between items-start mt0 pa0 mb3">
       <Icon
+        data-testid="deleteNote"
         className="o-50"
         type="delete"
         onClick={() => setVisibility(true)}

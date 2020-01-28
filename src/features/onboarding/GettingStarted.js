@@ -50,7 +50,7 @@ export const GettingStarted = ({ uid, onboarding }) => {
   }, [dispatch, onboarding, uid]);
 
   return (
-    <div className="dn dib-ns">
+    <div className="dn dib-ns tl">
       <Step completedText="Sign up to Client Tree" value="signup" completed />
       <Step
         value="signature"

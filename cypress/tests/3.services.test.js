@@ -79,13 +79,4 @@ describe('services', () => {
       .queryByText(fakeData.title)
       .should('not.exist');
   });
-
-  // it.skip('lets me add testimonials', () => {
-  //   cy.visit('/')
-  //     .login()
-  //     .findByText(/Welcome!/i)
-  //     .findByText(/services/i)
-  //     .click()
-  //     .findByText(/profile/i);
-  // });
 });

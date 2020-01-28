@@ -34,11 +34,6 @@ describe('contact box features', () => {
     expect(getByLabelText(/Sign up to Client Tree/i)).toBeEnabled();
   });
 
-  test.skip('when you create a user they should not be able to be added t the dashboard since they dont have an id yet', () => {
-    const { getByLabelText } = render(<Modal />);
-    expect(getByLabelText(/Sign up to Client Tree/i)).toBeEnabled();
-  });
-
   test.skip('you cant delete people if they are still on teh dashboard', () => {
     const { getByLabelText } = render(<Modal />);
     expect(getByLabelText(/Sign up to Client Tree/i)).toBeEnabled();

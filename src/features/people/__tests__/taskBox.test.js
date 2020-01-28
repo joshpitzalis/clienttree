@@ -114,4 +114,11 @@ describe.skip('network page', () => {
 describe.skip('email reminders', () => {
   test('shoudl show everything over due', () => false);
   test('shoudl indicate how oevrdue they are somehow', () => false);
+
+  xtest('faces show up beside their tasks in UTL', () => {
+    // this is now a cypress test
+  });
+
+  xtest('prevent submissions with empty values', () => {});
+  xtest('prevent submissions with empty values on mobile', () => {});
 });

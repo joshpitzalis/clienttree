@@ -208,7 +208,8 @@ const ReminderCreator = ({ myUid, handleAddingTask, send }) => {
               onSearch={searchText => {
                 const results = !searchText
                   ? []
-                  : contacts
+                  : contacts &&
+                    contacts
                       .filter(
                         item =>
                           item.name &&

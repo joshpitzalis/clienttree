@@ -44,7 +44,10 @@ export const Navbar = withRouter(({ history }) => {
     <TopBar>
       <TopBarSection>
         <TopBarTitle>
-          <Link to={userId ? `/user/${userId}/dashboard` : '/'}>
+          <Link
+            to={userId ? `/user/${userId}/network` : '/'}
+            data-testid="goToHomePage"
+          >
             <Tree classNames="" />
           </Link>
         </TopBarTitle>

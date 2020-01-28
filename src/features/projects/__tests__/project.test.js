@@ -191,8 +191,6 @@ it('has the existing title pre-filled, not an empty input', () => {
   expect(getByTestId('editableTitle').value).toEqual('exampleTitle');
 });
 
-test.skip('get rid of flash on dashboard when loading', () => false);
-
 test.skip('test error state/throw error', () => false);
 
 it('updating stage title autosaves', () => {

@@ -105,7 +105,10 @@
     "build-storybook": "build-storybook"
   },
   "eslintConfig": {
-    "extends": "wesbos",
+    "extends": [
+      "wesbos",
+      "plugin:cypress/recommended"
+    ],
     "rules": {
       "react/prop-types": "off"
     },

@@ -51,8 +51,10 @@ describe('outreach', () => {
 
   it('creates a task and completes a task  ', () => {
     cy.visit('/')
-
+      // .login()
       .findByTestId(/outreachPage/i)
+      .findByText(/getting started/i)
+      .wait(5000)
       .findByText(fakeData.updatedName)
       .click()
       .findByTestId('addreminder')
@@ -65,110 +67,130 @@ describe('outreach', () => {
       .findByText(/last task/i)
       .click()
       .findByText(/confirm completed/i)
-      .click();
+      .click()
+      // also assert that the name changes in the sidebar when someone is selected
+      .findByText(/getting started/i)
+      .should('not.exist')
+      .findByTestId('sidebar')
+      .within(() => {
+        cy.findByText(fakeData.updatedName);
+      });
+  });
+
+  it('hides onboarding box when complete', () => {
+    cy.visit('/')
+      .findByTestId(/outreachPage/i)
+      .wait(5000)
+      .queryByText(/getting started/i)
+      .should('not.exist')
+      .findByText(/activities/i);
+  });
+
+  it('create a contact note', () => {
+    cy.visit('/')
+      .wait(5000)
+      .findByText(fakeData.updatedName)
+      .click()
+      .findByPlaceholderText(/click to edit/i)
+      .type('example note')
+      .wait(5000)
+      .findByText(/saved/i);
+  });
+  it('update a contact note', () => {
+    cy.visit('/')
+      .wait(5000)
+      .findByText(fakeData.updatedName)
+      .click()
+      .findByText(/example note/i)
+      .click()
+      .findByText(/example note/i)
+      .clear()
+      .type('updated note')
+      .wait(5000)
+      .findByText(/saved/i);
+  });
+  it('delete a contact note', () => {
+    cy.visit('/')
+      .wait(5000)
+      .findByText(fakeData.updatedName)
+      .click()
+      .findByText(/updated note/i)
+      .click()
+      .findByTestId('deleteNote')
+      .click()
+      .findByText(/confirm delete/i)
+      .click()
+      .queryByText(/updated note/i)
+      .should('not.exist');
+  });
+
+  it('be able to add and complete a task to existing person on mobile', () => {
+    cy.viewport('iphone-5');
+    cy.visit('/')
+      // .login()
+      .wait(5000)
+      .findByText(/add a reminder/i)
+      .click()
+      .get('.ant-input')
+      .click()
+      .type('s')
+      .wait(5000)
+      .type('{enter}')
+      .findByPlaceholderText(/about what/i)
+      .type('new task')
+      .findByText(/create reminder/i)
+      .click()
+
+      .findByText(/due in 7 days/i)
+      .findByText(/new task/i)
+
+      .click()
+      .findByText(/confirm completed/i)
+      .click()
+      .findByText(/due in 7 days/i)
+      .should('not.exist');
+  });
+
+  it('be able to add and complete a task to a new person on mobile', () => {
+    cy.viewport('iphone-5');
+    cy.visit('/')
+      // .login()
+      .wait(5000)
+      .findByText(/add a reminder/i)
+      .click()
+      .get('.ant-input')
+      .click()
+      .type('someone new')
+      .findByPlaceholderText(/about what/i)
+      .type('new task')
+      .findByText(/create reminder/i)
+      .click()
+
+      .findByText(/due in 7 days/i)
+      .findByText(/new task/i)
+
+      .click()
+      .findByText(/confirm completed/i)
+      .click()
+      .findByText(/due in 7 days/i)
+      .should('not.exist');
   });
 
   it('lets you delete a contact', () => {
     cy.visit('/')
-
       .findByTestId(/outreachPage/i)
       .findByText(fakeData.updatedName)
       .click()
       .findByTestId(/contactModal/i)
       .findByTestId('deleteContact')
       .click()
-      // .findByTestId('deleteGuard')
       .findByTestId('confirmDeleteContact')
       .wait(1000)
       .click({ force: true })
-      // .findByTestId(/contactModal/i)
-      // .within(() =>
-      //   cy
-      //     .findByLabelText(/touch base with/i)
-      //     .check()
-      //     // .findByTestId('nevermindContactDelete')
-      //     // .click()
-      //     // .findByTestId('deleteContact')
-      //     // .click()
-      //     .findByTestId('confirmDeleteContact')
-      //     .click()
-      // )
       .wait(2000)
       .queryByTestId(/contactModal/i)
       .should('not.exist')
       .queryByText(fakeData.updatedName)
       .should('not.exist');
-  });
-
-  context.skip('skip', () => {
-    it.skip('delete buttons only show up for existing users', () => {
-      cy.visit('/').login();
-    });
-
-    it.skip('ensures that when a contact is added the first task is created by default', () => {
-      cy.visit('/').login();
-    });
-
-    it.skip('ensures default tasks show up in network page task nibs and in universal task list', () => {
-      cy.visit('/').login();
-    });
-
-    it.skip('shows the number of active tasks on the network page', () => {
-      cy.visit('/').login();
-    });
-
-    it('shows my helpful tasks in universal task list', () => {
-      cy.visit('/').login();
-    });
-
-    it('only shows my helpful tasks in universal task list, not everyones', () => {
-      cy.visit('/').login();
-    });
-
-    it('completes a task', () => {
-      cy.visit('/').login();
-    });
-
-    it('completes a task from the universal task list', () => {
-      cy.visit('/').login();
-    });
-
-    it('deletes a task', () => {
-      cy.visit('/').login();
-    });
-
-    it('forces you to enter the next task', () => {
-      cy.visit('/').login();
-    });
-
-    it('forces you to enter the next task from teh universal task list', () => {
-      cy.visit('/').login();
-    });
-  });
-
-  context.skip('task modal', () => {
-    it('encourages you to always leave a next task', () => {
-      cy.visit('/');
-    });
-
-    it('encourages you to always leave a next task if there are completed tasks, just not active tasks', () => {
-      cy.visit('/');
-    });
-
-    it('pops up when you complete in universal task list', () => {
-      cy.visit('/');
-    });
-
-    it('pops up when you complete in universal task list, only if there is no active tasks left', () => {
-      cy.visit('/');
-    });
-
-    it('ensure task count updates when task is completed from universal task list', () => {
-      cy.visit('/');
-    });
-
-    it('adding someone from te universal task list creates the user and then creates teh task, and adds it to the universal task list', () => {
-      cy.visit('/');
-    });
   });
 });

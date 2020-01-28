@@ -67,7 +67,7 @@ describe('stats box', () => {
       .findByText('$ 2465')
       .findByTestId('statsTitle')
       .trigger('mouseover')
-      .findByText('117')
+      .findByText('115')
       .findByText('12')
       .findByText('4');
   });
