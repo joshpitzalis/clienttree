@@ -30,24 +30,24 @@ describe('stats box', () => {
     expect(queryByTestId('complete-screen')).not.toBeInTheDocument();
   });
 
-  test.skip('modal closes to incomplete if no goal was added', async () => {
-    const { getByTestId, queryByTestId } = render(
-      <StatsBox userId={fakeData.userId} />,
-      {
-        initialState: { user: { stats: { goal: '' } } },
-      }
-    );
-    expect(getByTestId('incomplete-screen')).toBeInTheDocument();
-    expect(queryByTestId('contactModal')).not.toBeInTheDocument();
-    userEvent.click(getByTestId('incomplete-screen'));
-    setStatDefaults.mockResolvedValueOnce();
-    expect(queryByTestId('contactModal')).toBeInTheDocument();
+  // test('modal closes to incomplete if no goal was added', async () => {
+  //   const { getByTestId, queryByTestId } = render(
+  //     <StatsBox userId={fakeData.userId} />,
+  //     {
+  //       initialState: { user: { stats: { goal: '' } } },
+  //     }
+  //   );
+  //   expect(getByTestId('incomplete-screen')).toBeInTheDocument();
+  //   expect(queryByTestId('contactModal')).not.toBeInTheDocument();
+  //   userEvent.click(getByTestId('incomplete-screen'));
+  //   setStatDefaults.mockResolvedValueOnce();
+  //   expect(queryByTestId('contactModal')).toBeInTheDocument();
 
-    userEvent.click(getByTestId('closeModal'));
-    expect(queryByTestId('contactModal')).not.toBeInTheDocument();
-    expect(getByTestId('incomplete-screen')).toBeInTheDocument();
-    expect(queryByTestId('complete-screen')).not.toBeInTheDocument();
-  });
+  //   userEvent.click(getByTestId('closeModal'));
+  //   expect(queryByTestId('contactModal')).not.toBeInTheDocument();
+  //   expect(getByTestId('incomplete-screen')).toBeInTheDocument();
+  //   expect(queryByTestId('complete-screen')).not.toBeInTheDocument();
+  // });
 
   test('auto save on input', () => {
     const dispatch = jest.fn();
@@ -252,20 +252,90 @@ describe('stats box', () => {
     );
   });
 
-  xtest('cypress test that updating the crm changes the stats numbers', () => {});
+  // xtest('cypress test that updating the crm changes the stats numbers', () => {});
 });
 
-describe('nice-to-have stats module features', () => {
-  xtest('THE PRICE OF YOUR IDEAL PROJECT shoud link to services page/post', () => {});
-  xtest('show you got paid sticker when ypu updat e income', () => {});
-  xtest('average price should be pulled from your services', () => {});
-  xtest('add tax deadline', () => {});
-  xtest('infer tax date from location/link to locations and taxes dates', () => {});
-  xtest('be able to change the currency', () => {});
-});
+// describe('nice-to-have stats module features', () => {
+//   xtest('THE PRICE OF YOUR IDEAL PROJECT shoud link to services page/post', () => {});
+//   xtest('show you got paid sticker when ypu updat e income', () => {});
+//   xtest('average price should be pulled from your services', () => {});
+//   xtest('add tax deadline', () => {});
+//   xtest('infer tax date from location/link to locations and taxes dates', () => {});
+//   xtest('be able to change the currency', () => {});
+// });
 
-// ###
-xtest('add sentry', () => {});
-xtest('upload images', () => {});
-xtest('make rules work', () => {});
-xtest('add a line to explain that you can create a website if you dont already have one', () => {});
+// // ###
+// xtest('add sentry', () => {});
+// xtest('upload images', () => {});
+// xtest('make rules work', () => {});
+// xtest('add a line to explain that you can create a website if you dont already have one', () => {});
+
+// describe.skip('useDerivedProjectData', () => {
+//   test('projectCount', () => {});
+//   test('timeLeft', () => {});
+//   test('weeks', () => {});
+// });
+
+// import React from 'react';
+// import { createModel } from '@xstate/test';
+// import { cleanup, fireEvent } from '@testing-library/react';
+// // import userEvent from '@testing-library/user-event';
+// import StatsBox, { statsMachine } from '../StatsBox';
+// import { render } from '../../../utils/testSetup';
+
+// const statsModel = createModel(statsMachine).withEvents({
+//   MODAL_OPENED: ({ getByTestId }) => {
+//     fireEvent.click(getByTestId('incomplete-screen'));
+//   },
+//   COMPLETE_MODAL_OPENED: ({ getByTestId }) => {
+//     fireEvent.click(getByTestId('statsTitle'));
+//   },
+//   CLOSED: {
+//     exec: async ({ getByTestId }, event) => {
+//       fireEvent.change(getByTestId('goal'), {
+//         target: { value: event.value },
+//       });
+//       fireEvent.click(getByTestId('close-button'));
+//     },
+//     cases: [{ value: 'something' }, { value: '' }],
+//   },
+
+//   // CLOSED: {
+//   //   exec: ({ getByTestId }) => fireEvent.click(getByTestId('closeModal')),
+//   //   cases: [
+//   //     {
+//   //       payload: {
+//   //         incomeGoalsCompleted: true,
+//   //       },
+//   //     },
+//   //     {
+//   //       payload: {
+//   //         incomeGoalsCompleted: false,
+//   //       },
+//   //     },
+//   //   ],
+//   // },
+// });
+
+// const testPlans = statsModel.getSimplePathPlans();
+
+// testPlans.forEach(plan => {
+//   describe.skip(plan.description, () => {
+//     // Do any cleanup work after testing each path
+//     afterEach(cleanup);
+
+//     plan.paths.forEach(path => {
+//       it(path.description, async () => {
+//         // Test setup
+//         const rendered = render(<StatsBox userId="123" />, {
+//           initialState: { user: { stats: { goal: '' } } },
+//         });
+
+//         // Test execution
+//         await path.test(rendered);
+//       });
+//     });
+//   });
+// });
+
+// xit('coverage', () => statsModel.testCoverage());

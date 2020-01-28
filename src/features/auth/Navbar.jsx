@@ -44,8 +44,11 @@ export const Navbar = withRouter(({ history }) => {
     <TopBar>
       <TopBarSection>
         <TopBarTitle>
-          <Link to={userId ? `/user/${userId}/dashboard` : '/'}>
-            <Tree classNames="ml4 pl2 b hover-white no-underline flex items-center pa3 " />
+          <Link
+            to={userId ? `/user/${userId}/network` : '/'}
+            data-testid="goToHomePage"
+          >
+            <Tree classNames="" />
           </Link>
         </TopBarTitle>
       </TopBarSection>
@@ -63,14 +66,16 @@ export const Navbar = withRouter(({ history }) => {
             >
               {({ handleClose }) => (
                 <div onMouseLeave={handleClose}>
-                  <DropdownItem
-                    Component={Link}
-                    to={`/user/${userId}/profile`}
-                    data-testid="goToProfilePage"
-                  >
-                    <Profile className="" />{' '}
-                    <p className="tracked pl2">Profile</p>
-                  </DropdownItem>
+                  <div className="dn db-ns">
+                    <DropdownItem
+                      Component={Link}
+                      to={`/user/${userId}/profile`}
+                      data-testid="goToProfilePage"
+                    >
+                      <Profile className="" />{' '}
+                      <p className="tracked pl2">Profile</p>
+                    </DropdownItem>
+                  </div>
                   <DropdownItem onClick={() => handleLogout(history)}>
                     <Logout className="" />{' '}
                     <p className="tracked pl2">Logout</p>

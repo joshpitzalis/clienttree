@@ -2,10 +2,13 @@
   "name": "clienttree",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://clienttree.io",
   "dependencies": {
     "@babel/core": "7.6.0",
     "@duik/it": "^0.4.1",
+    "@reduxjs/toolkit": "^1.2.1",
     "@sentry/browser": "^5.10.1",
+    "@storybook/addon-centered": "^5.3.8",
     "@svgr/webpack": "4.3.2",
     "@testing-library/jest-dom": "^4.1.2",
     "@types/react-transition-group": "^4.2.3",
@@ -63,12 +66,12 @@
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.1.2",
     "react-router-prop-types": "^1.0.4",
+    "react-splitio": "^0.1.11",
     "react-transition-group": "^4.3.0",
     "react-use": "^12.2.2",
     "redux": "^4.0.4",
     "redux-immutable-state-invariant": "^2.1.0",
     "redux-observable": "^1.2.0",
-    "redux-starter-kit": "^0.8.0",
     "resolve": "1.12.0",
     "resolve-url-loader": "3.1.0",
     "rxfire": "^3.8.4",
@@ -97,11 +100,18 @@
     "cypress": "start-server-and-test start http://localhost:3000 cypress:open",
     "deploy": "firebase deploy --except functions",
     "deployFunctions": "firebase deploy --only functions",
-    "coverage": "npm test -- --coverage"
+    "coverage": "npm test -- --coverage",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "eslintConfig": {
-    "extends": "wesbos",
-    "rules": {},
+    "extends": [
+      "wesbos",
+      "plugin:cypress/recommended"
+    ],
+    "rules": {
+      "react/prop-types": "off"
+    },
     "plugins": [
       "eslint-plugin-cypress"
     ],
@@ -175,13 +185,17 @@
     ]
   },
   "devDependencies": {
+    "@storybook/addon-actions": "^5.3.8",
+    "@storybook/addon-links": "^5.3.8",
+    "@storybook/addons": "^5.3.8",
+    "@storybook/react": "^5.3.8",
     "@testing-library/cypress": "^5.0.1",
     "@testing-library/react": "^9.3.0",
     "@testing-library/user-event": "^7.1.2",
     "@xstate/test": "^0.1.0",
     "babel-eslint": "^9.0.0",
     "canvas": "^2.6.0",
-    "cypress": "^3.7.0",
+    "cypress": "^3.8.3",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.1",
     "eslint-config-prettier": "^4.3.0",
@@ -193,6 +207,7 @@
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^1.7.0",
     "prettier": "^1.18.2",
+    "react-axe": "^3.3.0",
     "start-server-and-test": "^1.10.3"
   }
 }

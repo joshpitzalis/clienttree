@@ -5,7 +5,7 @@ import { TestScheduler } from 'rxjs/testing';
 import { SingleStage, EditableTitle } from '../Stages';
 import { render } from '../../../utils/testSetup';
 import { stageTitleUpdate } from '../projectEpics';
-import { updateUserProfile } from '../dashAPI';
+// import { updateUserProfile } from '../dashAPI';
 
 jest.mock('../dashAPI');
 
@@ -191,9 +191,7 @@ it('has the existing title pre-filled, not an empty input', () => {
   expect(getByTestId('editableTitle').value).toEqual('exampleTitle');
 });
 
-test.skip('get rid of flash on dashboard when loading', () => false);
-
-test.skip('test error state/throw error', () => false);
+// test.skip('test error state/throw error', () => false);
 
 it('updating stage title autosaves', () => {
   const { getByText, getByTestId, queryByTestId } = render(
@@ -215,25 +213,25 @@ it('updating stage title autosaves', () => {
   userEvent.type(getByTestId('editableTitle'), 'hello');
   // check function gets fired after a few seconds
 });
-test.skip('shows saving as it is saving', () => false);
-test.skip('when the input prop updates, the edit box is closed', () => false);
+// test.skip('shows saving as it is saving', () => false);
+// test.skip('when the input prop updates, the edit box is closed', () => false);
 
-test.skip('auto saves updates', () => false);
-test.skip('doesnt accept null values', () => false);
-test.skip('collapsing stage should make state uneditable whenopening again', () =>
-  false);
-test.skip('opening one state shoudl close all others, or maybe just close them all on a timer of disuse', () =>
-  false);
-test.skip('if I click outside a stage it should close editability', () =>
-  false);
-test.skip('remove awkward blue focus outline from stages', () => false);
-describe('stage CRUD', () => {
-  test.skip('add a step', () => false);
-  test.skip('add a step adds teh step to teh end', () => false);
+// test.skip('auto saves updates', () => false);
+// test.skip('doesnt accept null values', () => false);
+// test.skip('collapsing stage should make state uneditable whenopening again', () =>
+//   false);
+// test.skip('opening one state shoudl close all others, or maybe just close them all on a timer of disuse', () =>
+//   false);
+// test.skip('if I click outside a stage it should close editability', () =>
+//   false);
+// test.skip('remove awkward blue focus outline from stages', () => false);
+// describe('stage CRUD', () => {
+//   test.skip('add a step', () => false);
+//   test.skip('add a step adds teh step to teh end', () => false);
 
-  test.skip('remove a step', () => false);
+//   test.skip('remove a step', () => false);
 
-  test.skip('you cannot destroy a step if there are people on it', () => false);
-  test.skip('removin a step preserves the step order', () => false);
-  test.skip('autofocus input when open', () => false);
-});
+//   test.skip('you cannot destroy a step if there are people on it', () => false);
+//   test.skip('removin a step preserves the step order', () => false);
+//   test.skip('autofocus input when open', () => false);
+// });

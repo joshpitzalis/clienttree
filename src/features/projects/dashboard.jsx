@@ -9,7 +9,7 @@ import { setStateToDB } from './dashAPI';
 import { toast$ } from '../notifications/toast';
 import firebase from '../../utils/firebase';
 import Portal from '../../utils/Portal';
-import { Modal } from '../people/components/ContactModal';
+import Modal from '../people/components/ContactModal';
 import { Stages } from './Stages';
 import { onDragEnd } from './dashHelpers';
 
@@ -187,7 +187,7 @@ function AddStage({ state }) {
           className="b ph3 pv2 ba b--black bg-transparent grow pointer f6 br1"
           onClick={() => setEditable(true)}
         >
-          Add a New Stage
+          Add a New Step
         </button>
       )}
     </div>

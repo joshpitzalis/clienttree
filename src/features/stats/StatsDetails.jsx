@@ -44,7 +44,7 @@ export const Stats = ({ userStats, showModal }) => {
 
   return (
     <article
-      className="w5 pl4 fixed pt5"
+      className="w5 pl4 fixed pt5 mw-100"
       style={{ bottom: 0 }}
       data-testid="complete-screen"
       onMouseLeave={() => setVisibility(false)}

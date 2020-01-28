@@ -10,7 +10,7 @@ describe('services', () => {
 
   it('lets you add a service', () => {
     cy.visit('/')
-      .findByTestId('salesDashboard')
+      .findByTestId('outreachPage')
       .goToProfilePage()
       .findByTestId('services')
       .wait(5000)
@@ -38,7 +38,7 @@ describe('services', () => {
 
   it('lets you update a service', () => {
     cy.visit('/')
-      .findByTestId('salesDashboard')
+      .findByTestId('outreachPage')
       .goToProfilePage()
       .findByTestId('services')
       .click()
@@ -55,7 +55,7 @@ describe('services', () => {
 
   it('lets you delete a service', () => {
     cy.visit('/')
-      .findByTestId('salesDashboard')
+      .findByTestId('outreachPage')
       .goToProfilePage()
       .findByTestId('services')
       .click()
@@ -79,13 +79,4 @@ describe('services', () => {
       .queryByText(fakeData.title)
       .should('not.exist');
   });
-
-  // it.skip('lets me add testimonials', () => {
-  //   cy.visit('/')
-  //     .login()
-  //     .findByText(/Welcome!/i)
-  //     .findByText(/services/i)
-  //     .click()
-  //     .findByText(/profile/i);
-  // });
 });

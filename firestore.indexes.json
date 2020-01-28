@@ -5,11 +5,43 @@
       "queryScope": "COLLECTION_GROUP",
       "fields": [
         {
+          "fieldPath": "dateCompleted",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "dueDate",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "helpfulTasks",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
           "fieldPath": "connectedTo",
           "order": "ASCENDING"
         },
         {
           "fieldPath": "dateCompleted",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "helpfulTasks",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "connectedTo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "dateCompleted",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "dueDate",
           "order": "ASCENDING"
         }
       ]

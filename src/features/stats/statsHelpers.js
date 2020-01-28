@@ -16,6 +16,7 @@ export const handleActivityCompleted = async (
 
   // mark task complete in db
   await _handleCompleteTask(taskId, myUid, completedFor);
+
   _incrementActivityStats(myUid);
 
   // track event in amplitude

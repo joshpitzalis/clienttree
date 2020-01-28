@@ -1,14 +1,21 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
-export const confirmDeletePropTypes = {
-  handleDelete: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  activeTaskCount: PropTypes.number.isRequired,
-};
-export const confirmDeleteDefaultProps = {};
+// export const confirmDeletePropTypes = {
+//   handleDelete: PropTypes.func.isRequired,
+//   title: PropTypes.string.isRequired,
+//   activeTaskCount: PropTypes.number.isRequired,
+// };
+// export const confirmDeleteDefaultProps = {};
 
-export const ConfirmDelete = ({ handleDelete, title, activeTaskCount }) => {
+export const ConfirmDelete = ({
+  handleDelete,
+  title,
+  activeTaskCount,
+  className,
+  testid,
+  tracked,
+}) => {
   const [confirmDelete, setConfirmDelete] = React.useState(false);
   return (
     <div>
@@ -18,13 +25,14 @@ export const ConfirmDelete = ({ handleDelete, title, activeTaskCount }) => {
           handleDelete={handleDelete}
           setConfirmDelete={setConfirmDelete}
           activeTaskCount={activeTaskCount}
+          tracked={tracked}
         />
       ) : (
         <button
-          className="f6  small-caps bn pointer"
+          className={className}
           type="button"
           onClick={() => setConfirmDelete(true)}
-          data-testid="deleteContact"
+          data-testid={testid}
         >
           {`Delete ${title}`}
         </button>
@@ -32,37 +40,44 @@ export const ConfirmDelete = ({ handleDelete, title, activeTaskCount }) => {
     </div>
   );
 };
-ConfirmDelete.propTypes = confirmDeletePropTypes;
-ConfirmDelete.defaultProps = confirmDeleteDefaultProps;
+// ConfirmDelete.propTypes = confirmDeletePropTypes;
+// ConfirmDelete.defaultProps = confirmDeleteDefaultProps;
 
-const confirmationPropTypes = {
-  title: PropTypes.string.isRequired,
-  handleDelete: PropTypes.func.isRequired,
-  setConfirmDelete: PropTypes.func.isRequired,
-  activeTaskCount: PropTypes.number.isRequired,
-};
+// const confirmationPropTypes = {
+//   title: PropTypes.string.isRequired,
+//   handleDelete: PropTypes.func.isRequired,
+//   setConfirmDelete: PropTypes.func.isRequired,
+//   activeTaskCount: PropTypes.number.isRequired,
+// };
 
-const confirmationDefaultProps = {};
+// const confirmationDefaultProps = {};
 
 function Confirmation({
   title,
   handleDelete,
   setConfirmDelete,
   activeTaskCount,
+  tracked,
 }) {
+  if (tracked) {
+    return (
+      <small className="f6 black-70 small-caps" data-testid="deleteGuard">
+        {`You must remove ${title} from the workboard before you can delete this contact.`}
+      </small>
+    );
+  }
   if (activeTaskCount) {
     return (
       <small className="f6 black-70 small-caps" data-testid="deleteGuard">
-        You must complete or remove all active tasks before you can delete this
-        contact.
+        {`You must complete or remove all active tasks before you can delete ${title}.`}
       </small>
     );
   }
   return (
     <div>
-      <small className="f6 black-70 small-caps">
+      {/* <small className="f6 black-70 small-caps">
         {`Are you sure you want to delete ${title} ?`}
-      </small>
+      </small> */}
       <div className="mv3">
         <button
           className="f6 red small-caps pointer link dim ba bw1 ph3 pv2 mb2 dib b--red"
@@ -87,5 +102,5 @@ function Confirmation({
   );
 }
 
-Confirmation.propTypes = confirmationPropTypes;
-Confirmation.defaultProps = confirmationDefaultProps;
+// Confirmation.propTypes = confirmationPropTypes;
+// Confirmation.defaultProps = confirmationDefaultProps;

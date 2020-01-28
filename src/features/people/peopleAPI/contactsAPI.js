@@ -1,3 +1,4 @@
+import { compose } from 'redux';
 import firebase from '../../../utils/firebase';
 import { helpfulTaskRef, setTaskDetails, newDocRef } from './APIcalls';
 import { toast$ } from '../../notifications/toast';
@@ -488,3 +489,52 @@ export const handleTracking = async (
     });
   }
 };
+
+export const updateLastContacted = (userId, uid) =>
+  firebase
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('contacts')
+    .doc(uid)
+    .set(
+      {
+        lastContacted: +new Date(),
+      },
+      { merge: true }
+    );
+
+export const setContact = (
+  userId,
+  {
+    uid,
+    name,
+    summary = '',
+    lastContacted = null,
+    photoURL = '',
+    downloadURL = '',
+    notes = {},
+  }
+) =>
+  firebase
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('contacts')
+    .doc(uid)
+    .set({
+      name,
+      summary,
+      uid,
+      lastContacted,
+      photoURL: downloadURL || photoURL,
+      activeTaskCount: 1,
+      notes,
+    });
+
+export const setProfileImage = ({ imageFile, contactId }) =>
+  firebase
+    .storage()
+    .ref(`contacts/${contactId}.png`)
+    .put(imageFile)
+    .then(({ ref }) => ref.getDownloadURL());

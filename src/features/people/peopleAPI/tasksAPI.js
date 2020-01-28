@@ -2,16 +2,27 @@ import firebase from '../../../utils/firebase';
 
 import { helpfulTaskRef, setTaskDetails } from './APIcalls';
 
-export const handleAddTask = (task, _myUid, _theirUid, photoURL) => {
-  const newtask = helpfulTaskRef(_myUid, _theirUid);
-  const taskId = task.id || newtask.id;
+export const handleAddTask = async ({
+  taskName,
+  myUid,
+  theirUid,
+  photoURL,
+  dueDate,
+  contactName,
+}) => {
+  const userEmail = await firebase.auth().currentUser.email;
+  const newtask = helpfulTaskRef(myUid, theirUid);
+  const taskId = newtask.id;
 
   return setTaskDetails({
-    userId: _myUid,
-    contactUid: _theirUid,
+    userId: myUid,
+    userEmail,
+    contactUid: theirUid,
+    contactName,
     taskId,
-    taskName: task,
+    taskName,
     photoURL,
+    dueDate,
   });
 };
 

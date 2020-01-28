@@ -4,35 +4,64 @@
 body {
   background-color:var(--bg-base);
   font-size: 18px;
-  --bg-main: #ffffff;
-  --bg-base: #fdf8f5;  
+  color: hsl(0, 0%, 13%);
+  
+  --text-base: hsl(0, 0%, 13%);
+  --text-main: hsl(0, 0%, 13%);
+  --text-secondary: hsl(0, 0%, 32%);
+  --text-tertiary: #757575;
+
+  --bg-main: hsl(0, 0%, 100%);
+  --bg-base: hsl(22, 67%, 98%);
+  --bg-layer1: hsl(0, 0%, 100%);
+
   --border-color-base: #efeff1;
   --border-color-main: #44444e;
   --border-color-highlight: #64646e;
-  --text-base: #182445;
-  --text-main: #182445;
-  --text-secondary: #182445;
-  --green: #91bb5c;
---blue	: #32549d;
---indigo: #5083f4;
---orange: #ffb42a;
---red: #e64948;
---success: #91bb5c;
---primary:#32549d;
---warning	: #ffb42a;
---danger: #e64948;
---info: #5083f4;
---black:#252529;
 
+  --primary: hsl(83, 70%, 34%) !important; 
+  --green: hsl(83, 70%, 34%); 
+  --blue	: #32549d;
+  --indigo: #5083f4;
+  --orange: #ffb42a;
+  --red: #e64948; 
+  --success:  hsl(83, 34%, 89%);
+  --primary:#32549d;
+  --warning	: #ffb42a;
+  --danger: #e64948;
+  --info: #5083f4;
+  --black:hsl(0, 0%, 13%);
 
-  font-family: 'Roboto',-apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen",
+  --orange: hsl(22, 78%, 55%);
+ 
+  font-family: 'Roboto',-apple-system, 
+  
+  BlinkMacSystemFont, "Segoe UI", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
 }
+
+ul .ant-timeline *:not(:last-child) {
+  margin-bottom: 0px !important;
+}
+
+input{
+  background-color: hsl(0, 0%, 88%);
+  border: none !important;
+}
+
+textarea{
+  background-color: hsl(0, 0%, 88%) !important;
+  border: none !important;
+}
+
+.bg-white {
+  background-color:var(--bg-main);
+}
+
 .bg-client-green {
-  background-color:var(--green);
+  background-color:var(--primary);
 }
 
 .bg-black {
@@ -40,19 +69,71 @@ body {
 }
 
 .green {
-  color: var(--green) ;
+  color: var(--primary) !important;
 }
 
 .bg-base {
-
   background-color: var(--bg-base) ;
 }
+
+.bg-layer1 {
+  background-color: var(--bg-layer1) ;
+}
+
+.text1{
+  color: var(--text-main) ;
+}
+
+.text2{
+  color: var(--text-secondary) ;
+}
+
+.text3{
+  color: var(--text-tertiary) ;
+}
+.btn1{
+  background-color: var(--primary) ;
+}
+
+.btn2{
+  background-color: var(--success) ;
+  color: var(--primary)
+}
+
+.btn3{
+  background-color: transparent ;
+  color: var(--primary)
+}
+
+.bt-orange{
+  border-top: 3px var(--orange) solid;
+}
+
+.orange{
+  color:  var(--orange) ;
+}
+
+.bt-green{
+  border-top: 3px var(--primary) solid;
+}
+
+.b--green{
+  border: 1px var(--success) solid;
+}
+
+.b--orange{
+  border: 1px var(--orange) solid;
+}
+
+.b--red{
+  border: 1px var(--red) solid;
+}
+
 
 .taskStyle {
   -webkit-font-smoothing: antialiased;
 
 cursor: pointer;
-
 box-sizing: border-box;
 border-radius: 15px;
 display: inline-block;
@@ -66,11 +147,7 @@ margin: 0 2px;
 transition: box-shadow 150ms cubic-bezier(.2, .6, .6, 1), opacity 150ms cubic-bezier(.2, .6, .6, 1);
 vertical-align: middle;
 white-space: nowrap;
-
-
-
 }
-
 
 
 .react-date-picker__wrapper {
@@ -80,4 +157,101 @@ white-space: nowrap;
 
 details summary::-webkit-details-marker {
   display:none;
+}
+
+/*TaskBox */
+
+.taskBorder[data-state="overDue"] {
+  border: 1px var(--red) solid;
+  background-color: #FFDFDF;
+}
+
+.taskBorder[data-state="dueToday"] {
+  border: 1px var(--primary) solid;
+  background-color: var(--success);
+}
+
+.taskBorder[data-state="confirmation"] {
+  border: 1px var(--primary) solid;
+  /* background-color: var(--success); */
+}
+
+
+
+
+/* checkboxes */
+
+/* Hide the browser's default checkbox */
+.label input, .taskBox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkBox {
+  position: absolute;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 4px;
+  border: 1px #c1c1c1 dotted;
+}
+
+/* On mouse-over, add a grey background color */
+.label:hover input ~ .checkBox {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.label input:checked ~ .checkBox {
+  background-color: var(--primary);
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkBox:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.label input:checked ~ .checkBox:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.label .checkBox:after {
+  left: 10px;
+  top: 7px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+
+
+@media(min-width: 30em) {
+  .bg-white-ns {
+    background-color:var(--bg-main);
+  }
+}
+
+.autoComplete  .ant-select-selection {
+  background-color: hsl(0, 0%, 88%) !important;
+}
+
+.ant-select-selection__placeholder {
+  color: hsl(0, 0%, 13%)
+}
+
+.datepicker-nav-btn {
+  opacity: 0;
 }

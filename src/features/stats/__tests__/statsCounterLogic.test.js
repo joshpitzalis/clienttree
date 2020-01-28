@@ -5,7 +5,7 @@ import { interpret } from 'xstate';
 import userEvent from '@testing-library/user-event';
 import { TestScheduler } from 'rxjs/testing';
 import { handleActivityCompleted } from '../statsHelpers';
-import { Modal } from '../../people/components/ContactModal';
+import { PersonModal } from '../../people/components/PersonBox';
 import { render } from '../../../utils/testSetup';
 import { NetworkProvider } from '../../people/NetworkContext';
 import {
@@ -27,26 +27,25 @@ describe('stats counter logic', () => {
     userId: '123',
     selectedUserUid: '456',
     onClose: jest.fn(),
-    incrementStats: jest.fn(),
+    handleTracking: jest.fn(),
   };
 
   describe('incrementing numbers', () => {
     test('when added to first column increment project stats', () => {
       const { getByTestId } = render(
-        <NetworkProvider uid={fakeData.userId}>
-          <Modal
-            uid={fakeData.userId}
-            selectedUserUid={fakeData.selectedUserUid}
-            onClose={fakeData.onClose}
-            incrementStats={fakeData.incrementStats}
-          />
-        </NetworkProvider>
+        <PersonModal
+          uid={fakeData.userId}
+          contactId={fakeData.selectedUserUid}
+          onClose={fakeData.onClose}
+          handleTracking={fakeData.handleTracking}
+        />
       );
 
-      expect(getByTestId('leadToggle')).toBeInTheDocument();
-      userEvent.click(getByTestId('leadToggle'));
-      expect(fakeData.incrementStats).toHaveBeenCalled();
+      expect(getByTestId('dashSwitch')).toBeInTheDocument();
+      userEvent.click(getByTestId('dashSwitch'));
+      expect(fakeData.handleTracking).toHaveBeenCalled();
     });
+
     test('handleTracking increments stats', async () => {
       const fakeProps = {
         checked: false,
@@ -1216,19 +1215,19 @@ describe('stats counter logic', () => {
       statsBoxService.send('MODAL_OPENED');
     });
 
-    test.skip('only reveal stats on hover', () => false);
+    // test.skip('only reveal stats on hover', () => false);
 
-    test.skip('show activities needed minus activties completed', () => false);
+    // test.skip('show activities needed minus activties completed', () => false);
 
-    test.skip('support text under add someone to your network should say, on hover, to begin with just add 5 people that you have  been meaning to touch base with for a while now.', () =>
-      false);
-    test.skip('loading indicators for people page, when loading, but also when creating', () =>
-      false);
+    // test.skip('support text under add someone to your network should say, on hover, to begin with just add 5 people that you have  been meaning to touch base with for a while now.', () =>
+    //   false);
+    // test.skip('loading indicators for people page, when loading, but also when creating', () =>
+    //   false);
 
-    test.skip('no infinity or negative numbers should show in teh stats', () =>
-      false);
+    // test.skip('no infinity or negative numbers should show in teh stats', () =>
+    //   false);
 
-    test.skip('number of activities must always be higher that the number of  potential projects', () =>
-      false);
+    // test.skip('number of activities must always be higher that the number of  potential projects', () =>
+    //   false);
   });
 });

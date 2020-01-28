@@ -20,11 +20,13 @@ export const newDocRef = userId =>
 
 export const setTaskDetails = ({
   userId,
+  userEmail,
   contactUid,
+  contactName,
   taskId,
   taskName,
   photoURL,
-  downloadURL,
+  dueDate,
 }) =>
   firebase
     .firestore()
@@ -42,7 +44,11 @@ export const setTaskDetails = ({
         dateCompleted: null,
         connectedTo: userId,
         completedFor: contactUid,
-        photoURL: downloadURL || photoURL,
+        photoURL,
+        userId,
+        userEmail,
+        contactName,
+        dueDate,
       },
       { merge: true }
     );
