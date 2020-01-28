@@ -18,7 +18,7 @@ const mockProps = {
   setComplete: jest.fn(),
 };
 
-describe('network task features', () => {
+describe('taskBox', () => {
   test('lets you complete a task in task box', () => {
     const {
       dispatch,
@@ -64,61 +64,113 @@ describe('network task features', () => {
     getByTestId('dueToday');
   });
 
-  test.skip('lets you edit a task in task box', () => false);
-  test.skip('lets you delete a task in task box', () => false);
+  // test.skip('lets you edit a task in task box', () => false);
+  // test.skip('lets you delete a task in task box', () => false);
 });
 
-describe.skip('sidebar task attributes', () => {
-  test.skip('profile picture shows up in task box', () => false);
-  test.skip('will not let you delete user with active tasks', () => false);
-  test.skip('new task is not added when a contact is updated', () => false);
-  test('organise task by due date', () => false);
-  test('word  overflow', () => false);
-  test(' senetence overflow', () => false);
-  test('checkbox over flow', () => false);
-  test('click checkbox to confirm complete', () => false);
-  test('nevermind works', () => false);
-  test('confirm complete works', () => false);
-  test('click to edit', () => false);
-  test('confetti on completion', () => false);
-  test('click to edit', () => false);
-  test('shows task details', () => false);
-  test('shows deadline', () => false);
-  test('shows green red organe based on how over due', () => false);
-  test('tasks with no names cannot be created', () => false);
-});
+// describe('create tasks', () => {
+//   // REMINDER_CREATED
 
-describe.skip('create reminder options', () => {
-  test('remind me next week', () => false);
-  test('remind me next month', () => false);
-  test('remind me in 3 months', () => false);
-  test('remind me next year', () => false);
-});
+//   it.skip('clicking on a users reveals their specific tasks list in the sidebar', () => {
+//     // load mock Dashboard
+//     const { getByTestId, getByText } = render(<Dashboard userId="123" />, {
+//       initialState: {
+//         contacts: [
+//           {
+//             activeTaskCount: 1,
+//             lastContacted: null,
+//             name: 'testUser',
+//             photoURL: '',
+//             summary: '',
+//             uid: 'WvUe4wawAWMg6fk88Gzb',
+//           },
+//         ],
+//       },
+//     });
 
-describe.skip('network page', () => {
-  test('when task is complete update last contacted', () => false);
-  // test('when note is added update last contacted', () => false);
-  test('universal tasks ordered by dues date', () => false);
-  test('specific tasks ordered by dues date', () => false);
-  test('people ordered by  least contacted', () => false);
-  test('after you have about 10 contacts make the rmeind button teh primary button and demphasize teh add peopel button', () =>
-    false);
-  test('organise contacts by people I ahve not contacted for teh longerst', () =>
-    false);
-  test('let me add a reminder from mobile and create new contact', () => false);
-  test('let me add a reminder from mobile on existing contact', () => false);
-  test('encourage people to add past clients first as that is low hanging fruit', () =>
-    false);
-});
+//     // userEvent.click(getByTestId('networkPage'));
+//     // getByTestId('networkTab');
+//     // establish generic sidebar
+//     getByTestId('universalTaskList');
 
-describe.skip('email reminders', () => {
-  test('shoudl show everything over due', () => false);
-  test('shoudl indicate how oevrdue they are somehow', () => false);
+//     // click on contact
+//     userEvent.click(getByText('testUser'));
+//     // establish specific sidebar
+//     getByTestId('specificTaskList');
+//     // fill out the task
+//     // check it got add to the user
+//   });
 
-  xtest('faces show up beside their tasks in UTL', () => {
-    // this is now a cypress test
-  });
+//   test.skip('add reminder to an existing contact', () => {
+//     // load mock Dashboard
+//     const { getByTestId, getByText } = render(<Dashboard userId="123" />, {
+//       initialState: {
+//         contacts: [
+//           {
+//             activeTaskCount: 1,
+//             lastContacted: null,
+//             name: 'testUser',
+//             photoURL:
+//               'https://firebasestorage.googleapis.com/v0/b/client-tree-dev.appspot.com/o/contacts%2FWvUe4wawAWMg6fk88Gzb.png?alt=media&token=10b9a175-73df-447e-851f-a04d4418a9cc',
+//             summary: '',
+//             uid: 'WvUe4wawAWMg6fk88Gzb',
+//           },
+//         ],
+//       },
+//     });
 
-  xtest('prevent submissions with empty values', () => {});
-  xtest('prevent submissions with empty values on mobile', () => {});
-});
+//     // userEvent.click(getByTestId('networkPage'));
+//     // getByTestId('networkTab');
+//     // establish generic sidebar
+//     getByTestId('universalTaskList');
+
+//     // click on contact
+//     userEvent.click(getByText('testUser'));
+//     // establish specific sidebar
+//     getByTestId('specificTaskList');
+//     // fill out the task
+//     // check it got add to the user
+//   });
+//   test.skip('edit a reminder', () => {});
+//   test.skip('complete a reminder', () => {});
+//   test.skip('conform completion before you complete a reminder', () => {});
+//   test.skip('show completed date on  a reminder', () => {});
+//   test.skip('edit reminders', () => {});
+//   test.skip('gve people the option  to delete a reminder if it is no longer relevant', () => {});
+//   test.skip('throw confetti every time you complete a task', () => {});
+
+//   test.skip('add task to a new contact', () => {});
+//   test.skip('date task', () => {});
+//   test.skip('if you have a name then pre fill the name field', () => {});
+//   test.skip('when you complete a task it forces you to create next task', () => {});
+//   test.skip('if you dont add a new task it doesn;t complete the previous task, if its teh last task ', () => {});
+//   test.skip('default reminder date is next week ', () => {});
+// });
+
+// describe.skip('network page', () => {
+//   test('when task is complete update last contacted', () => false);
+//   // test('when note is added update last contacted', () => false);
+//   test('universal tasks ordered by dues date', () => false);
+//   test('specific tasks ordered by dues date', () => false);
+//   test('people ordered by  least contacted', () => false);
+//   test('after you have about 10 contacts make the rmeind button teh primary button and demphasize teh add peopel button', () =>
+//     false);
+//   test('organise contacts by people I ahve not contacted for teh longerst', () =>
+//     false);
+//   test('let me add a reminder from mobile and create new contact', () => false);
+//   test('let me add a reminder from mobile on existing contact', () => false);
+//   test('encourage people to add past clients first as that is low hanging fruit', () =>
+//     false);
+// });
+
+// describe.skip('email reminders', () => {
+//   test('shoudl show everything over due', () => false);
+//   test('shoudl indicate how oevrdue they are somehow', () => false);
+
+//   xtest('faces show up beside their tasks in UTL', () => {
+//     // this is now a cypress test
+//   });
+
+//   xtest('prevent submissions with empty values', () => {});
+//   xtest('prevent submissions with empty values on mobile', () => {});
+// });

@@ -79,7 +79,7 @@ export const Person = ({ contact, uid }) => {
           >
             <img
               alt={`${contact.name} avatar`}
-              className="w2 h2 w3-ns h3-ns br-100"
+              className="w2 h2 w3-ns h3-ns br-100 ml3"
               src={contact.photoURL}
             />
             <div className="pl3 flex-auto">

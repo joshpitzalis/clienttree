@@ -18,7 +18,7 @@ export const ReminderCreator = ({
   const [name, setName] = React.useState(contact && contact.name);
   const [task, setTask] = React.useState('');
   const [date, setDate] = React.useState(+new Date() + 604800000);
-
+  const [error, setError] = React.useState('');
   // if you have the contacts uid then prefill the name field and disable it
   const handleAddReminder = (contactName, taskName, dueDate) => {
     handleAddingTask({
@@ -75,13 +75,17 @@ export const ReminderCreator = ({
                 name="task"
                 id="task"
                 value={task}
-                onChange={e => setTask(e.target.value)}
+                onChange={e => {
+                  setError('');
+                  setTask(e.target.value);
+                }}
               />
             </label>
           </div>
           <div className="mb2">
-            <DateBox date={date} setDate={setDate} />
+            <DateBox date={date} setDate={setDate} setError={setError} />
           </div>
+          {error && <small className="red center db mb3"> {error}</small>}
           <input
             type="submit"
             value="Create Reminder"
@@ -93,7 +97,7 @@ export const ReminderCreator = ({
   );
 };
 
-function DateBox({ date, setDate }) {
+function DateBox({ date, setDate, setError }) {
   const [visible, setVisible] = React.useState(false);
 
   return visible ? (
@@ -101,6 +105,7 @@ function DateBox({ date, setDate }) {
       <Datepicker
         value={new Date(date)}
         onDateChange={value => {
+          setError('');
           setDate(+new Date(value));
           setVisible(false);
         }}

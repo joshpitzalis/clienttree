@@ -24,9 +24,7 @@ const taskModel = createModel(taskMachine).withEvents({
   COMPLETED: ({ getByTestId }) => {
     fireEvent.click(getByTestId(mockProps.name));
   },
-  // COMPLETE_MODAL_OPENED: ({ getByTestId }) => {
-  //   fireEvent.click(getByTestId('statsTitle'));
-  // },
+
   // CLOSED: {
   //   exec: async ({ getByTestId }, event) => {
   //     fireEvent.change(getByTestId('goal'), {

@@ -245,15 +245,15 @@ describe('create people', () => {
       );
     });
   });
-  it.skip('generated image by default', () => {
-    const { container, getByTestId } = render(
-      <PersonModal contact={mockData.contact} />
-    );
-    // userEvent.click(getByTestId('openBox'));
-    const canvas = container.querySelector('canvas');
+  // it('generated image by default', () => {
+  //   const { container, getByTestId } = render(
+  //     <PersonModal contact={mockData.contact} />
+  //   );
+  //   // userEvent.click(getByTestId('openBox'));
+  //   const canvas = container.querySelector('canvas');
 
-    expect(getByTestId('contactModal')).toContainElement(canvas);
-  });
+  //   expect(getByTestId('contactModal')).toContainElement(canvas);
+  // });
   it('errors if photo file is not jpg or png', () => {
     const { getByTestId } = render(<Person contact={mockData.contact} />);
 
@@ -389,69 +389,69 @@ describe('create people', () => {
     expect(getByTestId('emptyContacts')).toBeInTheDocument();
   });
 
-  it.skip('when I toggle someone to workboard they do not persist when I open teh network page again', () => {});
-  it.skip('it is currently possible to add someone to teh worknboard twice if their toogle fails', () => {});
+  // it.skip('when I toggle someone to workboard they do not persist when I open teh network page again', () => {});
+  // it.skip('it is currently possible to add someone to teh worknboard twice if their toogle fails', () => {});
 
-  it.skip('if there are more than 10 tasks only show me this weeks tasks in sidebar', () => {});
-  it.skip('let me switch between this weeks tasks and all tasks in sidebar', () => {});
+  // it.skip('if there are more than 10 tasks only show me this weeks tasks in sidebar', () => {});
+  // it.skip('let me switch between this weeks tasks and all tasks in sidebar', () => {});
 
-  it.skip('default image should be saved to state when opened', () => {});
-  test.skip('if generated name is unchanged, and nothing else is added don;t save, actually delete, the name on close', () =>
-    false);
-  it.skip('clear sidebar when you unmount the person box, like when you jump to sales page from open contact', () =>
-    // load  dashboard
-    // open a contact
-    // check that sidebar is populated with contact
-    // go to sales dashboard
-    // assert sidebar does not contain specific tasks
-    false);
+  // it.skip('default image should be saved to state when opened', () => {});
+  // test.skip('if generated name is unchanged, and nothing else is added don;t save, actually delete, the name on close', () =>
+  //   false);
+  // it.skip('clear sidebar when you unmount the person box, like when you jump to sales page from open contact', () =>
+  //   // load  dashboard
+  //   // open a contact
+  //   // check that sidebar is populated with contact
+  //   // go to sales dashboard
+  //   // assert sidebar does not contain specific tasks
+  //   false);
 
-  it.skip('add a coloured indication  of how long it has been since yoru last contact', () =>
-    // load  dashboard
-    // open a contact
-    // check that sidebar is populated with contact
-    // go to sales dashboard
-    // assert sidebar does not contain specific tasks
-    false);
+  // it.skip('add a coloured indication  of how long it has been since yoru last contact', () =>
+  //   // load  dashboard
+  //   // open a contact
+  //   // check that sidebar is populated with contact
+  //   // go to sales dashboard
+  //   // assert sidebar does not contain specific tasks
+  //   false);
 
-  it.skip('swap follow up with people in the network dashboard ', () =>
-    // load  dashboard
-    // open a contact
-    // check that sidebar is populated with contact
-    // go to sales dashboard
-    // assert sidebar does not contain specific tasks
-    false);
+  // it.skip('swap follow up with people in the network dashboard ', () =>
+  //   // load  dashboard
+  //   // open a contact
+  //   // check that sidebar is populated with contact
+  //   // go to sales dashboard
+  //   // assert sidebar does not contain specific tasks
+  //   false);
 
-  it.skip('be able to add tasks when adding someone new', () => false);
-  it.skip('if you change someones name, the side bar reflects that change in real time', () => {});
-  test.skip('upload image, then update name should preserve both changes', () =>
-    false);
-  it.skip('if you edit note, name turns into cannot be blank automatically, make sure it adds photo image by default', () =>
-    false);
-  it.skip('saving a note in a new contact does save ', () => false);
-  it.skip('dont show onboarding box if a contact is selected', () => false);
-  it.skip('should not let you enter a note in a new contact untill you have added a name', () => {});
-  it.skip('add last interaction details to person', () => {});
+  // it.skip('be able to add tasks when adding someone new', () => false);
+  // it.skip('if you change someones name, the side bar reflects that change in real time', () => {});
+  // test.skip('upload image, then update name should preserve both changes', () =>
+  //   false);
+  // it.skip('if you edit note, name turns into cannot be blank automatically, make sure it adds photo image by default', () =>
+  //   false);
+  // it.skip('saving a note in a new contact does save ', () => false);
+  // it.skip('dont show onboarding box if a contact is selected', () => false);
+  // it.skip('should not let you enter a note in a new contact untill you have added a name', () => {});
+  // it.skip('add last interaction details to person', () => {});
 });
 
-describe('email reminders', () => {
-  test.skip('reminder triggers an email', () => {});
-  test.skip('multiple reminders go into a single email', () => {});
-  test.skip('email is cancelled if reminder is cancelled ', () => {});
-  test.skip('email is cancelled if reminder is completed ', () => {});
-  test.skip('email is cancelled if date is changed', () => {});
-  test.skip('can select a date next month', () => {});
-  test.skip('defaults to next week', () => {});
-  test.skip('can change/edit a reminder', () => {});
-  test.skip('cannot select date before yesterday', () => {});
-  test.skip('adding a date is not mandatory', () => {});
-  test.skip('no blank text in reminders', () => {});
-  test.skip('show  overdue reminders', () => {});
-  test.skip('show how many day over due', () => {});
-  test.skip('if there is no image there shoudl always be a fallback image/coloured circle', () => {});
-});
+// describe('email reminders', () => {
+//   test.skip('reminder triggers an email', () => {});
+//   test.skip('multiple reminders go into a single email', () => {});
+//   test.skip('email is cancelled if reminder is cancelled ', () => {});
+//   test.skip('email is cancelled if reminder is completed ', () => {});
+//   test.skip('email is cancelled if date is changed', () => {});
+//   test.skip('can select a date next month', () => {});
+//   test.skip('defaults to next week', () => {});
+//   test.skip('can change/edit a reminder', () => {});
+//   test.skip('cannot select date before yesterday', () => {});
+//   test.skip('adding a date is not mandatory', () => {});
+//   test.skip('no blank text in reminders', () => {});
+//   test.skip('show  overdue reminders', () => {});
+//   test.skip('show how many day over due', () => {});
+//   test.skip('if there is no image there shoudl always be a fallback image/coloured circle', () => {});
+// });
 
-describe.skip('update someone on the system', () => {
+describe('update someone on the system', () => {
   it('opens an editable person box when you click on a person ', () => {
     const { getByTestId } = render(
       // <Person
@@ -517,90 +517,90 @@ describe.skip('update someone on the system', () => {
     expect(queryByTestId('calendarBox')).not.toBeInTheDocument();
   });
 
-  test.skip('change date on note', async () => {
-    const mockContact = {
-      uid: '123',
-      name: 'hello',
-      lastContacted: 0,
-      activeTaskCount: 3,
-      photoURL: 'string',
-    };
+  // test.skip('change date on note', async () => {
+  //   const mockContact = {
+  //     uid: '123',
+  //     name: 'hello',
+  //     lastContacted: 0,
+  //     activeTaskCount: 3,
+  //     photoURL: 'string',
+  //   };
 
-    const { getByTestId, getAllByTestId } = render(
-      <Person contact={mockContact} uid="123" />,
-      {
-        initialState: {
-          contacts: [
-            {
-              uid: '123',
-              name: 'hello',
-              lastContacted: 0,
-              activeTaskCount: 3,
-              photoURL: 'string',
-              notes: {
-                1: { id: 1, text: 'hello', lastUpdated: 1579605299501 },
-                2: { id: 2, text: 'hello two', lastUpdated: 1579605299601 },
-                9007199254740991: {
-                  id: 9007199254740991,
-                  text: '',
-                  lastUpdated: 9007199254740991,
-                },
-              },
-            },
-          ],
-        },
-      }
-    );
-    // get note
-    userEvent.click(getByTestId('openBox'));
-    userEvent.click(getAllByTestId('timeBox')[0]);
+  //   const { getByTestId, getAllByTestId } = render(
+  //     <Person contact={mockContact} uid="123" />,
+  //     {
+  //       initialState: {
+  //         contacts: [
+  //           {
+  //             uid: '123',
+  //             name: 'hello',
+  //             lastContacted: 0,
+  //             activeTaskCount: 3,
+  //             photoURL: 'string',
+  //             notes: {
+  //               1: { id: 1, text: 'hello', lastUpdated: 1579605299501 },
+  //               2: { id: 2, text: 'hello two', lastUpdated: 1579605299601 },
+  //               9007199254740991: {
+  //                 id: 9007199254740991,
+  //                 text: '',
+  //                 lastUpdated: 9007199254740991,
+  //               },
+  //             },
+  //           },
+  //         ],
+  //       },
+  //     }
+  //   );
+  //   // get note
+  //   userEvent.click(getByTestId('openBox'));
+  //   userEvent.click(getAllByTestId('timeBox')[0]);
 
-    // get distance from 22 jan
-    // import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+  //   // get distance from 22 jan
+  //   // import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 
-    // use format to compare date to check
-    // change date
-    // conform date change
-  });
-  test.skip('delete notes', () => {});
-  test.skip('latest update first', () => {});
-  test.skip('lets me remove people from dashboard', () => {});
+  //   // use format to compare date to check
+  //   // change date
+  //   // conform date change
+  // });
+  // test.skip('delete notes', () => {});
+  // test.skip('latest update first', () => {});
+  // test.skip('lets me remove people from dashboard', () => {});
 
-  test.skip('only be able to open teh timebox if the note is selected, if not selected it should select', () => {});
+  // test.skip('only be able to open teh timebox if the note is selected, if not selected it should select', () => {});
 
-  it.skip('when you create a person it should also create a task by default', () =>
-    false);
+  // it.skip('when you create a person it should also create a task by default', () =>
+  //   false);
 
-  test.skip('is filled when opened', () => {});
-  test.skip('update name', () => {});
-  test.skip('uplaod photo', () => {});
-  test.skip('update text update', () => {});
+  // test.skip('is filled when opened', () => {});
+  // test.skip('update name', () => {});
+  // test.skip('uplaod photo', () => {});
+  // test.skip('update text update', () => {});
 
-  test.skip('should show saving when you start editing a textarea', () => {});
-  test.skip('update text date', () => {});
-  test.skip('update task', () => {});
-  test.skip('update task date', () => {});
+  // test.skip('should show saving when you start editing a textarea', () => {});
+  // test.skip('update text date', () => {});
+  // test.skip('update task', () => {});
+  // test.skip('update task date', () => {});
 
-  test.skip('notes in order', () => false);
-  test.skip('create a task', () => false);
-  test.skip('complete a task', () => false);
-  test.skip('completing a task updates the onboarding module', () => false);
+  // test.skip('notes in order', () => false);
+  // test.skip('create a task', () => false);
+  // test.skip('complete a task', () => false);
+  // test.skip('completing a task updates the onboarding module', () => false);
 
-  test.skip('create a note', () => false);
-  test.skip('notes show up most recent first', () => false);
-  test.skip('update a note', () => false);
-  test.skip('create a note', () => false);
+  // test.skip('create a note', () => false);
+  // test.skip('notes show up most recent first', () => false);
+  // test.skip('update a note', () => false);
+  // test.skip('create a note', () => false);
 
-  test.skip('dont show gettings started when if someone is selected ', () =>
-    false);
-  test.skip('test that you can complete onboarding', () => false);
-  test.skip('adding someone should check onboarding task', () => false);
-  test.skip('you cant delete new users before they are created', () => false);
-  test.skip('you shoudl be able to add a new task to a new person', () =>
-    false);
-  test.skip('delete notes', () => false);
-  test.skip('hide completed tasks', () => false);
-  test.skip('helping someone shoudl check the onboarding box', () => false);
+  // test.skip('dont show gettings started when if someone is selected ', () =>
+  //   false);
+  // test.skip('test that you can complete onboarding', () => false);
+  // test.skip('adding someone should check onboarding task', () => false);
+  // test.skip('you cant delete new users before they are created', () => false);
+  // test.skip('you shoudl be able to add a new task to a new person', () =>
+  //   false);
+  // test.skip('delete notes', () => false);
+  // test.skip('hide completed tasks', () => false);
+  // test.skip('helping someone shoudl check the onboarding box', () => false);
 });
 // and ensure box shows up if last task
 
@@ -687,9 +687,9 @@ describe('delete details from the system', () => {
     // expect(mockDelete).toBeCalledWith(55);
     // (_name, _uid, _userId)
   });
-  test.skip('delete text update', () => {});
-  test.skip('delete task', () => {});
-  test.skip('you shoudl be able to delete new people aswell as existing contact', () => {});
+  // test.skip('delete text update', () => {});
+  // test.skip('delete task', () => {});
+  // test.skip('you shoudl be able to delete new people aswell as existing contact', () => {});
 });
 
 describe('create notes', () => {
@@ -703,129 +703,118 @@ describe('create notes', () => {
     expect(getByTestId('notesTextarea')).toHaveTextContent(exampleInput);
   });
 
-  test.skip('it should add teh new note to the beginning of the timeline not the end', () => {});
-  test.skip('only one note open at a time', () => {});
-  test.skip('sort notes chronologocally', () => {});
-  test.skip('first notes always appears by default', () => {});
-  test.skip('add note alwats visible when editing a note', () => {});
-  test.skip('if no date update then it defaults to today', () => {});
-  test.skip('changing date should change the date', () => {});
+  // test.skip('it should add teh new note to the beginning of the timeline not the end', () => {});
+  // test.skip('only one note open at a time', () => {});
+  // test.skip('sort notes chronologocally', () => {});
+  // test.skip('first notes always appears by default', () => {});
+  // test.skip('add note alwats visible when editing a note', () => {});
+  // test.skip('if no date update then it defaults to today', () => {});
+  // test.skip('changing date should change the date', () => {});
 });
 
-describe('create tasks', () => {
-  // REMINDER_CREATED
+// describe('other', () => {
+//   test.skip('dont show dashboard unless there is someone on it.', () => {});
+//   test.skip('organise contact by teh order they were last contacted in', () => {});
+//   test.skip('when you create a not it updates the last contacted field on the closed box', () => {});
 
-  it.skip('clicking on a users reveals their specific tasks list in the sidebar', () => {
-    // load mock Dashboard
-    const { getByTestId, getByText } = render(<Dashboard userId="123" />, {
-      initialState: {
-        contacts: [
-          {
-            activeTaskCount: 1,
-            lastContacted: null,
-            name: 'testUser',
-            photoURL: '',
-            summary: '',
-            uid: 'WvUe4wawAWMg6fk88Gzb',
-          },
-        ],
-      },
-    });
+//   test.skip('you must only be able to select one user at a time,two users cannot be open atthe same time', () => {});
+//   test.skip('add add people button to project dashboard', () => {});
+//   test.skip(' add people button on project dashboard disappears if people are there', () => {});
+//   test.skip(' if I add someone  from teh dashboar teh toggle is on by default', () => {});
+//   test.skip('limit the number of task nibs to 5 or so', () => {
+//     const { getByLabelText } = render(<Person contact={mockData.contact} />);
+//     expect(getByLabelText(/Sign up to Client Tree/i)).toBeEnabled();
+//   });
+//   test.skip('private routes', () => {});
+//   test.skip('projects blank UI', () => {});
+//   test.skip('people blank UI', () => {});
+//   test.skip('cypress mobile tests', () => {});
 
-    // userEvent.click(getByTestId('networkPage'));
-    // getByTestId('networkTab');
-    // establish generic sidebar
-    getByTestId('universalTaskList');
+//   test.skip('mobile version', () => {});
+//   test.skip('now workboard tab on mobile', () => {});
+//   test.skip('mobile landscape', () => {});
+//   test.skip('tablet version', () => {});
+//   test.skip('tablet landscape', () => {});
+//   test.skip('widescreen', () => {});
 
-    // click on contact
-    userEvent.click(getByText('testUser'));
-    // establish specific sidebar
-    getByTestId('specificTaskList');
-    // fill out the task
-    // check it got add to the user
-  });
+//   test.skip('firebase rules', () => {});
+//   test.skip('cypress CI', () => {});
+//   test.skip('test coverage in CI', () => {});
+//   test.skip('userID and 123 shoud not be shoing up when I run tests', () => {});
+//   test.skip('test coverage in CI', () => {});
+//   test.skip('what if people change their profile photo after they create a task, teh old tasks will show their previous photo', () => {});
+//   test.skip('pay for the new logo', () => {});
+// });
 
-  test.skip('add reminder to an existing contact', () => {
-    // load mock Dashboard
-    const { getByTestId, getByText } = render(<Dashboard userId="123" />, {
-      initialState: {
-        contacts: [
-          {
-            activeTaskCount: 1,
-            lastContacted: null,
-            name: 'testUser',
-            photoURL:
-              'https://firebasestorage.googleapis.com/v0/b/client-tree-dev.appspot.com/o/contacts%2FWvUe4wawAWMg6fk88Gzb.png?alt=media&token=10b9a175-73df-447e-851f-a04d4418a9cc',
-            summary: '',
-            uid: 'WvUe4wawAWMg6fk88Gzb',
-          },
-        ],
-      },
-    });
+// describe('login page', () => {
+//   test.skip('white text input', () => {});
+//   test.skip('button back ground', () => {});
+// });
 
-    // userEvent.click(getByTestId('networkPage'));
-    // getByTestId('networkTab');
-    // establish generic sidebar
-    getByTestId('universalTaskList');
+// describe('contact box features', () => {
+//   test.skip('date format in contact box', () => {
+//     // test that the date picker works as a date picker
+//     // also test that if there is no previous date it defaults to today
+//     // test that the today button works
+//     const { getByLabelText } = render(<Modal />);
+//     expect(getByLabelText(/Sign up to Client Tree/i)).toBeEnabled();
+//   });
 
-    // click on contact
-    userEvent.click(getByText('testUser'));
-    // establish specific sidebar
-    getByTestId('specificTaskList');
-    // fill out the task
-    // check it got add to the user
-  });
-  test.skip('edit a reminder', () => {});
-  test.skip('complete a reminder', () => {});
-  test.skip('conform completion before you complete a reminder', () => {});
-  test.skip('show completed date on  a reminder', () => {});
-  test.skip('edit reminders', () => {});
-  test.skip('gve people the option  to delete a reminder if it is no longer relevant', () => {});
-  test.skip('throw confetti every time you complete a task', () => {});
+//   test.skip('can only set date from today or earlier, on future dates', () => {
+//     const { getByLabelText } = render(<Modal />);
+//     expect(getByLabelText(/Sign up to Client Tree/i)).toBeEnabled();
+//   });
 
-  test.skip('add task to a new contact', () => {});
-  test.skip('date task', () => {});
-  test.skip('if you have a name then pre fill the name field', () => {});
-  test.skip('when you complete a task it forces you to create next task', () => {});
-  test.skip('if you dont add a new task it doesn;t complete the previous task, if its teh last task ', () => {});
-  test.skip('default reminder date is next week ', () => {});
-});
+//   test.skip('you cant delete people if they are still on teh dashboard', () => {
+//     const { getByLabelText } = render(<Modal />);
+//     expect(getByLabelText(/Sign up to Client Tree/i)).toBeEnabled();
+//   });
+// });
 
-describe('other', () => {
-  test.skip('dont show dashboard unless there is someone on it.', () => {});
-  test.skip('organise contact by teh order they were last contacted in', () => {});
-  test.skip('when you create a not it updates the last contacted field on the closed box', () => {});
+// tested in cypress
+// describe.skip('sidebar task attributes', () => {
+//   test.skip('profile picture shows up in task box', () => false);
+//   test.skip('will not let you delete user with active tasks', () => false);
+//   test.skip('new task is not added when a contact is updated', () => false);
+//   test('organise task by due date', () => false);
+//   test('word  overflow', () => false);
+//   test(' senetence overflow', () => false);
+//   test('checkbox over flow', () => false);
+//   test('click checkbox to confirm complete', () => false);
+//   test('nevermind works', () => false);
+//   test('confirm complete works', () => false);
+//   test('click to edit', () => false);
+//   test('confetti on completion', () => false);
+//   test('click to edit', () => false);
+//   test('shows task details', () => false);
+//   test('shows deadline', () => false);
+//   test('shows green red organe based on how over due', () => false);
+//   test('tasks with no names cannot be created', () => false);
+// });
 
-  test.skip('you must only be able to select one user at a time,two users cannot be open atthe same time', () => {});
-  test.skip('add add people button to project dashboard', () => {});
-  test.skip(' add people button on project dashboard disappears if people are there', () => {});
-  test.skip(' if I add someone  from teh dashboar teh toggle is on by default', () => {});
-  test.skip('limit the number of task nibs to 5 or so', () => {
-    const { getByLabelText } = render(<Person contact={mockData.contact} />);
-    expect(getByLabelText(/Sign up to Client Tree/i)).toBeEnabled();
-  });
-  test.skip('private routes', () => {});
-  test.skip('projects blank UI', () => {});
-  test.skip('people blank UI', () => {});
-  test.skip('cypress mobile tests', () => {});
+// describe.skip('create reminder options', () => {
+//   test('remind me next week', () => false);
+//   test('remind me next month', () => false);
+//   test('remind me in 3 months', () => false);
+//   test('remind me next year', () => false);
+// });
 
-  test.skip('mobile version', () => {});
-  test.skip('now workboard tab on mobile', () => {});
-  test.skip('mobile landscape', () => {});
-  test.skip('tablet version', () => {});
-  test.skip('tablet landscape', () => {});
-  test.skip('widescreen', () => {});
+// import { MobileReminder } from '../components/MobileReminder';
 
-  test.skip('firebase rules', () => {});
-  test.skip('cypress CI', () => {});
-  test.skip('test coverage in CI', () => {});
-  test.skip('userID and 123 shoud not be shoing up when I run tests', () => {});
-  test.skip('test coverage in CI', () => {});
-  test.skip('what if people change their profile photo after they create a task, teh old tasks will show their previous photo', () => {});
-  test.skip('pay for the new logo', () => {});
-});
+// const mockProps = {
+//   myUid: '345',
+// };
 
-describe('login page', () => {
-  test.skip('white text input', () => {});
-  test.skip('button back ground', () => {});
-});
+// describe('mobile Reminders', () => {
+//   it.skip('when you create a new task it creates a new contact', () => {
+//     const { getByTestId } = render(<MobileReminder {...mockProps} />, {
+//       initialState: {},
+//     });
+//     getByTestId('open');
+//   });
+//   test.skip('adds task to existing contact', () => {});
+//   test.skip('uses existing contact photo', () => {});
+//   test.skip('not allow blank name', () => {});
+//   test.skip('not allow blank task name', () => {});
+//   test.skip('throws confetti on overdue task completion', () => {});
+// });

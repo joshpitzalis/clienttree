@@ -31,7 +31,7 @@ describe('stats counter logic', () => {
   };
 
   describe('incrementing numbers', () => {
-    test.only('when added to first column increment project stats', () => {
+    test('when added to first column increment project stats', () => {
       const { getByTestId } = render(
         <PersonModal
           uid={fakeData.userId}
@@ -1215,19 +1215,19 @@ describe('stats counter logic', () => {
       statsBoxService.send('MODAL_OPENED');
     });
 
-    test.skip('only reveal stats on hover', () => false);
+    // test.skip('only reveal stats on hover', () => false);
 
-    test.skip('show activities needed minus activties completed', () => false);
+    // test.skip('show activities needed minus activties completed', () => false);
 
-    test.skip('support text under add someone to your network should say, on hover, to begin with just add 5 people that you have  been meaning to touch base with for a while now.', () =>
-      false);
-    test.skip('loading indicators for people page, when loading, but also when creating', () =>
-      false);
+    // test.skip('support text under add someone to your network should say, on hover, to begin with just add 5 people that you have  been meaning to touch base with for a while now.', () =>
+    //   false);
+    // test.skip('loading indicators for people page, when loading, but also when creating', () =>
+    //   false);
 
-    test.skip('no infinity or negative numbers should show in teh stats', () =>
-      false);
+    // test.skip('no infinity or negative numbers should show in teh stats', () =>
+    //   false);
 
-    test.skip('number of activities must always be higher that the number of  potential projects', () =>
-      false);
+    // test.skip('number of activities must always be higher that the number of  potential projects', () =>
+    //   false);
   });
 });
