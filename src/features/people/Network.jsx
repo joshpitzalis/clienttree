@@ -5,14 +5,10 @@ import './networkAnimations.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { Person } from './components/Person';
 import { PersonModal } from './components/PersonBox';
-// import { AddButton } from './components/AddButton';
 import ErrorBoundary from '../../utils/ErrorBoundary';
 import firebase from '../../utils/firebase';
+import ImportContacts from '../contacts/Contacts';
 
-// import { Button } from '@duik/it';
-// import Portal from '../../utils/Portal';
-// import { Modal } from './components/ContactModal';
-// import { NetworkContext } from './NetworkContext';
 const networkPropTypes = {
   uid: PropTypes.string.isRequired,
 };
@@ -38,11 +34,11 @@ function _Network({ uid }) {
     .collection('contacts')
     .doc();
 
-  // const [feature1] = useSplit('feature1');
+  const [feature1] = useSplit('feature1');
   return (
     <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
       <>
-        <div className="pv4" data-testid="outreachPage">
+        <div className="pv4 flex justify-between" data-testid="outreachPage">
           {visible ? (
             <PersonModal
               uid={uid}
@@ -70,8 +66,9 @@ function _Network({ uid }) {
               Add Someone New
             </button>
           )}
+          {feature1 === 'on' && <ImportContacts />}
         </div>
-        {/* {feature1 === 'on' && <p>split is working</p>} */}
+
         <ContactsBox contacts={contacts} uid={uid}></ContactsBox>
       </>
     </ErrorBoundary>
