@@ -2,7 +2,11 @@ import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { render } from '../../../utils/testSetup';
-import Contacts from '../Contacts';
+import Contacts, {
+  parseContacts,
+  findDuplicates,
+  handleContactSync,
+} from '../Contacts';
 
 const mockProps = {
   handleImport: jest.fn(),
@@ -26,18 +30,18 @@ const rawContacts = [
     companies: [],
     photos: [],
     locations: [],
-    __selectedMail__: 'abbey@abbeyskitchen.com',
+    __selectedMail__: 'abbey@example.com',
     __selectedPhone__: '',
     __selectedAddress__: '',
     __letter__: 'a',
   },
   {
-    first_name: 'Abbie',
+    first_name: 'SAM',
     last_name: 'Hendrick',
     phone: [],
     email: [
       {
-        address: 'info@abbieboudreau.com',
+        address: 'info@example.com',
         type: 'other',
         primary: true,
         selected: true,
@@ -48,7 +52,7 @@ const rawContacts = [
     companies: [],
     photos: [],
     locations: [],
-    __selectedMail__: 'info@abbieboudreau.com',
+    __selectedMail__: 'info@example.com',
     __selectedPhone__: '',
     __selectedAddress__: '',
     __letter__: 'a',
@@ -59,7 +63,7 @@ const rawContacts = [
     phone: [],
     email: [
       {
-        address: 'info@abbigaylewarner.com',
+        address: 'info@example.com',
         type: 'other',
         primary: true,
         selected: true,
@@ -70,7 +74,7 @@ const rawContacts = [
     companies: [],
     photos: [],
     locations: [],
-    __selectedMail__: 'info@abbigaylewarner.com',
+    __selectedMail__: 'info@example.com',
     __selectedPhone__: '',
     __selectedAddress__: '',
     __letter__: 'a',
@@ -85,9 +89,103 @@ describe('contacts', () => {
     userEvent.click(getByTestId('importContacts'));
     expect(mockProps.handleImport).toHaveBeenCalled();
   });
+  it('pareses contacts after recieving them', () => {
+    const result = [
+      { name: 'abbey', email: 'abbey@example.com' },
+      { name: 'sam hendrick', email: 'info@example.com' },
+      { name: 'abbigayle smith', email: 'info@example.com' },
+    ];
+    // ensures lower case and white space trimming
+    expect(parseContacts(rawContacts)).toEqual(result);
+  });
 
-  // 1.parse contacts for required fields only (name/email)
-  // 2.get all existing contacts
-  // 3.check for duplicate name/emails
-  // 4.if comflict give option ot merge or create new
+  it('checks for duplicates', () => {
+    const existingContacts = [
+      { name: 'abbey', email: 'abbey@example.com' },
+      { name: 'sam hendrick', email: 'info@example.com' },
+      { name: 'abbigayle smith', email: 'info@example.com' },
+    ];
+
+    const newContacts = [
+      { name: 'abbey', email: 'abbey@example.com' },
+      { name: 'Donna', email: 'donna@example.com' },
+    ];
+
+    const dulicates = [{ name: 'abbey', email: 'abbey@example.com' }];
+    // name match or email match
+    expect(findDuplicates(existingContacts, newContacts)).toEqual(dulicates);
+  });
+
+  it('if duplicates it resolves conflicts', () => {
+    const existingContacts = [
+      { name: 'abbey', email: 'abbey@example.com' },
+      { name: 'sam hendrick', email: 'info@example.com' },
+      { name: 'abbigayle smith', email: 'info@example.com' },
+    ];
+
+    const newContacts = [
+      { name: 'abbey', email: 'abbey@example.com' },
+      { name: 'Donna', email: 'donna@example.com' },
+    ];
+    const handleResolution = jest.fn();
+    const handleAddition = jest.fn();
+
+    handleContactSync(
+      existingContacts,
+      newContacts,
+      handleResolution,
+      handleAddition
+    );
+
+    expect(handleResolution).toHaveBeenCalled();
+    expect(handleResolution).toHaveBeenCalledWith(
+      [
+        {
+          name: 'abbey',
+          email: 'abbey@example.com',
+        },
+      ],
+      newContacts
+    );
+    expect(handleAddition).not.toHaveBeenCalled();
+  });
+
+  it('if no duplicates it adds the new contacts', () => {
+    const existingContacts = [
+      { name: 'abbey', email: 'abbey@example.com' },
+      { name: 'sam hendrick', email: 'info@example.com' },
+      { name: 'abbigayle smith', email: 'info@example.com' },
+    ];
+
+    const newContacts = [
+      { name: 'xabbey', email: 'xabbey@example.com' },
+      { name: 'Donna', email: 'donna@example.com' },
+    ];
+    const handleResolution = jest.fn();
+    const handleAddition = jest.fn();
+
+    handleContactSync(
+      existingContacts,
+      newContacts,
+      handleResolution,
+      handleAddition
+    );
+
+    expect(handleAddition).toHaveBeenCalled();
+    expect(handleAddition).toHaveBeenCalledWith(newContacts);
+    expect(handleResolution).not.toHaveBeenCalled();
+  });
+
+  it('lets you add contacts', () => false);
+
+  it.skip('lets you merge details then add', () => false);
+
+  it.skip('lets you keep existing details then add', () => false);
+
+  it.skip('adds email details to user box', () => false);
+
+  it.skip('avatars fall back', () => false);
+
+  it.skip('uploaded image over  writes fall back avatar', () => false);
+  it.skip('avatar image hieracrhy is correct', () => false);
 });
