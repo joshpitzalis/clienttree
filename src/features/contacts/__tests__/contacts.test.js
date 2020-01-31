@@ -2,11 +2,14 @@ import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { render } from '../../../utils/testSetup';
-import Contacts, {
+import ImportContacts from '../Contacts';
+import {
   parseContacts,
-  findDuplicates,
   handleContactSync,
-} from '../Contacts';
+  findDuplicates,
+  handleResolution,
+  handleAddition,
+} from '../contacts.helpers.js';
 
 const mockProps = {
   handleImport: jest.fn(),
@@ -83,7 +86,7 @@ const rawContacts = [
 
 describe('contacts', () => {
   it('fires cloudsponge function when clicked ', () => {
-    const { getByTestId } = render(<Contacts {...mockProps} />, {
+    const { getByTestId } = render(<ImportContacts {...mockProps} />, {
       initialState: {},
     });
     userEvent.click(getByTestId('importContacts'));
@@ -130,12 +133,15 @@ describe('contacts', () => {
     const handleResolution = jest.fn();
     const handleAddition = jest.fn();
 
-    handleContactSync(
+    const userId = '123';
+
+    handleContactSync({
+      userId,
       existingContacts,
       newContacts,
       handleResolution,
-      handleAddition
-    );
+      handleAddition,
+    });
 
     expect(handleResolution).toHaveBeenCalled();
     expect(handleResolution).toHaveBeenCalledWith(
@@ -163,20 +169,39 @@ describe('contacts', () => {
     ];
     const handleResolution = jest.fn();
     const handleAddition = jest.fn();
+    const setNewContact = jest.fn();
+    const userId = '123';
 
-    handleContactSync(
+    handleContactSync({
+      userId,
       existingContacts,
       newContacts,
       handleResolution,
-      handleAddition
-    );
+      handleAddition,
+      setNewContact,
+    });
 
     expect(handleAddition).toHaveBeenCalled();
-    expect(handleAddition).toHaveBeenCalledWith(newContacts);
+    expect(handleAddition).toHaveBeenCalledWith(
+      userId,
+      newContacts,
+      setNewContact
+    );
     expect(handleResolution).not.toHaveBeenCalled();
   });
 
-  it('lets you add contacts', () => false);
+  it('write to db for each contact you add', () => {
+    const newContacts = [
+      { name: 'xabbey', email: 'xabbey@example.com' },
+      { name: 'Donna', email: 'donna@example.com' },
+    ];
+    const userId = '123';
+    const setNewContact = jest.fn();
+    handleAddition(userId, newContacts, setNewContact);
+    expect(setNewContact).toHaveBeenCalledTimes(2);
+  });
+
+  it.skip('throws an error if there is a problem adding contacts', () => false);
 
   it.skip('lets you merge details then add', () => false);
 

@@ -1,78 +1,47 @@
+// import GoogleContacts from 'react-google-contacts';
+// import Avatar from 'react-avatar';
+
 import React from 'react';
-import GoogleContacts from 'react-google-contacts';
-import Avatar from 'react-avatar';
+import {
+  _handleImport,
+  parseContacts,
+  handleContactSync,
+  handleResolution,
+  handleAddition,
+} from './contacts.helpers.js';
+import { setNewContact } from './contacts.api';
 
 const { cloudsponge } = window;
-
-const _handleImport = () => {
-  cloudsponge.launch('gmail');
-};
 
 // const responseCallback = response => {
 //   console.log(response);
 // };
 
-export const parseContacts = _contacts =>
-  _contacts.map(contact => {
-    const first = contact.first_name.toLowerCase();
-    const last = contact.last_name.toLowerCase();
-    const email = contact.__selectedMail__;
-    const name = `${first} ${last}`;
-    return { name: name.trim(), email: email.trim() };
-  });
-
-export const findDuplicates = (_old, _new) =>
-  _old.reduce((total, item) => {
-    const nameMatch = _new.find(element => element.name === item.name);
-    const emailMatch = _new.find(element => element.email === item.email);
-    if (nameMatch || emailMatch) {
-      total.push(item);
-    }
-    return total;
-  }, []);
-
-export const handleContactSync = (
-  oldContacts,
-  newContacts,
-  handleResolution,
-  handleAddition
-) => {
-  const duplicates = findDuplicates(oldContacts, newContacts);
-
-  if (duplicates.length) {
-    handleResolution(duplicates, newContacts);
-    return;
-  }
-
-  handleAddition(newContacts);
-};
-
-export const handleResolution = (duplicates, newContacts) => {};
-
-export const handleAddition = () => {};
-
-const ImportContacts = ({ handleImport = _handleImport }) => {
-  const processContacts = contacts => {
-    const existingContact = [];
-    const newContacts = parseContacts(contacts);
-
-    handleContactSync(
-      existingContact,
-      newContacts,
-      handleResolution,
-      handleAddition
-    );
-  };
-
-  React.useEffect(
-    () =>
+const ImportContacts = ({
+  handleImport = _handleImport,
+  userId,
+  existingContacts,
+}) => {
+  React.useEffect(() => {
+    const processContacts = contacts => {
+      const newContacts = parseContacts(contacts);
+      handleContactSync({
+        userId,
+        existingContacts,
+        newContacts,
+        handleResolution,
+        handleAddition,
+        setNewContact,
+      });
+    };
+    return (
       cloudsponge &&
       cloudsponge.init({
         afterSubmitContacts: processContacts,
         afterClosing: cloudsponge.end(),
-      }),
-    []
-  );
+      })
+    );
+  }, [existingContacts, userId]);
 
   return (
     <button
