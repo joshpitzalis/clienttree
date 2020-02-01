@@ -70,11 +70,9 @@ export const updateContactEpic = (action$, state$, { setContact }) => {
     map(action => emptyGuard(action, 'Name cannot be blank')),
     switchMap(action => {
       const { payload } = action;
-      // get your user Id from the store
-      const { userId } = state$.value.user;
-      // update contact on firebase
 
-      return from(setContact(userId, payload)).pipe(
+      // update contact on firebase
+      return from(setContact(payload)).pipe(
         // success message
         map(() => ({ type: 'people/formSaved' })),
         // error handling

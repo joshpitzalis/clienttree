@@ -183,8 +183,7 @@ describe('create people', () => {
   });
   it('add name', async () => {
     const { getByTestId, getByPlaceholderText } = render(
-      <Person contact={mockData.contact} uid="" />,
-      { initialState: { user: { userId: '123' } } }
+      <Person contact={mockData.contact} uid="123" />
     );
 
     userEvent.click(getByTestId('openBox'));
@@ -192,17 +191,16 @@ describe('create people', () => {
 
     await wait(() =>
       expect(setContact).toHaveBeenCalledWith(
-        '123',
         expect.objectContaining({
           name: 'Mr. Happy',
+          userId: '123',
         })
       )
     );
   });
   it('saves avatar image when name is blurred', async () => {
     const { getByTestId, getByPlaceholderText } = render(
-      <Person contact={mockData.contact} uid="" />,
-      { initialState: { user: { userId: '123' } } }
+      <Person contact={mockData.contact} uid="123" />
     );
 
     userEvent.click(getByTestId('openBox'));
@@ -210,7 +208,6 @@ describe('create people', () => {
 
     await wait(() =>
       expect(setContact).toHaveBeenCalledWith(
-        '123',
         expect.not.objectContaining({
           photoURL: null,
         })
@@ -221,14 +218,7 @@ describe('create people', () => {
     // @ts-ignore
     setContact.mockReset();
     const { getByTestId, getByPlaceholderText } = render(
-      <Person contact={mockData.contact} />,
-      {
-        initialState: {
-          user: {
-            userId: '123',
-          },
-        },
-      }
+      <Person contact={mockData.contact} uid="123" />
     );
 
     userEvent.click(getByTestId('openBox'));
@@ -238,9 +228,9 @@ describe('create people', () => {
     await wait(() => {
       expect(setContact).toHaveBeenCalled();
       expect(setContact).toHaveBeenCalledWith(
-        '123',
         expect.objectContaining({
           name: 'Name cannot be blank',
+          userId: '123',
         })
       );
     });
