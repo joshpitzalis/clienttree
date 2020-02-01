@@ -8,7 +8,7 @@ import { doc, collection } from 'rxfire/firestore';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSlice } from '@reduxjs/toolkit';
 import { NavPanel, NavLink, ContainerHorizontal } from '@duik/it';
-import { SplitProvider } from 'react-splitio';
+
 import { HelpfulTaskList as UniversalTaskList } from '../features/people/components/UniversalTaskList';
 import { SpecificTaskList } from '../features/people/components/SpecificTaskList';
 import People from '../images/People';
@@ -133,83 +133,74 @@ export function Dashboard({ userId }) {
   const [visible, setVisibility] = React.useState(false);
 
   return (
-    <SplitProvider
-      config={{
-        core: {
-          authorizationKey: process.env.REACT_APP_SPLIT,
-          key: userId,
-        },
-      }}
-    >
-      <ContainerHorizontal>
-        <ConfettiBanner />
-        {visible && (
-          <Portal onClose={() => setVisibility(false)}>
-            <Modal
-              uid={userId}
-              selectedUserUid={selectedUserUid}
-              onClose={() => {
-                setVisibility(false);
-              }}
-            />
-          </Portal>
-        )}
-        <div className="flex flex-row-ns flex-column w-100 justify-between min-h-100 bg-base">
-          <Navigation userId={userId} />
-          <main className="dn db-ns w-50-ns w-100 min-h-100">
+    <ContainerHorizontal>
+      <ConfettiBanner />
+      {visible && (
+        <Portal onClose={() => setVisibility(false)}>
+          <Modal
+            uid={userId}
+            selectedUserUid={selectedUserUid}
+            onClose={() => {
+              setVisibility(false);
+            }}
+          />
+        </Portal>
+      )}
+      <div className="flex flex-row-ns flex-column w-100 justify-between min-h-100 bg-base">
+        <Navigation userId={userId} />
+        <main className="dn db-ns w-50-ns w-100 min-h-100">
+          <Route
+            exact
+            path="/user/:uid/network"
+            render={props => <Network {...props} uid={userId} />}
+          />
+          {userId && (
             <Route
               exact
-              path="/user/:uid/network"
-              render={props => <Network {...props} uid={userId} />}
+              path="/user/:uid/dashboard"
+              render={props => <CRM {...props} userId={userId} />}
             />
-            {userId && (
-              <Route
-                exact
-                path="/user/:uid/dashboard"
-                render={props => <CRM {...props} userId={userId} />}
-              />
-            )}
-            <Route
-              exact
-              path="/user/:uid/profile"
-              render={props => <Profile {...props} />}
-            />
-          </main>
+          )}
+          <Route
+            exact
+            path="/user/:uid/profile"
+            render={props => <Profile {...props} />}
+          />
+        </main>
 
-          <aside
-            className="w-100 measure-narrow-ns bg-white-ns tc"
-            data-testid="sidebar"
-          >
-            <MobileReminder myUid={userId} />
-            <Onboarding uid={userId} contactSelected={selectedUserUid}>
-              <>
-                {selectedUserUid ? (
-                  <>
-                    <button
-                      type="button"
-                      data-testid="addreminder"
-                      onClick={() => setVisibility(true)}
-                      className="btn2 ph4 pv3 bn pointer br1 grow b mv4"
-                    >
-                      Add A Reminder
-                    </button>
-                    <SpecificTaskList
-                      myUid={userId}
-                      contactSelected={selectedUserUid}
-                    />
-                  </>
-                ) : (
-                  <UniversalTaskList myUid={userId} />
-                )}
-              </>
-            </Onboarding>
-            <p className="tc f6 white ma0">
-              Version {process.env.REACT_APP_VERSION}
-            </p>
-          </aside>
-        </div>
-      </ContainerHorizontal>
-    </SplitProvider>
+        <aside
+          className="w-100 measure-narrow-ns bg-white-ns tc"
+          data-testid="sidebar"
+        >
+          <MobileReminder myUid={userId} />
+          <Onboarding uid={userId} contactSelected={selectedUserUid}>
+            <>
+              {selectedUserUid ? (
+                <>
+                  <button
+                    type="button"
+                    data-testid="addreminder"
+                    onClick={() => setVisibility(true)}
+                    className="btn2 ph4 pv3 bn pointer br1 grow b mv4"
+                  >
+                    Add A Reminder
+                  </button>
+                  <SpecificTaskList
+                    myUid={userId}
+                    contactSelected={selectedUserUid}
+                  />
+                </>
+              ) : (
+                <UniversalTaskList myUid={userId} />
+              )}
+            </>
+          </Onboarding>
+          <p className="tc f6 white ma0">
+            Version {process.env.REACT_APP_VERSION}
+          </p>
+        </aside>
+      </div>
+    </ContainerHorizontal>
   );
 }
 

@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSplit } from 'react-splitio';
+
 import './networkAnimations.css';
 import { useSelector, useDispatch } from 'react-redux';
+import { OptimizelyFeature } from '@optimizely/react-sdk';
 import { Person } from './components/Person';
 import { PersonModal } from './components/PersonBox';
 // import { AddButton } from './components/AddButton';
 import ErrorBoundary from '../../utils/ErrorBoundary';
 import firebase from '../../utils/firebase';
-
 // import { Button } from '@duik/it';
 // import Portal from '../../utils/Portal';
 // import { Modal } from './components/ContactModal';
@@ -38,21 +38,26 @@ function _Network({ uid }) {
     .collection('contacts')
     .doc();
 
-  // const [feature1] = useSplit('feature1');
   return (
     <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
+      {/* <OptimizelyFeature feature="contactsSync">
+        {isEnabled => ( */}
       <>
         <div className="pv4" data-testid="outreachPage">
           {visible ? (
-            <PersonModal
-              uid={uid}
-              contactId={selectedUser}
-              onClose={() => {
-                setVisibility(false);
-                setSelectedUser('');
-              }}
-              newPerson
-            />
+            <>
+              <PersonModal
+                uid={uid}
+                contactId={selectedUser}
+                onClose={() => {
+                  setVisibility(false);
+                  setSelectedUser('');
+                }}
+                newPerson
+              />
+              {/* {isEnabled && (
+                  )} */}
+            </>
           ) : (
             <button
               type="button"
@@ -71,9 +76,10 @@ function _Network({ uid }) {
             </button>
           )}
         </div>
-        {/* {feature1 === 'on' && <p>split is working</p>} */}
-        <ContactsBox contacts={contacts} uid={uid}></ContactsBox>
       </>
+      {/* )}
+      </OptimizelyFeature> */}
+      <ContactsBox contacts={contacts} uid={uid}></ContactsBox>
     </ErrorBoundary>
   );
 }
