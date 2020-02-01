@@ -6,6 +6,7 @@
   "dependencies": {
     "@babel/core": "7.6.0",
     "@duik/it": "^0.4.1",
+    "@optimizely/react-sdk": "^1.1.0",
     "@reduxjs/toolkit": "^1.2.1",
     "@sentry/browser": "^5.10.1",
     "@storybook/addon-centered": "^5.3.8",
@@ -68,7 +69,6 @@
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.1.2",
     "react-router-prop-types": "^1.0.4",
-    "react-splitio": "^0.1.11",
     "react-transition-group": "^4.3.0",
     "react-use": "^12.2.2",
     "redux": "^4.0.4",

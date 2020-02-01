@@ -15,6 +15,7 @@ export const usePersonForm = (contactId, userId) => {
   );
 
   const [state, setState] = React.useState({
+    userId,
     uid: contactId,
     name: generateName(),
     photoURL: null,

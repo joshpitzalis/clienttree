@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSplit } from 'react-splitio';
 import './networkAnimations.css';
 import { useSelector, useDispatch } from 'react-redux';
+import { OptimizelyFeature } from '@optimizely/react-sdk';
 import { Person } from './components/Person';
 import { PersonModal } from './components/PersonBox';
 import ErrorBoundary from '../../utils/ErrorBoundary';
@@ -34,43 +34,51 @@ function _Network({ uid }) {
     .collection('contacts')
     .doc();
 
-  const [feature1] = useSplit('feature1');
   return (
     <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
-      <>
-        <div className="pv4 flex justify-between" data-testid="outreachPage">
-          {visible ? (
-            <PersonModal
-              uid={uid}
-              contactId={selectedUser}
-              onClose={() => {
-                setVisibility(false);
-                setSelectedUser('');
-              }}
-              newPerson
-            />
-          ) : (
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedUser(newDoc.id);
-                dispatch({
-                  type: 'people/setSelectedUser',
-                  payload: newDoc.id,
-                });
-                setVisibility(true);
-              }}
-              className="btn1 b grow  ph3 pv2  pointer bn br1 white"
-              data-testid="addPeopleButton"
+      <OptimizelyFeature feature="contactsSync">
+        {isEnabled => (
+          <>
+            <div
+              className="pv4 flex justify-between"
+              data-testid="outreachPage"
             >
-              Add Someone New
-            </button>
-          )}
-          {feature1 === 'on' && <ImportContacts />}
-        </div>
+              {visible ? (
+                <PersonModal
+                  uid={uid}
+                  contactId={selectedUser}
+                  onClose={() => {
+                    setVisibility(false);
+                    setSelectedUser('');
+                  }}
+                  newPerson
+                />
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedUser(newDoc.id);
+                      dispatch({
+                        type: 'people/setSelectedUser',
+                        payload: newDoc.id,
+                      });
+                      setVisibility(true);
+                    }}
+                    className="btn1 b grow  ph3 pv2  pointer bn br1 white"
+                    data-testid="addPeopleButton"
+                  >
+                    Add Someone New
+                  </button>
+                  {isEnabled && <ImportContacts />}
+                </>
+              )}
+            </div>
 
-        <ContactsBox contacts={contacts} uid={uid}></ContactsBox>
-      </>
+            <ContactsBox contacts={contacts} uid={uid}></ContactsBox>
+          </>
+        )}
+      </OptimizelyFeature>
     </ErrorBoundary>
   );
 }

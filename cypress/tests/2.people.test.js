@@ -8,7 +8,8 @@ describe('outreach', () => {
 
   it('lets you add a contact', () => {
     cy.visit('/')
-
+      .login()
+      .wait(5000)
       .findByTestId(/outreachPage/i)
       .findByText(/Add someone new/i)
       .click()
@@ -29,7 +30,7 @@ describe('outreach', () => {
 
   it('lets you update a contact', () => {
     cy.visit('/')
-
+      .wait(5000)
       .findByTestId(/outreachPage/i)
       .findByText(fakeData.name)
       .click()
@@ -75,15 +76,6 @@ describe('outreach', () => {
       .within(() => {
         cy.findByText(fakeData.updatedName);
       });
-  });
-
-  it('hides onboarding box when complete', () => {
-    cy.visit('/')
-      .findByTestId(/outreachPage/i)
-      .wait(5000)
-      .queryByText(/getting started/i)
-      .should('not.exist')
-      .findByText(/activities/i);
   });
 
   it('create a contact note', () => {
@@ -176,10 +168,11 @@ describe('outreach', () => {
       .should('not.exist');
   });
 
-  it('lets you delete a contact', () => {
+  it('check the person created on mobile shows up on desktop and lets you delete a contact', () => {
     cy.visit('/')
+      .wait(5000)
       .findByTestId(/outreachPage/i)
-      .findByText(fakeData.updatedName)
+      .findByText('someone new')
       .click()
       .findByTestId(/contactModal/i)
       .findByTestId('deleteContact')
@@ -190,7 +183,7 @@ describe('outreach', () => {
       .wait(2000)
       .queryByTestId(/contactModal/i)
       .should('not.exist')
-      .queryByText(fakeData.updatedName)
+      .queryByText('someone new')
       .should('not.exist');
   });
 });
