@@ -73,7 +73,6 @@ export const updateContactEpic = (action$, state$, { setContact }) => {
       // get your user Id from the store
       const { userId } = state$.value.user;
       // update contact on firebase
-
       return from(setContact(userId, payload)).pipe(
         // success message
         map(() => ({ type: 'people/formSaved' })),
