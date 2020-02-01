@@ -41,10 +41,10 @@ export const ConfettiBanner = memo(({ setWelcomeMessage }) => {
         numberOfPieces={500}
         recycle={false}
         onConfettiComplete={() => {
-          setWelcomeMessage({
-            header: 'Nice!',
-            byline: 'Try adding your signature to your email account next.',
-          });
+          // setWelcomeMessage({
+          //   header: 'Nice!',
+          //   byline: 'Try adding your signature to your email account next.',
+          // });
         }}
       />
     )

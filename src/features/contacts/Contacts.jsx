@@ -29,9 +29,9 @@ const ImportContacts = ({
         userId,
         existingContacts,
         newContacts,
-        handleResolution,
-        handleAddition,
-        setNewContact,
+        resolve: handleResolution,
+        add: handleAddition,
+        set: setNewContact,
       });
     };
     return (

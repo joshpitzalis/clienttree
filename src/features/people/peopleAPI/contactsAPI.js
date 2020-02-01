@@ -504,18 +504,16 @@ export const updateLastContacted = (userId, uid) =>
       { merge: true }
     );
 
-export const setContact = (
+export const setContact = ({
   userId,
-  {
-    uid,
-    name,
-    summary = '',
-    lastContacted = null,
-    photoURL = '',
-    downloadURL = '',
-    notes = {},
-  }
-) =>
+  uid,
+  name,
+  summary = '',
+  lastContacted = null,
+  photoURL = '',
+  downloadURL = '',
+  notes = {},
+}) =>
   firebase
     .firestore()
     .collection('users')

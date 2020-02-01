@@ -7,13 +7,13 @@ import { generateName } from './randomNameGenerator';
 /**
  * @param {string} contactId - contact Id of selected user
  */
-export const usePersonForm = contactId => {
+export const usePersonForm = (contactId, userId) => {
   const dispatch = useDispatch();
   const contact = useSelector(
     store =>
       store.contacts && store.contacts.find(person => person.uid === contactId)
   );
-  const userId = useSelector(store => store.user && store.user.userId);
+
   const [state, setState] = React.useState({
     uid: contactId,
     name: generateName(),
@@ -43,7 +43,7 @@ export const usePersonForm = contactId => {
       });
       dispatch({
         type: 'people/updateForm',
-        payload: state,
+        payload: { userId, ...state },
       });
     }
   }, [dispatch, state, userId]);

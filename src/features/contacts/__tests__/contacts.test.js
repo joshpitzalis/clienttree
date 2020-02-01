@@ -201,16 +201,17 @@ describe('contacts', () => {
     expect(setNewContact).toHaveBeenCalledTimes(2);
   });
 
-  it.skip('throws an error if there is a problem adding contacts', () => false);
+  it('throws an error if there is a problem adding contacts', () => false);
 
-  it.skip('lets you merge details then add', () => false);
+  it('lets you merge details then add', () => false);
 
-  it.skip('lets you keep existing details then add', () => false);
+  it('throws an error if there is a problem merging contacts', () => false);
+  it('lets you keep existing details then add', () => false);
 
-  it.skip('adds email details to user box', () => false);
+  it('adds email details to user box', () => false);
 
-  it.skip('avatars fall back', () => false);
+  it('avatars fall back', () => false);
 
-  it.skip('uploaded image over  writes fall back avatar', () => false);
-  it.skip('avatar image hieracrhy is correct', () => false);
+  it('uploaded image over  writes fall back avatar', () => false);
+  it('avatar image hieracrhy is correct', () => false);
 });

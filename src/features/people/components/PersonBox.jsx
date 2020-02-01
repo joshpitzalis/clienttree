@@ -43,7 +43,7 @@ export const PersonModal = ({
   // whenever the state of this component gets updated
   // it will debounce for one second then save the new state to firebase
   // the new state then streams in through rxjs firebase listeners setup at the root
-  const [state, setState] = usePersonForm(contactId);
+  const [state, setState] = usePersonForm(contactId, uid);
 
   React.useEffect(() => {
     if (state.photoURL === null) {

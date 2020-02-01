@@ -1,5 +1,3 @@
-import { setNewContact } from './contacts.api';
-
 export const _handleImport = () => {
   const { cloudsponge } = window;
   cloudsponge.launch('gmail');
@@ -34,18 +32,18 @@ export const handleContactSync = ({
   userId,
   existingContacts,
   newContacts,
-  handleResolution,
-  handleAddition,
-  setNewContact,
+  resolve,
+  add,
+  set,
 }) => {
   const duplicates = findDuplicates(existingContacts, newContacts);
 
   if (duplicates.length) {
-    handleResolution(duplicates, newContacts);
+    resolve(duplicates, newContacts);
     return;
   }
 
-  handleAddition(userId, newContacts, setNewContact);
+  add(userId, newContacts, set);
 };
 
 export const handleResolution = (duplicates, newContacts) => {};
