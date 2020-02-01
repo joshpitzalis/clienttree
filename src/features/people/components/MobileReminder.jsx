@@ -109,7 +109,7 @@ const ReminderCreator = ({ myUid, handleAddingTask, send }) => {
   const [allContacts, setAllContacts] = React.useState([]);
   const dispatch = useDispatch();
 
-  const handleAddReminder = (contactName, taskName, dueDate) => {
+  const handleAddReminder = (contactName, taskName, dueDate, userId) => {
     const existingContact = contacts.find(contact => contact.name === name);
 
     handleAddingTask({
@@ -125,6 +125,7 @@ const ReminderCreator = ({ myUid, handleAddingTask, send }) => {
     });
 
     const payload = {
+      userId,
       uid: theirUid,
       name,
       summary: '',
@@ -171,7 +172,7 @@ const ReminderCreator = ({ myUid, handleAddingTask, send }) => {
             return;
           }
 
-          handleAddReminder(name, task, date);
+          handleAddReminder(name, task, date, myUid);
           setTask('');
           setName('');
           setDate(+new Date() + 604800000);

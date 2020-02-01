@@ -1,7 +1,7 @@
 describe('onboarding', () => {
   it('shows first task completed when you start', () => {
     cy.visit('/')
-      .login()
+
       .wait(5000)
       .findByTestId('outreachPage')
       .findByLabelText(/Sign up to Client Tree/i)
@@ -18,6 +18,7 @@ describe('onboarding', () => {
     };
 
     cy.visit('/')
+      .wait(5000)
       .findByTestId('outreachPage')
       .findByTestId('signature')
       .should('not.be.checked')
@@ -70,6 +71,7 @@ describe('onboarding', () => {
 
   it('once you have create a signature the onboarding task is marked complete and this change is persisted', () => {
     cy.visit('/')
+      .wait(5000)
       .findByTestId('outreachPage')
       .findByLabelText(
         /Completed your profile and created a referrable email signature/i
@@ -79,6 +81,7 @@ describe('onboarding', () => {
 
   it('you cannot uncheck signature step once persisted', () => {
     cy.visit('/')
+      .wait(5000)
       .findByTestId('outreachPage')
       .findByLabelText(
         /Completed your profile and created a referrable email signature/i
@@ -97,6 +100,7 @@ describe('onboarding', () => {
   context('can complete onboarding', () => {
     it('lets me mark send email complete', () => {
       cy.visit('/')
+        .wait(5000)
         .findByTestId('outreachPage')
         .findByTestId('email')
         .should('not.be.checked')
@@ -109,16 +113,22 @@ describe('onboarding', () => {
 
     it('lets me mark outreach complete', () => {
       cy.visit('/')
+        .wait(5000)
         .findByTestId('outreachPage')
         .findByTestId('reachOut')
         .should('not.be.checked')
         .findByTestId('reachOut')
         .check()
-        .wait(5000)
-        .findByTestId('reachOut')
-        .should('be.checked');
+        .wait(5000);
     });
 
-    // 'hides onboarding box when complete' test is in people.test
+    it('hides onboarding box when complete', () => {
+      cy.visit('/')
+        .findByTestId(/outreachPage/i)
+        .wait(5000)
+        .queryByText(/getting started/i)
+        .should('not.exist')
+        .findByText(/activities/i);
+    });
   });
 });
