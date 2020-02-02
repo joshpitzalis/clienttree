@@ -6,11 +6,11 @@ import { cleanup, wait, fireEvent, act } from '@testing-library/react';
 // import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { render } from '../../../utils/testSetup';
 import { Person } from '../components/Person';
-import { Network } from '../Network';
+import { InnerNetwork } from '../Network';
 import { updateContactEpic } from '../networkEpics';
 import { setContact, setProfileImage, handleTracking } from '../peopleAPI';
 import { PersonModal } from '../components/PersonBox';
-import { Dashboard } from '../../../pages/Dashboard';
+// import { Dashboard } from '../../../pages/Dashboard';
 // import { TimeUpdate } from '../components/TimeUpdate';
 
 jest.mock('../peopleAPI', () => ({
@@ -95,7 +95,7 @@ describe('create people', () => {
   });
   it('add button creates a new person box', () => {
     const { getByTestId, queryByTestId, getByPlaceholderText } = render(
-      <Network uid="123" />
+      <InnerNetwork uid="123" />
     );
     getByTestId('outreachPage');
     userEvent.click(getByTestId('addPeopleButton'));
@@ -367,12 +367,12 @@ describe('create people', () => {
     expect(queryByTestId('saveIndicator')).not.toBeInTheDocument();
   });
   it('adds a loading spinner for contacts in network page', () => {
-    const { getByTestId } = render(<Network uid="123" />);
+    const { getByTestId } = render(<InnerNetwork uid="123" />);
 
     expect(getByTestId('loader')).toBeInTheDocument();
   });
   it('adds an empty state for contacts in network page', () => {
-    const { getByTestId } = render(<Network uid="123" />, {
+    const { getByTestId } = render(<InnerNetwork uid="123" />, {
       initialState: { contacts: [] },
     });
 
@@ -450,7 +450,7 @@ describe('update someone on the system', () => {
       //   contact={mockData.contact}
       //   selectedUser={mockData.selectedUser}
       // />
-      <Network uid="123" />,
+      <InnerNetwork uid="123" />,
       { initialState: { contacts: [mockData.contact] } }
     );
     // expect closed

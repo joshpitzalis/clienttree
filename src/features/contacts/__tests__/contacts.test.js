@@ -13,6 +13,8 @@ import {
 
 const mockProps = {
   handleImport: jest.fn(),
+  userId: '123',
+  existingContacts: [],
 };
 
 const rawContacts = [
@@ -130,8 +132,9 @@ describe('contacts', () => {
       { name: 'abbey', email: 'abbey@example.com' },
       { name: 'Donna', email: 'donna@example.com' },
     ];
-    const handleResolution = jest.fn();
-    const handleAddition = jest.fn();
+    const resolve = jest.fn();
+    const add = jest.fn();
+    const set = jest.fn();
 
     const userId = '123';
 
@@ -139,12 +142,13 @@ describe('contacts', () => {
       userId,
       existingContacts,
       newContacts,
-      handleResolution,
-      handleAddition,
+      resolve,
+      add,
+      set,
     });
 
-    expect(handleResolution).toHaveBeenCalled();
-    expect(handleResolution).toHaveBeenCalledWith(
+    expect(resolve).toHaveBeenCalled();
+    expect(resolve).toHaveBeenCalledWith(
       [
         {
           name: 'abbey',
@@ -153,7 +157,7 @@ describe('contacts', () => {
       ],
       newContacts
     );
-    expect(handleAddition).not.toHaveBeenCalled();
+    expect(add).not.toHaveBeenCalled();
   });
 
   it('if no duplicates it adds the new contacts', () => {
@@ -167,27 +171,23 @@ describe('contacts', () => {
       { name: 'xabbey', email: 'xabbey@example.com' },
       { name: 'Donna', email: 'donna@example.com' },
     ];
-    const handleResolution = jest.fn();
-    const handleAddition = jest.fn();
-    const setNewContact = jest.fn();
+    const resolve = jest.fn();
+    const add = jest.fn();
+    const set = jest.fn();
     const userId = '123';
 
     handleContactSync({
       userId,
       existingContacts,
       newContacts,
-      handleResolution,
-      handleAddition,
-      setNewContact,
+      resolve,
+      add,
+      set,
     });
 
-    expect(handleAddition).toHaveBeenCalled();
-    expect(handleAddition).toHaveBeenCalledWith(
-      userId,
-      newContacts,
-      setNewContact
-    );
-    expect(handleResolution).not.toHaveBeenCalled();
+    expect(add).toHaveBeenCalled();
+    expect(add).toHaveBeenCalledWith(userId, newContacts, set);
+    expect(resolve).not.toHaveBeenCalled();
   });
 
   it('write to db for each contact you add', () => {
