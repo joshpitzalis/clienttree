@@ -31,7 +31,8 @@ export const Stats = ({ userStats, showModal }) => {
     leadsContacted = 0,
     projectsCompleted = 0,
     activitiesCompleted = 0,
-  } = userStats.stats;
+  } = userStats && userStats.stats;
+
   const projectCount = Math.ceil((goal - income) / average);
 
   const [visibility, setVisibility] = React.useState(false);
