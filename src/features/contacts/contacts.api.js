@@ -1,7 +1,7 @@
 import firebase from '../../utils/firebase';
 
 export const setNewContact = (userId, contact) => {
-  const { name, email } = contact;
+  const { name, email, photoURL } = contact;
 
   const newContactRef = firebase
     .firestore()
@@ -10,11 +10,13 @@ export const setNewContact = (userId, contact) => {
     .collection('contacts')
     .doc();
 
-  newContactRef.set(
+  return newContactRef.set(
     {
       name,
       email,
-      id: newContactRef.id,
+      uid: newContactRef.id,
+      lastContacted: +new Date(),
+      photoURL,
     },
     { merge: true }
   );

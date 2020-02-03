@@ -65,7 +65,9 @@ export const InnerNetwork = ({ uid, isEnabled }) => {
               >
                 Add Someone New
               </button>
-              {isEnabled && <ImportContacts />}
+              {isEnabled && (
+                <ImportContacts userId={uid} existingContacts={contacts} />
+              )}
             </>
           )}
         </div>

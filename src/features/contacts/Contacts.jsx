@@ -8,10 +8,10 @@ import {
   handleContactSync,
   handleResolution,
   handleAddition,
+  handleError,
+  handleSuccessfulCompletion,
 } from './contacts.helpers.js';
 import { setNewContact } from './contacts.api';
-
-const { cloudsponge } = window;
 
 // const responseCallback = response => {
 //   console.log(response);
@@ -22,9 +22,14 @@ const ImportContacts = ({
   userId,
   existingContacts,
 }) => {
+  const { cloudsponge } = window;
+
   React.useEffect(() => {
     const processContacts = contacts => {
+      console.log({ contacts });
+
       const newContacts = parseContacts(contacts);
+
       handleContactSync({
         userId,
         existingContacts,
@@ -32,16 +37,18 @@ const ImportContacts = ({
         resolve: handleResolution,
         add: handleAddition,
         set: setNewContact,
+        error: handleError,
+        success: handleSuccessfulCompletion,
       });
     };
-    return (
-      cloudsponge &&
-      cloudsponge.init({
+    if (cloudsponge) {
+      return cloudsponge.init({
         afterSubmitContacts: processContacts,
         afterClosing: cloudsponge.end(),
-      })
-    );
-  }, [existingContacts, userId]);
+        include: ['photo'],
+      });
+    }
+  }, [cloudsponge, existingContacts, userId]);
 
   return (
     <button

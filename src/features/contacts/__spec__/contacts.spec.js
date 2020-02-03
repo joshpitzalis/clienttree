@@ -175,6 +175,7 @@ describe('contacts', () => {
     const add = jest.fn();
     const set = jest.fn();
     const userId = '123';
+    const error = jest.fn();
 
     handleContactSync({
       userId,
@@ -183,10 +184,11 @@ describe('contacts', () => {
       resolve,
       add,
       set,
+      error,
     });
 
     expect(add).toHaveBeenCalled();
-    expect(add).toHaveBeenCalledWith(userId, newContacts, set);
+    expect(add).toHaveBeenCalledWith({ userId, newContacts, set, error });
     expect(resolve).not.toHaveBeenCalled();
   });
 
@@ -196,12 +198,71 @@ describe('contacts', () => {
       { name: 'Donna', email: 'donna@example.com' },
     ];
     const userId = '123';
-    const setNewContact = jest.fn();
-    handleAddition(userId, newContacts, setNewContact);
-    expect(setNewContact).toHaveBeenCalledTimes(2);
+    const set = jest.fn();
+    const error = jest.fn();
+    const success = jest.fn();
+    handleAddition({ userId, newContacts, set, error, success });
+    expect(set).toHaveBeenCalledTimes(2);
   });
 
-  it('throws an error if there is a problem adding contacts', () => false);
+  it('throws an error if there is a problem adding contacts', async () => {
+    const newContacts = [
+      { name: 'xabbey', email: 'xabbey@example.com' },
+      { name: 'Donna', email: 'donna@example.com' },
+    ];
+    const userId = '123';
+    const set = jest.fn().mockRejectedValueOnce(new Error('Async error'));
+    const error = jest.fn();
+    const success = jest.fn();
+    await handleAddition({ userId, newContacts, set, error, success });
+
+    expect(error).toHaveBeenCalled();
+    expect(error).toHaveBeenCalledWith(
+      new Error('Async error'),
+      'contacts/handleAddition'
+    );
+  });
+
+  it('some indication that import completed successfully', async () => {
+    const newContacts = [
+      { name: 'xabbey', email: 'xabbey@example.com' },
+      { name: 'Donna', email: 'donna@example.com' },
+    ];
+    const userId = '123';
+    const set = jest.fn();
+
+    const error = jest.fn();
+    const success = jest.fn();
+    await handleAddition({
+      userId,
+      newContacts,
+      set,
+      error,
+      success,
+    });
+    expect(success).toHaveBeenCalled();
+  });
+
+  it('some indication that contacts are importing', async () => {
+    const newContacts = [
+      { name: 'xabbey', email: 'xabbey@example.com' },
+      { name: 'Donna', email: 'donna@example.com' },
+    ];
+    const userId = '123';
+    const setNewContact = jest.fn();
+
+    const error = jest.fn();
+    const success = jest.fn();
+    await handleAddition({
+      userId,
+      newContacts,
+      setNewContact,
+      error,
+      success,
+    });
+    expect(success).toHaveBeenCalled();
+    expect(true).toBe(false);
+  });
 
   it('lets you merge details then add', () => false);
 
