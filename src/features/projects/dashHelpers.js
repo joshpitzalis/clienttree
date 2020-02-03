@@ -39,6 +39,8 @@ export const onDragEnd = ({
   track,
   dispatch,
 }) => {
+  console.log({ userId });
+
   const { source, destination, draggableId, type } = result;
 
   // if they never drop it

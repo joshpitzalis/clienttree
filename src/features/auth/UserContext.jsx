@@ -24,6 +24,11 @@ const UserProvider = ({ children }) => {
         const createdAt = parseInt(+new Date(metadata.creationTime)) / 1000;
 
         setUid(uid);
+        firebase
+          .firestore()
+          .collection('users')
+          .doc(user.uid)
+          .set({ userId: user.uid }, { merge: true });
         setAuthStatus(true);
         return (
           analytics &&
