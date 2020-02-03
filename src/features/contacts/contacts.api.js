@@ -16,7 +16,7 @@ export const setNewContact = (userId, contact) => {
       email,
       uid: newContactRef.id,
       lastContacted: +new Date(),
-      photoURL,
+      photoURL: photoURL || `https://ui-avatars.com/api/?name=${name}`,
     },
     { merge: true }
   );

@@ -1,82 +1,91 @@
 // import GoogleContacts from 'react-google-contacts';
 // import Avatar from 'react-avatar';
 
-import React from 'react';
-import {
-  _handleImport,
-  parseContacts,
-  handleContactSync,
-  handleResolution,
-  handleAddition,
-  handleError,
-  handleSuccessfulCompletion,
-} from './contacts.helpers.js';
-import { setNewContact } from './contacts.api';
+import React, { useState } from 'react';
+import { assert } from 'chai';
+import { useMachine } from '@xstate/react';
+import { Machine } from 'xstate';
+import { _handleImport, useCloudsponge } from './contacts.helpers.js';
+import { ConflictScreen } from './components/ConflictScreen';
 
 // const responseCallback = response => {
 //   console.log(response);
 // };
+
+const test = state => ({ getByTestId }) => {
+  assert.ok(getByTestId(state));
+};
+
+export const mergeMachine = Machine({
+  id: 'merge',
+  initial: 'addButton',
+  states: {
+    addButton: {
+      on: {
+        CLICKED: {
+          target: 'selectionScreen',
+          actions: ['handleImport'],
+        },
+      },
+      meta: {
+        test: test('importContacts'),
+      },
+    },
+    selectionScreen: {
+      on: {
+        CONTACTS_SELECTED: 'conflictScreen',
+      },
+    },
+    conflictScreen: {
+      on: {
+        COMPLETED: 'addButton',
+      },
+      meta: {
+        test: test('conflictScreen'),
+      },
+    },
+  },
+});
 
 const ImportContacts = ({
   handleImport = _handleImport,
   userId,
   existingContacts,
 }) => {
-  const { cloudsponge } = window;
+  const [current, send] = useMachine(mergeMachine, {
+    actions: {
+      handleImport: () => handleImport(),
+    },
+  });
 
-  React.useEffect(() => {
-    const processContacts = contacts => {
-      console.log({ contacts });
+  const [duplicates, setDuplicates] = useState([]);
 
-      const newContacts = parseContacts(contacts);
+  useCloudsponge({ userId, existingContacts, send, setDuplicates });
 
-      handleContactSync({
-        userId,
-        existingContacts,
-        newContacts,
-        resolve: handleResolution,
-        add: handleAddition,
-        set: setNewContact,
-        error: handleError,
-        success: handleSuccessfulCompletion,
-      });
-    };
-    if (cloudsponge) {
-      return cloudsponge.init({
-        afterSubmitContacts: processContacts,
-        afterClosing: cloudsponge.end(),
-        include: ['photo'],
-      });
-    }
-  }, [cloudsponge, existingContacts, userId]);
+  if (current.matches('addButton')) {
+    return (
+      <button
+        onClick={() => send('CLICKED')}
+        type="button"
+        className="btn3 b grow  ph3 pv2  pointer bn br1 white"
+        data-testid="importContacts"
+      >
+        Import Contacts
+      </button>
+    );
+  }
 
-  return (
-    <button
-      onClick={handleImport}
-      type="button"
-      className="btn3 b grow  ph3 pv2  pointer bn br1 white"
-      data-testid="importContacts"
-    >
-      Import Contacts
-    </button>
+  if (current.matches('conflictScreen')) {
+    return (
+      <ConflictScreen
+        send={send}
+        duplicates={duplicates}
+        existingContacts={existingContacts}
+      />
+    );
+  }
 
-    // https://github.com/Sitebase/react-avatar
-    // <Avatar
-    //   // email="joshpitzalis@gmail.com"
-    //   // facebookId="9gag"
-    //   // twitterHandle="@rvervoort"
-    //   // name='Yo'
-    //   // instagram
-    //   // skypeId
-    // />
-
-    // // https://www.npmjs.com/package/react-google-contacts
-    // <GoogleContacts
-    //   clientId="643234844871-gpn7ad38lekg90vevf8ioeblkldlp6fa.apps.googleusercontent.com"
-    //   buttonText="Import Contacts"
-    //   onSuccess={responseCallback}
-    //   onFailure={responseCallback}
-    // />
-  );
+  return null;
 };
+
 export default ImportContacts;

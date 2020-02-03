@@ -135,7 +135,7 @@ describe('contacts', () => {
     const resolve = jest.fn();
     const add = jest.fn();
     const set = jest.fn();
-
+    const error = jest.fn();
     const userId = '123';
 
     handleContactSync({
@@ -145,19 +145,23 @@ describe('contacts', () => {
       resolve,
       add,
       set,
+      error,
     });
 
     expect(resolve).toHaveBeenCalled();
-    expect(resolve).toHaveBeenCalledWith(
-      [
-        {
-          name: 'abbey',
-          email: 'abbey@example.com',
-        },
-      ],
-      newContacts
-    );
-    expect(add).not.toHaveBeenCalled();
+    expect(resolve).toHaveBeenCalledWith([
+      {
+        name: 'abbey',
+        email: 'abbey@example.com',
+      },
+    ]);
+    expect(add).toHaveBeenCalled();
+    expect(add).toHaveBeenCalledWith({
+      userId,
+      newContacts: [{ name: 'Donna', email: 'donna@example.com' }],
+      set,
+      error,
+    });
   });
 
   it('if no duplicates it adds the new contacts', () => {
@@ -244,6 +248,27 @@ describe('contacts', () => {
   });
 
   it('some indication that contacts are importing', async () => {
+    const newContacts = [
+      { name: 'xabbey', email: 'xabbey@example.com' },
+      { name: 'Donna', email: 'donna@example.com' },
+    ];
+    const userId = '123';
+    const setNewContact = jest.fn();
+
+    const error = jest.fn();
+    const success = jest.fn();
+    await handleAddition({
+      userId,
+      newContacts,
+      setNewContact,
+      error,
+      success,
+    });
+    expect(success).toHaveBeenCalled();
+    expect(true).toBe(false);
+  });
+
+  it('fall back image if no image from contact', async () => {
     const newContacts = [
       { name: 'xabbey', email: 'xabbey@example.com' },
       { name: 'Donna', email: 'donna@example.com' },
