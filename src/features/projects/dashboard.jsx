@@ -22,7 +22,7 @@ const crmPropTypes = {
 };
 const crmDefaultProps = {};
 
-export function CRM({ userId = '' }) {
+export function CRM({ userId }) {
   const [state, setState] = React.useState(initialData);
   const [visible, setVisibility] = React.useState(false);
   const [selectedUser, setSelectedUser] = React.useState('');
