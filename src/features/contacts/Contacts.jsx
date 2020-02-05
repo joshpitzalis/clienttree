@@ -39,6 +39,8 @@ export const mergeMachine = Machine({
     conflictScreen: {
       on: {
         COMPLETED: 'addButton',
+        CLOSED: 'addButton',
+        DUPLICATE_SELECTED: 'conflictScreen',
       },
       meta: {
         test: test('conflictScreen'),

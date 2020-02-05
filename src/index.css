@@ -129,6 +129,9 @@ textarea{
   border: 1px var(--red) solid;
 }
 
+.b--green-hover:hover {
+  border: 5px var(--success) solid;
+}
 
 .taskStyle {
   -webkit-font-smoothing: antialiased;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 import '../src/index.css';
+import 'tachyons';
 import '@duik/it/dist/styles.css';
 import centered from '@storybook/addon-centered/react';
 import { TaskBox } from '../src/features/people/components/TaskBox';

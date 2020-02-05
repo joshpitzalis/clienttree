@@ -24,9 +24,13 @@ export const parseContacts = _contacts =>
 
 export const findDuplicates = (_old, _new) =>
   _old.reduce((total, item) => {
-    const nameMatch = _new.find(element => element.name === item.name);
+    const nameMatch = _new.find(
+      element => !!element.name && !!item.name && element.name === item.name
+    );
 
-    const emailMatch = _new.find(element => element.email === item.email);
+    const emailMatch = _new.find(
+      element => !!element.email && !!item.email && element.email === item.email
+    );
 
     if (nameMatch || emailMatch) {
       total.push(item);
@@ -57,18 +61,26 @@ export const handleContactSync = ({
   set,
   error,
   success,
+  pending,
 }) => {
   const duplicates = findDuplicates(existingContacts, newContacts);
 
   const brandNewContacts = findBrandNewContacts(newContacts, duplicates);
 
   if (duplicates.length) {
-    add({ userId, newContacts: brandNewContacts, set, error, success });
+    add({
+      userId,
+      newContacts: brandNewContacts,
+      set,
+      error,
+      success,
+      pending,
+    });
     resolve(duplicates);
     return;
   }
 
-  add({ userId, newContacts, set, error, success });
+  add({ userId, newContacts, set, error, success, pending });
 };
 
 export const handleError = (error, from) =>
@@ -84,13 +96,20 @@ export const handleSuccessfulCompletion = () =>
     message: 'Contacts Imported Successfully',
   });
 
+export const handlePending = () =>
+  toast$.next({
+    message: 'Contacts Importing...',
+  });
+
 export const handleAddition = ({
   userId,
   newContacts,
   set,
   error,
   success,
+  pending,
 }) => {
+  pending();
   const writeOps = newContacts.map(contact => set(userId, contact));
 
   return Promise.all(writeOps)
@@ -108,6 +127,7 @@ export const useCloudsponge = ({
 
   React.useEffect(() => {
     const processContacts = contacts => {
+      send('CONTACTS_SELECTED');
       const newContacts = parseContacts(contacts);
       handleContactSync({
         userId,
@@ -118,11 +138,11 @@ export const useCloudsponge = ({
         set: setNewContact,
         error: handleError,
         success: handleSuccessfulCompletion,
+        pending: handlePending,
       });
     };
 
     const closeModal = () => {
-      send('CONTACTS_SELECTED');
       cloudsponge.end();
     };
 
@@ -134,4 +154,23 @@ export const useCloudsponge = ({
       });
     }
   }, [cloudsponge, existingContacts, userId, send, setDuplicates]);
+};
+
+export const findMatchingExistingContact = (_duplicate, _existingContacts) => {
+  const cleanName = contact =>
+    contact && contact.name && contact.name.toLowerCase().trim();
+
+  const cleanEmail = contact =>
+    contact && contact.email && contact.email.toLowerCase().trim();
+
+  const bothNotBlank = (contact, duplicate) => !!contact && !!duplicate;
+
+  const match = _contact =>
+    // only match if the name or the email are the same, but not the same because they are both blank fields in either case
+    (bothNotBlank(cleanName(_contact), cleanName(_duplicate)) &&
+      cleanName(_contact) === cleanName(_duplicate)) ||
+    (bothNotBlank(cleanEmail(_contact), cleanEmail(_duplicate)) &&
+      cleanEmail(_contact) === cleanEmail(_duplicate));
+
+  return _existingContacts.find(match);
 };
