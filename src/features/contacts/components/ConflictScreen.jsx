@@ -1,6 +1,24 @@
 import React from 'react';
 import Portal from '../../../utils/Portal';
-import { findMatchingExistingContact } from '../contacts.helpers';
+
+export const findMatchingExistingContact = (_duplicate, _existingContacts) => {
+  const cleanName = contact =>
+    contact && contact.name && contact.name.toLowerCase().trim();
+
+  const cleanEmail = contact =>
+    contact && contact.email && contact.email.toLowerCase().trim();
+
+  const bothNotBlank = (contact, duplicate) => !!contact && !!duplicate;
+
+  const match = _contact =>
+    // only match if the name or the email are the same, but not the same because they are both blank fields in either case
+    (bothNotBlank(cleanName(_contact), cleanName(_duplicate)) &&
+      cleanName(_contact) === cleanName(_duplicate)) ||
+    (bothNotBlank(cleanEmail(_contact), cleanEmail(_duplicate)) &&
+      cleanEmail(_contact) === cleanEmail(_duplicate));
+
+  return _existingContacts.find(match);
+};
 
 export const ConflictScreen = ({ send, duplicates, existingContacts }) => {
   const handleDuplicateSelection = payload => {
@@ -43,6 +61,11 @@ export const MergeManager = ({
 }) => {
   const [index, setIndex] = React.useState(0);
   const lastcontact = index + 1 === duplicates.length;
+
+  if (duplicates && duplicates.length === 0) {
+    send('CLOSED');
+  }
+
   return (
     <div
       data-testid="conflictScreen"

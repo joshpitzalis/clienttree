@@ -258,3 +258,31 @@ details summary::-webkit-details-marker {
 .datepicker-nav-btn {
   opacity: 0;
 }
+
+
+
+/* 
+  The cloudsponge-export-button is the main CTA for the contacts selection screen.
+  By default, it is labele with "Get x Contacts"
+  The defaults styles are shown here. you can change any of these values and save this file to a public location before referencing it with the `css` option.
+  These styles will override the default ones.
+*/
+
+/* The widget header displays the title for each screen */
+#cloudsponge-address-book .cloudsponge-topbar {
+  background-color: hsl(83, 70%, 34%);
+}
+
+/* Change the colors of the .cloudsponge-export-button */
+#cloudsponge-address-book .cloudsponge-button.cloudsponge-export-button {
+  background-color: hsl(83, 70%, 34%);;
+  color: #FFFFFF;
+}
+
+#cloudsponge-address-book .cloudsponge-button.cloudsponge-export-button:hover {
+  background-color: hsl(83, 50%, 34%);;
+}
+
+/*
+If you want to style other properties or elements, let use know.
+*/

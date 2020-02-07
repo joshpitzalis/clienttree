@@ -29,6 +29,7 @@ export const usePersonForm = (contactId, userId) => {
     lastContacted: +new Date(),
     tracked: false,
     saving: null,
+    email: '',
     ...contact,
   });
 

@@ -9,6 +9,7 @@ import { handleTracking as _handleTracking } from '../peopleAPI';
 import { EditBox } from './EditBox';
 import { TimeUpdate } from './TimeUpdate';
 import { ConfirmDelete } from './ConfirmDelete';
+import { SocialLinks } from './SocialLinks';
 
 const personPropTypess = {
   contactId: PropTypes.string,
@@ -77,7 +78,7 @@ export const PersonModal = ({
           state && state.saving && state.saving ? 'bt-orange' : 'bt-green'
         }`}
       >
-        <div className="flex flex-row-ns flex-column justify-between items-center pb4 mt0">
+        <div className="flex flex-row-ns flex-column justify-between items-center mt0 ">
           <div className="flex items-center">
             <div className="mr3 flex flex-column">
               <label htmlFor="uploader" className="pointer tc center">
@@ -176,6 +177,7 @@ export const PersonModal = ({
             }
           />
         </div>
+        <SocialLinks contact={state} setState={setState} />
         <Timeline>
           {Object.values(
             state.notes
@@ -288,80 +290,3 @@ export const PersonModal = ({
 
 PersonModal.propTypes = personPropTypess;
 PersonModal.defaultProps = personDefaultPropss;
-
-// const ProfileImage = (avatarRef, setProgress, setState, state, contactId) => (
-//   <label htmlFor="uploader" className="pointer tc center">
-//     {state.photoURL && state.photoURL ? (
-//       <img
-//         alt="profile-preview"
-//         className="w2 h-auto w3-ns h-auto-ns br-100"
-//         src={state.photoURL}
-//       />
-//     ) : (ß
-//       <AvatarGenerator
-//         ref={avatarRef}
-//         height="50"
-//         width="50"
-//         colors={['#333', '#222', '#ccc']}
-//       />
-//     )}
-//     <input
-//       type="file"
-//       accept=".jpg,.jpeg,.png,.gif"
-//       className="dn"
-//       id="uploader"
-//       data-testid="profileImageUploader"
-//       onChange={e => setImage({ e, setProgress, setState, state, contactId })}
-//     />
-//   </label>
-// );
-
-// ProfileImage.propTypes = {
-//   avatarRef: PropTypes.func.isRequired,
-//   setProgress: PropTypes.func.isRequired,
-//   setState: PropTypes.func.isRequired,
-//   state: PropTypes.shape({}).isRequired,
-//   contactId: PropTypes.string.isRequired,
-// };
-// ProfileImage.defaultProps = {};
-
-// const handleDelete = async (_name, _uid, _userId) => {
-//   try {
-//     await handleContactDelete(_uid, _userId);
-//     onClose();
-//   } catch (error) {
-//     toast$.next({ type: 'ERROR', message: error.message || error });
-//   }
-// };
-
-// const handleAddingTask = (task, myUid, theirUid, photoURL) => {
-//   handleAddTask(task, myUid, theirUid, photoURL).catch(error =>
-//     toast$.next({ type: 'ERROR', message: error.message || error })
-//   );
-// };
-
-// const handleUpdateUser = async e => {
-//   e.preventDefault();
-//   // tk validity check goes here
-//   try {
-//     const newUser = !state.photoURL;
-//     if (newUser) {
-//       const imgString = await avatarRef.current.getImageData();
-//       dispatch({
-//         type: ONBOARDING_STEP_COMPLETED,
-//         payload: { userId: uid, onboardingStep: 'addedSomeone' },
-//       });
-//       await setContact({ ...state, imgString, userId: uid });
-//       onClose();
-//       return;
-//     }
-//     await setContact({ ...state, userId: uid, contactId: state.uid });
-//     onClose();
-//   } catch (error) {
-//     toast$.next({ type: 'ERROR', message: error.message || error });
-//   }
-// };
-//
-// if (true) {
-//   throw new Error();
-// }

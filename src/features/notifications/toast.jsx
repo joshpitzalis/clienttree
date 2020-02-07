@@ -46,7 +46,7 @@ ${(type === 'ERROR' && 'bg-light-red') ||
   'bg-lightest-blue navy'}`}
         >
           <span className="lh-title ml3">
-            {`${message} ${from && `| ${from}`}`}
+            {`${message} ${from ? `| ${from}` : null}`}
           </span>
         </button>
       )}

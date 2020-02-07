@@ -513,6 +513,7 @@ export const setContact = ({
   photoURL = '',
   downloadURL = '',
   notes = {},
+  email,
 }) =>
   firebase
     .firestore()
@@ -528,6 +529,7 @@ export const setContact = ({
       photoURL: downloadURL || photoURL,
       activeTaskCount: 1,
       notes,
+      email,
     });
 
 export const setProfileImage = ({ imageFile, contactId }) =>
