@@ -15,46 +15,23 @@ export const parseContacts = _contacts =>
     };
   });
 
-export const findDuplicates = (_old, newContacts) => {
-  const findMatch = (_new, item, matcher) => {
-    const match = _new.find(
-      element =>
-        !!element[matcher] &&
-        !!item[matcher] &&
-        element[matcher] === item[matcher]
-    );
+export const findConflicts = (newContacts, _old) => {
+  // NAME_MATCHES      EMAIL_MATCHES    CONFLICT
+  // true              true             false (identical)
+  // true              false            true
+  // false             true             true
+  // false             false            false
 
-    const noMatch = _new.some(element => element[matcher] === item[matcher]);
+  const findMatch = (_new, item, matcher) =>
+    _new.find(element => element[matcher] === item[matcher]);
 
-    if (noMatch) {
-      return noMatch;
-    }
+  const duplicates = newContacts.filter(
+    item => findMatch(_old, item, 'name') !== findMatch(_old, item, 'email')
+  );
 
-    if (match === undefined) {
-      return 'blank';
-      // this mean there was no matcher field or it was blank
-    }
-
-    return match;
-  };
-
-  return _old.reduce((total, item) => {
-    if (
-      findMatch(newContacts, item, 'name') !==
-      findMatch(newContacts, item, 'email')
-    ) {
-      total.push(item);
-    }
-
-    if (
-      findMatch(newContacts, item, 'name') &&
-      findMatch(newContacts, item, 'email') === 'blank'
-    ) {
-      return total;
-    }
-
-    return total;
-  }, []);
+  // only return duplicates that have an email and name field
+  // so no blank fields on incoming conflicts
+  return duplicates.filter(_item => _item.email !== '' && _item.name !== '');
 };
 
 export const findBrandNewContacts = (contacts, duplicates) =>
@@ -81,7 +58,7 @@ export const handleContactSync = ({
   success,
   pending,
 }) => {
-  const duplicates = findDuplicates(existingContacts, newContacts);
+  const duplicates = findConflicts(newContacts, existingContacts);
 
   const brandNewContacts = findBrandNewContacts(newContacts, duplicates);
 
