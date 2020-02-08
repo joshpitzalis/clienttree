@@ -35,53 +35,51 @@ const App = () => {
     >
       <ErrorBoundary>
         <BrowserRouter>
-          <div className="">
+          <>
             <Banner />
             <Navbar authStatus={authStatus} />
-            <main>
-              <Route
-                exact
-                path="/"
-                render={routeProps => (
-                  <Login
-                    {...routeProps}
-                    authStatus={authStatus}
-                    userId={userId}
-                  />
-                )}
-              />
-              <Route
-                exact
-                path="/login"
-                render={loginProps => (
-                  <Login
-                    {...loginProps}
-                    authStatus={authStatus}
-                    userId={userId}
-                  />
-                )}
-              />
-              {userId && (
-                <NetworkProvider uid={userId}>
-                  <Route
-                    path="/user/:uid"
-                    render={dashProps => (
-                      <Dashboard
-                        {...dashProps}
-                        userId={userId}
-                        authStatus={authStatus}
-                      />
-                    )}
-                  />
-                </NetworkProvider>
+            <Route
+              exact
+              path="/"
+              render={routeProps => (
+                <Login
+                  {...routeProps}
+                  authStatus={authStatus}
+                  userId={userId}
+                />
               )}
-              <Route
-                exact
-                path="/refer/:uid"
-                render={referProps => <Refer {...referProps} userId={userId} />}
-              />
-            </main>
-          </div>
+            />
+            <Route
+              exact
+              path="/login"
+              render={loginProps => (
+                <Login
+                  {...loginProps}
+                  authStatus={authStatus}
+                  userId={userId}
+                />
+              )}
+            />
+            {userId && (
+              <NetworkProvider uid={userId}>
+                <Route
+                  path="/user/:uid"
+                  render={dashProps => (
+                    <Dashboard
+                      {...dashProps}
+                      userId={userId}
+                      authStatus={authStatus}
+                    />
+                  )}
+                />
+              </NetworkProvider>
+            )}
+            <Route
+              exact
+              path="/refer/:uid"
+              render={referProps => <Refer {...referProps} userId={userId} />}
+            />
+          </>
         </BrowserRouter>
       </ErrorBoundary>
     </OptimizelyProvider>

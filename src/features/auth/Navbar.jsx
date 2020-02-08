@@ -57,7 +57,8 @@ export const Navbar = withRouter(({ history }) => {
         <TopBarSection>
           <TopBarTitle>
             <Dropdown
-              ButtonComponent={DropDownIcon}
+              // ButtonComponent={DropDownIcon}
+              buttonText="Configure your settings"
               data-testid="settings"
               buttonProps={{
                 clear: true,

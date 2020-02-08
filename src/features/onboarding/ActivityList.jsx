@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Progress } from 'antd';
+import { OptimizelyFeature } from '@optimizely/react-sdk';
 import { GettingStarted } from './GettingStarted';
 
 export const completePercentage = _onboarding =>
@@ -39,24 +40,28 @@ export function Onboarding({ uid, children, contactSelected }) {
 
   return (
     <div className="pa4 ">
-      <fieldset className="bn ma0 pa0">
-        <details data-testid="detailBox" className="dn db-ns">
-          <summary>
-            <legend className="fw7 mb3 dib " data-testid="toggleAddBox">
-              {sidebarTitle(contactSelected, onboardingComplete, contact)}
-            </legend>
-          </summary>
-        </details>
+      <OptimizelyFeature feature="gettingStarted">
+        {isEnabled => (
+          <fieldset className="bn ma0 pa0">
+            <details data-testid="detailBox" className="dn db-ns">
+              <summary>
+                <legend className="fw7 mb3 dib " data-testid="toggleAddBox">
+                  {sidebarTitle(contactSelected, onboardingComplete, contact)}
+                </legend>
+              </summary>
+            </details>
 
-        {!onboardingComplete && !contactSelected && (
-          <div className="mb4 dn db-ns">
-            <Progress percent={completePercentage(onboarding)} />
-            <GettingStarted uid={uid} onboarding={onboarding} />
-          </div>
+            {!onboardingComplete && !contactSelected && isEnabled && (
+              <div className="mb4 dn db-ns">
+                <Progress percent={completePercentage(onboarding)} />
+                <GettingStarted uid={uid} onboarding={onboarding} />
+              </div>
+            )}
+
+            {children}
+          </fieldset>
         )}
-
-        {children}
-      </fieldset>
+      </OptimizelyFeature>
     </div>
   );
 }
