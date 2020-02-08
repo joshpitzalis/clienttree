@@ -9,6 +9,7 @@ export const handleAddTask = async ({
   photoURL,
   dueDate,
   contactName,
+  email,
 }) => {
   const userEmail = await firebase.auth().currentUser.email;
   const newtask = helpfulTaskRef(myUid, theirUid);
@@ -23,6 +24,7 @@ export const handleAddTask = async ({
     taskName,
     photoURL,
     dueDate,
+    email,
   });
 };
 

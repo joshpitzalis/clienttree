@@ -140,6 +140,7 @@ const ReminderCreator = ({ myUid, handleAddingTask, send }) => {
         },
       },
       tracked: false,
+      email: '',
     };
 
     if (!existingContact) {
