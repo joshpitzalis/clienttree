@@ -17,18 +17,18 @@ export const parseContacts = _contacts =>
     };
   });
 
-export const findConflicts = (newContacts, _old) => {
+export const findConflicts = (newContacts, old) => {
   // NAME_MATCHES      EMAIL_MATCHES    CONFLICT
   // true              true             false (identical)
   // true              false            true
   // false             true             true
   // false             false            false
 
-  const findMatch = (_new, item, matcher) =>
-    _new.find(element => element[matcher] === item[matcher]);
+  const findMatch = (_new, _old, matcher) =>
+    _old.find(element => element[matcher] === _new[matcher]);
 
   const duplicates = newContacts.filter(
-    item => findMatch(_old, item, 'name') !== findMatch(_old, item, 'email')
+    item => findMatch(item, old, 'name') !== findMatch(item, old, 'email')
   );
 
   // only return duplicates that have an email and name field
@@ -36,11 +36,11 @@ export const findConflicts = (newContacts, _old) => {
   return duplicates.filter(_item => _item.email !== '' && _item.name !== '');
 };
 
-export const findBrandNewContacts = (contacts, duplicates) =>
-  contacts.reduce((total, item) => {
-    const nameMatch = duplicates.find(element => element.name === item.name);
+export const findBrandNewContacts = (newContacts, existing) =>
+  newContacts.reduce((total, item) => {
+    const nameMatch = existing.some(element => element.name === item.name);
 
-    const emailMatch = duplicates.find(element => element.email === item.email);
+    const emailMatch = existing.some(element => element.email === item.email);
 
     if (!nameMatch && !emailMatch) {
       total.push(item);
@@ -62,22 +62,20 @@ export const handleContactSync = ({
 }) => {
   const duplicates = findConflicts(newContacts, existingContacts);
 
-  const brandNewContacts = findBrandNewContacts(newContacts, duplicates);
+  const brandNewContacts = findBrandNewContacts(newContacts, existingContacts);
 
   if (duplicates.length) {
-    add({
-      userId,
-      newContacts: brandNewContacts,
-      set,
-      error,
-      success,
-      pending,
-    });
     setDuplicates(duplicates);
-    return;
   }
 
-  add({ userId, newContacts, set, error, success, pending });
+  add({
+    userId,
+    newContacts: brandNewContacts,
+    set,
+    error,
+    success,
+    pending,
+  });
 };
 
 // ###

@@ -27,7 +27,7 @@ export const setNewContact = (userId, contact) => {
 export const updateContact = (userId, contact) => {
   const { name, email, photoURL } = contact;
 
-  const newContactRef = firebase
+  return firebase
     .firestore()
     .collection('users')
     .doc(userId)
@@ -37,7 +37,6 @@ export const updateContact = (userId, contact) => {
       {
         name,
         email,
-
         photoURL: photoURL || `https://ui-avatars.com/api/?name=${name}`,
       },
       { merge: true }

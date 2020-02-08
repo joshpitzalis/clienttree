@@ -20,7 +20,12 @@ export const findMatchingExistingContact = (_duplicate, _existingContacts) => {
   return _existingContacts.find(match);
 };
 
-export const ConflictScreen = ({ send, duplicates, existingContacts }) => {
+export const ConflictScreen = ({
+  send,
+  duplicates,
+  existingContacts,
+  setDuplicates,
+}) => {
   const handleDuplicateSelection = payload => {
     send({
       type: 'DUPLICATE_SELECTED',
@@ -34,6 +39,9 @@ export const ConflictScreen = ({ send, duplicates, existingContacts }) => {
       payload,
     });
   };
+
+  // fire on unmount only
+  React.useEffect(() => () => setDuplicates([]), [setDuplicates]);
 
   return (
     <Portal
@@ -62,7 +70,7 @@ export const MergeManager = ({
   const [index, setIndex] = React.useState(0);
   const lastcontact = index + 1 === duplicates.length;
 
-  if (duplicates && duplicates.length === 0) {
+  if (index === duplicates.length) {
     send('CLOSED');
   }
 
@@ -86,6 +94,7 @@ export const MergeManager = ({
           setIndex={setIndex}
           send={send}
           isLastContact={lastcontact}
+          existing={null}
         />
 
         <ContactCard
@@ -135,14 +144,16 @@ function ContactCard({
 
   const handleClick = () => {
     setIndex(prev => prev + 1);
-    if (isLastContact) {
-      send('CLOSED');
-    }
+
     if (existing) {
       selector({ ...contact, uid: existing.uid });
       return;
     }
     selector(contact);
+
+    if (isLastContact) {
+      send('CLOSED');
+    }
   };
 
   return (

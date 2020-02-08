@@ -53,7 +53,6 @@ export const TimeUpdate = ({ lastUpdated, setState, note }) => {
             <Datepicker
               value={date}
               onDateChange={value => {
-                // console.log(value);
                 setDate(new Date(value));
                 setState(prevState => ({
                   ...prevState,

@@ -15,12 +15,7 @@ import {
 } from './contacts.helpers.js';
 
 import { setNewContact as set, updateContact } from './contacts.api.js';
-
 import { ConflictScreen } from './components/ConflictScreen';
-
-// const responseCallback = response => {
-//   console.log(response);
-// };
 
 export const useCloudsponge = ({
   userId,
@@ -31,10 +26,9 @@ export const useCloudsponge = ({
   const { cloudsponge } = window;
 
   const processContacts = React.useCallback(
-    contacts => {
-      send('CONTACTS_SELECTED');
+    async contacts => {
       const newContacts = parseContacts(contacts);
-      handleContactSync({
+      await handleContactSync({
         userId,
         existingContacts,
         newContacts,
@@ -45,13 +39,12 @@ export const useCloudsponge = ({
         success,
         pending,
       });
+      send('CONTACTS_SELECTED');
     },
     [existingContacts, send, setDuplicates, userId]
   );
 
-  const closeModal = React.useCallback(() => {
-    cloudsponge.end();
-  }, [cloudsponge]);
+  const closeModal = React.useCallback(() => send('CANCELLED'), [send]);
 
   React.useEffect(() => {
     if (cloudsponge) {
@@ -62,7 +55,7 @@ export const useCloudsponge = ({
         localeData: {
           AUTHORIZATION: 'Loading...',
           AUTHORIZATION_FOCUS:
-            'This will take a few minutes, roughly a minute for every 700 contacts we have to crunch, we are working on speeding things up.',
+            'This will take a few minutes, roughly one minute for every 700 contacts we crunch.',
         },
         displaySelectAllNone: false,
         css: `${
@@ -102,6 +95,7 @@ export const mergeMachine = Machine({
     selectionScreen: {
       on: {
         CONTACTS_SELECTED: 'conflictScreen',
+        CANCELLED: 'conflictScreen',
       },
     },
     conflictScreen: {
@@ -155,6 +149,7 @@ const ImportContacts = ({
       <ConflictScreen
         send={send}
         duplicates={duplicates}
+        setDuplicates={setDuplicates}
         existingContacts={existingContacts}
       />
     );
