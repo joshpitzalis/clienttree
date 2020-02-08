@@ -2,15 +2,17 @@ import { toast$ } from '../notifications/toast';
 
 export const parseContacts = _contacts =>
   _contacts.map(contact => {
-    const first = contact.first_name.toLowerCase();
-    const last = contact.last_name.toLowerCase();
-    const email = contact.__selectedMail__;
+    const first = contact.first_name && contact.first_name.toLowerCase();
+    const last = contact.last_name && contact.last_name.toLowerCase();
     const name = `${first} ${last}`;
-    const photoURL = contact.photos[0] && contact.photos[0].value;
+    const email =
+      contact.__selectedMail__ && contact.__selectedMail__.toLowerCase();
+    const photoURL =
+      contact.photos && contact.photos[0] && contact.photos[0].value;
 
     return {
-      name: name.trim(),
-      email: email.trim(),
+      name: (name && name.trim()) || (email && email.trim()),
+      email: email && email.trim(),
       photoURL,
     };
   });

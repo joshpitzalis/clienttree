@@ -10,8 +10,8 @@ export const findMatchingExistingContact = (_duplicate, _existingContacts) => {
 
   const bothNotBlank = (contact, duplicate) => !!contact && !!duplicate;
 
+  // only match if the name or the email are the same, but not the same because they are both blank fields for either case
   const match = _contact =>
-    // only match if the name or the email are the same, but not the same because they are both blank fields in either case
     (bothNotBlank(cleanName(_contact), cleanName(_duplicate)) &&
       cleanName(_contact) === cleanName(_duplicate)) ||
     (bothNotBlank(cleanEmail(_contact), cleanEmail(_duplicate)) &&

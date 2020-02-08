@@ -14,7 +14,7 @@ import {
   handlePending as pending,
 } from './contacts.helpers.js';
 
-import { setNewContact as set } from './contacts.api.js';
+import { setNewContact as set, updateContact } from './contacts.api.js';
 
 import { ConflictScreen } from './components/ConflictScreen';
 
@@ -108,7 +108,11 @@ export const mergeMachine = Machine({
       on: {
         COMPLETED: 'addButton',
         CLOSED: 'addButton',
-        DUPLICATE_SELECTED: 'conflictScreen',
+        DUPLICATE_SELECTED: {
+          target: 'conflictScreen',
+          actions: ['updateContact'],
+        },
+        EXISTING_SELECTED: 'conflictScreen',
       },
       meta: {
         test: test('conflictScreen'),
@@ -125,6 +129,7 @@ const ImportContacts = ({
   const [current, send] = useMachine(mergeMachine, {
     actions: {
       handleImport: () => handleImport(),
+      updateContact: (ctx, { payload }) => updateContact(userId, payload),
     },
   });
 
