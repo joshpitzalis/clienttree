@@ -25,7 +25,12 @@ export function Onboarding({ uid, children, contactSelected }) {
 
   const onboardingComplete = onboarding && onboarding.complete === true;
 
-  const sidebarTitle = (_contactSelected, _onboardingComplete, _contact) => {
+  const sidebarTitle = (
+    _contactSelected,
+    _onboardingComplete,
+    _contact,
+    isEnabled
+  ) => {
     if (_contactSelected) {
       if (_contact && _contact.name) {
         return _contact.name;
@@ -35,7 +40,9 @@ export function Onboarding({ uid, children, contactSelected }) {
     if (_onboardingComplete) {
       return 'Activities';
     }
-    return 'Getting Started';
+    if (isEnabled) {
+      return 'Getting Started';
+    }
   };
 
   return (
@@ -46,7 +53,12 @@ export function Onboarding({ uid, children, contactSelected }) {
             <details data-testid="detailBox" className="dn db-ns">
               <summary>
                 <legend className="fw7 mb3 dib " data-testid="toggleAddBox">
-                  {sidebarTitle(contactSelected, onboardingComplete, contact)}
+                  {sidebarTitle(
+                    contactSelected,
+                    onboardingComplete,
+                    contact,
+                    isEnabled
+                  )}
                 </legend>
               </summary>
             </details>

@@ -5,9 +5,11 @@ import { useMachine } from '@xstate/react';
 import { Machine } from 'xstate';
 import { useDispatch } from 'react-redux';
 import Avatar from 'react-avatar';
+import { OptimizelyFeature } from '@optimizely/react-sdk';
 import { PersonModal } from './PersonBox';
 import { handleContactDelete } from '../peopleAPI';
 import { toast$ } from '../../notifications/toast';
+import Check from '../../../images/Check';
 
 const peopleMachine = Machine({
   id: 'people',
@@ -64,10 +66,26 @@ export const Person = ({ contact, uid }) => {
     }
   };
 
+  const isOverDue = _lastContacted => {
+    const sixMonthsAgo = 1.577e10;
+
+    const diff = +new Date() - _lastContacted;
+
+    return diff > sixMonthsAgo;
+  };
+
   switch (current.value) {
     case 'closed':
       return (
-        <li key={contact.uid} className="mb3" data-testid="closedPeopleBox">
+        <li
+          key={contact.uid}
+          className={`mb3 ${
+            isOverDue(contact && contact.lastContacted && contact.lastContacted)
+              ? 'bl-red'
+              : 'bl-green'
+          }`}
+          data-testid="closedPeopleBox"
+        >
           <div
             className="flex items-center lh-copy pa3 ph0-l bb b--black-10 pointer bg-white"
             onClick={() => {
@@ -99,7 +117,7 @@ export const Person = ({ contact, uid }) => {
                   : null}
               </span>
             </div>
-            <div>
+            {/* <div>
               {!!contact.activeTaskCount &&
                 Array(contact.activeTaskCount)
                   .fill(null)
@@ -109,7 +127,18 @@ export const Person = ({ contact, uid }) => {
                       className="taskStyle "
                     />
                   ))}
-            </div>
+            </div> */}
+
+            <OptimizelyFeature feature="insights">
+              {isEnabled =>
+                isEnabled && (
+                  <div className="flex items-center justify-around w4">
+                    <Check color="#65931a" />
+                    <Check color="#65931a" />
+                  </div>
+                )
+              }
+            </OptimizelyFeature>
           </div>
         </li>
       );

@@ -8,8 +8,9 @@ import { doc, collection } from 'rxfire/firestore';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSlice } from '@reduxjs/toolkit';
 import { NavPanel, NavLink, ContainerHorizontal } from '@duik/it';
-
+import { OptimizelyFeature } from '@optimizely/react-sdk';
 import { HelpfulTaskList as UniversalTaskList } from '../features/people/components/UniversalTaskList';
+// import { FeatureContext } from '../features/featureboard';
 import { SpecificTaskList } from '../features/people/components/SpecificTaskList';
 import People from '../images/People';
 import Home from '../images/Home';
@@ -119,6 +120,9 @@ export const fetchUserDataEpic = (
 
 /** @param {{userId: string}} [Props] */
 export function Dashboard({ userId }) {
+  // const { features } = React.useContext(FeatureContext);
+  // console.log({ dash: features });
+
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -146,30 +150,40 @@ export function Dashboard({ userId }) {
           />
         </Portal>
       )}
-      <div className="flex flex-row-ns flex-column w-100  justify-between min-h-100 bg-base">
-        <Navigation userId={userId} />
-        <main className="dn db-ns w-50-ns w-100 min-h-100 ml4">
-          <Route
-            exact
-            path="/user/:uid/network"
-            render={props => <Network {...props} uid={userId} />}
-          />
-          {userId && (
-            <Route
-              exact
-              path="/user/:uid/dashboard"
-              render={props => <CRM {...props} userId={userId} />}
-            />
+      <div className="flex flex-row-ns flex-column w-100   justify-end min-h-100 bg-base">
+        <OptimizelyFeature feature="workboard">
+          {isEnabled => isEnabled && <Navigation userId={userId} />}
+        </OptimizelyFeature>
+        <OptimizelyFeature feature="workboard">
+          {isEnabled => (
+            <main
+              className={`dn db-ns w-50-ns w-100 min-h-100 ml4 ${
+                isEnabled ? 'justify-between' : 'justify-end'
+              }`}
+            >
+              <Route
+                exact
+                path="/user/:uid/network"
+                render={props => <Network {...props} uid={userId} />}
+              />
+              {userId && (
+                <Route
+                  exact
+                  path="/user/:uid/dashboard"
+                  render={props => <CRM {...props} userId={userId} />}
+                />
+              )}
+              <Route
+                exact
+                path="/user/:uid/profile"
+                render={props => <Profile {...props} />}
+              />
+            </main>
           )}
-          <Route
-            exact
-            path="/user/:uid/profile"
-            render={props => <Profile {...props} />}
-          />
-        </main>
+        </OptimizelyFeature>
 
         <aside
-          className="w-100 measure-narrow-ns bg-white-ns tc"
+          className="w-100 measure-narrow-ns bg-transparent tc"
           data-testid="sidebar"
         >
           <MobileReminder myUid={userId} />
@@ -191,7 +205,11 @@ export function Dashboard({ userId }) {
                   />
                 </>
               ) : (
-                <UniversalTaskList myUid={userId} />
+                <OptimizelyFeature feature="insights">
+                  {isEnabled =>
+                    !isEnabled && <UniversalTaskList myUid={userId} />
+                  }
+                </OptimizelyFeature>
               )}
             </>
           </Onboarding>
@@ -240,8 +258,9 @@ function Navigation({ userId }) {
           </NavLink>
         )}
       </div>
-
-      <StatsBox userId={userId} />
+      <OptimizelyFeature feature="husleMeter">
+        {isEnabled => isEnabled && <StatsBox userId={userId} />}
+      </OptimizelyFeature>
     </NavPanel>
   );
 }

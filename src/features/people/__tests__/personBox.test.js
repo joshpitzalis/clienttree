@@ -17,6 +17,7 @@ describe('people Box', () => {
   it.skip('if email adds email details to user box', () => {
     const { getByTestId } = render(<PersonBox {...mockProps} />);
   });
+  it.todo('test over dies indicator works');
   it.todo('lets me add a social contact detail');
   it.todo('lets me remove a social contact detail');
   it.todo('avatars fall back');

@@ -68,6 +68,8 @@ textarea{
   background-color:var(--black) !important;
 }
 
+
+
 .green {
   color: var(--primary) !important;
 }
@@ -81,7 +83,7 @@ textarea{
 }
 
 .text1{
-  color: var(--text-main) ;
+  color: var(--text-main) !important;
 }
 
 .text2{
@@ -108,6 +110,13 @@ textarea{
 .bt-orange{
   border-top: 3px var(--orange) solid;
 }
+
+.bl-red {  border-left: 2px var(--red) solid;
+ 
+  border-radius: 5px 0 0 5px ;}
+
+.bl-green {  border-left: 2px var(--primary) solid;
+  border-radius: 5px 0 0 5px ;}
 
 .orange{
   color:  var(--orange) ;
