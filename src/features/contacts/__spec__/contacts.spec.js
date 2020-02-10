@@ -739,3 +739,10 @@ describe('Merging conflicts', () => {
 
   it.todo('lets you revert a bulk merge');
 });
+
+it.todo('card contact');
+// does increment?
+// if last?
+// if existing and last?
+// fires correct if existing
+// fires correct if not existing?

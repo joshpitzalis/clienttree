@@ -5,19 +5,16 @@ const handleClick = ({
   existing,
   selector,
   contact,
-  isLastContact,
-  send,
+
 }) => {
   setIndex(prev => prev + 1);
   if (existing) {
     selector({ ...contact, uid: existing.uid });
-    return;
+    return
   }
   selector(contact);
-  if (isLastContact) {
-    send('CLOSED');
-  }
 };
+
 
 export function ContactCard({
   contact,
@@ -40,15 +37,18 @@ export function ContactCard({
   return (
     <button
       type="button"
-      onClick={() =>
+      onClick={() => {
         handleClick({
           setIndex,
           existing,
           selector,
           contact,
-          isLastContact,
-          send,
+
         })
+        if (isLastContact) {
+          send('CLOSED');
+        }
+      }
       }
       className="w5 center bg-white br3 pa3 pa4-ns mv3 ba b--black-10 grow pointer b--green-hover"
       data-testid={testid}
