@@ -3,8 +3,8 @@ import { collection } from 'rxfire/firestore';
 import { map } from 'rxjs/operators';
 import { useDispatch } from 'react-redux';
 import firebase from '../../../utils/firebase';
-import Modal from './ContactModal';
-import Portal from '../../../utils/Portal';
+// import Modal from './ContactModal';
+// import Portal from '../../../utils/Portal';
 import { TaskBox } from './TaskBox';
 
 /** @param {{
@@ -31,9 +31,9 @@ export const SpecificTaskList = ({ myUid, contactSelected }) => {
     return () => subscription.unsubscribe();
   }, [contactSelected, myUid]);
 
-  const [visible, setVisibility] = React.useState(false);
+  const [, setVisibility] = React.useState(false);
 
-  const [selectedUser, setSelectedUser] = React.useState('');
+  const [, setSelectedUser] = React.useState('');
   const dispatch = useDispatch();
   return (
     <div data-testid="specificTaskList">

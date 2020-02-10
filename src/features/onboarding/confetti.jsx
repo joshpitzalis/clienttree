@@ -3,7 +3,7 @@ import { useWindowSize } from 'react-use';
 import Confetti from 'react-confetti';
 import { Subject } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 // history: ReactRouterPropTypes.history.isRequired,
 // location: ReactRouterPropTypes.location.isRequired,
 // match: ReactRouterPropTypes.match.isRequired,
@@ -24,33 +24,36 @@ const useConfetti = confettiStream$ => {
   return [pour];
 };
 
-const propTypes = {
-  setWelcomeMessage: PropTypes.func,
-};
+// const propTypes = {
+//   setWelcomeMessage: PropTypes.func,
+// };
 
-const defaultProps = {};
+// const defaultProps = {};
 
-export const ConfettiBanner = memo(({ setWelcomeMessage }) => {
-  const [pour] = useConfetti(confetti$);
-  const { width, height } = useWindowSize();
-  return (
-    pour && (
-      <Confetti
-        width={width}
-        height={height}
-        numberOfPieces={500}
-        recycle={false}
-        onConfettiComplete={() => {
-          // setWelcomeMessage({
-          //   header: 'Nice!',
-          //   byline: 'Try adding your signature to your email account next.',
-          // });
-        }}
-      />
-    )
-  );
-});
+export const ConfettiBanner = memo(() =>
+  // { setWelcomeMessage }
+  {
+    const [pour] = useConfetti(confetti$);
+    const { width, height } = useWindowSize();
+    return (
+      pour && (
+        <Confetti
+          width={width}
+          height={height}
+          numberOfPieces={500}
+          recycle={false}
+          onConfettiComplete={() => {
+            // setWelcomeMessage({
+            //   header: 'Nice!',
+            //   byline: 'Try adding your signature to your email account next.',
+            // });
+          }}
+        />
+      )
+    );
+  }
+);
 
 ConfettiBanner.displayName = 'ConfettiBanner';
-ConfettiBanner.propTypes = propTypes;
-ConfettiBanner.defaultProps = defaultProps;
+// ConfettiBanner.propTypes = propTypes;
+// ConfettiBanner.defaultProps = defaultProps;

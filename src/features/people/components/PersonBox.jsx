@@ -64,11 +64,9 @@ export const PersonModal = ({
       )
   );
 
-  React.useEffect(() => {
-    // not sure how to just fire effect on unmount, removing the redundant function breaks tests
-    const redundant = () => {};
-    return () => dispatch({ type: 'people/clearSelectedUser' });
-  }, [dispatch]);
+  React.useEffect(() => () => dispatch({ type: 'people/clearSelectedUser' }), [
+    dispatch,
+  ]);
 
   return (
     <div>

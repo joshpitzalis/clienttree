@@ -6,7 +6,7 @@ import ImportContacts from '../Contacts';
 import {
   MergeManager,
   findMatchingExistingContact,
-} from '../components/ConflictScreen';
+} from '../components/MergeManager';
 import {
   parseContacts,
   handleContactSync,

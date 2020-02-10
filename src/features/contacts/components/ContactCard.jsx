@@ -2,19 +2,35 @@ import React from 'react';
 
 const handleClick = ({
   setIndex,
+
+  selector,
+  contact,
+  isLastContact,
+  send,
+}) => {
+  setIndex(prev => prev + 1);
+
+  selector(contact);
+
+  if (isLastContact) {
+    send('CLOSED');
+  }
+};
+
+const handleExistingClick = ({
+  setIndex,
   existing,
   selector,
   contact,
-
+  isLastContact,
+  send,
 }) => {
   setIndex(prev => prev + 1);
-  if (existing) {
-    selector({ ...contact, uid: existing.uid });
-    return
+  selector({ ...contact, uid: existing.uid });
+  if (isLastContact) {
+    send('CLOSED');
   }
-  selector(contact);
 };
-
 
 export function ContactCard({
   contact,
@@ -34,22 +50,28 @@ export function ContactCard({
     }
   };
 
-  return (
-    <button
-      type="button"
-      onClick={() => {
-        handleClick({
+  const clickHandler = () =>
+    existing
+      ? handleExistingClick({
           setIndex,
           existing,
           selector,
           contact,
-
+          isLastContact,
+          send,
         })
-        if (isLastContact) {
-          send('CLOSED');
-        }
-      }
-      }
+      : handleClick({
+          setIndex,
+          selector,
+          contact,
+          isLastContact,
+          send,
+        });
+
+  return (
+    <button
+      type="button"
+      onClick={clickHandler}
       className="w5 center bg-white br3 pa3 pa4-ns mv3 ba b--black-10 grow pointer b--green-hover"
       data-testid={testid}
     >
