@@ -1,0 +1,6 @@
+exclude_patterns:
+- "*.test.js"
+- "*.spec.js"
+- "__tests__/"
+- "__test__/"
+- "__spec__/"
