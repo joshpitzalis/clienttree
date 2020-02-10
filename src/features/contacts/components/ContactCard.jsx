@@ -2,23 +2,6 @@ import React from 'react';
 
 const handleClick = ({
   setIndex,
-
-  selector,
-  contact,
-  isLastContact,
-  send,
-}) => {
-  setIndex(prev => prev + 1);
-
-  selector(contact);
-
-  if (isLastContact) {
-    send('CLOSED');
-  }
-};
-
-const handleExistingClick = ({
-  setIndex,
   existing,
   selector,
   contact,
@@ -26,7 +9,17 @@ const handleExistingClick = ({
   send,
 }) => {
   setIndex(prev => prev + 1);
-  selector({ ...contact, uid: existing.uid });
+
+  if (existing) {
+    selector({ ...contact, uid: existing.uid });
+    if (isLastContact) {
+      send('CLOSED');
+    }
+    return;
+  }
+
+  selector(contact);
+
   if (isLastContact) {
     send('CLOSED');
   }
@@ -41,18 +34,16 @@ export function ContactCard({
   isLastContact,
   send,
 }) {
-  const avatarCreator = _contact => {
-    if (_contact && _contact.photoURL) {
-      return _contact.photoURL;
-    }
-    if (_contact && _contact.name) {
-      return `https://ui-avatars.com/api/?name=${_contact.name}`;
-    }
-  };
+  const avatarCreator = _contact =>
+    _contact && _contact.photoURL
+      ? _contact.photoURL
+      : `https://ui-avatars.com/api/?name=${_contact.name}`;
 
-  const clickHandler = () =>
-    existing
-      ? handleExistingClick({
+  return (
+    <button
+      type="button"
+      onClick={() =>
+        handleClick({
           setIndex,
           existing,
           selector,
@@ -60,18 +51,7 @@ export function ContactCard({
           isLastContact,
           send,
         })
-      : handleClick({
-          setIndex,
-          selector,
-          contact,
-          isLastContact,
-          send,
-        });
-
-  return (
-    <button
-      type="button"
-      onClick={clickHandler}
+      }
       className="w5 center bg-white br3 pa3 pa4-ns mv3 ba b--black-10 grow pointer b--green-hover"
       data-testid={testid}
     >
