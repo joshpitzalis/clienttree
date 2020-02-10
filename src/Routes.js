@@ -25,12 +25,16 @@ const optimizely = createInstance({
 
 const App = () => {
   const { authStatus, userId } = React.useContext(UserContext);
+  console.log({ userId });
 
   return (
     <OptimizelyProvider
       optimizely={optimizely}
       user={{
         id: userId,
+        attributes: {
+          id: userId,
+        },
       }}
     >
       <ErrorBoundary>

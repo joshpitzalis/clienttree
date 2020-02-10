@@ -30,10 +30,10 @@ import { UserContext } from './UserContext';
 //   );
 // });
 
-const DropDownIcon = ({ handleToggle }) => (
-  <Settings onClick={handleToggle} className="pointer" />
-);
-DropDownIcon.propTypes = { handleToggle: PropTypes.func.isRequired };
+// const DropDownIcon = ({ handleToggle }) => (
+//   <Settings onClick={handleToggle} className="pointer" />
+// );
+// DropDownIcon.propTypes = { handleToggle: PropTypes.func.isRequired };
 
 const propTypes = {};
 
@@ -57,7 +57,7 @@ export const Navbar = withRouter(({ history }) => {
         <TopBarSection>
           <TopBarTitle>
             <Dropdown
-              ButtonComponent={DropDownIcon}
+              buttonText={<p className="dn dib-ns">Configure your settings</p>}
               data-testid="settings"
               buttonProps={{
                 clear: true,
