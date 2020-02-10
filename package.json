@@ -9,7 +9,6 @@
     "@optimizely/react-sdk": "^1.1.0",
     "@reduxjs/toolkit": "^1.2.1",
     "@sentry/browser": "^5.10.1",
-    "@storybook/addon-centered": "^5.3.8",
     "@svgr/webpack": "4.3.2",
     "@testing-library/jest-dom": "^4.1.2",
     "@types/react-transition-group": "^4.2.3",
@@ -103,8 +102,6 @@
     "deploy": "firebase deploy --except functions",
     "deployFunctions": "firebase deploy --only functions",
     "coverage": "npm test -- --coverage",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
   },
   "eslintConfig": {
     "extends": [
@@ -187,10 +184,6 @@
     ]
   },
   "devDependencies": {
-    "@storybook/addon-actions": "^5.3.8",
-    "@storybook/addon-links": "^5.3.8",
-    "@storybook/addons": "^5.3.8",
-    "@storybook/react": "^5.3.8",
     "@testing-library/cypress": "^5.0.1",
     "@testing-library/react": "^9.3.0",
     "@testing-library/user-event": "^7.1.2",
