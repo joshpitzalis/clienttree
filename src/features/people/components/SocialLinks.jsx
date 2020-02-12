@@ -10,51 +10,55 @@ export function SocialLinks({ contact, setState }) {
 
   const [value, setValue] = useState(email || '');
 
+  const type = details && details.type;
+
   return (
     <div className="flex justify-end items-baseline pv3 tr">
       <div>
-        {details &&
-          details.type &&
-          (editable ? (
-            <label htmlFor="email" className="mr4">
-              {/* <span className="text3">Email</span> */}
-              <input
-                className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2 ttc"
-                type="text"
-                name="email"
-                id="email"
-                data-testid="emailDetails"
-                placeholder="Add email..."
-                value={value}
-                onChange={e => {
-                  const text = e.target.value;
+        {type && (
+          <div>
+            {editable ? (
+              <label htmlFor="email" className="mr4">
+                {/* <span className="text3">Email</span> */}
+                <input
+                  className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2"
+                  type="email"
+                  name="email"
+                  id="email"
+                  data-testid="emailDetails"
+                  placeholder="Add email..."
+                  value={value}
+                  onChange={e => {
+                    const text = e.target.value;
 
-                  setValue(text);
+                    setValue(text);
 
-                  setState(prevState => ({
-                    ...prevState,
-                    email: text,
-                    saving: true,
-                  }));
-                }}
-              />
-            </label>
-          ) : (
-            <button
-              type="button"
-              className="pointer bn"
-              onClick={() => makeEditable(true)}
-            >
-              <p>
-                {details && details.value
-                  ? details.value
-                  : 'Click here to add email...'}
-              </p>
-            </button>
-          ))}
+                    setState(prevState => ({
+                      ...prevState,
+                      email: text,
+                      saving: true,
+                    }));
+                  }}
+                />
+              </label>
+            ) : (
+              <button
+                type="button"
+                className="pointer bn"
+                onClick={() => makeEditable(true)}
+              >
+                <p>
+                  {details && details.value
+                    ? details.value
+                    : 'Click here to add email...'}
+                </p>
+              </button>
+            )}
+          </div>
+        )}
       </div>
       <div>
-        {details && details.type ? (
+        {type ? (
           <button
             type="button"
             className="pointer bn"
@@ -70,6 +74,7 @@ export function SocialLinks({ contact, setState }) {
             type="button"
             className={`mh2 pointer bn ${!email && 'o-50'}`}
             onClick={() => setDetails({ type: 'email', value: email })}
+            data-testid="emailBox"
           >
             <Icon theme="twoTone" twoToneColor="#7f7f7f" type="mail" />
           </button>

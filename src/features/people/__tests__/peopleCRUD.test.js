@@ -464,7 +464,7 @@ describe('update someone on the system', () => {
     // expect closed
     expect(getByTestId('closedPeopleBox'));
   });
-  it('close notes calendar box by clicking outside it', () => {
+  it('close notes calendar box by clicking outside it', async () => {
     const mockContact = {
       uid: '123',
       name: 'hello',
@@ -473,7 +473,7 @@ describe('update someone on the system', () => {
       photoURL: 'string',
     };
 
-    const { getByTestId, getAllByTestId, getByText, queryByTestId } = render(
+    const { getByTestId, getByText, queryByTestId } = render(
       <Person contact={mockContact} uid="123" />,
       {
         initialState: {
@@ -486,12 +486,12 @@ describe('update someone on the system', () => {
               photoURL: 'string',
               notes: {
                 1: { id: 1, text: 'hello', lastUpdated: 1579605299501 },
-                2: { id: 2, text: 'hello two', lastUpdated: 1579605299601 },
-                9007199254740991: {
-                  id: 9007199254740991,
-                  text: '',
-                  lastUpdated: 9007199254740991,
-                },
+                // 2: { id: 2, text: 'hello two', lastUpdated: 1579605299601 },
+                // 9007199254740991: {
+                //   id: 9007199254740991,
+                //   text: '',
+                //   lastUpdated: 9007199254740991,
+                // },
               },
             },
           ],
@@ -500,10 +500,11 @@ describe('update someone on the system', () => {
     );
 
     userEvent.click(getByTestId('openBox'));
-    userEvent.click(getAllByTestId('timeBox')[0]);
-    getAllByTestId('calendarBox');
-    userEvent.click(getByText(/Click on image to upload/));
+    userEvent.click(getByTestId('timeBox'));
 
+    getByTestId('calendarBox');
+
+    userEvent.click(getByText(/Click on image to upload/));
     expect(queryByTestId('calendarBox')).not.toBeInTheDocument();
   });
 
