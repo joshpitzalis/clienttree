@@ -38,7 +38,8 @@ export function Onboarding({ uid, children, contactSelected }) {
       return 'Reminders';
     }
     if (_onboardingComplete) {
-      return null;
+      // return null;
+      return 'Activities';
     }
     if (isEnabled) {
       return 'Getting Started';
@@ -46,7 +47,7 @@ export function Onboarding({ uid, children, contactSelected }) {
   };
 
   return (
-    <div className="pa4 ">
+    <div className="pa4 fixed">
       <OptimizelyFeature feature="referralPage">
         {isEnabled => (
           <fieldset className="bn ma0 pa0">

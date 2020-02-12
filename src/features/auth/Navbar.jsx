@@ -9,17 +9,11 @@ import {
   DropdownItem,
 } from '@duik/it';
 import { OptimizelyFeature } from '@optimizely/react-sdk';
-import Settings from '../../images/Settings';
+
 import Tree from '../../images/Tree';
 import Logout from '../../images/Logout';
 import Profile from '../../images/Profile';
 import { UserContext } from './UserContext';
-
-const DropDownIcon = ({ handleToggle }) => (
-  <Settings onClick={handleToggle} className="pointer" />
-);
-
-const propTypes = {};
 
 export const Navbar = withRouter(({ history }) => {
   const { userId, authStatus, handleLogout } = React.useContext(UserContext);
@@ -91,5 +85,3 @@ export const Navbar = withRouter(({ history }) => {
     </TopBar>
   );
 });
-
-Navbar.propTypes = propTypes;

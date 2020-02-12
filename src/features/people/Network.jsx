@@ -9,7 +9,7 @@ import { PersonModal } from './components/PersonBox';
 import ErrorBoundary from '../../utils/ErrorBoundary';
 import firebase from '../../utils/firebase';
 import ImportContacts from '../contacts/Contacts';
-import { HelpfulTaskList as UniversalTaskList } from './components/UniversalTaskList';
+// import { HelpfulTaskList as UniversalTaskList } from './components/UniversalTaskList';
 
 const networkPropTypes = {
   uid: PropTypes.string.isRequired,
@@ -42,10 +42,14 @@ export const InnerNetwork = ({ uid, bulkImportFeature }) => {
         <OptimizelyFeature feature="insights">
           {insights =>
             insights && (
-              <article className="pb4 pt5 text2 bb b--light-gray">
+              <article
+                className=" pt5 text2 
+         
+              "
+              >
                 <Insights />
-                <h1 className="text2">This Week</h1>
-                <UniversalTaskList myUid={uid} insights={insights} />
+                {/* <h1 className="text2">This Week</h1>
+                <UniversalTaskList myUid={uid} insights={insights} /> */}
               </article>
             )
           }

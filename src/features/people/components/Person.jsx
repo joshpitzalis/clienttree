@@ -4,7 +4,7 @@ import fromUnixTime from 'date-fns/fromUnixTime';
 import { useMachine } from '@xstate/react';
 import { Machine } from 'xstate';
 import { useDispatch } from 'react-redux';
-import Avatar from 'react-avatar';
+
 import { OptimizelyFeature } from '@optimizely/react-sdk';
 import { PersonModal } from './PersonBox';
 import { handleContactDelete } from '../peopleAPI';

@@ -206,17 +206,15 @@ export function Dashboard({ userId }) {
                       />
                     </>
                   ) : (
-                    <OptimizelyFeature feature="insights">
-                      {insights =>
-                        !insights && <UniversalTaskList myUid={userId} />
-                      }
-                    </OptimizelyFeature>
+                    // <OptimizelyFeature feature="insights">
+                    //   {insights =>
+                    //     !insights && <UniversalTaskList myUid={userId} />
+                    //   }
+                    // </OptimizelyFeature>
+                    <UniversalTaskList myUid={userId} />
                   )}
                 </>
               </Onboarding>
-              <p className="tc f6 white ma0">
-                Version {process.env.REACT_APP_VERSION}
-              </p>
             </aside>
           </div>
         )}
