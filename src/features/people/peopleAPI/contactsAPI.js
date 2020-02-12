@@ -1,4 +1,3 @@
-import { compose } from 'redux';
 import firebase from '../../../utils/firebase';
 import { helpfulTaskRef, setTaskDetails, newDocRef } from './APIcalls';
 import { toast$ } from '../../notifications/toast';

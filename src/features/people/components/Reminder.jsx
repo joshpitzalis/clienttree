@@ -14,7 +14,7 @@ export const ReminderCreator = ({
     store =>
       store.contacts && store.contacts.find(person => person.uid === theirUid)
   );
-
+  const [email] = React.useState(contact ? contact.email : '');
   const [name, setName] = React.useState(contact && contact.name);
   const [task, setTask] = React.useState('');
   const [date, setDate] = React.useState(+new Date() + 604800000);
@@ -28,6 +28,7 @@ export const ReminderCreator = ({
       photoURL,
       dueDate,
       contactName,
+      email,
     });
   };
 

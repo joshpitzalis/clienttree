@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import {
   TopBar,
   TopBarSection,
@@ -18,7 +18,6 @@ import { UserContext } from './UserContext';
 const DropDownIcon = ({ handleToggle }) => (
   <Settings onClick={handleToggle} className="pointer" />
 );
-DropDownIcon.propTypes = { handleToggle: PropTypes.func.isRequired };
 
 const propTypes = {};
 

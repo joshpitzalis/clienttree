@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { doc } from 'rxfire/firestore';
 import { toast$ } from '../../notifications/toast';
-import { handleAddTask, handleTracking } from '../peopleAPI';
+import { handleAddTask } from '../peopleAPI';
 import firebase from '../../../utils/firebase';
 import { ReminderCreator } from './Reminder';
 
@@ -10,17 +10,17 @@ const modalPropTypess = {
   uid: PropTypes.string.isRequired,
   selectedUserUid: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  incrementStats: PropTypes.func,
+  // incrementStats: PropTypes.func,
 };
 const modalDefaultPropss = {
-  incrementStats: handleTracking,
+  // incrementStats: handleTracking,
 };
 
 const Modal = ({
   uid,
   selectedUserUid,
   onClose,
-  incrementStats = handleTracking,
+  // incrementStats = handleTracking,
 }) => {
   const [state, setState] = React.useState({
     userId: uid,
@@ -32,6 +32,7 @@ const Modal = ({
     photoURL: '',
     imgString: '',
     activeTaskCount: 0,
+    email: '',
   });
 
   React.useEffect(() => {
@@ -57,6 +58,7 @@ const Modal = ({
     photoURL,
     dueDate,
     contactName,
+    email,
   }) => {
     handleAddTask({
       taskName,
@@ -65,6 +67,7 @@ const Modal = ({
       photoURL,
       dueDate,
       contactName,
+      email,
     }).catch(error =>
       toast$.next({ type: 'ERROR', message: error.message || error })
     );

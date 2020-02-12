@@ -109,7 +109,7 @@ describe('stats box', () => {
       .findAllByText('11');
   });
 
-  it('updates stats when I move people into or out of project started', () => {
+  it.only('updates stats when I move people into or out of project started', () => {
     cy.visit('/')
       .wait(5000)
       .findByTestId('projectPage')

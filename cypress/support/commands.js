@@ -29,7 +29,8 @@ Cypress.Commands.add('login', () => {
     .type('test@test.com')
     .findByPlaceholderText(/Your password.../i)
     .type('test123')
-    .findByText(/Sign in/i)
+    .findAllByText(/Sign in/i)
+    .first()
     .click();
 });
 

@@ -6,7 +6,7 @@ import ImportContacts from '../Contacts';
 import {
   MergeManager,
   findMatchingExistingContact,
-} from '../components/ConflictScreen';
+} from '../components/MergeManager';
 import {
   parseContacts,
   handleContactSync,
@@ -738,4 +738,12 @@ describe('Merging conflicts', () => {
   it.todo('overwrite all existing works');
 
   it.todo('lets you revert a bulk merge');
+});
+
+describe('contact Card', () => {
+  it.todo('does increment? card contact');
+  it.todo('if last? card contact');
+  it.todo('  if existing and last? card contact');
+  it.todo('fires correct if existing');
+  it.todo('fires correct if not existing?');
 });

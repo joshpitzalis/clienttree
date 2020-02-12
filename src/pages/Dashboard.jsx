@@ -150,15 +150,18 @@ export function Dashboard({ userId }) {
           />
         </Portal>
       )}
-      <div className="flex flex-row-ns flex-column w-100   justify-end min-h-100 bg-base">
-        <OptimizelyFeature feature="workboard">
-          {isEnabled => isEnabled && <Navigation userId={userId} />}
-        </OptimizelyFeature>
-        <OptimizelyFeature feature="workboard">
-          {isEnabled => (
+      <OptimizelyFeature feature="workboard">
+        {workboard => (
+          <div
+            className={`flex flex-row-ns flex-column w-100  ${
+              workboard ? 'justify-between' : 'justify-end'
+            }  min-h-100 bg-base`}
+          >
+            {workboard && <Navigation userId={userId} />}
+
             <main
               className={`dn db-ns w-50-ns w-100 min-h-100 ml4 ${
-                isEnabled ? 'justify-between' : 'justify-end'
+                workboard ? 'justify-between' : 'justify-end'
               }`}
             >
               <Route
@@ -179,45 +182,45 @@ export function Dashboard({ userId }) {
                 render={props => <Profile {...props} />}
               />
             </main>
-          )}
-        </OptimizelyFeature>
 
-        <aside
-          className="w-100 measure-narrow-ns bg-transparent tc"
-          data-testid="sidebar"
-        >
-          <MobileReminder myUid={userId} />
-          <Onboarding uid={userId} contactSelected={selectedUserUid}>
-            <>
-              {selectedUserUid ? (
+            <aside
+              className="w-100 measure-narrow-ns bg-transparent tc"
+              data-testid="sidebar"
+            >
+              <MobileReminder myUid={userId} />
+              <Onboarding uid={userId} contactSelected={selectedUserUid}>
                 <>
-                  <button
-                    type="button"
-                    data-testid="addreminder"
-                    onClick={() => setVisibility(true)}
-                    className="btn2 ph4 pv3 bn pointer br1 grow b mv4"
-                  >
-                    Add A Reminder
-                  </button>
-                  <SpecificTaskList
-                    myUid={userId}
-                    contactSelected={selectedUserUid}
-                  />
+                  {selectedUserUid ? (
+                    <>
+                      <button
+                        type="button"
+                        data-testid="addreminder"
+                        onClick={() => setVisibility(true)}
+                        className="btn2 ph4 pv3 bn pointer br1 grow b mv4"
+                      >
+                        Add A Reminder
+                      </button>
+                      <SpecificTaskList
+                        myUid={userId}
+                        contactSelected={selectedUserUid}
+                      />
+                    </>
+                  ) : (
+                    <OptimizelyFeature feature="insights">
+                      {insights =>
+                        !insights && <UniversalTaskList myUid={userId} />
+                      }
+                    </OptimizelyFeature>
+                  )}
                 </>
-              ) : (
-                <OptimizelyFeature feature="insights">
-                  {isEnabled =>
-                    !isEnabled && <UniversalTaskList myUid={userId} />
-                  }
-                </OptimizelyFeature>
-              )}
-            </>
-          </Onboarding>
-          <p className="tc f6 white ma0">
-            Version {process.env.REACT_APP_VERSION}
-          </p>
-        </aside>
-      </div>
+              </Onboarding>
+              <p className="tc f6 white ma0">
+                Version {process.env.REACT_APP_VERSION}
+              </p>
+            </aside>
+          </div>
+        )}
+      </OptimizelyFeature>
     </ContainerHorizontal>
   );
 }
@@ -258,7 +261,7 @@ function Navigation({ userId }) {
           </NavLink>
         )}
       </div>
-      <OptimizelyFeature feature="husleMeter">
+      <OptimizelyFeature feature="workboard">
         {isEnabled => isEnabled && <StatsBox userId={userId} />}
       </OptimizelyFeature>
     </NavPanel>
