@@ -146,9 +146,9 @@ export function Dashboard({ userId }) {
           />
         </Portal>
       )}
-      <div className="flex flex-row-ns flex-column w-100 justify-between min-h-100 bg-base">
+      <div className="flex flex-row-ns flex-column w-100  justify-between min-h-100 bg-base">
         <Navigation userId={userId} />
-        <main className="dn db-ns w-50-ns w-100 min-h-100">
+        <main className="dn db-ns w-50-ns w-100 min-h-100 ml4">
           <Route
             exact
             path="/user/:uid/network"

@@ -29,6 +29,7 @@ export const usePersonForm = (contactId, userId) => {
     lastContacted: +new Date(),
     tracked: false,
     saving: null,
+    email: '',
     ...contact,
   });
 
@@ -44,7 +45,7 @@ export const usePersonForm = (contactId, userId) => {
       });
       dispatch({
         type: 'people/updateForm',
-        payload: state,
+        payload: { userId, ...state },
       });
     }
   }, [dispatch, state, userId]);

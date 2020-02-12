@@ -1,24 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import './networkAnimations.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { OptimizelyFeature } from '@optimizely/react-sdk';
 import { Person } from './components/Person';
 import { PersonModal } from './components/PersonBox';
-// import { AddButton } from './components/AddButton';
 import ErrorBoundary from '../../utils/ErrorBoundary';
 import firebase from '../../utils/firebase';
-// import { Button } from '@duik/it';
-// import Portal from '../../utils/Portal';
-// import { Modal } from './components/ContactModal';
-// import { NetworkContext } from './NetworkContext';
+import ImportContacts from '../contacts/Contacts';
+
 const networkPropTypes = {
   uid: PropTypes.string.isRequired,
 };
 const networkDefaultProps = {};
 
-function _Network({ uid }) {
+export const InnerNetwork = ({ uid, isEnabled }) => {
   const [visible, setVisibility] = React.useState(false);
   const [selectedUser, setSelectedUser] = React.useState('');
 
@@ -40,53 +36,57 @@ function _Network({ uid }) {
 
   return (
     <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
-      {/* <OptimizelyFeature feature="contactsSync">
-        {isEnabled => ( */}
       <>
-        <div className="pv4" data-testid="outreachPage">
+        <div className="pv4 flex justify-between" data-testid="outreachPage">
           {visible ? (
-            <>
-              <PersonModal
-                uid={uid}
-                contactId={selectedUser}
-                onClose={() => {
-                  setVisibility(false);
-                  setSelectedUser('');
-                }}
-                newPerson
-              />
-              {/* {isEnabled && (
-                  )} */}
-            </>
-          ) : (
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedUser(newDoc.id);
-                dispatch({
-                  type: 'people/setSelectedUser',
-                  payload: newDoc.id,
-                });
-                setVisibility(true);
+            <PersonModal
+              uid={uid}
+              contactId={selectedUser}
+              onClose={() => {
+                setVisibility(false);
+                setSelectedUser('');
               }}
-              className="btn1 b grow  ph3 pv2  pointer bn br1 white"
-              data-testid="addPeopleButton"
-            >
-              Add Someone New
-            </button>
+              newPerson
+            />
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedUser(newDoc.id);
+                  dispatch({
+                    type: 'people/setSelectedUser',
+                    payload: newDoc.id,
+                  });
+                  setVisibility(true);
+                }}
+                className="btn1 b grow  ph3 pv2  pointer bn br1 white"
+                data-testid="addPeopleButton"
+              >
+                Add Someone New
+              </button>
+              {isEnabled && (
+                <ImportContacts userId={uid} existingContacts={contacts} />
+              )}
+            </>
           )}
         </div>
+
+        <ContactsBox contacts={contacts} uid={uid}></ContactsBox>
       </>
-      {/* )}
-      </OptimizelyFeature> */}
-      <ContactsBox contacts={contacts} uid={uid}></ContactsBox>
     </ErrorBoundary>
   );
-}
-_Network.propTypes = networkPropTypes;
-_Network.defaultProps = networkDefaultProps;
+};
+InnerNetwork.propTypes = networkPropTypes;
+InnerNetwork.defaultProps = networkDefaultProps;
 
-export const Network = React.memo(_Network);
+const WrappedNetwork = props => (
+  <OptimizelyFeature feature="contactsSync">
+    {isEnabled => <InnerNetwork {...props} isEnabled={isEnabled} />}
+  </OptimizelyFeature>
+);
+
+export const Network = React.memo(WrappedNetwork);
 
 export default function ContactsBox({ contacts, uid }) {
   if (!contacts) {

@@ -1,0 +1,13 @@
+exclude_patterns:
+- "*.test.js"
+- "*.spec.js"
+- "__tests__/"
+- "__test__/"
+- "__spec__/"
+- "**/**/**/__spec__/"
+- "config/"
+- "functions/node_modules/"
+- "**/node_modules/"
+- "scripts/"
+- "public/"
+- "cypress/"

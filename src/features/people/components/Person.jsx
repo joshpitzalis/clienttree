@@ -4,6 +4,7 @@ import fromUnixTime from 'date-fns/fromUnixTime';
 import { useMachine } from '@xstate/react';
 import { Machine } from 'xstate';
 import { useDispatch } from 'react-redux';
+// import Avatar from 'react-avatar';
 import { PersonModal } from './PersonBox';
 import { handleContactDelete } from '../peopleAPI';
 import { toast$ } from '../../notifications/toast';
@@ -77,11 +78,15 @@ export const Person = ({ contact, uid }) => {
             role="button"
             data-testid="openBox"
           >
+            {/* {contact.photoURL ? ( */}
             <img
               alt={`${contact.name} avatar`}
               className="w2 h2 w3-ns h3-ns br-100 ml3"
               src={contact.photoURL}
             />
+            {/* // ) : ( //{' '}
+            <Avatar name={contact.name} email={contact.email}></Avatar>
+            // )} */}
             <div className="pl3 flex-auto">
               <span className="f6 db black-70 b">{contact.name}</span>
               <span className="f6 db black-70 i">

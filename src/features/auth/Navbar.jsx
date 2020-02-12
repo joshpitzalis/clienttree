@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import {
   TopBar,
   TopBarSection,
@@ -8,7 +8,7 @@ import {
   Dropdown,
   DropdownItem,
 } from '@duik/it';
-import Settings from '../../images/Settings';
+// import Settings from '../../images/Settings';
 import Tree from '../../images/Tree';
 import Logout from '../../images/Logout';
 import Profile from '../../images/Profile';
@@ -30,10 +30,10 @@ import { UserContext } from './UserContext';
 //   );
 // });
 
-const DropDownIcon = ({ handleToggle }) => (
-  <Settings onClick={handleToggle} className="pointer" />
-);
-DropDownIcon.propTypes = { handleToggle: PropTypes.func.isRequired };
+// const DropDownIcon = ({ handleToggle }) => (
+//   <Settings onClick={handleToggle} className="pointer" />
+// );
+// DropDownIcon.propTypes = { handleToggle: PropTypes.func.isRequired };
 
 const propTypes = {};
 
@@ -57,7 +57,7 @@ export const Navbar = withRouter(({ history }) => {
         <TopBarSection>
           <TopBarTitle>
             <Dropdown
-              ButtonComponent={DropDownIcon}
+              buttonText={<p className="dn dib-ns">Configure your settings</p>}
               data-testid="settings"
               buttonProps={{
                 clear: true,

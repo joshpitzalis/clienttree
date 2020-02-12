@@ -52,7 +52,7 @@ describe('outreach', () => {
 
   it('creates a task and completes a task  ', () => {
     cy.visit('/')
-      // .login()
+      .wait(5000)
       .findByTestId(/outreachPage/i)
       .findByText(/getting started/i)
       .wait(5000)

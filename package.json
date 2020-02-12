@@ -9,7 +9,6 @@
     "@optimizely/react-sdk": "^1.1.0",
     "@reduxjs/toolkit": "^1.2.1",
     "@sentry/browser": "^5.10.1",
-    "@storybook/addon-centered": "^5.3.8",
     "@svgr/webpack": "4.3.2",
     "@testing-library/jest-dom": "^4.1.2",
     "@types/react-transition-group": "^4.2.3",
@@ -57,12 +56,14 @@
     "prop-types": "^15.7.2",
     "react": "^16.10.1",
     "react-app-polyfill": "^1.0.3",
+    "react-avatar": "^3.9.0",
     "react-avatar-generator": "^1.0.3",
     "react-beautiful-dnd": "^11.0.5",
     "react-confetti": "^4.0.1",
     "react-date-picker": "^7.8.2",
     "react-dev-utils": "^9.0.4",
     "react-dom": "^16.10.1",
+    "react-google-contacts": "0.0.1",
     "react-minimal-pie-chart": "^5.0.2",
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.1.2",
@@ -100,9 +101,7 @@
     "cypress": "start-server-and-test start http://localhost:3000 cypress:open",
     "deploy": "firebase deploy --except functions",
     "deployFunctions": "firebase deploy --only functions",
-    "coverage": "npm test -- --coverage",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "coverage": "npm test -- --coverage"
   },
   "eslintConfig": {
     "extends": [
@@ -185,17 +184,13 @@
     ]
   },
   "devDependencies": {
-    "@storybook/addon-actions": "^5.3.8",
-    "@storybook/addon-links": "^5.3.8",
-    "@storybook/addons": "^5.3.8",
-    "@storybook/react": "^5.3.8",
     "@testing-library/cypress": "^5.0.1",
     "@testing-library/react": "^9.3.0",
     "@testing-library/user-event": "^7.1.2",
     "@xstate/test": "^0.1.0",
     "babel-eslint": "^9.0.0",
     "canvas": "^2.6.0",
-    "cypress": "^3.8.3",
+    "cypress": "^4.0.1",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.1",
     "eslint-config-prettier": "^4.3.0",

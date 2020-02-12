@@ -6,13 +6,13 @@ import { Machine } from 'xstate';
 import { assert } from 'chai';
 import { Datepicker, DatepickerContainer } from '@duik/it';
 import format from 'date-fns/format';
-import PropTypes from 'prop-types';
-import { useImmerReducer } from 'use-immer';
+
+// import { useImmerReducer } from 'use-immer';
 import { useSelector, useDispatch } from 'react-redux';
-import AvatarGenerator from 'react-avatar-generator';
+// import AvatarGenerator from 'react-avatar-generator';
 import { AutoComplete } from 'antd';
-import { collection } from 'rxfire/firestore';
-import { map, catchError } from 'rxjs/operators';
+// import { collection } from 'rxfire/firestore';
+// import { map, catchError } from 'rxjs/operators';
 import { toast$ } from '../../notifications/toast';
 import { handleAddTask } from '../peopleAPI';
 import firebase from '../../../utils/firebase';
@@ -20,9 +20,9 @@ import firebase from '../../../utils/firebase';
 // state visualisation:
 // https://xstate.js.org/viz/?gist=7925b7b6f194989221d4a2da62731937
 
-const check = state => ({ getByTestId }) => {
-  assert.ok(getByTestId(state));
-};
+// const check = state => ({ getByTestId }) => {
+//   assert.ok(getByTestId(state));
+// };
 
 export const taskMachine = Machine({
   id: 'task',
@@ -140,6 +140,7 @@ const ReminderCreator = ({ myUid, handleAddingTask, send }) => {
         },
       },
       tracked: false,
+      email: '',
     };
 
     if (!existingContact) {

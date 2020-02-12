@@ -1,6 +1,6 @@
 import React from 'react';
-import 'tachyons';
 import { BrowserRouter, Route } from 'react-router-dom';
+import 'tachyons';
 // import PropTypes from 'prop-types';
 // import ReactRouterPropTypes from 'react-router-prop-types';
 
@@ -25,12 +25,16 @@ const optimizely = createInstance({
 
 const App = () => {
   const { authStatus, userId } = React.useContext(UserContext);
+  console.log({ userId });
 
   return (
     <OptimizelyProvider
       optimizely={optimizely}
       user={{
         id: userId,
+        attributes: {
+          id: userId,
+        },
       }}
     >
       <ErrorBoundary>

@@ -1,4 +1,3 @@
-import { compose } from 'redux';
 import firebase from '../../../utils/firebase';
 import { helpfulTaskRef, setTaskDetails, newDocRef } from './APIcalls';
 import { toast$ } from '../../notifications/toast';
@@ -513,6 +512,7 @@ export const setContact = ({
   photoURL = '',
   downloadURL = '',
   notes = {},
+  email,
 }) =>
   firebase
     .firestore()
@@ -528,6 +528,7 @@ export const setContact = ({
       photoURL: downloadURL || photoURL,
       activeTaskCount: 1,
       notes,
+      email,
     });
 
 export const setProfileImage = ({ imageFile, contactId }) =>

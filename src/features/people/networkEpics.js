@@ -16,7 +16,7 @@ import {
 import { toast$ } from '../notifications/toast';
 import { ACTIVITY_COMPLETED, USER_UPDATED } from './networkConstants';
 import { handleActivityCompleted } from '../stats/statsHelpers';
-import firebase from '../../utils/firebase';
+// import firebase from '../../utils/firebase';
 
 export const markActivityComplete = (
   action$,
