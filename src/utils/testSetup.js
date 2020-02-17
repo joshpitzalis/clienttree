@@ -4,7 +4,6 @@ import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-
 import { createEpicMiddleware } from 'redux-observable';
 import { rootReducer, rootEpic, dependencies } from './store';
 
@@ -27,7 +26,7 @@ export const render = (
   {
     route = '/',
     history = createMemoryHistory({ initialEntries: [route] }),
-    initialState,
+    initialState = {},
     store = configureStore(initialState),
     ...renderOptions
   } = {}

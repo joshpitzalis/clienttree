@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import './networkAnimations.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { OptimizelyFeature } from '@optimizely/react-sdk';
-import { Sparklines, SparklinesLine, SparklinesSpots } from 'react-sparklines';
 import { Person } from './components/Person';
 import { PersonModal } from './components/PersonBox';
 import ErrorBoundary from '../../utils/ErrorBoundary';
 import firebase from '../../utils/firebase';
 import ImportContacts from '../contacts/Contacts';
+import { InsightsBox } from '../insights/InsightsBox';
 // import { HelpfulTaskList as UniversalTaskList } from './components/UniversalTaskList';
 
 const networkPropTypes = {
@@ -42,12 +42,8 @@ export const InnerNetwork = ({ uid, bulkImportFeature }) => {
         <OptimizelyFeature feature="insights">
           {insights =>
             insights && (
-              <article
-                className=" pt5 text2 
-         
-              "
-              >
-                <Insights />
+              <article className="text2">
+                <InsightsBox />
                 {/* <h1 className="text2">This Week</h1>
                 <UniversalTaskList myUid={uid} insights={insights} /> */}
               </article>
@@ -125,50 +121,5 @@ export default function ContactsBox({ contacts, uid }) {
         <p data-testid="emptyContacts">No Contacts Yet.</p>
       )}
     </React.Fragment>
-  );
-}
-
-function Insights() {
-  return (
-    <div className="pv3">
-      <dl className="dib mr5">
-        <div>
-          <dd className="f6 f5-ns b ml0">People</dd>
-          <dd className="f3 f2-ns b ml0">124</dd>
-        </div>
-        <div className="h3 w4">
-          <Sparklines
-            data={[3, 12, 13, 8, 9, 10, 12, 21, 19, 22, 32, 46, 55, 51, 71, 73]}
-          >
-            <SparklinesLine style={{ fill: 'none' }} />
-            <SparklinesSpots />
-          </Sparklines>
-        </div>
-      </dl>
-      <dl className="dib mr5">
-        <div>
-          <dd className="f6 f5-ns b ml0">In Touch With</dd>
-          <dd className="f3 f2-ns b ml0">39</dd>
-        </div>
-        <div className="h3 w4">
-          <Sparklines data={[21, 19, 22, 32, 46, 55, 51, 71, 73]}>
-            <SparklinesLine style={{ fill: 'none' }} />
-            <SparklinesSpots />
-          </Sparklines>
-        </div>
-      </dl>
-      <dl className="dib mr5">
-        <div>
-          <dd className="f6 f5-ns b ml0">This week</dd>
-          <dd className="f3 f2-ns b ml0">2</dd>
-        </div>
-        <div className="h3 w4">
-          <Sparklines data={[13, 3, 5, 7, 3, 3, 5, 7, 3]}>
-            <SparklinesLine style={{ fill: 'none' }} />
-            <SparklinesSpots />
-          </Sparklines>
-        </div>
-      </dl>
-    </div>
   );
 }

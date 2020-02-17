@@ -4,12 +4,25 @@ import fromUnixTime from 'date-fns/fromUnixTime';
 import { useMachine } from '@xstate/react';
 import { Machine } from 'xstate';
 import { useDispatch } from 'react-redux';
-
-import { OptimizelyFeature } from '@optimizely/react-sdk';
+// import { OptimizelyFeature } from '@optimizely/react-sdk';
 import { PersonModal } from './PersonBox';
 import { handleContactDelete } from '../peopleAPI';
 import { toast$ } from '../../notifications/toast';
-import Check from '../../../images/Check';
+// import Check from '../../../images/Check';
+
+export const lastContact = contact => {
+  const { lastContacted, notes } = contact;
+
+  const noteDates =
+    notes &&
+    Object.values(notes)
+      .map(note => note && note.lastUpdated)
+      .filter(item => item !== 9007199254740991);
+
+  const mostRecentNote = noteDates && Math.max(...noteDates);
+
+  return Math.max(lastContacted, mostRecentNote);
+};
 
 const peopleMachine = Machine({
   id: 'people',
@@ -80,9 +93,7 @@ export const Person = ({ contact, uid }) => {
         <li
           key={contact.uid}
           className={`mb3 ${
-            isOverDue(contact && contact.lastContacted && contact.lastContacted)
-              ? 'bl-red'
-              : 'bl-green'
+            isOverDue(lastContact(contact)) ? 'bl-red' : 'bl-green'
           }`}
           data-testid="closedPeopleBox"
         >
@@ -111,34 +122,12 @@ export const Person = ({ contact, uid }) => {
                 {contact.lastContacted &&
                 isValidDate(fromUnixTime(contact.lastContacted / 1000))
                   ? `Last followed up ${formatDistanceToNow(
-                      fromUnixTime(contact.lastContacted / 1000),
+                      fromUnixTime(lastContact(contact) / 1000),
                       { addSuffix: true }
                     )}`
                   : null}
               </span>
             </div>
-            {/* <div>
-              {!!contact.activeTaskCount &&
-                Array(contact.activeTaskCount)
-                  .fill(null)
-                  .map((_, index) => (
-                    <div
-                      key={`${index}+${+new Date()}`}
-                      className="taskStyle "
-                    />
-                  ))}
-            </div> */}
-
-            <OptimizelyFeature feature="insights">
-              {isEnabled =>
-                isEnabled && (
-                  <div className="flex items-center justify-around w4">
-                    <Check color="#65931a" />
-                    <Check color="#65931a" />
-                  </div>
-                )
-              }
-            </OptimizelyFeature>
           </div>
         </li>
       );

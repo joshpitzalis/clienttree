@@ -42,15 +42,6 @@ describe('people Box', () => {
     userEvent.click(getByText(/Click here to add email.../i));
     getByPlaceholderText(/Add email.../i);
   });
-<<<<<<< HEAD
-  it.todo('test over dies indicator works');
-  it.todo('lets me add a social contact detail');
-  it.todo('lets me remove a social contact detail');
-  it.todo('avatars fall back');
-  it.todo('uploaded image over  writes fall back avatar');
-  it.todo('show email if email link exists');
-=======
->>>>>>> contacts
   it.todo(
     'clicking on icon reveals detail and close button, but hides email icon'
   );
@@ -71,4 +62,12 @@ describe('people Box', () => {
   it.todo(
     'shut down email box should sto it being editable, or if saving become false'
   );
+
+  it.todo('when you create someone default date is one year ago');
+  it.todo('when you create someone onmobile default date is one year ago');
+  it.todo('when you update someone with a note it changes last contacted');
+  it.todo(
+    'if last contacted or notes dates are corrupted it just doesnt return a last comtacted value'
+  );
+  it.todo('colours boredrs on person box correspond to last udated value');
 });

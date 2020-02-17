@@ -122,6 +122,10 @@ textarea{
   color:  var(--orange) ;
 }
 
+.red{
+  color:  var(--red) ;
+}
+
 .bt-green{
   border-top: 3px var(--primary) solid;
 }
@@ -266,6 +270,10 @@ details summary::-webkit-details-marker {
 
 .datepicker-nav-btn {
   opacity: 0;
+}
+
+.ant-tooltip-inner {
+  background-color: #44444e !important ;
 }
 
 

@@ -14,6 +14,8 @@ export const usePersonForm = (contactId, userId) => {
       store.contacts && store.contacts.find(person => person.uid === contactId)
   );
 
+  const oneYearAgo = new Date().setFullYear(new Date().getFullYear() - 1);
+
   const [state, setState] = React.useState({
     userId,
     uid: contactId,
@@ -26,7 +28,7 @@ export const usePersonForm = (contactId, userId) => {
         lastUpdated: 9007199254740991,
       },
     },
-    lastContacted: +new Date(),
+    lastContacted: +new Date(oneYearAgo),
     tracked: false,
     saving: null,
     email: '',

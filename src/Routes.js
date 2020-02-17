@@ -3,11 +3,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import 'tachyons';
 // import PropTypes from 'prop-types';
 // import ReactRouterPropTypes from 'react-router-prop-types';
-import {
-  createInstance,
-  OptimizelyProvider,
-  OptimizelyFeature,
-} from '@optimizely/react-sdk';
+import { createInstance, OptimizelyProvider } from '@optimizely/react-sdk';
 // import FeatureFlags from './features/featureboard';
 import { Navbar } from './features/auth/Navbar';
 import { Login } from './pages/Login';
@@ -90,9 +86,9 @@ const App = () => {
         </BrowserRouter>
       </ErrorBoundary>
 
-      <OptimizelyFeature feature="insights">
+      {/* <OptimizelyFeature feature="insights">
         {insights => insights && <Footer />}
-      </OptimizelyFeature>
+      </OptimizelyFeature> */}
     </OptimizelyProvider>
   );
 };
@@ -101,26 +97,26 @@ export default App;
 
 App.propTypes = propTypes;
 
-function Footer() {
-  return (
-    <footer className="bg-black white-80 pv5 pv6-l ph4 tc">
-      <p className="f5">
-        <a className="link white-80 hover-light-purple" href="/terms">
-          Terms
-        </a>{' '}
-        /
-        <a className="link white-80 hover-gold" href="/privacy">
-          {' '}
-          Privacy{' '}
-        </a>{' '}
-        /
-        <a className="link white-80 hover-green" href="/contact">
-          Contact
-        </a>
-      </p>
-      <span className="db f6 text3">
-        ©2020 Client Tree. Version {process.env.REACT_APP_VERSION}
-      </span>
-    </footer>
-  );
-}
+// function Footer() {
+//   return (
+//     <footer className="bg-black white-80 pv5 pv6-l ph4 tc">
+//       <p className="f5">
+//         <a className="link white-80 hover-light-purple" href="/terms">
+//           Terms
+//         </a>{' '}
+//         /
+//         <a className="link white-80 hover-gold" href="/privacy">
+//           {' '}
+//           Privacy{' '}
+//         </a>{' '}
+//         /
+//         <a className="link white-80 hover-green" href="/contact">
+//           Contact
+//         </a>
+//       </p>
+//       <span className="db f6 text3">
+//         ©2020 Client Tree. Version {process.env.REACT_APP_VERSION}
+//       </span>
+//     </footer>
+//   );
+// }
