@@ -30,7 +30,7 @@ body {
   --warning	: #ffb42a;
   --danger: #e64948;
   --info: #5083f4;
-  --black:hsl(0, 0%, 13%);
+  --black:#252529;
 
   --orange: hsl(22, 78%, 55%);
  
@@ -68,6 +68,8 @@ textarea{
   background-color:var(--black) !important;
 }
 
+
+
 .green {
   color: var(--primary) !important;
 }
@@ -81,7 +83,7 @@ textarea{
 }
 
 .text1{
-  color: var(--text-main) ;
+  color: var(--text-main) !important;
 }
 
 .text2{
@@ -109,8 +111,19 @@ textarea{
   border-top: 3px var(--orange) solid;
 }
 
+.bl-red {  border-left: 2px var(--red) solid;
+ 
+  border-radius: 5px 0 0 5px ;}
+
+.bl-green {  border-left: 2px var(--primary) solid;
+  border-radius: 5px 0 0 5px ;}
+
 .orange{
   color:  var(--orange) ;
+}
+
+.red{
+  color:  var(--red) ;
 }
 
 .bt-green{
@@ -257,6 +270,10 @@ details summary::-webkit-details-marker {
 
 .datepicker-nav-btn {
   opacity: 0;
+}
+
+.ant-tooltip-inner {
+  background-color: #44444e !important ;
 }
 
 

@@ -25,7 +25,9 @@ const handleClick = ({
 const avatarCreator = _contact =>
   _contact && _contact.photoURL
     ? _contact.photoURL
-    : `https://ui-avatars.com/api/?name=${_contact.name}`;
+    : `https://ui-avatars.com/api/?name=${
+        _contact && _contact.name ? _contact.name : 'Jane Doe'
+      }`;
 
 export const ContactCard = ({
   contact,

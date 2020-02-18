@@ -4,8 +4,8 @@ import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-
 import { createEpicMiddleware } from 'redux-observable';
+import { createInstance, OptimizelyProvider } from '@optimizely/react-sdk';
 import { rootReducer, rootEpic, dependencies } from './store';
 
 function configureStore(initialState) {
@@ -22,19 +22,35 @@ function configureStore(initialState) {
   return store;
 }
 
+const optimizely = createInstance({
+  sdkKey: process.env.REACT_APP_ROLLOUT,
+});
+
 export const render = (
   ui,
   {
     route = '/',
     history = createMemoryHistory({ initialEntries: [route] }),
-    initialState,
+    initialState = {},
     store = configureStore(initialState),
     ...renderOptions
   } = {}
 ) => ({
   ...rtlRender(
     <Provider store={store}>
-      <Router history={history}>{ui}</Router>
+      <Router history={history}>
+        <OptimizelyProvider
+          optimizely={optimizely}
+          user={{
+            id: 'hiaCOgc7xWgoVf6gsqkmNIWmjgs2',
+            attributes: {
+              id: 'hiaCOgc7xWgoVf6gsqkmNIWmjgs2',
+            },
+          }}
+        >
+          {ui}
+        </OptimizelyProvider>
+      </Router>
     </Provider>,
     renderOptions
   ),

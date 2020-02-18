@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as Sentry from '@sentry/browser';
 import { Provider } from 'react-redux';
-
 import * as serviceWorker from './serviceWorker';
 import Routes from './Routes';
 import { UserProvider } from './features/auth/UserContext';
@@ -23,6 +22,7 @@ if (process.env.NODE_ENV === 'production') {
   var axe = require('react-axe');
   axe(React, ReactDOM, 1000, config);
 }
+console.log({ Version: process.env.REACT_APP_VERSION });
 
 const App = () => (
   <Provider store={store}>
