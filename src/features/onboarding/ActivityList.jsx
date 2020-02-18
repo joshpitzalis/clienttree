@@ -47,7 +47,7 @@ export function Onboarding({ uid, children, contactSelected }) {
   };
 
   return (
-    <div className="pa4 fixed">
+    <div className="pa4 fixed h-100 overflow-y-auto pb6">
       <OptimizelyFeature feature="referralPage">
         {isEnabled => (
           <fieldset className="bn ma0 pa0">

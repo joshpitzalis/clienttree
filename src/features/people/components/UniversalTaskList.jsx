@@ -30,7 +30,7 @@ export const HelpfulTaskList = ({ myUid, insights }) => {
   }, [myUid]);
 
   return (
-    <div data-testid="universalTaskList" className={!insights && 'pt5'}>
+    <div data-testid="universalTaskList" className={` ${!insights && 'pt5'}`}>
       {helpfulTasks &&
         helpfulTasks.map(
           ({ taskId, name, dateCompleted, completedFor, photoURL, dueDate }) =>

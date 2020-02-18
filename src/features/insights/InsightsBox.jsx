@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparklines, SparklinesLine, SparklinesSpots } from 'react-sparklines';
+// import { Sparklines, SparklinesLine, SparklinesSpots } from 'react-sparklines';
 import { useSelector } from 'react-redux';
 import { Tooltip } from 'antd';
 
@@ -84,7 +84,7 @@ export const Counters = ({ people, inTouchWith, thisWeek }) => (
             </dd>
           </Tooltip>
         </div>
-        <SparkLine data={[0, people]} />
+        {/* <SparkLine data={[0, people]} /> */}
       </dl>
     )}
     {!!inTouchWith && !!people && (
@@ -111,7 +111,7 @@ export const Counters = ({ people, inTouchWith, thisWeek }) => (
           </Tooltip>
         </div>
         {/* <SparkLine data={[13, 3, 5, 7, 3, 3, 5, 7, 3]} /> */}
-        <SparkLine data={[0, inTouchWith]} />
+        {/* <SparkLine data={[0, inTouchWith]} /> */}
       </dl>
     )}
     {!!thisWeek && (
@@ -134,21 +134,17 @@ export const Counters = ({ people, inTouchWith, thisWeek }) => (
             </dd>
           </Tooltip>
         </div>
-        <SparkLine data={[0, thisWeek]} />
+        {/* <SparkLine data={[0, thisWeek]} /> */}
       </dl>
     )}
   </div>
 );
 
-const SparkLine = ({ data }) => (
-  <div className="h3 w4">
-    <Sparklines data={data}>
-      <SparklinesLine
-        style={{
-          fill: 'none',
-        }}
-      />
-      <SparklinesSpots />
-    </Sparklines>
-  </div>
-);
+// const SparkLine = ({ data, fill = 'none' }) => (
+//   <div className="h3 w4">
+//     <Sparklines data={data}>
+//       <SparklinesLine style={{ fill }} />
+//       <SparklinesSpots />
+//     </Sparklines>
+//   </div>
+// );

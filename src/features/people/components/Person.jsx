@@ -119,9 +119,9 @@ export const Person = ({ contact, uid }) => {
             <div className="pl3 flex-auto">
               <span className="f6 db black-70 b">{contact.name}</span>
               <span className="f6 db black-70 i">
-                {contact.lastContacted &&
-                isValidDate(fromUnixTime(contact.lastContacted / 1000))
-                  ? `Last followed up ${formatDistanceToNow(
+                {contact &&
+                isValidDate(fromUnixTime(lastContact(contact) / 1000))
+                  ? `Last interaction ${formatDistanceToNow(
                       fromUnixTime(lastContact(contact) / 1000),
                       { addSuffix: true }
                     )}`
