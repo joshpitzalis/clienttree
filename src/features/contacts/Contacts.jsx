@@ -1,10 +1,10 @@
 // import GoogleContacts from 'react-google-contacts';
 // import Avatar from 'react-avatar';
-
 import React, { useState } from 'react';
 import { assert } from 'chai';
 import { useMachine } from '@xstate/react';
 import { Machine } from 'xstate';
+import Portal from '../../utils/Portal';
 import {
   parseContacts,
   handleContactSync,
@@ -13,7 +13,7 @@ import {
   handleSuccessfulCompletion as success,
   handlePending as pending,
 } from './contacts.helpers.js';
-
+import { contactMachine } from './contacts.statechart';
 import { setNewContact as set, updateContact } from './contacts.api.js';
 import { ConflictScreen } from './components/ConflictScreen';
 
@@ -159,3 +159,127 @@ const ImportContacts = ({
 };
 
 export default ImportContacts;
+export const PickContacts = ({
+  handleImport = _handleImport,
+  userId,
+  existingContacts,
+}) => {
+  const [current, send] = useMachine(contactMachine, {
+    actions: {
+      // updateContact: (ctx, { payload }) => updateContact(userId, payload),
+    },
+  });
+
+  if (current.matches('idle') || current.matches('loading')) {
+    return (
+      <button
+        onClick={() => send('CLICKED')}
+        type="button"
+        className="btn3 b grow  ph3 pv2  pointer bn br1 white"
+        data-testid="addContacts"
+      >
+        {current.matches('loading') ? `Loading...` : `Add Contacts`}
+      </button>
+    );
+  }
+
+  if (current.matches('selector')) {
+    return (
+      <Portal
+        onClose={() => {
+          send('CLOSED');
+        }}
+      >
+        <div className="overflow-y-auto vh-75">
+          <NewPeopleBox
+            contacts={[
+              {
+                photoURL: 'http://mrmrs.github.io/photos/p/2.jpg',
+                name: 'Young Gatchell',
+                handle: '@yg',
+                status: 'added',
+              },
+            ]}
+          />
+
+          <NewPeopleBox
+            contacts={new Array(10).fill({
+              photoURL: 'http://mrmrs.github.io/photos/p/2.jpg',
+              name: 'Young Gatchell',
+              handle: '@yg',
+            })}
+          />
+          <p className="text3 i mb3">Show More...</p>
+        </div>
+        {/* <div className="flex justify-between">
+          <p className="text3 i mb3">Show More...</p>
+          <button className="text3 i bn pointer mb3">DONE FOR NOW</button>
+        </div> */}
+      </Portal>
+    );
+  }
+
+  if (current.matches('error')) {
+    return (
+      <button
+        onClick={() => send('CLICKED')}
+        type="button"
+        className="btn3 b grow  ph3 pv2  pointer bn br1 white"
+        data-testid="addContacts"
+      >
+        Error
+      </button>
+    );
+  }
+
+  return null;
+};
+
+function NewPeopleBox({ contacts }) {
+  return (
+    <main className=" center">
+      {contacts.map(({ photoURL, name, handle, status }) => (
+        <article
+          className={`flex items-center justify-between w-100 bb b--black-05 pb2 mt2 ${!status &&
+            'o-50'}`}
+          href="#0"
+        >
+          <div className="flex items-center ">
+            <div className=" w2 w3-ns">
+              <img
+                src={photoURL}
+                alt="pogo"
+                className="ba b--black-10 db br-100 w2 w3-ns h2 h3-ns"
+              />
+            </div>
+            <div className="tl pl3">
+              <h1 className="f6 f5-ns fw6 lh-title black mv0 ">{name}</h1>
+              <h2 className="f6 fw4 mt0 mb0 black-60">{handle}</h2>
+            </div>
+          </div>
+          <div className="w4">
+            <form className="w-100 tr  flex justify-center">
+              {status ? (
+                <button className="bn pointer tr f2" type="submit">
+                  ❌
+                </button>
+              ) : (
+                <button className="bn pointer tr f2" type="submit">
+                  ✅
+                </button>
+              )}
+            </form>
+          </div>
+        </article>
+      ))}
+    </main>
+  );
+}
+
+// {/* <span></span> */}
+// <span>😁</span>
+// <span className="h3 w-auto">🤔</span>
+// {/* <span>🗑</span> */}
+// <span>💩</span>
+// {/* <span>Who dis❓</span> */}
+// <span>🧐</span>

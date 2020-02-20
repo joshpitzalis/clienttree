@@ -7,7 +7,7 @@ import { Person } from './components/Person';
 import { PersonModal } from './components/PersonBox';
 import ErrorBoundary from '../../utils/ErrorBoundary';
 import firebase from '../../utils/firebase';
-import ImportContacts from '../contacts/Contacts';
+import ImportContacts, { PickContacts } from '../contacts/Contacts';
 import { InsightsBox } from '../insights/InsightsBox';
 // import { HelpfulTaskList as UniversalTaskList } from './components/UniversalTaskList';
 
@@ -16,7 +16,7 @@ const networkPropTypes = {
 };
 const networkDefaultProps = {};
 
-export const InnerNetwork = ({ uid, bulkImportFeature }) => {
+export const InnerNetwork = ({ uid, contactChunks }) => {
   const [visible, setVisibility] = React.useState(false);
   const [selectedUser, setSelectedUser] = React.useState('');
 
@@ -79,7 +79,9 @@ export const InnerNetwork = ({ uid, bulkImportFeature }) => {
               >
                 Add Someone New
               </button>
-              {bulkImportFeature && (
+              {contactChunks ? (
+                <PickContacts userId={uid} existingContacts={contacts} />
+              ) : (
                 <ImportContacts userId={uid} existingContacts={contacts} />
               )}
             </>
@@ -95,8 +97,8 @@ InnerNetwork.propTypes = networkPropTypes;
 InnerNetwork.defaultProps = networkDefaultProps;
 
 const WrappedNetwork = props => (
-  <OptimizelyFeature feature="contactsSync">
-    {isEnabled => <InnerNetwork {...props} bulkImportFeature={isEnabled} />}
+  <OptimizelyFeature feature="contactChunks">
+    {isEnabled => <InnerNetwork {...props} contactChunks={isEnabled} />}
   </OptimizelyFeature>
 );
 
