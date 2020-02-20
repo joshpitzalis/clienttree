@@ -8,7 +8,7 @@ const getPermissions = (ctx, event) => {
 
 export const contactMachine = Machine({
   id: 'contacts',
-  initial: 'selector',
+  initial: 'idle',
   states: {
     idle: {
       on: {
@@ -40,8 +40,9 @@ export const contactMachine = Machine({
       on: {
         REVEALED_MORE: 'selector',
         // COMPLETED_FOR_NOW: 'idle',
-        SELECTED: 'selected',
-        CANCELLED: 'selected',
+        ADDED: 'selector',
+        REMOVED: 'selector',
+        CLOSED: 'idle',
       },
       // initial: 'idle',
       // states: {

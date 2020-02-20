@@ -188,7 +188,11 @@ export function Dashboard({ userId }) {
               data-testid="sidebar"
             >
               <MobileReminder myUid={userId} />
-              <Onboarding uid={userId} contactSelected={selectedUserUid}>
+              <Onboarding
+                uid={userId}
+                contactSelected={selectedUserUid}
+                workboard={workboard}
+              >
                 <>
                   {selectedUserUid ? (
                     <>
@@ -206,13 +210,10 @@ export function Dashboard({ userId }) {
                       />
                     </>
                   ) : (
-                    // <OptimizelyFeature feature="insights">
-                    //   {insights =>
-                    //     !insights && <UniversalTaskList myUid={userId} />
-                    //   }
-                    // </OptimizelyFeature>
-                    <UniversalTaskList myUid={userId} />
-                  )}
+                    workboard && <UniversalTaskList myUid={userId} />
+                  )
+                  // <UniversalTaskList myUid={userId} />
+                  }
                 </>
               </Onboarding>
             </aside>

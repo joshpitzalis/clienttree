@@ -1,5 +1,7 @@
-// import GoogleContacts from 'react-google-contacts';
+import GoogleContacts from 'react-google-contacts';
 // import Avatar from 'react-avatar';
+import { Icon } from 'antd';
+
 import React, { useState } from 'react';
 import { assert } from 'chai';
 import { useMachine } from '@xstate/react';
@@ -136,10 +138,11 @@ const ImportContacts = ({
       <button
         onClick={() => send('CLICKED')}
         type="button"
-        className="btn3 b grow  ph3 pv2  pointer bn br1 white"
+        className="btn3 b grow  mh3 tl pv2  pointer bn br1 white"
         data-testid="importContacts"
       >
-        Import Contacts
+        Import <Icon type="google" />
+        Contacts
       </button>
     );
   }
@@ -175,21 +178,17 @@ export const PickContacts = ({
       <button
         onClick={() => send('CLICKED')}
         type="button"
-        className="btn3 b grow  ph3 pv2  pointer bn br1 white"
+        className="btn3 b grow pv2  pointer bn br1 white"
         data-testid="addContacts"
       >
-        {current.matches('loading') ? `Loading...` : `Add Contacts`}
+        {current.matches('loading') ? `Loading...` : `Organise Contacts`}
       </button>
     );
   }
 
   if (current.matches('selector')) {
     return (
-      <Portal
-        onClose={() => {
-          send('CLOSED');
-        }}
-      >
+      <Portal onClose={() => send('CLOSED')}>
         <div className="overflow-y-auto vh-75">
           <NewPeopleBox
             contacts={[

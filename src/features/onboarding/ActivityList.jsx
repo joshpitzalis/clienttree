@@ -10,9 +10,9 @@ export const completePercentage = _onboarding =>
     ((1 + Object.values(_onboarding).filter(_x => !!_x).length) / 7) * 100
   );
 
-/** @param {{uid:string, children: JSX.Element, contactSelected: string}} [Props] */
+/** @param {{uid:string, children: JSX.Element, contactSelected: string, workboard:Boolean}} [Props] */
 
-export function Onboarding({ uid, children, contactSelected }) {
+export function Onboarding({ uid, children, contactSelected, workboard }) {
   // gets user onboarding details
   const onboarding = useSelector(
     store => store.user && store.user.onboarding && store.user.onboarding
@@ -37,11 +37,11 @@ export function Onboarding({ uid, children, contactSelected }) {
       }
       return 'Reminders';
     }
-    if (_onboardingComplete) {
+    if (workboard && _onboardingComplete) {
       // return null;
       return 'Activities';
     }
-    if (isEnabled) {
+    if (workboard && isEnabled) {
       return 'Getting Started';
     }
   };
