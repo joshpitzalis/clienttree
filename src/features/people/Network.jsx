@@ -11,6 +11,7 @@ import firebase from '../../utils/firebase';
 import ImportContacts, { PickContacts } from '../contacts/Contacts';
 import { InsightsBox } from '../insights/InsightsBox';
 import { HelpfulTaskList } from './components/UniversalTaskList';
+import GoogleImport from '../contacts/components/GoogleImport';
 
 const networkPropTypes = {
   uid: PropTypes.string.isRequired,
@@ -37,6 +38,20 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
     .collection('contacts')
     .doc();
 
+  React.useEffect(() => {
+    const { gapi } = window;
+    gapi.load('client', () =>
+      gapi.client.init({
+        apiKey: process.env.REACT_APP_API_KEY,
+        clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+        discoveryDocs: [
+          'https://www.googleapis.com/discovery/v1/apis/people/v1/rest',
+        ],
+        scope: 'https://www.googleapis.com/auth/contacts.readonly',
+      })
+    );
+  }, []);
+
   const menu = (
     <Menu>
       <Menu.Item key="0">
@@ -60,7 +75,9 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
         <PickContacts userId={uid} existingContacts={contacts} />
       </Menu.Item>
       <Menu.Divider />
-      <ImportContacts userId={uid} existingContacts={contacts} />
+      <GoogleImport>
+        <ImportContacts userId={uid} existingContacts={contacts} />
+      </GoogleImport>
     </Menu>
   );
 
@@ -93,7 +110,6 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
             setVisibility={setVisibility}
             setSelectedUser={setSelectedUser}
             menu={menu}
-            newDoc={newDoc}
           />
         ) : (
           <OldImport
@@ -199,7 +215,6 @@ function NewImport({
   setVisibility,
   setSelectedUser,
   menu,
-  newDoc,
 }) {
   return (
     <div className="pv4 flex justify-center" data-testid="outreachPage">

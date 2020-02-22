@@ -1,9 +1,9 @@
 @import-normalize;
 @import '~antd/dist/antd.css';
+@import './inter.css';
 
 body {
   background-color:var(--bg-base);
-  font-size: 18px;
   color: hsl(0, 0%, 13%);
   
   --text-base: hsl(0, 0%, 13%);
@@ -34,13 +34,14 @@ body {
 
   --orange: hsl(22, 78%, 55%);
  
-  font-family: 'Roboto',-apple-system, 
+  font-size: 18px;
   
-  BlinkMacSystemFont, "Segoe UI", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family: 'Inter', 'Roboto',-apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 
 ul .ant-timeline *:not(:last-child) {
   margin-bottom: 0px !important;

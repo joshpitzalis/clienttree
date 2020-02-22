@@ -743,7 +743,7 @@ describe('Merging conflicts', () => {
 describe('contact Card', () => {
   it.todo('does increment? card contact');
   it.todo('if last? card contact');
-  it.todo('  if existing and last? card contact');
+  it.todo('if existing and last? card contact');
   it.todo('fires correct if existing');
   it.todo('fires correct if not existing?');
 });

@@ -1,7 +1,5 @@
-import GoogleContacts from 'react-google-contacts';
 // import Avatar from 'react-avatar';
 import { Icon } from 'antd';
-
 import React, { useState } from 'react';
 import { assert } from 'chai';
 import { useMachine } from '@xstate/react';
@@ -133,6 +131,8 @@ const ImportContacts = ({
 
   useCloudsponge({ userId, existingContacts, send, setDuplicates });
 
+  const { gapi } = window;
+
   if (current.matches('addButton')) {
     return (
       <button
@@ -141,8 +141,8 @@ const ImportContacts = ({
         className="btn3 b grow  mh3 tl pv2  pointer bn br1 white"
         data-testid="importContacts"
       >
-        Import <Icon type="google" />
-        Contacts
+        Import from
+        <Icon type="google" className="pl2" />
       </button>
     );
   }
@@ -162,6 +162,7 @@ const ImportContacts = ({
 };
 
 export default ImportContacts;
+
 export const PickContacts = ({
   handleImport = _handleImport,
   userId,
