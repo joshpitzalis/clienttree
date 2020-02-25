@@ -42,3 +42,44 @@ export const updateContact = (userId, contact) => {
       { merge: true }
     );
 };
+
+export const saveImportedContacts = (importedContacts, userId) => {
+  console.log({ userId });
+
+  const set = (_contact, _userId) => {
+    const newDoc = firebase
+      .firestore()
+      .collection('users')
+      .doc(_userId)
+      .collection('contacts')
+      .doc();
+
+    const oneYearAgo = new Date().setFullYear(new Date().getFullYear() - 1);
+    const lastContacted = +new Date(oneYearAgo);
+
+    return firebase
+      .firestore()
+      .collection('users')
+      .doc(_userId)
+      .collection('contacts')
+      .doc(newDoc.id)
+      .set(
+        {
+          uid: newDoc.id,
+          lastContacted,
+          notes: {},
+          bucket: 'archived',
+          ..._contact,
+        },
+        { merge: true }
+      );
+  };
+
+  // pending();
+
+  const writeOps = importedContacts.map(contact => set(contact, userId));
+
+  return Promise.all(writeOps)
+    .then(() => console.log({ success: importedContacts }))
+    .catch(error => console.log({ error }));
+};

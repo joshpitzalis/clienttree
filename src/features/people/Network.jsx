@@ -18,6 +18,42 @@ const networkPropTypes = {
 };
 const networkDefaultProps = {};
 
+const sortContacts = contacts => {
+  const lastContact = contact => {
+    const { lastContacted, notes } = contact;
+
+    const noteDates =
+      notes &&
+      Object.values(notes)
+        .map(note => note && note.lastUpdated)
+        .filter(item => item !== 9007199254740991);
+
+    const mostRecentNote = noteDates && Math.max(...noteDates);
+
+    return Math.max(lastContacted, mostRecentNote);
+  };
+
+  const compare = (a, b) => {
+    if (lastContact(a) < lastContact(b)) {
+      return -1;
+    }
+    if (lastContact(a) > lastContact(b)) {
+      return 1;
+    }
+    return 0;
+  };
+
+  return (
+    contacts &&
+    contacts
+      .filter(
+        item =>
+          !!item.lastContacted && (!item.bucket || item.bucket === 'active')
+      )
+      .sort(compare)
+  );
+};
+
 export const InnerNetwork = ({ uid, contactChunks }) => {
   const [visible, setVisibility] = React.useState(false);
   const [selectedUser, setSelectedUser] = React.useState('');
@@ -29,7 +65,8 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
     name: string,
     photoURL: string
   }]} contact */
-  const contacts = useSelector(store => store.contacts);
+  const contacts = useSelector(store => sortContacts(store.contacts));
+
   const dispatch = useDispatch();
   const newDoc = firebase
     .firestore()
@@ -75,7 +112,7 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
         <PickContacts userId={uid} existingContacts={contacts} />
       </Menu.Item>
       <Menu.Divider />
-      <GoogleImport>
+      <GoogleImport userId={uid}>
         <ImportContacts userId={uid} existingContacts={contacts} />
       </GoogleImport>
     </Menu>

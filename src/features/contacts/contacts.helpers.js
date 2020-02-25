@@ -113,3 +113,35 @@ export const handleAddition = ({
     .then(success)
     .catch(_error => error(_error, 'contacts/handleAddition'));
 };
+
+export const contactCleaner = connections => {
+  const getData = (person, field, key) => {
+    if (key) {
+      return person &&
+        person[field] &&
+        person[field].length > 0 &&
+        person[field][0]
+        ? person[field][0][key]
+        : null;
+    }
+    return person &&
+      person[field] &&
+      person[field].length > 0 &&
+      person[field][0]
+      ? person[field][0]
+      : null;
+  };
+
+  return connections.map(person => ({
+    resourceName: person.resourceName,
+    name: getData(person, 'names', 'displayName'),
+    photoURL: getData(person, 'photos', 'url'),
+    address: getData(person, 'addresses'),
+    email: getData(person, 'emailAddresses', 'value'),
+    gender: getData(person, 'genders', 'value'),
+    metadata: getData(person, 'metadata', 'sources'),
+    occupation: getData(person, 'occupations', 'value'),
+    organization: getData(person, 'organizations'),
+    residence: getData(person, 'residences', 'value'),
+  }));
+};

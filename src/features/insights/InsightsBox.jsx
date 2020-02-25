@@ -59,9 +59,9 @@ export function InsightsBox() {
   );
 }
 
-export const Counters = ({ people, inTouchWith, thisWeek }) => (
-  <div className="">
-    {!!people && (
+export const Counters = ({ people, inTouchWith, thisWeek }) =>
+  !!people && (
+    <div className="">
       <dl className="dib mr5 w4 pt5">
         <div>
           <Tooltip
@@ -86,8 +86,7 @@ export const Counters = ({ people, inTouchWith, thisWeek }) => (
         </div>
         {/* <SparkLine data={[0, people]} /> */}
       </dl>
-    )}
-    {!!inTouchWith && !!people && (
+
       <dl className="dib mr5 w4 pt5">
         <div>
           <Tooltip
@@ -113,8 +112,7 @@ export const Counters = ({ people, inTouchWith, thisWeek }) => (
         {/* <SparkLine data={[13, 3, 5, 7, 3, 3, 5, 7, 3]} /> */}
         {/* <SparkLine data={[0, inTouchWith]} /> */}
       </dl>
-    )}
-    {!!thisWeek && (
+
       <dl className="dib mr5 w4 pt5">
         <div>
           <Tooltip
@@ -136,9 +134,8 @@ export const Counters = ({ people, inTouchWith, thisWeek }) => (
         </div>
         {/* <SparkLine data={[0, thisWeek]} /> */}
       </dl>
-    )}
-  </div>
-);
+    </div>
+  );
 
 // const SparkLine = ({ data, fill = 'none' }) => (
 //   <div className="h3 w4">
