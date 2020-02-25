@@ -115,6 +115,8 @@ export const handleAddition = ({
 };
 
 export const contactCleaner = connections => {
+  console.log({ connections });
+
   const getData = (person, field, key) => {
     if (key) {
       return person &&

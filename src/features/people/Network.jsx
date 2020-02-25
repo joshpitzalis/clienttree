@@ -54,19 +54,15 @@ const sortContacts = contacts => {
   );
 };
 
+// const sortImportedContacts = contacts =>
+//   contacts &&
+//   contacts.filter(item => !!item.lastContacted && item.bucket === 'archived');
+
 export const InnerNetwork = ({ uid, contactChunks }) => {
   const [visible, setVisibility] = React.useState(false);
   const [selectedUser, setSelectedUser] = React.useState('');
-
-  /** @type {[{
-    uid: string,
-    lastContacted: number,
-    activeTaskCount: number,
-    name: string,
-    photoURL: string
-  }]} contact */
-  const contacts = useSelector(store => sortContacts(store.contacts));
-
+  const contacts = useSelector(store => store && sortContacts(store.contacts));
+  const allContacts = useSelector(store => store && store.contacts);
   const dispatch = useDispatch();
   const newDoc = firebase
     .firestore()
@@ -109,7 +105,7 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
         </button>
       </Menu.Item>
       <Menu.Item key="1">
-        <PickContacts userId={uid} existingContacts={contacts} />
+        <PickContacts userId={uid} allContacts={allContacts} />
       </Menu.Item>
       <Menu.Divider />
       <GoogleImport userId={uid}>

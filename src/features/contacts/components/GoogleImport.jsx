@@ -19,8 +19,7 @@ export default function GoogleImport({ userId }) {
         const { connections } = response.result;
         return contactCleaner(connections);
       })
-      .then(contacts => saveImportedContacts(contacts, userId))
-      .then(() => setModal(true));
+      .then(contacts => saveImportedContacts(contacts, userId));
 
   const login = async () => {
     const { gapi } = window;

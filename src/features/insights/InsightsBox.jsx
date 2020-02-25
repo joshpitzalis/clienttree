@@ -42,7 +42,14 @@ export const findRecentlyContacted = (contacts, timePeriod) => {
 export function InsightsBox() {
   const sixMonthsAgo = 1.577e10;
   const sevenDaysAgo = 6.048e8;
-  const people = useSelector(store => store.contacts && store.contacts.length);
+  const people = useSelector(
+    store =>
+      store.contacts &&
+      store.contacts.filter(
+        item =>
+          !!item.lastContacted && (!item.bucket || item.bucket === 'active')
+      ).length
+  );
 
   const inTouchWith = useSelector(store =>
     findRecentlyContacted(store.contacts, sixMonthsAgo)

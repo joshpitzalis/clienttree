@@ -131,8 +131,6 @@ const ImportContacts = ({
 
   useCloudsponge({ userId, existingContacts, send, setDuplicates });
 
-  const { gapi } = window;
-
   if (current.matches('addButton')) {
     return (
       <button
@@ -166,7 +164,7 @@ export default ImportContacts;
 export const PickContacts = ({
   handleImport = _handleImport,
   userId,
-  existingContacts,
+  allContacts,
 }) => {
   const [current, send] = useMachine(contactMachine, {
     actions: {
@@ -191,25 +189,27 @@ export const PickContacts = ({
     return (
       <Portal onClose={() => send('CLOSED')}>
         <div className="overflow-y-auto vh-75">
-          <NewPeopleBox
-            contacts={[
-              {
-                photoURL: 'http://mrmrs.github.io/photos/p/2.jpg',
-                name: 'Young Gatchell',
-                handle: '@yg',
-                status: 'added',
-              },
-            ]}
-          />
+          <p className="f3 fw6 w-50 dib-l w-auto-l lh-title">{`${
+            allContacts.filter(item => item.bucket === 'archived').length
+          } Potential Contacts`}</p>
+          {allContacts &&
+            allContacts.map(
+              ({ photoURL, name, bucket, occupation, organization }) => (
+                <NewPeopleBox
+                  contacts={[
+                    {
+                      photoURL,
+                      name,
+                      handle:
+                        occupation || (organization && organization.title),
+                      bucket,
+                    },
+                  ]}
+                />
+              )
+            )}
 
-          <NewPeopleBox
-            contacts={new Array(10).fill({
-              photoURL: 'http://mrmrs.github.io/photos/p/2.jpg',
-              name: 'Young Gatchell',
-              handle: '@yg',
-            })}
-          />
-          <p className="text3 i mb3">Show More...</p>
+          <p className="text3 i mb3">Done for now</p>
         </div>
         {/* <div className="flex justify-between">
           <p className="text3 i mb3">Show More...</p>
@@ -238,40 +238,41 @@ export const PickContacts = ({
 function NewPeopleBox({ contacts }) {
   return (
     <main className=" center">
-      {contacts.map(({ photoURL, name, handle, status }) => (
-        <article
-          className={`flex items-center justify-between w-100 bb b--black-05 pb2 mt2 ${!status &&
-            'o-50'}`}
-          href="#0"
-        >
-          <div className="flex items-center ">
-            <div className=" w2 w3-ns">
-              <img
-                src={photoURL}
-                alt="pogo"
-                className="ba b--black-10 db br-100 w2 w3-ns h2 h3-ns"
-              />
+      {contacts &&
+        contacts.map(({ photoURL, name, handle, bucket }) => (
+          <article
+            className={`flex items-center justify-between w-100 bb b--black-05 pb2 mt2 ${(!bucket ||
+              bucket === 'active') &&
+              'o-50'}`}
+          >
+            <div className="flex items-center ">
+              <div className=" w2 w3-ns">
+                <img
+                  src={photoURL}
+                  alt="pogo"
+                  className="ba b--black-10 db br-100 w2 w3-ns h2 h3-ns"
+                />
+              </div>
+              <div className="tl pl3">
+                <h1 className="f6 f5-ns fw6 lh-title black mv0 ">{name}</h1>
+                <h2 className="f6 fw4 mt0 mb0 black-60">{handle}</h2>
+              </div>
             </div>
-            <div className="tl pl3">
-              <h1 className="f6 f5-ns fw6 lh-title black mv0 ">{name}</h1>
-              <h2 className="f6 fw4 mt0 mb0 black-60">{handle}</h2>
+            <div className="w4">
+              <form className="w-100 tr  flex justify-center">
+                {!bucket || bucket === 'active' ? (
+                  <button className="bn pointer tr f2" type="submit">
+                    ❌
+                  </button>
+                ) : (
+                  <button className="bn pointer tr f2" type="submit">
+                    ✅
+                  </button>
+                )}
+              </form>
             </div>
-          </div>
-          <div className="w4">
-            <form className="w-100 tr  flex justify-center">
-              {status ? (
-                <button className="bn pointer tr f2" type="submit">
-                  ❌
-                </button>
-              ) : (
-                <button className="bn pointer tr f2" type="submit">
-                  ✅
-                </button>
-              )}
-            </form>
-          </div>
-        </article>
-      ))}
+          </article>
+        ))}
     </main>
   );
 }

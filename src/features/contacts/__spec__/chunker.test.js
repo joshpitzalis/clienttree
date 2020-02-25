@@ -24,6 +24,9 @@ describe('contact chunker', () => {
     // ensure modal opens
   });
   it.todo('deduplicates incoming contacts');
+  it('make contact active', () => false);
+  it.todo('archive contact  ');
+  it.todo('trash a contact ');
   it.todo('shows you 818 potential total contacts count in chunker modal');
   it.todo('if contact already exist shows up as selected');
   it.todo('shorlist 10 contacts');

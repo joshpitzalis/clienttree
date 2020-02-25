@@ -44,8 +44,6 @@ export const updateContact = (userId, contact) => {
 };
 
 export const saveImportedContacts = (importedContacts, userId) => {
-  console.log({ userId });
-
   const set = (_contact, _userId) => {
     const newDoc = firebase
       .firestore()
@@ -76,6 +74,7 @@ export const saveImportedContacts = (importedContacts, userId) => {
   };
 
   // pending();
+  console.log(importedContacts.length);
 
   const writeOps = importedContacts.map(contact => set(contact, userId));
 
