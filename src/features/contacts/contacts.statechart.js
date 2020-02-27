@@ -40,10 +40,25 @@ export const contactMachine = Machine({
       on: {
         REVEALED_MORE: 'selector',
         // COMPLETED_FOR_NOW: 'idle',
-        ADDED: 'selector',
-        REMOVED: 'selector',
         CLOSED: 'idle',
       },
+      // states: {
+      //   initial: 'idle',
+      //   active: {
+      //     on: {
+      //       ARCHIVE: 'archived',
+      //     },
+      //   },
+      //   archived: {
+      //     on: {
+      //       ACTIVATE: 'active',
+      //       TRASH: 'trashed',
+      //     },
+      //   },
+      //   trashed: {
+      //     type: 'final',
+      //   },
+      // },
       // initial: 'idle',
       // states: {
       //   idle: {

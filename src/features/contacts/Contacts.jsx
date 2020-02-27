@@ -16,6 +16,7 @@ import {
 import { contactMachine } from './contacts.statechart';
 import { setNewContact as set, updateContact } from './contacts.api.js';
 import { ConflictScreen } from './components/ConflictScreen';
+import { NewPeopleBox } from './components/NewPeopleBox';
 
 export const useCloudsponge = ({
   userId,
@@ -188,14 +189,15 @@ export const PickContacts = ({
   if (current.matches('selector')) {
     return (
       <Portal onClose={() => send('CLOSED')}>
+        <p className="f3 fw6 w-50 dib-l w-auto-l lh-title">{`${
+          allContacts.filter(item => item.bucket === 'archived').length
+        } Potential Contacts`}</p>
         <div className="overflow-y-auto vh-75">
-          <p className="f3 fw6 w-50 dib-l w-auto-l lh-title">{`${
-            allContacts.filter(item => item.bucket === 'archived').length
-          } Potential Contacts`}</p>
           {allContacts &&
             allContacts.map(
-              ({ photoURL, name, bucket, occupation, organization }) => (
+              ({ photoURL, name, bucket, occupation, organization, uid }) => (
                 <NewPeopleBox
+                  userId={userId}
                   contacts={[
                     {
                       photoURL,
@@ -203,14 +205,14 @@ export const PickContacts = ({
                       handle:
                         occupation || (organization && organization.title),
                       bucket,
+                      uid,
                     },
                   ]}
                 />
               )
             )}
-
-          <p className="text3 i mb3">Done for now</p>
         </div>
+        <p className="text3 i mb3">Done for now</p>
         {/* <div className="flex justify-between">
           <p className="text3 i mb3">Show More...</p>
           <button className="text3 i bn pointer mb3">DONE FOR NOW</button>
@@ -234,53 +236,3 @@ export const PickContacts = ({
 
   return null;
 };
-
-function NewPeopleBox({ contacts }) {
-  return (
-    <main className=" center">
-      {contacts &&
-        contacts.map(({ photoURL, name, handle, bucket }) => (
-          <article
-            className={`flex items-center justify-between w-100 bb b--black-05 pb2 mt2 ${(!bucket ||
-              bucket === 'active') &&
-              'o-50'}`}
-          >
-            <div className="flex items-center ">
-              <div className=" w2 w3-ns">
-                <img
-                  src={photoURL}
-                  alt="pogo"
-                  className="ba b--black-10 db br-100 w2 w3-ns h2 h3-ns"
-                />
-              </div>
-              <div className="tl pl3">
-                <h1 className="f6 f5-ns fw6 lh-title black mv0 ">{name}</h1>
-                <h2 className="f6 fw4 mt0 mb0 black-60">{handle}</h2>
-              </div>
-            </div>
-            <div className="w4">
-              <form className="w-100 tr  flex justify-center">
-                {!bucket || bucket === 'active' ? (
-                  <button className="bn pointer tr f2" type="submit">
-                    ❌
-                  </button>
-                ) : (
-                  <button className="bn pointer tr f2" type="submit">
-                    ✅
-                  </button>
-                )}
-              </form>
-            </div>
-          </article>
-        ))}
-    </main>
-  );
-}
-
-// {/* <span></span> */}
-// <span>😁</span>
-// <span className="h3 w-auto">🤔</span>
-// {/* <span>🗑</span> */}
-// <span>💩</span>
-// {/* <span>Who dis❓</span> */}
-// <span>🧐</span>

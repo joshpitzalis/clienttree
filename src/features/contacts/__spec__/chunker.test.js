@@ -2,18 +2,19 @@ import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { render } from '../../../utils/testSetup';
-import ImportContacts from '../Contacts';
-import {
-  MergeManager,
-  findMatchingExistingContact,
-} from '../components/MergeManager';
-import {
-  parseContacts,
-  handleContactSync,
-  findConflicts,
-  handleAddition,
-  contactCleaner,
-} from '../contacts.helpers.js';
+import { Contact } from '../components/NewPeopleBox';
+
+const mockProps = {
+  contact: {
+    uid: 56,
+    photoURL: '',
+    name: 'hello',
+    handle: 'something',
+    bucket: 'archived',
+  },
+  userId: '123',
+  activateContact: jest.fn(),
+};
 
 describe('contact chunker', () => {
   it('lets you fetch user with pictures from google', () => {
@@ -23,10 +24,22 @@ describe('contact chunker', () => {
     // ensure firestore fires
     // ensure modal opens
   });
+
+  describe('toggle contacts', () => {
+    it.only('activate contact', () => {
+      const { getByTestId } = render(
+        <Contact
+          contact={mockProps.contact}
+          activateContact={mockProps.activateContact}
+        />
+      );
+      userEvent.click(getByTestId('activateContact'));
+      expect(mockProps.activateContact).toHaveBeenCalled();
+    });
+    it.todo('archive contact  ');
+    it.todo('trash a contact ');
+  });
   it.todo('deduplicates incoming contacts');
-  it('make contact active', () => false);
-  it.todo('archive contact  ');
-  it.todo('trash a contact ');
   it.todo('shows you 818 potential total contacts count in chunker modal');
   it.todo('if contact already exist shows up as selected');
   it.todo('shorlist 10 contacts');

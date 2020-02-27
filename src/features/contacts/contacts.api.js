@@ -74,11 +74,52 @@ export const saveImportedContacts = (importedContacts, userId) => {
   };
 
   // pending();
-  console.log(importedContacts.length);
 
   const writeOps = importedContacts.map(contact => set(contact, userId));
 
   return Promise.all(writeOps)
     .then(() => console.log({ success: importedContacts }))
     .catch(error => console.log({ error }));
+};
+
+export const _activateContact = (ctx, { payload }) => {
+  const { userId, uid } = payload;
+  return firebase
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('contacts')
+    .doc(uid)
+    .set(
+      {
+        bucket: 'active',
+      },
+      { merge: true }
+    );
+};
+export const _archiveContact = (ctx, { payload }) => {
+  const { userId, uid } = payload;
+  console.log({ payload });
+  return firebase
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('contacts')
+    .doc(uid)
+    .set(
+      {
+        bucket: 'archived',
+      },
+      { merge: true }
+    );
+};
+export const _trashContact = (ctx, { payload }) => {
+  const { userId, uid } = payload;
+  return firebase
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('contacts')
+    .doc(uid)
+    .delete();
 };
