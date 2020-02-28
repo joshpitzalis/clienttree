@@ -87,9 +87,9 @@ describe('insights Box', () => {
       contacts: [
         {
           activeTaskCount: 1,
-          email: 'steven@ninebark.dev',
+          email: 'sven@nk.dev',
           lastContacted: 1549869638062,
-          name: 'Steven Someone',
+          name: 'Sten Someone',
           notes: {
             '9007199254740991': {
               id: 9007199254740991,
@@ -103,9 +103,9 @@ describe('insights Box', () => {
         },
         {
           activeTaskCount: 1,
-          email: 'raouln@gmail.com',
+          email: 'raln@gmal.com',
           lastContacted: 1550048822605,
-          name: 'raoul nanavati',
+          name: 'rao',
           notes: {
             '9007199254740991': {
               id: 9007199254740991,
@@ -119,7 +119,7 @@ describe('insights Box', () => {
         },
         {
           activeTaskCount: 1,
-          email: 'bharatagarwal@gmail.com',
+          email: 'bhara@gil.com',
           lastContacted: 1580971404642,
           name: 'Someone else',
           notes: {
@@ -135,7 +135,7 @@ describe('insights Box', () => {
         },
         {
           activeTaskCount: 1,
-          email: 'ankit@endure.in ',
+          email: 'akit@ene.in ',
           lastContacted: 1580971404642,
           name: 'Example Contact',
           notes: {
@@ -151,7 +151,7 @@ describe('insights Box', () => {
         },
         {
           activeTaskCount: 1,
-          email: 'androiditya@gmail.com',
+          email: 'and@gmail.com',
           lastContacted: 1581485471752,
           name: 'Example ',
           notes: {
@@ -172,9 +172,9 @@ describe('insights Box', () => {
         },
         {
           activeTaskCount: 1,
-          email: 'rajuarora@kautilya.in',
+          email: 'raju@kau.in',
           lastContacted: 1581485547116,
-          name: 'raju arora',
+          name: 'raju',
           notes: {
             '9007199254740991': {
               id: 9007199254740991,
@@ -188,9 +188,9 @@ describe('insights Box', () => {
         },
         {
           activeTaskCount: 1,
-          email: 'Alex.rubner@gmail.com',
+          email: 'Alex@gml.com',
           lastContacted: 1581485617886,
-          name: 'Alex Rubner',
+          name: 'Alex ',
           notes: {
             '9007199254740991': {
               id: 9007199254740991,
@@ -204,9 +204,9 @@ describe('insights Box', () => {
         },
         {
           activeTaskCount: 1,
-          email: 'anni.vaananen@gmail.com',
+          email: 'ann@gmail.com',
           lastContacted: 1581485631550,
-          name: 'Anni vaananenb',
+          name: 'Anni ',
           notes: {
             '9007199254740991': {
               id: 9007199254740991,

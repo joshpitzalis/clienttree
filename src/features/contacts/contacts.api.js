@@ -65,7 +65,6 @@ export const saveImportedContacts = (importedContacts, userId) => {
         {
           uid: newDoc.id,
           lastContacted,
-          notes: {},
           bucket: 'archived',
           ..._contact,
         },

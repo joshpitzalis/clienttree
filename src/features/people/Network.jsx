@@ -12,6 +12,8 @@ import ImportContacts, { PickContacts } from '../contacts/Contacts';
 import { InsightsBox } from '../insights/InsightsBox';
 import { HelpfulTaskList } from './components/UniversalTaskList';
 import GoogleImport from '../contacts/components/GoogleImport';
+import { ConflictScreen } from '../contacts/components/ConflictScreen';
+import { updateContact } from '../contacts/contacts.api.js';
 
 const networkPropTypes = {
   uid: PropTypes.string.isRequired,
@@ -59,10 +61,20 @@ const sortContacts = contacts => {
 //   contacts.filter(item => !!item.lastContacted && item.bucket === 'archived');
 
 export const InnerNetwork = ({ uid, contactChunks }) => {
+  const [conflicts, setConflicts] = React.useState([]);
+
+  const [contactPicker, setContactPicker] = React.useState(false);
+
   const [visible, setVisibility] = React.useState(false);
   const [selectedUser, setSelectedUser] = React.useState('');
-  const contacts = useSelector(store => store && sortContacts(store.contacts));
-  const allContacts = useSelector(store => store && store.contacts);
+  const contacts = useSelector(
+    store => store && store.contacts && sortContacts(store.contacts)
+  );
+  const allContacts = useSelector(
+    store => store && store.contacts
+    // &&
+    // store.contacts.filter(contact => contact && contact.uid)
+  );
   const dispatch = useDispatch();
   const newDoc = firebase
     .firestore()
@@ -108,15 +120,53 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
         <PickContacts userId={uid} allContacts={allContacts} />
       </Menu.Item>
       <Menu.Divider />
-      <GoogleImport userId={uid}>
+      <GoogleImport
+        userId={uid}
+        existingContacts={allContacts}
+        setConflicts={setConflicts}
+        setContactPicker={setContactPicker}
+      >
         <ImportContacts userId={uid} existingContacts={contacts} />
       </GoogleImport>
     </Menu>
   );
 
+  const dispatcher = _value => {
+    if (_value === 'CLOSED') {
+      setConflicts([]);
+    }
+
+    if (_value === 'COMPLETED') {
+      setConflicts([]);
+      setContactPicker(true);
+    }
+
+    if (_value.type === 'DUPLICATE_SELECTED') {
+      const { payload } = _value;
+
+      updateContact(uid, payload);
+    }
+
+    if (_value.type === 'EXISTING_SELECTED') {
+      return null;
+    }
+
+    return null;
+  };
+
   return (
     <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
       <>
+        <>
+          {conflicts && !!conflicts.length && (
+            <ConflictScreen
+              send={dispatcher}
+              duplicates={conflicts}
+              existingContacts={allContacts}
+              setDuplicates={setConflicts}
+            ></ConflictScreen>
+          )}
+        </>
         <OptimizelyFeature feature="insights">
           {insights =>
             insights && (
@@ -128,7 +178,16 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
             )
           }
         </OptimizelyFeature>
-
+        <>
+          {contactPicker && (
+            <PickContacts
+              userId={uid}
+              allContacts={allContacts}
+              setContactPicker={setContactPicker}
+              alreadyImported
+            />
+          )}
+        </>
         <OptimizelyFeature feature="workboard">
           {workboard =>
             !workboard && <HelpfulTaskList myUid={uid} insights={workboard} />
@@ -250,7 +309,7 @@ function NewImport({
   menu,
 }) {
   return (
-    <div className="pv4 flex justify-center" data-testid="outreachPage">
+    <div className="pv4 flex " data-testid="outreachPage">
       {visible ? (
         <PersonModal
           uid={uid}

@@ -153,7 +153,7 @@ export const TaskBox = ({
 
   return (
     <div
-      className="mb3 pa2 taskBorder br3"
+      className="mb3 pa2 taskBorder br3 w5"
       key={taskId}
       data-state={
         current.value && current.value.incomplete

@@ -90,7 +90,7 @@ const App = () => {
               render={referProps => <Refer {...referProps} userId={userId} />}
             />
           </div>
-          <Footer />
+          {/* <Footer /> */}
         </BrowserRouter>
       </ErrorBoundary>
     </OptimizelyProvider>

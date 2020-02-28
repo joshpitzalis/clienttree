@@ -166,12 +166,22 @@ export const PickContacts = ({
   handleImport = _handleImport,
   userId,
   allContacts,
+  setContactPicker,
+  alreadyImported,
 }) => {
+  const [conflicts, setConflicts] = React.useState([]);
+
   const [current, send] = useMachine(contactMachine, {
     actions: {
       // updateContact: (ctx, { payload }) => updateContact(userId, payload),
     },
   });
+
+  React.useEffect(() => {
+    if (alreadyImported) {
+      send('ALREADY_FETCHED');
+    }
+  }, [alreadyImported, send]);
 
   if (current.matches('idle') || current.matches('loading')) {
     return (
@@ -189,13 +199,21 @@ export const PickContacts = ({
   if (current.matches('selector')) {
     return (
       <Portal onClose={() => send('CLOSED')}>
-        <p className="f3 fw6 w-50 dib-l w-auto-l lh-title">{`${
-          allContacts.filter(item => item.bucket === 'archived').length
-        } Potential Contacts`}</p>
+        <p className="f3 fw6 w-50 dib-l w-auto-l lh-title">{`${allContacts &&
+          allContacts.filter(item => item.bucket === 'archived')
+            .length} Potential Contacts`}</p>
         <div className="overflow-y-auto vh-75">
           {allContacts &&
             allContacts.map(
-              ({ photoURL, name, bucket, occupation, organization, uid }) => (
+              ({
+                photoURL,
+                name,
+                bucket,
+                occupation,
+                organization,
+                uid,
+                email,
+              }) => (
                 <NewPeopleBox
                   userId={userId}
                   contacts={[
@@ -203,7 +221,9 @@ export const PickContacts = ({
                       photoURL,
                       name,
                       handle:
-                        occupation || (organization && organization.title),
+                        occupation ||
+                        (organization && organization.title) ||
+                        email,
                       bucket,
                       uid,
                     },
@@ -212,7 +232,15 @@ export const PickContacts = ({
               )
             )}
         </div>
-        <p className="text3 i mb3">Done for now</p>
+        <button
+          className="btn2 pa3 br2 b bn pointer"
+          type="button"
+          onClick={() =>
+            setContactPicker ? setContactPicker(false) : send('CLOSED')
+          }
+        >
+          Done for now
+        </button>
         {/* <div className="flex justify-between">
           <p className="text3 i mb3">Show More...</p>
           <button className="text3 i bn pointer mb3">DONE FOR NOW</button>

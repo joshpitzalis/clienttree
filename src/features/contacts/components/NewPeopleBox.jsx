@@ -91,12 +91,26 @@ export const Contact = ({
           />
         </div>
         <div className="tl pl3">
-          <h1 className="f6 f5-ns fw6 lh-title black mv0 ">{name}</h1>
+          <div>
+            <h1 className="f6 f5-ns fw6 lh-title black mv0 dib">{name}</h1>
+            {current.matches('archived') && (
+              <button
+                className="bn pointer tr f5 ml3 dib"
+                type="submit"
+                data-testid="trashContact"
+                onClick={() =>
+                  send({ type: 'TRASHED', payload: { uid, userId } })
+                }
+              >
+                🗑
+              </button>
+            )}
+          </div>
           <h2 className="f6 fw4 mt0 mb0 black-60">{handle}</h2>
         </div>
       </div>
       <div className="w4">
-        <form className="w-100 tr  flex justify-center">
+        <form className="w-100 tr flex justify-end">
           {current.matches('active') && (
             <button
               className="bn pointer tr f2"
@@ -110,28 +124,16 @@ export const Contact = ({
             </button>
           )}
           {current.matches('archived') && (
-            <>
-              <button
-                className="bn pointer tr f2"
-                type="submit"
-                data-testid="activateContact"
-                onClick={() =>
-                  send({ type: 'ACTIVATED', payload: { uid, userId } })
-                }
-              >
-                ✅
-              </button>
-              <button
-                className="bn pointer tr f2 ml4"
-                type="submit"
-                data-testid="trashContact"
-                onClick={() =>
-                  send({ type: 'TRASHED', payload: { uid, userId } })
-                }
-              >
-                🗑
-              </button>
-            </>
+            <button
+              className="bn pointer tr f2"
+              type="submit"
+              data-testid="activateContact"
+              onClick={() =>
+                send({ type: 'ACTIVATED', payload: { uid, userId } })
+              }
+            >
+              ✅
+            </button>
           )}
         </form>
       </div>

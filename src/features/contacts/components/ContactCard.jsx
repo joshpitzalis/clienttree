@@ -16,10 +16,11 @@ const handleClick = ({
 
   if (existing) {
     selector({ ...contact, uid: existing.uid });
-    return;
+  } else {
+    selector(contact);
   }
 
-  return selector(contact);
+  return isLastContact && send('COMPLETED');
 };
 
 const avatarCreator = _contact =>
@@ -60,7 +61,7 @@ export const ContactCard = ({
         alt="kitty staring at you"
       />
       <h1 className="f3 mb2">
-        {contact && contact.name ? contact.name : 'No email'}
+        {contact && contact.name ? contact.name : 'No Name'}
       </h1>
       <h2 className="f5 fw4 gray mt0">
         {contact && contact.email ? contact.email : 'No email'}

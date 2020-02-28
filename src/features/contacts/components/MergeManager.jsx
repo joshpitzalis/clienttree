@@ -29,9 +29,9 @@ export const MergeManager = ({
 }) => {
   const [index, setIndex] = React.useState(0);
   const lastcontact = index + 1 === duplicates.length;
-  if (index === duplicates.length) {
-    send('CLOSED');
-  }
+  // if (index === duplicates.length) {
+  //   send('CLOSED');
+  // }
   return (
     <div
       data-testid="conflictScreen"
