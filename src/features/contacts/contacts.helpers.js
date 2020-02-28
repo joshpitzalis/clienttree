@@ -143,5 +143,6 @@ export const contactCleaner = connections => {
     occupation: getData(person, 'occupations', 'value'),
     organization: getData(person, 'organizations'),
     residence: getData(person, 'residences', 'value'),
+    phoneNumber: getData(person, 'phoneNumbers', 'value'),
   }));
 };

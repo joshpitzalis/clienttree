@@ -168,9 +168,8 @@ export const PickContacts = ({
   allContacts,
   setContactPicker,
   alreadyImported,
+  count,
 }) => {
-  const [conflicts, setConflicts] = React.useState([]);
-
   const [current, send] = useMachine(contactMachine, {
     actions: {
       // updateContact: (ctx, { payload }) => updateContact(userId, payload),
@@ -199,9 +198,7 @@ export const PickContacts = ({
   if (current.matches('selector')) {
     return (
       <Portal onClose={() => send('CLOSED')}>
-        <p className="f3 fw6 w-50 dib-l w-auto-l lh-title">{`${allContacts &&
-          allContacts.filter(item => item.bucket === 'archived')
-            .length} Potential Contacts`}</p>
+        <p className="f3 fw6 w-50 dib-l w-auto-l lh-title">{`${count} Potential Contacts`}</p>
         <div className="overflow-y-auto vh-75">
           {allContacts &&
             allContacts.map(
@@ -213,6 +210,7 @@ export const PickContacts = ({
                 organization,
                 uid,
                 email,
+                phoneNumber,
               }) => (
                 <NewPeopleBox
                   userId={userId}
@@ -223,7 +221,8 @@ export const PickContacts = ({
                       handle:
                         occupation ||
                         (organization && organization.title) ||
-                        email,
+                        email ||
+                        phoneNumber,
                       bucket,
                       uid,
                     },

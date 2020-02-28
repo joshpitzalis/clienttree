@@ -44,7 +44,7 @@ export const updateContact = (userId, contact) => {
 };
 
 export const saveImportedContacts = (importedContacts, userId) => {
-  const set = (_contact, _userId) => {
+  const set = async (_contact, _userId, _batch) => {
     const newDoc = firebase
       .firestore()
       .collection('users')
@@ -55,28 +55,48 @@ export const saveImportedContacts = (importedContacts, userId) => {
     const oneYearAgo = new Date().setFullYear(new Date().getFullYear() - 1);
     const lastContacted = +new Date(oneYearAgo);
 
-    return firebase
+    const ref = firebase
       .firestore()
       .collection('users')
       .doc(_userId)
       .collection('contacts')
-      .doc(newDoc.id)
-      .set(
-        {
-          uid: newDoc.id,
-          lastContacted,
-          bucket: 'archived',
-          ..._contact,
-        },
-        { merge: true }
-      );
+      .doc(newDoc.id);
+
+    _batch.set(ref, {
+      uid: newDoc.id,
+      lastContacted,
+      bucket: 'archived',
+      ..._contact,
+    });
+
+    // await firebase
+    //   .firestore()
+    //   .collection('users')
+    //   .doc(_userId)
+    //   .collection('contacts')
+    //   .doc(newDoc.id)
+    //   .set(
+    //     {
+    //       uid: newDoc.id,
+    //       lastContacted,
+    //       bucket: 'archived',
+    //       ..._contact,
+    //     },
+    //     { merge: true }
+    //   );
   };
 
   // pending();
 
-  const writeOps = importedContacts.map(contact => set(contact, userId));
+  const batch = firebase.firestore().batch();
 
-  return Promise.all(writeOps)
+  // const writeOps = importedContacts.map(contact => set(contact, userId, batch));
+  importedContacts.map(contact => set(contact, userId, batch));
+
+  // Promise.all(writeOps)
+
+  return batch
+    .commit()
     .then(() => console.log({ success: importedContacts }))
     .catch(error => console.log({ error }));
 };

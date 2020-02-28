@@ -81,8 +81,8 @@ export default function GoogleImport({
         }
 
         return brandNew;
-      });
-  // .then(contacts => saveImportedContacts(contacts, userId));
+      })
+      .then(contacts => saveImportedContacts(contacts, userId));
 
   const login = async () => {
     const { gapi } = window;

@@ -117,7 +117,14 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
         </button>
       </Menu.Item>
       <Menu.Item key="1">
-        <PickContacts userId={uid} allContacts={allContacts} />
+        <PickContacts
+          userId={uid}
+          allContacts={allContacts}
+          count={
+            allContacts &&
+            allContacts.filter(item => item.bucket === 'archived').length
+          }
+        />
       </Menu.Item>
       <Menu.Divider />
       <GoogleImport
