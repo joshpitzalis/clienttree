@@ -2,7 +2,7 @@
 import React from 'react';
 import { Icon } from 'antd';
 import { contactCleaner } from '../contacts.helpers.js';
-import { saveImportedContacts } from '../contacts.api.js';
+import { saveImportedContacts, markImported } from '../contacts.api.js';
 
 export const brandNewContacts = (_new, _existing) =>
   _new.reduce((total, item) => {
@@ -82,7 +82,9 @@ export default function GoogleImport({
 
         return brandNew;
       })
-      .then(contacts => saveImportedContacts(contacts, userId));
+      .then(contacts => saveImportedContacts(contacts, userId))
+      .then(() => markImported(userId))
+      .catch(console.error);
 
   const login = async () => {
     const { gapi } = window;
@@ -97,12 +99,12 @@ export default function GoogleImport({
     <button
       onClick={() => login()}
       type="button"
-      className="btn3 b grow  mh3 tl pv2  pointer bn br1 white"
+      className="btn3 b grow mr2  tl pv2  pointer bn br1 white"
       data-testid="importContacts"
     >
-      Import from
+      Import
       <Icon type="google" className="pl1" />
-      oogle
+      oogle Contacts
     </button>
   );
 }

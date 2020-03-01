@@ -142,3 +142,32 @@ export const _trashContact = (ctx, { payload }) => {
     .doc(uid)
     .delete();
 };
+
+export const markImported = userId =>
+  firebase
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .set(
+      {
+        contactsImported: true,
+      },
+      { merge: true }
+    );
+
+export const updateContactCount = (userId, contactStats) => {
+  const { activeContacts, archivedContacts, totalContacts } = contactStats;
+
+  return firebase
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .set(
+      {
+        activeContacts,
+        archivedContacts,
+        totalContacts,
+      },
+      { merge: true }
+    );
+};

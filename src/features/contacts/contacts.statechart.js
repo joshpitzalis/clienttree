@@ -39,8 +39,7 @@ export const contactMachine = Machine({
       onEntry: ['deduplicate', 'preSelect', 'enrich'],
       on: {
         REVEALED_MORE: 'selector',
-        // COMPLETED_FOR_NOW: 'idle',
-        CLOSED: 'idle',
+        CLOSED: { target: 'idle', actions: ['updateContactCounts'] },
       },
     },
     error: {

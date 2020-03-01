@@ -9,18 +9,17 @@ const handleClick = ({
   send,
 }) => {
   setIndex(prev => prev + 1);
-
   if (isLastContact) {
-    send('CLOSED');
+    send('COMPLETED');
   }
-
   if (existing) {
     selector({ ...contact, uid: existing.uid });
-  } else {
-    selector(contact);
+    return;
   }
-
-  return isLastContact && send('COMPLETED');
+  if (isLastContact) {
+    send('COMPLETED');
+  }
+  return selector(contact);
 };
 
 const avatarCreator = _contact =>

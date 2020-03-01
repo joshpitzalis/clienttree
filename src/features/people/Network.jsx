@@ -4,16 +4,17 @@ import './networkAnimations.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { OptimizelyFeature } from '@optimizely/react-sdk';
 import { Menu, Dropdown, Icon } from 'antd';
+import ImportContacts, { PickContacts } from '../contacts/Contacts';
 import { Person } from './components/Person';
 import { PersonModal } from './components/PersonBox';
 import ErrorBoundary from '../../utils/ErrorBoundary';
 import firebase from '../../utils/firebase';
-import ImportContacts, { PickContacts } from '../contacts/Contacts';
 import { InsightsBox } from '../insights/InsightsBox';
 import { HelpfulTaskList } from './components/UniversalTaskList';
 import GoogleImport from '../contacts/components/GoogleImport';
 import { ConflictScreen } from '../contacts/components/ConflictScreen';
 import { updateContact } from '../contacts/contacts.api.js';
+import { ContactEmail } from '../contacts/components/ContactEmail';
 
 const networkPropTypes = {
   uid: PropTypes.string.isRequired,
@@ -64,6 +65,7 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
   const [conflicts, setConflicts] = React.useState([]);
 
   const [contactPicker, setContactPicker] = React.useState(false);
+  console.log({ contactPicker });
 
   const [visible, setVisibility] = React.useState(false);
   const [selectedUser, setSelectedUser] = React.useState('');
@@ -71,9 +73,10 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
     store => store && store.contacts && sortContacts(store.contacts)
   );
   const allContacts = useSelector(
-    store => store && store.contacts
-    // &&
-    // store.contacts.filter(contact => contact && contact.uid)
+    store =>
+      store &&
+      store.contacts &&
+      store.contacts.filter(contact => contact && contact.uid)
   );
   const dispatch = useDispatch();
   const newDoc = firebase
@@ -117,16 +120,24 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
         </button>
       </Menu.Item>
       <Menu.Item key="1">
-        <PickContacts
+        {/* <PickContacts
           userId={uid}
           allContacts={allContacts}
           count={
             allContacts &&
             allContacts.filter(item => item.bucket === 'archived').length
           }
-        />
+        /> */}
+        <GoogleImport
+          userId={uid}
+          existingContacts={allContacts}
+          setConflicts={setConflicts}
+          setContactPicker={setContactPicker}
+        >
+          <ImportContacts userId={uid} existingContacts={contacts} />
+        </GoogleImport>
       </Menu.Item>
-      <Menu.Divider />
+      {/* <Menu.Divider />
       <GoogleImport
         userId={uid}
         existingContacts={allContacts}
@@ -134,11 +145,13 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
         setContactPicker={setContactPicker}
       >
         <ImportContacts userId={uid} existingContacts={contacts} />
-      </GoogleImport>
+      </GoogleImport> */}
     </Menu>
   );
 
   const dispatcher = _value => {
+    console.log({ _value });
+
     if (_value === 'CLOSED') {
       setConflicts([]);
     }
@@ -164,16 +177,16 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
   return (
     <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
       <>
-        <>
-          {conflicts && !!conflicts.length && (
-            <ConflictScreen
-              send={dispatcher}
-              duplicates={conflicts}
-              existingContacts={allContacts}
-              setDuplicates={setConflicts}
-            ></ConflictScreen>
-          )}
-        </>
+        <ContactEmail></ContactEmail>
+        {conflicts && !!conflicts.length && (
+          <ConflictScreen
+            send={dispatcher}
+            duplicates={conflicts}
+            existingContacts={allContacts}
+            setDuplicates={setConflicts}
+          ></ConflictScreen>
+        )}
+
         <OptimizelyFeature feature="insights">
           {insights =>
             insights && (
@@ -190,8 +203,11 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
             <PickContacts
               userId={uid}
               allContacts={allContacts}
-              setContactPicker={setContactPicker}
               alreadyImported
+              count={
+                allContacts &&
+                allContacts.filter(item => item.bucket === 'archived').length
+              }
             />
           )}
         </>

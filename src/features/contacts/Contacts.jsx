@@ -14,7 +14,11 @@ import {
   handlePending as pending,
 } from './contacts.helpers.js';
 import { contactMachine } from './contacts.statechart';
-import { setNewContact as set, updateContact } from './contacts.api.js';
+import {
+  setNewContact as set,
+  updateContact,
+  updateContactCount,
+} from './contacts.api.js';
 import { ConflictScreen } from './components/ConflictScreen';
 import { NewPeopleBox } from './components/NewPeopleBox';
 
@@ -102,6 +106,7 @@ export const mergeMachine = Machine({
     conflictScreen: {
       on: {
         COMPLETED: 'addButton',
+
         CLOSED: 'addButton',
         DUPLICATE_SELECTED: {
           target: 'conflictScreen',
@@ -166,13 +171,27 @@ export const PickContacts = ({
   handleImport = _handleImport,
   userId,
   allContacts,
-  setContactPicker,
   alreadyImported,
   count,
 }) => {
+  const activeContacts =
+    allContacts &&
+    allContacts.filter(item => !item.bucket || item.bucket === 'active').length;
+
+  const archivedContacts =
+    allContacts &&
+    allContacts.filter(item => item.bucket === 'archived').length;
+
+  const totalContacts = allContacts && allContacts.length;
+
   const [current, send] = useMachine(contactMachine, {
     actions: {
-      // updateContact: (ctx, { payload }) => updateContact(userId, payload),
+      updateContactCounts: () =>
+        updateContactCount(userId, {
+          activeContacts,
+          archivedContacts,
+          totalContacts,
+        }),
     },
   });
 
@@ -234,9 +253,7 @@ export const PickContacts = ({
         <button
           className="btn2 pa3 br2 b bn pointer"
           type="button"
-          onClick={() =>
-            setContactPicker ? setContactPicker(false) : send('CLOSED')
-          }
+          onClick={() => send('CLOSED')}
         >
           Done for now
         </button>

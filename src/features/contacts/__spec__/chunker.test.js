@@ -26,7 +26,7 @@ describe('contact chunker', () => {
   });
 
   describe('toggle contacts', () => {
-    it.only('activate contact', () => {
+    it('activate contact', () => {
       const { getByTestId } = render(
         <Contact
           contact={mockProps.contact}
@@ -46,6 +46,9 @@ describe('contact chunker', () => {
   it.todo('send email');
   it.todo('connect email to app');
   it.todo('send email if import cancelled mid process');
+  it.todo('when you import people, set alreadyImported to true ');
+  it.only('when you close import modal update active and archived count', () =>
+    false);
 });
 
 describe('helpers', () => {
