@@ -78,7 +78,7 @@ export const Contact = ({
   return (
     <article
       key={uid}
-      className={`flex items-center justify-between w-100 bb b--black-05 pb2 mt2 ${current.matches(
+      className={`flex items-center justify-between w-100 bb b--black-05 pb2 mt2 ${!current.matches(
         'active'
       ) && 'o-50'}`}
     >
@@ -111,7 +111,28 @@ export const Contact = ({
       </div>
       <div className="w4">
         <form className="w-100 tr flex justify-end">
-          {current.matches('active') && (
+          <label
+            htmlFor={name}
+            className="lh-copy flex items-center justify-around  label relative pl3 pointer"
+            style={{ minWidth: '100%' }}
+            data-testid="contactCheckbox"
+          >
+            <input
+              className="taskBox"
+              type="checkbox"
+              id={name}
+              data-testid={name}
+              value={current.matches('active')}
+              checked={current.matches('active')}
+              onChange={() =>
+                current.matches('active')
+                  ? send({ type: 'ARCHIVED', payload: { uid, userId } })
+                  : send({ type: 'ACTIVATED', payload: { uid, userId } })
+              }
+            />
+            <span className="checkBox" data-state={current.matches('active')} />
+          </label>
+          {/* {current.matches('active') && (
             <button
               className="bn pointer tr f2"
               type="submit"
@@ -134,7 +155,7 @@ export const Contact = ({
             >
               ✅
             </button>
-          )}
+          )} */}
         </form>
       </div>
     </article>

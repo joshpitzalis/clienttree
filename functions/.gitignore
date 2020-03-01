@@ -8,4 +8,7 @@ typings/
 node_modules/
 
 serviceAccount.json
-serviceAccount.json.dev
+serviceAccount.json.DEV
+serviceAccount.json.PROD
+
+.runtimeconfig.json

@@ -14,7 +14,6 @@ import { HelpfulTaskList } from './components/UniversalTaskList';
 import GoogleImport from '../contacts/components/GoogleImport';
 import { ConflictScreen } from '../contacts/components/ConflictScreen';
 import { updateContact } from '../contacts/contacts.api.js';
-import { ContactEmail } from '../contacts/components/ContactEmail';
 
 const networkPropTypes = {
   uid: PropTypes.string.isRequired,
@@ -177,7 +176,6 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
   return (
     <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
       <>
-        <ContactEmail></ContactEmail>
         {conflicts && !!conflicts.length && (
           <ConflictScreen
             send={dispatcher}

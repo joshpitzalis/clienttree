@@ -71,7 +71,6 @@ export default function GoogleImport({
       })
       .then(newContacts => {
         const conflicts = findConflict(newContacts, existingContacts);
-
         const brandNew = brandNewContacts(newContacts, existingContacts);
 
         if (conflicts.length) {

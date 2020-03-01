@@ -103,7 +103,8 @@
     "cypress": "start-server-and-test start http://localhost:3000 cypress:open",
     "deploy": "firebase deploy --except functions",
     "deployFunctions": "firebase deploy --only functions",
-    "coverage": "npm test -- --coverage"
+    "coverage": "npm test -- --coverage",
+    "indexes": "firebase deploy --only firestore:indexes"
   },
   "eslintConfig": {
     "extends": [

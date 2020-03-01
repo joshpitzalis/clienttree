@@ -19,6 +19,11 @@
 7. npm run deploy (this excluded deploying firebase functions)
 
 ## Cloud Functions deploy protocol
-1.npm run build
+1.npm run build (because typescript)
 2.firebase functions:config:set sendgrid.key=YOUR_KEY sendgrid.template=TEMPLATE_ID
 3. npm run deploy
+
+## Running Cloud Functions locally
+firebase functions:config:get > .runtimeconfig.json
+npm run shell
+https://firebase.google.com/docs/functions/local-shell

@@ -68,22 +68,6 @@ export const saveImportedContacts = (importedContacts, userId) => {
       bucket: 'archived',
       ..._contact,
     });
-
-    // await firebase
-    //   .firestore()
-    //   .collection('users')
-    //   .doc(_userId)
-    //   .collection('contacts')
-    //   .doc(newDoc.id)
-    //   .set(
-    //     {
-    //       uid: newDoc.id,
-    //       lastContacted,
-    //       bucket: 'archived',
-    //       ..._contact,
-    //     },
-    //     { merge: true }
-    //   );
   };
 
   // pending();
@@ -91,7 +75,7 @@ export const saveImportedContacts = (importedContacts, userId) => {
   const batch = firebase.firestore().batch();
 
   // const writeOps = importedContacts.map(contact => set(contact, userId, batch));
-  importedContacts.map(contact => set(contact, userId, batch));
+  importedContacts.forEach(contact => set(contact, userId, batch));
 
   // Promise.all(writeOps)
 
@@ -118,7 +102,7 @@ export const _activateContact = (ctx, { payload }) => {
 };
 export const _archiveContact = (ctx, { payload }) => {
   const { userId, uid } = payload;
-  console.log({ payload });
+
   return firebase
     .firestore()
     .collection('users')

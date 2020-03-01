@@ -136,6 +136,7 @@ export const contactCleaner = connections => {
     resourceName: person.resourceName,
     name: getData(person, 'names', 'displayName'),
     photoURL: getData(person, 'photos', 'url'),
+    defaultImage: !!getData(person, 'photos', 'default'),
     address: getData(person, 'addresses'),
     email: getData(person, 'emailAddresses', 'value'),
     gender: getData(person, 'genders', 'value'),
