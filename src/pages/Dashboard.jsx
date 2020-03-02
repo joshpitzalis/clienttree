@@ -186,6 +186,8 @@ export function Dashboard({ userId }) {
               className="w-100 measure-narrow-ns bg-transparent tc"
               data-testid="sidebar"
             >
+
+              
               <MobileReminder myUid={userId} />
               <Onboarding
                 uid={userId}
