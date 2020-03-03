@@ -196,59 +196,59 @@ export const PickContacts = ({
   });
 
   React.useEffect(() => {
+    console.log({ alreadyImported });
+
     if (alreadyImported) {
       send('ALREADY_FETCHED');
     }
   }, [alreadyImported, send]);
 
-  if (current.matches('idle') || current.matches('loading')) {
-    return (
-      <button
-        onClick={() => send('CLICKED')}
-        type="button"
-        className="btn3 b grow pv2  pointer bn br1 white"
-        data-testid="addContacts"
-      >
-        {current.matches('loading') ? `Loading...` : `Organise Contacts`}
-      </button>
-    );
-  }
+  // if (current.matches('idle') || current.matches('loading')) {
+  //   return (
+  //     <button
+  //       onClick={() => send('CLICKED')}
+  //       type="button"
+  //       className="btn3 b grow pv2  pointer bn br1 white"
+  //       data-testid="addContacts"
+  //     >
+  //       {current.matches('loading') ? `Loading...` : `Organise Contacts`}
+  //     </button>
+  //   );
+  // }
 
   if (current.matches('selector')) {
     return (
       <Portal onClose={() => send('CLOSED')}>
         <p className="f3 fw6 w-50 dib-l w-auto-l lh-title">{`${count} Potential Contacts`}</p>
         <div className="overflow-y-auto vh-75">
-          {allContacts &&
-            allContacts.map(
-              ({
-                photoURL,
-                name,
-                bucket,
-                occupation,
-                organization,
-                uid,
-                email,
-                phoneNumber,
-              }) => (
-                <NewPeopleBox
-                  userId={userId}
-                  contacts={[
-                    {
-                      photoURL,
-                      name,
-                      handle:
-                        occupation ||
-                        (organization && organization.title) ||
-                        email ||
-                        phoneNumber,
-                      bucket,
-                      uid,
-                    },
-                  ]}
-                />
+          <NewPeopleBox
+            userId={userId}
+            contacts={
+              allContacts &&
+              allContacts.map(
+                ({
+                  photoURL,
+                  name,
+                  bucket,
+                  occupation,
+                  organization,
+                  uid,
+                  email,
+                  phoneNumber,
+                }) => ({
+                  photoURL,
+                  name,
+                  handle:
+                    occupation ||
+                    (organization && organization.title) ||
+                    email ||
+                    phoneNumber,
+                  bucket,
+                  uid,
+                })
               )
-            )}
+            }
+          />
         </div>
         <button
           className="btn2 pa3 br2 b bn pointer"

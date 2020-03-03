@@ -2,26 +2,55 @@ import React from 'react';
 import { Machine } from 'xstate';
 // import { assert } from 'chai';
 import { useMachine } from '@xstate/react';
+import { FixedSizeList } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
 import {
   _activateContact,
   _archiveContact,
   _trashContact,
 } from '../contacts.api';
 
-export const NewPeopleBox = ({ contacts, userId }) => (
-  <main className=" center">
-    {contacts &&
+export const NewPeopleBox = ({ contacts, userId }) => {
+  const Row = ({ index, style }) => (
+    <Contact
+      style={style}
+      contact={contacts[index]}
+      userId={userId}
+      activateContact={_activateContact}
+      archiveContact={_archiveContact}
+      trashContact={_trashContact}
+    />
+  );
+
+  return (
+    <AutoSizer>
+      {({ height, width }) => (
+        <FixedSizeList
+          className="center"
+          height={height}
+          itemCount={contacts && contacts.length}
+          itemSize={80}
+          width={width}
+        >
+          {/* // <main className="center"> */}
+          {/* {contacts &&
       contacts.map(contact => (
         <Contact
+          key={contact.uid}
           contact={contact}
           userId={userId}
           activateContact={_activateContact}
           archiveContact={_archiveContact}
           trashContact={_trashContact}
         />
-      ))}
-  </main>
-);
+      ))} */}
+          {/* // </main> */}
+          {Row}
+        </FixedSizeList>
+      )}
+    </AutoSizer>
+  );
+};
 
 export const contactMachine = Machine({
   id: 'contact',
@@ -51,6 +80,7 @@ export const Contact = ({
   activateContact,
   archiveContact,
   trashContact,
+  style,
 }) => {
   const [current, send] = useMachine(contactMachine, {
     actions: {
@@ -77,6 +107,7 @@ export const Contact = ({
 
   return (
     <article
+      style={style}
       key={uid}
       className={`flex items-center justify-between w-100 bb b--black-05 pb2 mt2 ${!current.matches(
         'active'
@@ -109,30 +140,29 @@ export const Contact = ({
           <h2 className="f6 fw4 mt0 mb0 black-60">{handle}</h2>
         </div>
       </div>
-      <div className="w4">
-        <form className="w-100 tr flex justify-end">
-          <label
-            htmlFor={name}
-            className="lh-copy flex items-center justify-around  label relative pl3 pointer"
-            style={{ minWidth: '100%' }}
-            data-testid="contactCheckbox"
-          >
-            <input
-              className="taskBox"
-              type="checkbox"
-              id={name}
-              data-testid={name}
-              value={current.matches('active')}
-              checked={current.matches('active')}
-              onChange={() =>
-                current.matches('active')
-                  ? send({ type: 'ARCHIVED', payload: { uid, userId } })
-                  : send({ type: 'ACTIVATED', payload: { uid, userId } })
-              }
-            />
-            <span className="checkBox" data-state={current.matches('active')} />
-          </label>
-          {/* {current.matches('active') && (
+      <div className="w3 flex justify-end">
+        <label
+          htmlFor={name}
+          className="lh-copy flex items-center justify-around  label relative  pointer "
+          style={{ minWidth: '100%' }}
+          data-testid="contactCheckbox"
+        >
+          <input
+            className="taskBox"
+            type="checkbox"
+            id={name}
+            data-testid={name}
+            value={current.matches('active')}
+            checked={current.matches('active')}
+            onChange={() =>
+              current.matches('active')
+                ? send({ type: 'ARCHIVED', payload: { uid, userId } })
+                : send({ type: 'ACTIVATED', payload: { uid, userId } })
+            }
+          />
+          <span className="checkBox" data-state={current.matches('active')} />
+        </label>
+        {/* {current.matches('active') && (
             <button
               className="bn pointer tr f2"
               type="submit"
@@ -156,7 +186,6 @@ export const Contact = ({
               ✅
             </button>
           )} */}
-        </form>
       </div>
     </article>
   );

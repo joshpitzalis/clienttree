@@ -62,10 +62,7 @@ const sortContacts = contacts => {
 
 export const InnerNetwork = ({ uid, contactChunks }) => {
   const [conflicts, setConflicts] = React.useState([]);
-
   const [contactPicker, setContactPicker] = React.useState(false);
-  console.log({ contactPicker });
-
   const [visible, setVisibility] = React.useState(false);
   const [selectedUser, setSelectedUser] = React.useState('');
   const contacts = useSelector(

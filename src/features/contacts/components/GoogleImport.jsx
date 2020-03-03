@@ -65,6 +65,7 @@ export default function GoogleImport({
         pageSize: 2000,
         personFields,
       })
+
       .then(response => {
         const { connections } = response.result;
         return contactCleaner(connections);
@@ -83,6 +84,7 @@ export default function GoogleImport({
       })
       .then(contacts => saveImportedContacts(contacts, userId))
       .then(() => markImported(userId))
+
       .catch(console.error);
 
   const login = async () => {
