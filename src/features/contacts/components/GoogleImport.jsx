@@ -1,8 +1,8 @@
 // import GoogleContacts from 'react-google-contacts';
-import React from 'react';
 import { Icon } from 'antd';
+import React from 'react';
+import { markImported, saveImportedContacts } from '../contacts.api.js';
 import { contactCleaner } from '../contacts.helpers.js';
-import { saveImportedContacts, markImported } from '../contacts.api.js';
 
 export const brandNewContacts = (_new, _existing) =>
   _new.reduce((total, item) => {
@@ -100,7 +100,7 @@ export default function GoogleImport({
     <button
       onClick={() => login()}
       type="button"
-      className="btn3 b grow mr2  tl pv2  pointer bn br1 white"
+      className="btn3 b black grow mr2  tl pv2  pointer bn br1 white"
       data-testid="importContacts"
     >
       Import

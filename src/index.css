@@ -69,7 +69,9 @@ textarea{
   background-color:var(--black) !important;
 }
 
-
+.black{
+  color: var(--text-secondary) !important;
+}
 
 .green {
   color: var(--primary) !important;
@@ -161,6 +163,7 @@ outline: none;
 overflow: hidden;
 padding: 0 6px;
 margin: 0 2px;
+-webkit-transition: box-shadow 150ms cubic-bezier(.2, .6, .6, 1), opacity 150ms cubic-bezier(.2, .6, .6, 1);
 transition: box-shadow 150ms cubic-bezier(.2, .6, .6, 1), opacity 150ms cubic-bezier(.2, .6, .6, 1);
 vertical-align: middle;
 white-space: nowrap;
@@ -249,7 +252,6 @@ details summary::-webkit-details-marker {
   border: solid white;
   border-width: 0 3px 3px 0;
   -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
 

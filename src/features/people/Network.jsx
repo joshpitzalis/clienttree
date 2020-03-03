@@ -1,19 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import './networkAnimations.css';
-import { useSelector, useDispatch } from 'react-redux';
 import { OptimizelyFeature } from '@optimizely/react-sdk';
-import { Menu, Dropdown, Icon } from 'antd';
-import ImportContacts, { PickContacts } from '../contacts/Contacts';
-import { Person } from './components/Person';
-import { PersonModal } from './components/PersonBox';
+import { Dropdown, Icon, Menu } from 'antd';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ErrorBoundary from '../../utils/ErrorBoundary';
 import firebase from '../../utils/firebase';
-import { InsightsBox } from '../insights/InsightsBox';
-import { HelpfulTaskList } from './components/UniversalTaskList';
-import GoogleImport from '../contacts/components/GoogleImport';
 import { ConflictScreen } from '../contacts/components/ConflictScreen';
+import GoogleImport from '../contacts/components/GoogleImport';
+import ImportContacts, { PickContacts } from '../contacts/Contacts';
 import { updateContact } from '../contacts/contacts.api.js';
+import { InsightsBox } from '../insights/InsightsBox';
+import { Person } from './components/Person';
+import { PersonModal } from './components/PersonBox';
+import { HelpfulTaskList } from './components/UniversalTaskList';
+import './networkAnimations.css';
 
 const networkPropTypes = {
   uid: PropTypes.string.isRequired,
@@ -109,7 +109,7 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
             });
             setVisibility(true);
           }}
-          className="btn3 b grow  tl pv2  pointer bn br1 white"
+          className="btn3 b grow black tl pv2  pointer bn br1 white"
           data-testid="addPeopleButton"
         >
           Add Someone New
@@ -172,16 +172,7 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
 
   return (
     <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
-      <>
-        {conflicts && !!conflicts.length && (
-          <ConflictScreen
-            send={dispatcher}
-            duplicates={conflicts}
-            existingContacts={allContacts}
-            setDuplicates={setConflicts}
-          ></ConflictScreen>
-        )}
-
+      <div className="">
         <OptimizelyFeature feature="insights">
           {insights =>
             insights && (
@@ -193,6 +184,16 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
             )
           }
         </OptimizelyFeature>
+
+        {conflicts && !!conflicts.length && (
+          <ConflictScreen
+            send={dispatcher}
+            duplicates={conflicts}
+            existingContacts={allContacts}
+            setDuplicates={setConflicts}
+          ></ConflictScreen>
+        )}
+
         <>
           {contactPicker && (
             <PickContacts
@@ -206,6 +207,7 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
             />
           )}
         </>
+
         <OptimizelyFeature feature="workboard">
           {workboard =>
             !workboard && <HelpfulTaskList myUid={uid} insights={workboard} />
@@ -233,9 +235,8 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
             newDoc={newDoc}
           />
         )}
-
         <ContactsBox contacts={contacts} uid={uid}></ContactsBox>
-      </>
+      </div>
     </ErrorBoundary>
   );
 };
@@ -342,7 +343,7 @@ function NewImport({
         <Dropdown overlay={menu} trigger={['click']}>
           <button
             type="button"
-            className="btn2 b grow  ph3 pv2  pointer bn br1 white ant-dropdown-link"
+            className="btn2 black b grow  ph3 pv2  pointer bn br1 white ant-dropdown-link"
             onClick={e => e.preventDefault()}
           >
             Add People

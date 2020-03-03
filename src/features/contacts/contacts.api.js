@@ -43,6 +43,36 @@ export const updateContact = (userId, contact) => {
     );
 };
 
+export const writeEachSyncronously = async (chunks, createBatch) => {
+  const payload = [];
+
+  // async function asyncForEach(chunk, callback) {
+  //   for (let index = 0; index < chunk.length; index += 1) {
+  //     console.log({ chunk });
+  //     const response = await callback(chunk);
+  //     payload.push(response);
+  //   }
+  // }
+
+  // starts here =>
+  for (let index = 0; index < chunks.length; index += 1) {
+    // await asyncForEach(chunks[index], createBatch);
+    const response = await createBatch(chunks[index]);
+    payload.push(response);
+  }
+
+  return payload;
+};
+
+export const chunkArrayInGroups = (arr, size) => {
+  const newArr = [];
+
+  for (let i = 0; i < arr.length; i += size) {
+    newArr.push(arr.slice(i, i + size));
+  }
+  return newArr;
+};
+
 export const saveImportedContacts = (importedContacts, userId) => {
   const set = async (_contact, _userId, _batch) => {
     const newDoc = firebase
@@ -70,19 +100,34 @@ export const saveImportedContacts = (importedContacts, userId) => {
     });
   };
 
+  const createBatch = chunk => {
+    console.log('chunk', chunk);
+    const _batch = firebase.firestore().batch();
+    const operations = chunk.map(contact => set(contact, userId, _batch));
+    Promise.all(operations)
+      .then(() => _batch.commit())
+      .then(() => 'success')
+      .catch(console.error);
+  };
+
   // pending();
 
-  const batch = firebase.firestore().batch();
-
   // const writeOps = importedContacts.map(contact => set(contact, userId, batch));
+  if (importedContacts && importedContacts.length > 500) {
+    console.log('importedContacts', importedContacts.length);
+    const contactChunks = chunkArrayInGroups(importedContacts, 500);
+    console.log('contactChunks', contactChunks);
+    return writeEachSyncronously(contactChunks, createBatch);
+  }
+  console.log('nono');
+  const batch = firebase.firestore().batch();
   importedContacts.forEach(contact => set(contact, userId, batch));
-
-  // Promise.all(writeOps)
-
   return batch
     .commit()
     .then(() => console.log({ success: importedContacts }))
     .catch(error => console.log({ error }));
+
+  // Promise.all(writeOps)
 };
 
 export const _activateContact = (ctx, { payload }) => {

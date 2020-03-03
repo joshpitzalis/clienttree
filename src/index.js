@@ -1,13 +1,13 @@
+import '@duik/it/dist/styles.css';
+import * as Sentry from '@sentry/browser';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import * as Sentry from '@sentry/browser';
 import { Provider } from 'react-redux';
-import * as serviceWorker from './serviceWorker';
-import Routes from './Routes';
 import { UserProvider } from './features/auth/UserContext';
-import store from './utils/store';
 import './index.css';
-import '@duik/it/dist/styles.css';
+// import * as serviceWorker from './serviceWorker';
+import Routes from './Routes';
+import store from './utils/store';
 
 if (process.env.NODE_ENV === 'production') {
   Sentry.init({
@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'production') {
     rules: [{ id: 'radiogroup', enabled: true }],
   };
   // eslint-disable-next-line
-  var axe = require('react-axe');
+  var axe = require("react-axe");
   axe(React, ReactDOM, 1000, config);
 }
 console.log(`Version: ${process.env.REACT_APP_VERSION}`);
@@ -37,4 +37,4 @@ ReactDOM.render(<App />, document.getElementById('root'));
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+// serviceWorker.unregister();

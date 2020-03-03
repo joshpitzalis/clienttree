@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom/extend-expect';
-import React from 'react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
 import { render } from '../../../utils/testSetup';
 import { Contact } from '../components/NewPeopleBox';
+import { chunkArrayInGroups, writeEachSyncronously } from '../contacts.api';
 
 const mockProps = {
   contact: {
@@ -26,7 +27,7 @@ describe('contact chunker', () => {
   });
 
   describe('toggle contacts', () => {
-    it('activate contact', () => {
+    it.skip('activate contact', () => {
       const { getByTestId } = render(
         <Contact
           contact={mockProps.contact}
@@ -47,7 +48,7 @@ describe('contact chunker', () => {
   it.todo('connect email to app');
   it.todo('send email if import cancelled mid process');
   it.todo('when you import people, set alreadyImported to true ');
-  it.only('when you close import modal update active and archived count', () =>
+  it.skip('when you close import modal update active and archived count', () =>
     false);
 });
 
@@ -57,6 +58,51 @@ describe('helpers', () => {
   });
   it.skip('contact sorter sort constct by last contacted', () => {});
   it.skip('save contacts saves contacts', () => {});
+
+  it('chunkArrayInGroups splits a large array into an array of smaller arrays', () => {
+    const data = [{ a: 1 }, { a: 1 }, { a: 1 }, { a: 1 }];
+    const result = [[{ a: 1 }, { a: 1 }], [{ a: 1 }, { a: 1 }]];
+    expect(chunkArrayInGroups(data, 2)).toEqual(result);
+  });
+
+  it('chunkArrayInGroups returns remainder of the last chunk', () => {
+    const data = [{ a: 1 }, { a: 1 }, { a: 1 }, { a: 1 }, { a: 2 }];
+    const result = [[{ a: 1 }, { a: 1 }], [{ a: 1 }, { a: 1 }], [{ a: 2 }]];
+    expect(chunkArrayInGroups(data, 2)).toEqual(result);
+  });
+
+  it('writeEachSyncronously processes each async item syncronously', () => {
+    const createBatch = chunk => {
+      const operations = chunk.map(
+        ({ ms, count }) =>
+          new Promise(resolve => setTimeout(resolve(count), ms))
+      );
+      return Promise.all(operations).catch(console.error);
+    };
+
+    // const createBatch = chunk => {
+    //   const _batch = firebase.firestore().batch();
+    //   const operations = chunk.forEach(contact => set(contact, userId, _batch));
+    //   Promise.all(operations)
+    //     .then(() => _batch.commit())
+    //     .then(() => 'success')
+    //     .catch(console.error);
+    // };
+
+    const data = [
+      [{ ms: 10, count: 1 }, { ms: 10, count: 2 }],
+      [{ ms: 10, count: 3 }, { ms: 10, count: 4 }],
+    ];
+
+    expect(writeEachSyncronously(data, createBatch)).resolves.toEqual([
+      [1, 2],
+      [3, 4],
+    ]);
+  });
+
+  it.skip('handles errors', () => {});
+
+  it.skip('2K issue', () => {});
 });
 
 describe('bugs', () => {
