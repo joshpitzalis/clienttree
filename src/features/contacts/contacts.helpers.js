@@ -147,3 +147,41 @@ export const contactCleaner = connections => {
     phoneNumber: getData(person, 'phoneNumbers', 'value'),
   }));
 };
+
+export const brandyNewContacts = (_new, _existing) =>
+  _new.reduce((total, item) => {
+    const nameMatch = _existing.some(element => element.name === item.name);
+
+    const emailMatch = _existing.some(element => element.email === item.email);
+
+    if ((!nameMatch && !emailMatch) || (!nameMatch && !item.email)) {
+      total.push(item);
+    }
+
+    return total;
+  }, []);
+
+export const findConflict = (newContacts, old) => {
+  // NAME_MATCHES      EMAIL_MATCHES    CONFLICT
+  // true              true             false (identical)
+  // true              false            true
+  // false             true             true
+  // false             false            false
+
+  const findMatch = (_new, _old, matcher) =>
+    _old && _old.find(element => element[matcher] === _new[matcher]);
+
+  const duplicates =
+    newContacts &&
+    newContacts.filter(
+      item => findMatch(item, old, 'name') !== findMatch(item, old, 'email')
+    );
+  return duplicates.filter(
+    // only return duplicates that have an email and name field
+    // so no blank fields on incoming conflicts
+    _item =>
+      // (_item.email !== '' || _item.email !== null) &&
+      // (_item.name !== '' || _item.name !== null)
+      _item.email && _item.name
+  );
+};

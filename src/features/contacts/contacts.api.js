@@ -1,4 +1,9 @@
 import firebase from '../../utils/firebase';
+import {
+  brandyNewContacts,
+  contactCleaner,
+  findConflict,
+} from './contacts.helpers';
 
 export const setNewContact = (userId, contact) => {
   const { name, email, photoURL } = contact;
@@ -196,3 +201,68 @@ export const updateContactCount = (userId, contactStats) => {
       { merge: true }
     );
 };
+
+// ###
+
+const personFields =
+  'addresses,emailAddresses,genders,metadata,names,occupations,organizations,phoneNumbers,photos,residences';
+
+const getContacts = (_gapi, _nextPageToken) =>
+  _gapi.client.people.people.connections
+    .list({
+      resourceName: 'people/me',
+      pageSize: 2000,
+      personFields,
+      pageToken: _nextPageToken,
+    })
+    .then(response => {
+      const { connections, nextPageToken } = response.result;
+      return { people: connections, nextPageToken };
+    });
+
+const getAllContacts = async (_people, _token, _gapi) => {
+  if (_people.length < 2000) {
+    // terminal case
+    const result = await getContacts(_gapi, _token);
+    return _people.push(...result.people);
+  }
+
+  // block to execute
+  const { people, nextPageToken } = await getContacts(_gapi, _token);
+  _people.push(...people);
+  getAllContacts(people, nextPageToken, _gapi);
+};
+
+export const fetchContacts = ({ _gapi, existingContacts, userId, send }) =>
+  _gapi.client.people.people.connections
+    .list({
+      resourceName: 'people/me',
+      pageSize: 2000,
+      personFields,
+    })
+    .then(async response => {
+      const { connections, nextPageToken } = response.result;
+      const contacts = [...connections];
+
+      if (contacts.length >= 2000) {
+        await getAllContacts(contacts, nextPageToken, _gapi);
+      }
+
+      return contacts;
+    })
+    .then(connections => contactCleaner(connections))
+    .then(newContacts => {
+      const conflicts = findConflict(newContacts, existingContacts);
+      const brandNew = brandyNewContacts(newContacts, existingContacts);
+
+      if (conflicts.length) {
+        send('CONFLICTS_FOUND');
+      } else {
+        send('NO_CONFLICTS_FOUND');
+      }
+
+      return brandNew;
+    })
+    .then(contacts => saveImportedContacts(contacts, userId))
+    .then(() => markImported(userId))
+    .catch(console.error);

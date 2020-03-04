@@ -83,6 +83,7 @@ export default function GoogleImport({
   existingContacts,
   setConflicts,
   setContactPicker,
+  send,
 }) {
   const fetchContacts = _gapi =>
     _gapi.client.people.people.connections
@@ -99,7 +100,6 @@ export default function GoogleImport({
           await getAllContacts(contacts, nextPageToken, _gapi);
         }
 
-        console.log('contacts.length', contacts.length);
         return contacts;
       })
       .then(connections => contactCleaner(connections))
@@ -109,8 +109,10 @@ export default function GoogleImport({
 
         if (conflicts.length) {
           setConflicts(conflicts);
+          send('CONFLICTS_FOUND');
         } else {
           setContactPicker(true);
+          send('NO_CONFLICTS_FOUND');
         }
 
         return brandNew;
@@ -120,6 +122,7 @@ export default function GoogleImport({
       .catch(console.error);
 
   const login = async () => {
+    send('CLICKED');
     const { gapi } = window;
     const googleAuth = gapi.auth2.getAuthInstance();
     googleAuth

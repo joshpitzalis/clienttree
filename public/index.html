@@ -62,7 +62,7 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   <script defer>
-    !(function () {
+    !(function() {
       const analytics = (window.analytics = window.analytics || []);
       if (!analytics.initialize)
         if (analytics.invoked)
@@ -89,8 +89,8 @@
             'off',
             'on',
           ];
-          analytics.factory = function (t) {
-            return function () {
+          analytics.factory = function(t) {
+            return function() {
               const e = Array.prototype.slice.call(arguments);
               e.unshift(t);
               analytics.push(e);
@@ -101,7 +101,7 @@
             const e = analytics.methods[t];
             analytics[e] = analytics.factory(e);
           }
-          analytics.load = function (t, e) {
+          analytics.load = function(t, e) {
             const n = document.createElement('script');
             n.type = 'text/javascript';
             n.async = !0;
@@ -117,30 +117,30 @@
     })();
   </script>
   <!-- start Gist JS code-->
-  <script defer>(function (d, h, w) {
-      const gist = (w.gist = w.gist || []);
-      gist.methods = ['trackPageView', 'identify', 'track', 'setAppId'];
-      gist.factory = function (t) {
-        return function () {
-          const e = Array.prototype.slice.call(arguments);
-          e.unshift(t);
-          gist.push(e);
-          return gist;
-        };
+  <script defer>(function(d, h, w) {
+  const gist = (w.gist = w.gist || []);
+  gist.methods = ['trackPageView', 'identify', 'track', 'setAppId'];
+    gist.factory = function(t) {
+      return function() {
+        const e = Array.prototype.slice.call(arguments);
+        e.unshift(t);
+        gist.push(e);
+        return gist;
       };
-      for (let i = 0; i < gist.methods.length; i++) {
-        const c = gist.methods[i];
-        gist[c] = gist.factory(c);
-      }
-      (s = d.createElement('script')),
-        (s.src = 'https://widget.getgist.com'),
-        (s.async = !0),
-        (e = d.getElementsByTagName(h)[0]),
-        e.appendChild(s),
-        s.addEventListener('load', function (e) { }, !1),
-        gist.setAppId('dgcllwy3'),
-        gist.trackPageView();
-    })(document, 'head', window);
+  };
+  for (let i = 0; i < gist.methods.length; i++) {
+      const c = gist.methods[i];
+      gist[c] = gist.factory(c);
+  }
+  (s = d.createElement('script')),
+      (s.src = 'https://widget.getgist.com'),
+      (s.async = !0),
+      (e = d.getElementsByTagName(h)[0]),
+      e.appendChild(s),
+      s.addEventListener('load', function(e) {}, !1),
+      gist.setAppId('dgcllwy3'),
+      gist.trackPageView();
+})(document, 'head', window);
   </script>
   <!-- end Gist JS code -->
 
@@ -148,6 +148,7 @@
   <script src="https://api.cloudsponge.com/widget/XbhsCORz5smjDfEHmoV3dg.js"
     defer></script>
   <!-- end cloudsponge code -->
+  
   <script defer src="https://apis.google.com/js/api.js"
     type="text/javascript"></script>
 
