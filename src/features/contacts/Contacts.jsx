@@ -1,174 +1,132 @@
-// import Avatar from 'react-avatar';
-import { Icon } from 'antd';
-import React, { useState } from 'react';
-import { assert } from 'chai';
 import { useMachine } from '@xstate/react';
+import { Dropdown, Icon, Menu } from 'antd';
+import React from 'react';
 import { Machine } from 'xstate';
 import Portal from '../../utils/Portal';
-import {
-  parseContacts,
-  handleContactSync,
-  handleAddition as add,
-  handleError as error,
-  handleSuccessfulCompletion as success,
-  handlePending as pending,
-} from './contacts.helpers.js';
-import { contactMachine } from './contacts.statechart';
-import {
-  setNewContact as set,
-  updateContact,
-  updateContactCount,
-} from './contacts.api.js';
 import { ConflictScreen } from './components/ConflictScreen';
+import GoogleImport from './components/GoogleImport';
 import { NewPeopleBox } from './components/NewPeopleBox';
+import { updateContact, updateContactCount } from './contacts.api.js';
 
-export const useCloudsponge = ({
-  userId,
-  existingContacts,
-  send,
-  setDuplicates,
-}) => {
-  const { cloudsponge } = window;
-
-  const processContacts = React.useCallback(
-    async contacts => {
-      const newContacts = parseContacts(contacts);
-      await handleContactSync({
-        userId,
-        existingContacts,
-        newContacts,
-        setDuplicates,
-        add,
-        set,
-        error,
-        success,
-        pending,
-      });
-      send('CONTACTS_SELECTED');
-    },
-    [existingContacts, send, setDuplicates, userId]
-  );
-
-  const closeModal = React.useCallback(() => send('CANCELLED'), [send]);
-
-  React.useEffect(() => {
-    if (cloudsponge) {
-      return cloudsponge.init({
-        afterSubmitContacts: processContacts,
-        afterClosing: closeModal,
-        include: ['photo'],
-        localeData: {
-          AUTHORIZATION: 'Loading...',
-          AUTHORIZATION_FOCUS:
-            'This will take a few minutes, roughly one minute for every 700 contacts we crunch.',
-        },
-        displaySelectAllNone: false,
-        css: `${
-          process.env.NODE_ENV === 'production'
-            ? process.env.REACT_APP_URL
-            : 'http://localhost:3000'
-        }/cloudsponge.css`,
-      });
-    }
-  }, [cloudsponge, processContacts, closeModal]);
-};
-
-export const _handleImport = () => {
-  const { cloudsponge } = window;
-  cloudsponge.launch('gmail');
-};
-
-const test = state => ({ getByTestId }) => {
-  assert.ok(getByTestId(state));
-};
-
-export const mergeMachine = Machine({
-  id: 'merge',
-  initial: 'addButton',
+const contactMachine = Machine({
+  id: 'contacts',
+  initial: 'idle',
   states: {
-    addButton: {
+    idle: {
       on: {
-        CLICKED: {
-          target: 'selectionScreen',
-          actions: ['handleImport'],
-        },
-      },
-      meta: {
-        test: test('importContacts'),
+        CLICKED: 'loading',
+        ALREADY_FETCHED: 'selector',
       },
     },
-    selectionScreen: {
-      on: {
-        CONTACTS_SELECTED: 'conflictScreen',
-        CANCELLED: 'conflictScreen',
+    // loading: {
+    //   invoke: {
+    //     id: 'getPermissions',
+    //     src: fetchContacts,
+    //     onDone: {
+    //       target: 'selector',
+    //       // actions: assign({ user: (context, event) => event.data }),
+    //     },
+    //     onError: {
+    //       target: 'error',
+    //       // actions: assign({ error: (context, event) => event.data }),
+    //     },
+    //   },
+    // },
+    loading: {
+      after: {
+        1000: { target: 'selector' },
       },
     },
-    conflictScreen: {
-      on: {
-        COMPLETED: 'addButton',
 
-        CLOSED: 'addButton',
-        DUPLICATE_SELECTED: {
-          target: 'conflictScreen',
-          actions: ['updateContact'],
-        },
-        EXISTING_SELECTED: 'conflictScreen',
+    selector: {
+      onEntry: ['deduplicate', 'preSelect', 'enrich'],
+      on: {
+        REVEALED_MORE: 'selector',
+        CLOSED: { target: 'idle', actions: ['updateContactCounts'] },
       },
-      meta: {
-        test: test('conflictScreen'),
+    },
+    error: {
+      on: {
+        RETRIED: 'loading',
       },
     },
   },
 });
 
-const ImportContacts = ({
-  handleImport = _handleImport,
-  userId,
-  existingContacts,
-}) => {
-  const [current, send] = useMachine(mergeMachine, {
-    actions: {
-      handleImport: () => handleImport(),
-      updateContact: (ctx, { payload }) => updateContact(userId, payload),
-    },
-  });
+export const ContactAdder = ({ uid, allContacts, children }) => {
+  const [conflicts, setConflicts] = React.useState([]);
+  const [contactPicker, setContactPicker] = React.useState(false);
 
-  const [duplicates, setDuplicates] = useState([]);
+  const dispatcher = _value => {
+    if (_value === 'CLOSED') {
+      setConflicts([]);
+    }
+    if (_value === 'COMPLETED') {
+      setConflicts([]);
+      setContactPicker(true);
+    }
+    if (_value.type === 'DUPLICATE_SELECTED') {
+      const { payload } = _value;
+      updateContact(uid, payload);
+    }
+    if (_value.type === 'EXISTING_SELECTED') {
+      return null;
+    }
+    return null;
+  };
 
-  useCloudsponge({ userId, existingContacts, send, setDuplicates });
+  const menu = (
+    <Menu>
+      <Menu.Item key="0">{children}</Menu.Item>
+      <Menu.Item key="1">
+        <GoogleImport
+          userId={uid}
+          existingContacts={allContacts}
+          setConflicts={setConflicts}
+          setContactPicker={setContactPicker}
+        />
+      </Menu.Item>
+    </Menu>
+  );
 
-  if (current.matches('addButton')) {
-    return (
-      <button
-        onClick={() => send('CLICKED')}
-        type="button"
-        className="btn3 b grow  mh3 tl pv2  pointer bn br1 white"
-        data-testid="importContacts"
-      >
-        Import from
-        <Icon type="google" className="pl2" />
-      </button>
-    );
-  }
+  return (
+    <div className="pv4 flex w-100" data-testid="outreachPage">
+      {conflicts && !!conflicts.length && (
+        <ConflictScreen
+          send={dispatcher}
+          duplicates={conflicts}
+          existingContacts={allContacts}
+          setDuplicates={setConflicts}
+        ></ConflictScreen>
+      )}
 
-  if (current.matches('conflictScreen')) {
-    return (
-      <ConflictScreen
-        send={send}
-        duplicates={duplicates}
-        setDuplicates={setDuplicates}
-        existingContacts={existingContacts}
-      />
-    );
-  }
+      {contactPicker && (
+        <PickContacts
+          userId={uid}
+          allContacts={allContacts}
+          alreadyImported
+          count={
+            allContacts &&
+            allContacts.filter(item => item.bucket === 'archived').length
+          }
+        />
+      )}
 
-  return null;
+      <Dropdown overlay={menu} trigger={['click']}>
+        <button
+          type="button"
+          className="btn2 green b  grow  ph3 pv2  pointer bn br1 white ant-dropdown-link"
+          onClick={e => e.preventDefault()}
+        >
+          Add People
+          <Icon type="plus" className="pl1" />
+        </button>
+      </Dropdown>
+    </div>
+  );
 };
 
-export default ImportContacts;
-
 export const PickContacts = ({
-  handleImport = _handleImport,
   userId,
   allContacts,
   alreadyImported,

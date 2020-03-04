@@ -1,16 +1,16 @@
-import React from 'react';
 import { Toggle } from '@duik/it';
-import { Timeline } from 'antd';
-import AvatarGenerator from 'react-avatar-generator';
-import PropTypes from 'prop-types';
-import { useSelector, useDispatch } from 'react-redux';
 import { OptimizelyFeature } from '@optimizely/react-sdk';
-import { usePersonForm, setImage } from '../peopleHelpers/personBox';
+import { Timeline } from 'antd';
+import PropTypes from 'prop-types';
+import React from 'react';
+import AvatarGenerator from 'react-avatar-generator';
+import { useDispatch, useSelector } from 'react-redux';
 import { handleTracking as _handleTracking } from '../peopleAPI';
-import { EditBox } from './EditBox';
-import { TimeUpdate } from './TimeUpdate';
+import { setImage, usePersonForm } from '../peopleHelpers/personBox';
 import { ConfirmDelete } from './ConfirmDelete';
+import { EditBox } from './EditBox';
 import { SocialLinks } from './SocialLinks';
+import { TimeUpdate } from './TimeUpdate';
 
 const personPropTypess = {
   contactId: PropTypes.string,
@@ -70,10 +70,10 @@ export const PersonModal = ({
   ]);
 
   return (
-    <div>
+    <div className="w-100">
       <div
         data-testid="contactModal"
-        className={`pa4 br2-bottom bg-layer1 ${
+        className={`w-100  pa4 br2-bottom bg-layer1 ${
           state && state.saving && state.saving ? 'bt-orange' : 'bt-green'
         }`}
       >
