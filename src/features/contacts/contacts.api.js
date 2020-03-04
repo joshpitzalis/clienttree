@@ -101,7 +101,6 @@ export const saveImportedContacts = (importedContacts, userId) => {
   };
 
   const createBatch = chunk => {
-    console.log('chunk', chunk);
     const _batch = firebase.firestore().batch();
     const operations = chunk.map(contact => set(contact, userId, _batch));
     Promise.all(operations)
@@ -114,12 +113,10 @@ export const saveImportedContacts = (importedContacts, userId) => {
 
   // const writeOps = importedContacts.map(contact => set(contact, userId, batch));
   if (importedContacts && importedContacts.length > 500) {
-    console.log('importedContacts', importedContacts.length);
     const contactChunks = chunkArrayInGroups(importedContacts, 500);
-    console.log('contactChunks', contactChunks);
     return writeEachSyncronously(contactChunks, createBatch);
   }
-  console.log('nono');
+
   const batch = firebase.firestore().batch();
   importedContacts.forEach(contact => set(contact, userId, batch));
   return batch
@@ -186,7 +183,6 @@ export const markImported = userId =>
 
 export const updateContactCount = (userId, contactStats) => {
   const { activeContacts, archivedContacts, totalContacts } = contactStats;
-
   return firebase
     .firestore()
     .collection('users')

@@ -343,7 +343,7 @@ function NewImport({
         <Dropdown overlay={menu} trigger={['click']}>
           <button
             type="button"
-            className="btn2 black b grow  ph3 pv2  pointer bn br1 white ant-dropdown-link"
+            className="btn2 green b  grow  ph3 pv2  pointer bn br1 white ant-dropdown-link"
             onClick={e => e.preventDefault()}
           >
             Add People

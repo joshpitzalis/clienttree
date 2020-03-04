@@ -1,8 +1,8 @@
 // import GoogleContacts from 'react-google-contacts';
 import { Icon } from 'antd';
 import React from 'react';
-import { markImported, saveImportedContacts } from '../contacts.api.js';
-import { contactCleaner } from '../contacts.helpers.js';
+import { markImported, saveImportedContacts } from '../contacts.api';
+import { contactCleaner } from '../contacts.helpers';
 
 export const brandNewContacts = (_new, _existing) =>
   _new.reduce((total, item) => {
@@ -49,15 +49,41 @@ export const findConflict = (newContacts, old) => {
 //   );
 // };
 
+const personFields =
+  'addresses,emailAddresses,genders,metadata,names,occupations,organizations,phoneNumbers,photos,residences';
+
+const getContacts = (_gapi, _nextPageToken) =>
+  _gapi.client.people.people.connections
+    .list({
+      resourceName: 'people/me',
+      pageSize: 2000,
+      personFields,
+      pageToken: _nextPageToken,
+    })
+    .then(response => {
+      const { connections, nextPageToken } = response.result;
+      return { people: connections, nextPageToken };
+    });
+
+const getAllContacts = async (_people, _token, _gapi) => {
+  if (_people.length < 2000) {
+    // terminal case
+    const result = await getContacts(_gapi, _token);
+    return _people.push(...result.people);
+  }
+
+  // block to execute
+  const { people, nextPageToken } = await getContacts(_gapi, _token);
+  _people.push(...people);
+  getAllContacts(people, nextPageToken, _gapi);
+};
+
 export default function GoogleImport({
   userId,
   existingContacts,
   setConflicts,
   setContactPicker,
 }) {
-  const personFields =
-    'addresses,emailAddresses,genders,metadata,names,occupations,organizations,phoneNumbers,photos,residences';
-
   const fetchContacts = _gapi =>
     _gapi.client.people.people.connections
       .list({
@@ -65,11 +91,18 @@ export default function GoogleImport({
         pageSize: 2000,
         personFields,
       })
+      .then(async response => {
+        const { connections, nextPageToken } = response.result;
+        const contacts = [...connections];
 
-      .then(response => {
-        const { connections } = response.result;
-        return contactCleaner(connections);
+        if (contacts.length >= 2000) {
+          await getAllContacts(contacts, nextPageToken, _gapi);
+        }
+
+        console.log('contacts.length', contacts.length);
+        return contacts;
       })
+      .then(connections => contactCleaner(connections))
       .then(newContacts => {
         const conflicts = findConflict(newContacts, existingContacts);
         const brandNew = brandNewContacts(newContacts, existingContacts);
@@ -84,7 +117,6 @@ export default function GoogleImport({
       })
       .then(contacts => saveImportedContacts(contacts, userId))
       .then(() => markImported(userId))
-
       .catch(console.error);
 
   const login = async () => {
