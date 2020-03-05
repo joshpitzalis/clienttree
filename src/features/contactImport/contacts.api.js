@@ -266,3 +266,8 @@ export const fetchContacts = ({ _gapi, existingContacts, userId, send }) =>
     .then(contacts => saveImportedContacts(contacts, userId))
     .then(() => markImported(userId))
     .catch(console.error);
+
+export const mergeAllConflicts = ({ conflicts, uid, _updateContact }) => {
+  const operations = conflicts.map(confict => _updateContact(uid, confict));
+  Promise.all(operations).catch(console.error);
+};

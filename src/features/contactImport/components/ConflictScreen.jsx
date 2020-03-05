@@ -10,14 +10,14 @@ export const ConflictScreen = ({
 }) => {
   const handleDuplicateSelection = payload => {
     send({
-      type: 'DUPLICATE_SELECTED',
+      type: 'MERGE_ONE',
       payload,
     });
   };
 
   const handleExistingSelection = payload => {
     send({
-      type: 'EXISTING_SELECTED',
+      type: 'SKIP_ONE',
       payload,
     });
   };

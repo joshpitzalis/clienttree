@@ -17,6 +17,29 @@ const mockProps = {
   activateContact: jest.fn(),
 };
 
+// redesign
+it.todo('name overflow in conflict modal');
+it.todo('error state');
+it.todo('tshow loading sponner on import');
+it.todo('delete guards for if contact is on workboard');
+it.todo('confirm delete before deleteting');
+it.todo('default image name');
+
+it.todo('500 imporst erros');
+it.todo('2K imports erros');
+it.todo('what happens if you cancel import popup first time');
+it.todo('what happens if you cancel import popup when already imported');
+it.todo('if already imported show contacts first and resync button');
+it.todo('optimistic task update');
+it.todo('instrumentation');
+
+it.todo(
+  'what if reminder email is sent to peoplewithout archved or active contacts'
+);
+it.todo('add details to email footer');
+it.todo('cancel email import reminder after 2 tries');
+it.todo('send non import email');
+
 describe('contact chunker', () => {
   it('lets you fetch user with pictures from google', () => {
     // click on button

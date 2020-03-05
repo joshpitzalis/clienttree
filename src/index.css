@@ -276,7 +276,7 @@ details summary::-webkit-details-marker {
 }
 
 .ant-tooltip-inner {
-  background-color: #44444e !important ;
+  background-color:  var(--border-color-base) !important ;
 }
 
 
@@ -306,3 +306,21 @@ details summary::-webkit-details-marker {
 /*
 If you want to style other properties or elements, let use know.
 */
+
+
+.button2 {
+vertical-align: top;
+height: 50px;
+padding: 0px 30px;
+border-radius: 50px;
+font-size: 18px;
+font-weight: 500;
+text-align: center;
+background: transparent;
+-webkit-transition: all 0.25s;
+transition: all 0.25s;
+color: var(--text-secondary);
+line-height: 46px;
+border: 2px solid var(--border-color-base) !important;
+cursor: pointer;
+}

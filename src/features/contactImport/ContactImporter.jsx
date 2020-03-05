@@ -7,6 +7,7 @@ import { ConflictScreen } from './components/ConflictScreen';
 import { NewPeopleBox } from './components/NewPeopleBox';
 import {
   fetchContacts,
+  mergeAllConflicts,
   updateContact,
   updateContactCount,
 } from './contacts.api';
@@ -15,7 +16,8 @@ import {
 
 const contactMachine = Machine({
   id: 'contacts',
-  initial: 'importButton',
+  // initial: 'importButton',
+  initial: 'conflictModal',
   states: {
     importButton: {
       on: {
@@ -34,21 +36,21 @@ const contactMachine = Machine({
       on: {
         CLOSED: 'importButton',
         COMPLETED: 'contactModal',
-        DUPLICATE_SELECTED: {
+        MERGE_ONE: {
           target: 'conflictModal',
           actions: ['updateContact'],
         },
-        EXISTING_SELECTED: 'conflictModal',
+        SKIP_ONE: 'conflictModal',
         SKIP_ALL: 'contactModal',
-        MERGE_ALL: 'contactModal',
+        MERGE_ALL: { target: 'contactModal', actions: ['mergeAllConflicts'] },
       },
     },
     contactModal: {
       on: {
-        CONFLICTS_FOUND: 'conflictModal',
         REVEALED_MORE: 'contactModal',
-        CLOSED: { target: 'importButton', actions: ['updateContactCounts'] },
+        CLOSED: 'importButton',
       },
+      onExit: ['updateContactCounts'],
     },
     errorMessage: {
       on: {
@@ -58,7 +60,7 @@ const contactMachine = Machine({
   },
 });
 
-export const ContactAdder = React.memo(
+export const ContactImporter = React.memo(
   ({ uid, allContacts, children, alreadyImported }) => {
     const activeContacts =
       allContacts &&
@@ -70,6 +72,14 @@ export const ContactAdder = React.memo(
       allContacts.filter(item => item.bucket === 'archived').length;
 
     const totalContacts = allContacts && allContacts.length;
+
+    const [conflicts, setConflicts] = React.useState([
+      {
+        name: 'Josh',
+        email: 'joshpitzalis@gmail.com',
+        photoURL: 'http://tachyons.io/img/avatar_1.jpg',
+      },
+    ]);
 
     const [current, send] = useMachine(contactMachine, {
       actions: {
@@ -88,17 +98,18 @@ export const ContactAdder = React.memo(
             )
             .catch(error => console.log({ error }));
         },
+
         updateContactCounts: () =>
           updateContactCount(uid, {
             activeContacts,
             archivedContacts,
             totalContacts,
           }),
-        updateContact: (ctx, { payload }) => updateContact(uid, payload),
+        updateContact: (_, { payload }) => updateContact(uid, payload),
+        mergeAllConflicts: () =>
+          mergeAllConflicts({ conflicts, uid, _updateContact: updateContact }),
       },
     });
-
-    const [conflicts, setConflicts] = React.useState([]);
 
     // React.useEffect(() => {
     //   if (alreadyImported) {
@@ -160,7 +171,6 @@ export const ContactAdder = React.memo(
         <div className="pv4 flex w-100" data-testid="outreachPage">
           {conflicts && !!conflicts.length && (
             <ConflictScreen
-              // send={dispatcher}
               send={send}
               duplicates={conflicts}
               existingContacts={allContacts}
@@ -173,47 +183,8 @@ export const ContactAdder = React.memo(
 
     if (current.matches('contactModal')) {
       return (
-        <Portal onClose={() => send('CLOSED')}>
-          <p className="f3 fw6 w-50 dib-l w-auto-l lh-title">{`${allContacts &&
-            allContacts.filter(item => item.bucket === 'archived')
-              .length} Potential Contacts`}</p>
-          <div className="overflow-y-auto vh-75">
-            <NewPeopleBox
-              userId={uid}
-              contacts={
-                allContacts &&
-                allContacts.map(contact => {
-                  const {
-                    photoURL,
-                    name,
-                    bucket,
-                    occupation,
-                    organization,
-                    email,
-                    phoneNumber,
-                  } = contact;
-                  return {
-                    photoURL,
-                    name,
-                    handle:
-                      occupation ||
-                      (organization && organization.title) ||
-                      email ||
-                      phoneNumber,
-                    bucket,
-                    uid: contact.uid,
-                  };
-                })
-              }
-            />
-          </div>
-          <button
-            className="btn2 pa3 br2 b bn pointer"
-            type="button"
-            onClick={() => send('CLOSED')}
-          >
-            Done for now
-          </button>
+        <Portal onClose={() => send('CLOSED')} fullwidth>
+          <contactModal allContacts={allContacts} uid={uid} send={send} />
         </Portal>
       );
     }
@@ -233,4 +204,49 @@ export const ContactAdder = React.memo(
 
     return null;
   }
+);
+
+const contactModal = ({ allContacts, uid, send }) => (
+  <>
+    <p className="f3 fw6 w-50 dib-l w-auto-l lh-title">{`${allContacts &&
+      allContacts.filter(item => item.bucket === 'archived')
+        .length} Potential Contacts`}</p>
+    <div className="overflow-y-auto vh-75">
+      <NewPeopleBox
+        userId={uid}
+        contacts={
+          allContacts &&
+          allContacts.map(contact => {
+            const {
+              photoURL,
+              name,
+              bucket,
+              occupation,
+              organization,
+              email,
+              phoneNumber,
+            } = contact;
+            return {
+              photoURL,
+              name,
+              handle:
+                occupation ||
+                (organization && organization.title) ||
+                email ||
+                phoneNumber,
+              bucket,
+              uid: contact.uid,
+            };
+          })
+        }
+      />
+    </div>
+    <button
+      className="btn2 pa3 br2 b bn pointer"
+      type="button"
+      onClick={() => send('CLOSED')}
+    >
+      Done for now
+    </button>
+  </>
 );

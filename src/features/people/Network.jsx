@@ -3,7 +3,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ErrorBoundary from '../../utils/ErrorBoundary';
 import firebase from '../../utils/firebase';
-import { ContactAdder } from '../contacts/Contacts';
+import { ContactImporter } from '../contactImport/ContactImporter';
 import { InsightsBox } from '../insights/InsightsBox';
 import { Person } from './components/Person';
 import { PersonModal } from './components/PersonBox';
@@ -61,7 +61,7 @@ export const InnerNetwork = ({ uid }) => {
             newPerson
           />
         ) : (
-          <ContactAdder uid={uid} allContacts={allContacts}>
+          <ContactImporter uid={uid} allContacts={allContacts}>
             <button
               type="button"
               onClick={() => {
@@ -77,7 +77,7 @@ export const InnerNetwork = ({ uid }) => {
             >
               Add Someone New
             </button>
-          </ContactAdder>
+          </ContactImporter>
         )}
         <ActiveContactList contacts={allContacts} uid={uid} />
       </>
