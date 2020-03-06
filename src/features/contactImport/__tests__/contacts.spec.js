@@ -94,6 +94,13 @@ const rawContacts = [
   },
 ];
 
+describe('efficient database operations', () => {
+  it.todo('only writes once when selecting new contacts');
+
+  it.todo('makes sure you read from old an new store seperately');
+  it.todo('deletes old list when updated and writes to new');
+});
+
 describe('contact Importer', () => {
   it('fires cloudsponge function when clicked ', () => {
     const { getByTestId } = render(<ImportContacts {...mockProps} />, {

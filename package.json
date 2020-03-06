@@ -1,5 +1,5 @@
 {
-  "name": "clienttree",
+  "name": "ClientTree",
   "version": "0.1.0",
   "private": true,
   "homepage": "http://clienttree.io",
@@ -106,7 +106,8 @@
     "deploy": "firebase deploy --except functions",
     "deployFunctions": "firebase deploy --only functions",
     "coverage": "npm test -- --coverage",
-    "indexes": "firebase deploy --only firestore:indexes"
+    "indexes": "firebase deploy --only firestore:indexes",
+    "guide": "npx styleguidist server"
   },
   "eslintConfig": {
     "extends": [
@@ -208,6 +209,7 @@
     "eslint-plugin-react-hooks": "^1.7.0",
     "prettier": "^1.18.2",
     "react-axe": "^3.3.0",
+    "react-styleguidist": "^10.6.2",
     "start-server-and-test": "^1.10.3"
   }
 }

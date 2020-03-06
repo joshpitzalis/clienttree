@@ -1,24 +1,10 @@
 import React from 'react';
-import { ContactCard } from './ContactCard';
-
-export const findMatchingExistingContact = (_duplicate, _existingContacts) => {
-  const cleanName = contact =>
-    contact && contact.name && contact.name.toLowerCase().trim();
-
-  const cleanEmail = contact =>
-    contact && contact.email && contact.email.toLowerCase().trim();
-
-  const bothNotBlank = (contact, duplicate) => !!contact && !!duplicate;
-
-  // only match if the name or the email are the same, but not the same because they are both blank fields for either case
-  const match = _contact =>
-    (bothNotBlank(cleanName(_contact), cleanName(_duplicate)) &&
-      cleanName(_contact) === cleanName(_duplicate)) ||
-    (bothNotBlank(cleanEmail(_contact), cleanEmail(_duplicate)) &&
-      cleanEmail(_contact) === cleanEmail(_duplicate));
-
-  return _existingContacts && _existingContacts.find(match);
-};
+import { ContactCard } from '../../../components/Cards/Cards';
+import Portal from '../../../utils/Portal';
+import {
+  contactCardSelect,
+  findMatchingExistingContact,
+} from '../contacts.helpers';
 
 export const MergeManager = ({
   send,
@@ -29,9 +15,7 @@ export const MergeManager = ({
 }) => {
   const [index, setIndex] = React.useState(0);
   const lastcontact = index + 1 === duplicates.length;
-  // if (index === duplicates.length) {
-  //   send('CLOSED');
-  // }
+
   return (
     <div
       data-testid="conflictScreen"
@@ -55,6 +39,7 @@ export const MergeManager = ({
             send={send}
             isLastContact={lastcontact}
             existing={null}
+            selectCard={contactCardSelect}
           />
         </div>
         <div className="flex flex-column justify-center">
@@ -70,6 +55,7 @@ export const MergeManager = ({
             )}
             send={send}
             isLastContact={lastcontact}
+            selectCard={contactCardSelect}
           />
         </div>
       </div>
@@ -94,5 +80,45 @@ export const MergeManager = ({
         </button>
       </div>
     </div>
+  );
+};
+
+export const ConflictScreen = ({
+  send,
+  duplicates,
+  existingContacts,
+  setDuplicates,
+}) => {
+  const handleDuplicateSelection = payload => {
+    send({
+      type: 'MERGE_ONE',
+      payload,
+    });
+  };
+
+  const handleExistingSelection = payload => {
+    send({
+      type: 'SKIP_ONE',
+      payload,
+    });
+  };
+
+  // fire on unmount only
+  React.useEffect(() => () => setDuplicates([]), [setDuplicates]);
+
+  return (
+    <Portal
+      onClose={() => {
+        send('CLOSED');
+      }}
+    >
+      <MergeManager
+        send={send}
+        duplicates={duplicates}
+        existingContacts={existingContacts}
+        handleDuplicateSelection={handleDuplicateSelection}
+        handleExistingSelection={handleExistingSelection}
+      />
+    </Portal>
   );
 };

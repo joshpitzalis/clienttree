@@ -16,6 +16,23 @@ export const InnerNetwork = ({ uid }) => {
   const [visible, setVisibility] = React.useState(false);
   const [selectedUser, setSelectedUser] = React.useState('');
 
+  // const allContacts = [
+  //   {
+  //     uid: '123',
+  //     name: 'Jojo',
+  //     photoURL: 'http://tachyons.io/img/avatar_1.jpg',
+  //     bucket: 'active',
+  //     email: 'kk',
+  //   },
+  //   {
+  //     uid: '1234',
+  //     name: 'Rabbit',
+  //     photoURL: 'http://tachyons.io/img/avatar_1.jpg',
+  //     bucket: 'archived',
+  //     email: 'kk',
+  //   },
+  // ];
+
   const allContacts = useSelector(
     store =>
       store &&

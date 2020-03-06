@@ -271,3 +271,58 @@ export const mergeAllConflicts = ({ conflicts, uid, _updateContact }) => {
   const operations = conflicts.map(confict => _updateContact(uid, confict));
   Promise.all(operations).catch(console.error);
 };
+
+export const handleContactsUpdate = ({
+  contactsToAdd,
+  contactsToDelete,
+  contactsToArchive,
+  uid,
+  activeContacts,
+  archivedContacts,
+  totalContacts,
+}) => {
+  const docRef = (userId, collection, contactUid) =>
+    firebase
+      .firestore()
+      .collection('users')
+      .doc(userId)
+      .collection(collection)
+      .doc(contactUid);
+  // set(), update(), or delete()
+
+  const batch = firebase.firestore().batch();
+
+  contactsToAdd.forEach(contact => {
+    if (!contact.bucket) {
+      // write new
+      batch.set(docRef(uid, 'people', contact.uid), {
+        ...contact,
+        bucket: 'active',
+      });
+      // delete old
+      batch.delete(docRef(uid, 'contacts', contact.uid));
+      return;
+    }
+    batch.update(docRef(uid, 'people', contact.uid), { bucket: 'active' });
+  });
+
+  contactsToArchive.forEach(contact =>
+    batch.update(docRef(uid, 'people', contact.uid), { bucket: 'archived' })
+  );
+
+  contactsToDelete.forEach(contact =>
+    batch.delete(docRef(uid, 'people', contact.uid))
+  );
+
+  return batch
+    .commit()
+    .then(() =>
+      updateContactCount(uid, {
+        activeContacts: activeContacts + contactsToAdd - contactsToArchive,
+        archivedContacts: archivedContacts + contactsToArchive - contactsToAdd,
+        totalContacts: totalContacts - contactsToDelete.length,
+      })
+    )
+    .then(() => console.log('success'))
+    .catch(error => console.log({ error }));
+};

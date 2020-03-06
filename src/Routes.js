@@ -1,26 +1,26 @@
-import React from 'react';
-import { BrowserRouter, Route, Link, withRouter } from 'react-router-dom';
-import 'tachyons';
 import { Dropdown, DropdownItem } from '@duik/it';
 // import PropTypes from 'prop-types';
 // import ReactRouterPropTypes from 'react-router-prop-types';
 import {
   createInstance,
-  OptimizelyProvider,
   OptimizelyFeature,
+  OptimizelyProvider,
 } from '@optimizely/react-sdk';
+import React from 'react';
+import { BrowserRouter, Link, Route } from 'react-router-dom';
+import 'tachyons';
 // import FeatureFlags from './features/featureboard';
 import { Navbar } from './features/auth/Navbar';
-import { Login } from './pages/Login';
-import { Dashboard } from './pages/Dashboard';
-// import { PrivateRoute } from './features/auth/PrivateRoute';
-import Refer from './features/profile/Referral';
 import { UserContext } from './features/auth/UserContext';
 import Banner from './features/notifications/toast';
 import { NetworkProvider } from './features/people/NetworkContext';
-import ErrorBoundary from './utils/ErrorBoundary';
+// import { PrivateRoute } from './features/auth/PrivateRoute';
+import Refer from './features/profile/Referral';
 import Logout from './images/Logout';
 import Profile from './images/Profile';
+import { Dashboard } from './pages/Dashboard';
+import { Login } from './pages/Login';
+import ErrorBoundary from './utils/ErrorBoundary';
 
 const propTypes = {
   // location: ReactRouterPropTypes.location.isRequired,
