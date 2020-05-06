@@ -1,4 +1,9 @@
-@import-normalize;
+/* https://daveceddia.com/tailwind-create-react-app/ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import '~antd/dist/antd.css';
 @import './inter.css';
 
