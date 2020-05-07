@@ -1,18 +1,16 @@
-import React from 'react';
-import { withRouter, Link } from 'react-router-dom';
-// import PropTypes from 'prop-types';
+import React from 'react'
+import { withRouter, Link } from 'react-router-dom'
 import {
   TopBar,
   TopBarSection,
   TopBarTitle,
   Dropdown,
-  DropdownItem,
-} from '@duik/it';
-// import Settings from '../../images/Settings';
-import Tree from '../../images/Tree';
-import Logout from '../../images/Logout';
-import Profile from '../../images/Profile';
-import { UserContext } from './UserContext';
+  DropdownItem
+} from '@duik/it'
+import Tree from '../../images/Tree'
+import Logout from '../../images/Logout'
+import Profile from '../../images/Profile'
+import { UserContext } from './UserContext'
 
 // export const AuthButton = withRouter(({ history }) => {
 //   const { authStatus, handleLogout } = React.useContext(UserContext);
@@ -35,10 +33,10 @@ import { UserContext } from './UserContext';
 // );
 // DropDownIcon.propTypes = { handleToggle: PropTypes.func.isRequired };
 
-const propTypes = {};
+const propTypes = {}
 
 export const Navbar = withRouter(({ history }) => {
-  const { userId, authStatus, handleLogout } = React.useContext(UserContext);
+  const { userId, authStatus, handleLogout } = React.useContext(UserContext)
 
   return (
     <TopBar>
@@ -46,9 +44,9 @@ export const Navbar = withRouter(({ history }) => {
         <TopBarTitle>
           <Link
             to={userId ? `/user/${userId}/network` : '/'}
-            data-testid="goToHomePage"
+            data-testid='goToHomePage'
           >
-            <Tree classNames="" />
+            <Tree classNames='' />
           </Link>
         </TopBarTitle>
       </TopBarSection>
@@ -57,28 +55,28 @@ export const Navbar = withRouter(({ history }) => {
         <TopBarSection>
           <TopBarTitle>
             <Dropdown
-              buttonText={<p className="dn dib-ns">Configure your settings</p>}
-              data-testid="settings"
+              buttonText={<p className='dn dib-ns'>Configure your settings</p>}
+              data-testid='settings'
               buttonProps={{
                 clear: true,
-                closeOnOptionClick: true,
+                closeOnOptionClick: true
               }}
             >
               {({ handleClose }) => (
                 <div onMouseLeave={handleClose}>
-                  <div className="dn db-ns">
+                  <div className='dn db-ns'>
                     <DropdownItem
                       Component={Link}
                       to={`/user/${userId}/profile`}
-                      data-testid="goToProfilePage"
+                      data-testid='goToProfilePage'
                     >
-                      <Profile className="" />{' '}
-                      <p className="tracked pl2">Profile</p>
+                      <Profile className='' />{' '}
+                      <p className='tracked pl2'>Profile</p>
                     </DropdownItem>
                   </div>
                   <DropdownItem onClick={() => handleLogout(history)}>
-                    <Logout className="" />{' '}
-                    <p className="tracked pl2">Logout</p>
+                    <Logout className='' />{' '}
+                    <p className='tracked pl2'>Logout</p>
                   </DropdownItem>
                 </div>
               )}
@@ -87,7 +85,7 @@ export const Navbar = withRouter(({ history }) => {
         </TopBarSection>
       )}
     </TopBar>
-  );
-});
+  )
+})
 
-Navbar.propTypes = propTypes;
+Navbar.propTypes = propTypes

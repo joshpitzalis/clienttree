@@ -1,31 +1,30 @@
-import React from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
-import 'tachyons';
+import React from 'react'
+import { BrowserRouter, Route } from 'react-router-dom'
+import 'tachyons'
 // import PropTypes from 'prop-types';
 // import ReactRouterPropTypes from 'react-router-prop-types';
 
-import { createInstance, OptimizelyProvider } from '@optimizely/react-sdk';
-import { Navbar } from './features/auth/Navbar';
-import { Login } from './pages/Login';
-import { Dashboard } from './pages/Dashboard';
+import { createInstance, OptimizelyProvider } from '@optimizely/react-sdk'
+import { Navbar } from './features/auth/Navbar'
+import { Login } from './pages/Login'
+import { Dashboard } from './pages/Dashboard'
 // import { PrivateRoute } from './features/auth/PrivateRoute';
-import Refer from './features/profile/Referral';
-import { UserContext } from './features/auth/UserContext';
-import Banner from './features/notifications/toast';
-import { NetworkProvider } from './features/people/NetworkContext';
-import ErrorBoundary from './utils/ErrorBoundary';
+import Refer from './features/profile/Referral'
+import { UserContext } from './features/auth/UserContext'
+import Banner from './features/notifications/toast'
+import { NetworkProvider } from './features/people/NetworkContext'
+import ErrorBoundary from './utils/ErrorBoundary'
 
 const propTypes = {
   // location: ReactRouterPropTypes.location.isRequired,
-};
+}
 
 const optimizely = createInstance({
-  sdkKey: process.env.REACT_APP_ROLLOUT,
-});
+  sdkKey: process.env.REACT_APP_ROLLOUT
+})
 
 const App = () => {
-  const { authStatus, userId } = React.useContext(UserContext);
-  console.log({ userId });
+  const { authStatus, userId } = React.useContext(UserContext)
 
   return (
     <OptimizelyProvider
@@ -33,19 +32,19 @@ const App = () => {
       user={{
         id: userId,
         attributes: {
-          id: userId,
-        },
+          id: userId
+        }
       }}
     >
       <ErrorBoundary>
         <BrowserRouter>
-          <div className="">
-            <Banner />
+          <div>
             <Navbar authStatus={authStatus} />
+            <Banner />
             <main>
               <Route
                 exact
-                path="/"
+                path='/'
                 render={routeProps => (
                   <Login
                     {...routeProps}
@@ -56,7 +55,7 @@ const App = () => {
               />
               <Route
                 exact
-                path="/login"
+                path='/login'
                 render={loginProps => (
                   <Login
                     {...loginProps}
@@ -68,7 +67,7 @@ const App = () => {
               {userId && (
                 <NetworkProvider uid={userId}>
                   <Route
-                    path="/user/:uid"
+                    path='/user/:uid'
                     render={dashProps => (
                       <Dashboard
                         {...dashProps}
@@ -81,7 +80,7 @@ const App = () => {
               )}
               <Route
                 exact
-                path="/refer/:uid"
+                path='/refer/:uid'
                 render={referProps => <Refer {...referProps} userId={userId} />}
               />
             </main>
@@ -89,9 +88,9 @@ const App = () => {
         </BrowserRouter>
       </ErrorBoundary>
     </OptimizelyProvider>
-  );
-};
+  )
+}
 
-export default App;
+export default App
 
-App.propTypes = propTypes;
+App.propTypes = propTypes

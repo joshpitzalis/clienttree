@@ -73,7 +73,7 @@ export const dailySummary = functions.pubsub
 
 
     // for each email send the following message
-    return allReminders.forEach((person
+    return allReminders && allReminders.forEach((person
       : {
         email: string
         reminders: { person: string, reminder: string }[],

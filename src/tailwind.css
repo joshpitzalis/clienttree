@@ -1,4 +1,8 @@
-@import-normalize;
+/* https://daveceddia.com/tailwind-create-react-app/ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 @import '~antd/dist/antd.css';
 
 body {
@@ -34,9 +38,7 @@ body {
 
   --orange: hsl(22, 78%, 55%);
  
-  font-family: 'Roboto',-apple-system, 
-  
-  BlinkMacSystemFont, "Segoe UI", "Oxygen",
+  font-family: 'Roboto',-apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
