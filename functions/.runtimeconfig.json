@@ -1,9 +1,0 @@
-{
-  "sendgrid": {
-    "template": "d-a4a25a4a6e4f49ce9b8aed156f15fb52",
-    "tempate2": "d-c24a91fd567f4cd0ac659ee80fd9e173",
-    "key": "SG.GBfjJZy8T52EKZGN_TSuZQ.iMTqh8pGq0TWSDUzzWyeb-EqYD_fR3WUJfLZ_8DJfWc"
-  }
-}
-// firebase functions:config:set sendgrid.key="SG.GBfjJZy8T52EKZGN_TSuZQ.iMTqh8pGq0TWSDUzzWyeb-EqYD_fR3WUJfLZ_8DJfWc" sendgrid.template="d-a4a25a4a6e4f49ce9b8aed156f15fb52"
-// sendgrid.template2="d-c24a91fd567f4cd0ac659ee80fd9e173"
