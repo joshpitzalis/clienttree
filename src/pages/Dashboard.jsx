@@ -117,7 +117,10 @@ export const fetchUserDataEpic = (
     })
   )
 
-/** @param {{userId: string}} [Props] */
+/** @param {{
+ * userId: string
+ * }} [Props] */
+
 /* eslint-disable react/prop-types */
 export function Dashboard ({ userId }) {
   const dispatch = useDispatch()

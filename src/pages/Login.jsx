@@ -1,12 +1,13 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
-import { toast$ } from '../features/notifications/toast'
 import firebase from '../utils/firebase'
 import { useImmerReducer } from 'use-immer'
 import { useForm } from 'react-hook-form'
 import PropTypes from 'prop-types'
 import Loader from 'react-loader-spinner'
 import Transition from '../utils/transition.js'
+import { handleLogin, handleSignup, handlePasswordReset } from '../features/auth/authApi/loginPageApi'
+import { toast$ } from '../features/notifications/toast'
 
 function actions (draft, action) {
   switch (action.type) {
@@ -44,6 +45,11 @@ const propTypes = {
   userId: PropTypes.string
 }
 
+/** @param {{
+ * authStatus: Boolean,
+ * userId: String
+}} [Props] */
+
 export const Login = ({ authStatus, userId }) => {
   const [state, dispatch] = useImmerReducer(actions, {
     version: 'signin',
@@ -54,130 +60,42 @@ export const Login = ({ authStatus, userId }) => {
 
   const { register, handleSubmit, errors } = useForm()
 
-  const handleLogin = ({ email, password }) => {
-    dispatch({ type: 'FORM_SUBMITTED' })
-    return firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(result => {
-        const { uid } = result
-        dispatch({ type: 'UPDATED_UID', payload: uid })
-        dispatch({ type: 'FORM_RESET' })
-      })
-      .then(() => dispatch({ type: 'UPDATED_AUTH_STATUS', payload: true }))
-      .catch(error => {
-        dispatch({ type: 'FORM_RESET' })
-        toast$.next({
-          type: 'ERROR',
-          message: error.message || error
-        })
-      })
-  }
-
-  const handleSignup = ({ email, password }) => {
-    dispatch({ type: 'FORM_SUBMITTED' })
-    return firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then(result => {
-        const { uid } = result
-        dispatch({ type: 'UPDATED_UID', payload: uid })
-        dispatch({ type: 'FORM_RESET' })
-      })
-      .then(() => dispatch({ type: 'UPDATED_AUTH_STATUS', payload: true }))
-      .catch(error => {
-        dispatch({ type: 'FORM_RESET' })
-        toast$.next({
-          type: 'ERROR',
-          message: error.message || error
-        })
-      })
-  }
-
-  const handlePasswordReset = ({ email }) => {
-    dispatch({ type: 'FORM_SUBMITTED' })
-    return firebase.auth()
-      .sendPasswordResetEmail(email)
-      .then(() => {
-        dispatch({ type: 'FORM_RESET' })
-        toast$.next({
-          type: 'SUCCESS',
-          message: 'Password reset email sent.'
-        })
-        dispatch({ type: 'SWITCHED_TO_SIGNIN' })
-      }).catch(error => {
-        dispatch({ type: 'FORM_RESET' })
-        toast$.next({
-          type: 'ERROR',
-          message: error.message || error
-        })
-      })
-  }
-
   if ((state.loggedInSuccessfully && state.uid) || (authStatus && userId)) {
     return <Redirect to={`/user/${state.uid || userId}/network`} />
   }
 
+  const handleAuth = (data) => {
+    if (state.version === 'signin') {
+      handleLogin(data, dispatch, firebase, toast$)
+    }
+    if (state.version === 'signup') {
+      handleSignup(data, dispatch, firebase, toast$)
+    }
+    if (state.version === 'password') { handlePasswordReset(data, dispatch, firebase, toast$) }
+  }
+
   return (
     <div className='min-h-full flex items-center justify-center bg-gray-50 py-20 px-4 sm:px-6 lg:px-8'>
-
       <div className='max-w-md w-full bg-white rounded-lg shadow-md p-5 '>
         <div className=''>
-          <Transition
-            show={state.version === 'signin'}
-            enter="transition ease-in duration-1000 transform"
-            enterFrom="opacity-0 scale-95 h-0"
-            enterTo="opacity-100 scale-100 h-auto"
-            leave="transition ease-out duration-1000 transform"
-            leaveFrom="opacity-100 scale-100 h-auto mt-6"
-            leaveTo="opacity-0 scale-95 h-0 m-0"
-          >
-            <h2 className='mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900'>
-             Sign in to your account
-            </h2>
-          </Transition>
-          <Transition
-            show={state.version === 'signup'}
-            enter="transition ease-in duration-1000 transform"
-            enterFrom="opacity-0 scale-95 h-0"
-            enterTo="opacity-100 scale-100 h-auto"
-            leave="transition ease-out duration-1000 transform"
-            leaveFrom="opacity-100 scale-100 h-auto mt-6 "
-            leaveTo="opacity-0 scale-95 h-0 m-0 -translate-y-5"
-          >
-            <h2 className='mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900'>
-            Create a new account
-            </h2>
-          </Transition>
-          <Transition
-            show={state.version === 'password'}
-            enter="transition ease-in duration-100o transform"
-            enterFrom="opacity-0 scale-95 h-0"
-            enterTo="opacity-100 scale-100 h-auto"
-            leave="transition ease-out duration-1000 transform"
-            leaveFrom="opacity-100 scale-100 h-auto mt-6"
-            leaveTo="opacity-0 scale-95 h-0 m-0"
-          >
-            <h2 className='mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900'>
-            Reset your password
-            </h2>
-          </Transition>
-
+          <TransitionHeader version={state.version}/>
           <div className='flex items-center justify-center'>
             <button onClick={() => dispatch({ type: 'SWITCHED' })}
+              data-testid='switch'
               className='font-semibold text-base text-green-600 hover:text-green-500 focus:outline-none focus:underline transition ease-in-out duration-150 underline'>
               {state.version === 'signup' ? 'Sign in' : 'Sign up'} instead...
             </button>
           </div>
         </div>
-
         <form
-          className='mt-8' onSubmit={handleSubmit(state.version === 'signin' ? handleLogin : state.version === 'signup' ? handleSignup : handlePasswordReset)
-
+          className='mt-8' onSubmit={
+            handleSubmit(handleAuth)
           }
         >
           <div className='rounded-md shadow-sm'>
             <div>
               <input
-                aria-label='Email address' name='email' className={ `${state.version === 'password' ? 'rounded-md' : 'rounded-t-md rounded-none'} appearance-none  relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5`} placeholder='Email address'
+                aria-label='Email address' name='email' className={`${state.version === 'password' ? 'rounded-md' : 'rounded-t-md rounded-none'} appearance-none  relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5`} placeholder='Email address'
                 ref={register({ required: true, pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ })}
               />
             </div>
@@ -188,9 +106,11 @@ export const Login = ({ authStatus, userId }) => {
               />
             </div>}
           </div>
-          {!!Object.keys(errors).length && <ValidationBox errors={errors}/>}
+          {!!Object.keys(errors).length && <ValidationBox errors={errors} />}
           <div className='mt-6'>
-            <button type='submit' className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-green-700 hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green active:bg-green-700 transition duration-150 ease-in-out'>
+            <button type='submit'
+              data-testid='authButton'
+              className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-green-700 hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green active:bg-green-700 transition duration-150 ease-in-out'>
               {state.submitting && <Loader
                 type="Oval"
                 color="#FFF"
@@ -214,8 +134,10 @@ export const Login = ({ authStatus, userId }) => {
               leaveFrom="opacity-100 scale-100 h-auto mt-6"
               leaveTo="opacity-0 scale-95 h-0 m-0"
             >
-              <button onClick={() => dispatch({ type: 'SWITCHED_TO_PASSWORD' })} className='font-medium text-green-600 hover:text-green-500 focus:outline-none focus:underline transition ease-in-out duration-150'>
-                    Forgot your password?
+              <button onClick={() => dispatch({ type: 'SWITCHED_TO_PASSWORD' })}
+                data-testid='goToPassword'
+                className='font-medium text-green-600 hover:text-green-500 focus:outline-none focus:underline transition ease-in-out duration-150'>
+                Forgot your password?
               </button>
             </Transition>
 
@@ -232,12 +154,12 @@ Login.propTypes = propTypes
 function ValidationBox ({ errors }) {
   return (<div className='mt-3'>
     {
-    /* password */
+      /* password */
     }
     {errors.password && errors.password.type === 'required' && <div className='flex items-center '><svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" fillRule="evenodd"></path></svg><p className=' pl-2 pb-1 text-red-500 text-xs italic'>A password is required.</p></div>}
     {errors.password && errors.password.type === 'min' && <div className='flex items-center '><svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" fillRule="evenodd"></path></svg><p className=' pl-2 pb-1 text-red-500 text-xs italic'>Your password must be atleast 6 characters.</p></div>}
     {
-    /* email */
+      /* email */
     }
     {errors.email && errors.email.type === 'required' && <div className='flex items-center '><svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" fillRule="evenodd"></path></svg><p className=' pl-2 pb-1 text-red-500 text-xs italic'>An email is required.</p></div>}
     {errors.email && errors.email.type === 'pattern' && <div className='flex items-center '><svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" fillRule="evenodd"></path></svg><p className=' pl-2 pb-1 text-red-500 text-xs italic'>A valid email is required.</p></div>}
@@ -246,4 +168,30 @@ function ValidationBox ({ errors }) {
 
 ValidationBox.propTypes = {
   errors: PropTypes.any
+}
+
+function TransitionHeader ({ version }) {
+  return (<>
+    <Transition show={version === 'signin'} enter="transition ease-in duration-1000 transform" enterFrom="opacity-0 scale-95 h-0" enterTo="opacity-100 scale-100 h-auto" leave="transition ease-out duration-1000 transform" leaveFrom="opacity-100 scale-100 h-auto mt-6" leaveTo="opacity-0 scale-95 h-0 m-0">
+      <h2 className='mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900'
+        data-testid='signInVersion'>
+              Sign in to your account
+      </h2>
+    </Transition>
+    <Transition show={version === 'signup'} enter="transition ease-in duration-1000 transform" enterFrom="opacity-0 scale-95 h-0" enterTo="opacity-100 scale-100 h-auto" leave="transition ease-out duration-1000 transform" leaveFrom="opacity-100 scale-100 h-auto mt-6 " leaveTo="opacity-0 scale-95 h-0 m-0 -translate-y-5">
+      <h2 className='mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900'
+        data-testid='signUpVersion'>
+              Create a new account
+      </h2>
+    </Transition>
+    <Transition show={version === 'password'} enter="transition ease-in duration-100o transform" enterFrom="opacity-0 scale-95 h-0" enterTo="opacity-100 scale-100 h-auto" leave="transition ease-out duration-1000 transform" leaveFrom="opacity-100 scale-100 h-auto mt-6" leaveTo="opacity-0 scale-95 h-0 m-0">
+      <h2 className='mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900'
+        data-testid='resetVersion'>
+              Reset your password
+      </h2>
+    </Transition>
+  </>)
+}
+TransitionHeader.propTypes = {
+  version: PropTypes.string
 }
