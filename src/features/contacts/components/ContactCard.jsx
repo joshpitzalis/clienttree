@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const handleClick = ({
   setIndex,
@@ -6,27 +6,28 @@ const handleClick = ({
   selector,
   contact,
   isLastContact,
-  send,
+  send
 }) => {
-  setIndex(prev => prev + 1);
+  setIndex(prev => prev + 1)
 
   if (isLastContact) {
-    send('CLOSED');
+    send('CLOSED')
   }
 
   if (existing) {
-    selector({ ...contact, uid: existing.uid });
-    return;
+    selector({ ...contact, uid: existing.uid })
+    return
   }
 
-  return selector(contact);
-};
+  return selector(contact)
+}
 
 const avatarCreator = _contact =>
   _contact && _contact.photoURL
     ? _contact.photoURL
-    : `https://ui-avatars.com/api/?name=${_contact.name}`;
+    : `https://ui-avatars.com/api/?name=${_contact && _contact.name && _contact.name}`
 
+/* eslint react/prop-types: 0 */
 export const ContactCard = ({
   contact,
   testid,
@@ -34,7 +35,7 @@ export const ContactCard = ({
   setIndex,
   existing,
   isLastContact,
-  send,
+  send
 }) => (
   <button
     type="button"
@@ -45,7 +46,7 @@ export const ContactCard = ({
         selector,
         contact,
         isLastContact,
-        send,
+        send
       })
     }
     className="w5 center bg-white br3 pa3 pa4-ns mv3 ba b--black-10 grow pointer b--green-hover"
@@ -65,4 +66,4 @@ export const ContactCard = ({
       </h2>
     </div>
   </button>
-);
+)

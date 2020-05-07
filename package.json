@@ -74,7 +74,7 @@
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.1.2",
     "react-router-prop-types": "^1.0.4",
-    "react-transition-group": "^4.4.0",
+    "react-transition-group": "^4.4.1",
     "react-use": "^12.13.0",
     "redux": "^4.0.5",
     "redux-immutable-state-invariant": "^2.1.0",
@@ -111,7 +111,7 @@
     "start": "run-p watch:tailwind start:react",
     "start:react": "node scripts/start.js",
     "prebuild": "npm run build:tailwind",
-    "build": "node scripts/build.j",
+    "build": "node scripts/build.js",
     "test": "node scripts/test.js"
   },
   "eslintConfig": {

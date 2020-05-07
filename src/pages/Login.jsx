@@ -7,17 +7,21 @@ import { useForm } from 'react-hook-form'
 import PropTypes from 'prop-types'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import Loader from 'react-loader-spinner'
+import Transition from '../utils/transition.js'
 
 function actions (draft, action) {
   switch (action.type) {
     case 'SWITCHED':
       draft.version = draft.version === 'signup' ? 'signin' : 'signup'
+      draft.submitting = false
       break
     case 'SWITCHED_TO_SIGNIN':
       draft.version = 'signin'
+      draft.submitting = false
       break
     case 'SWITCHED_TO_PASSWORD':
       draft.version = 'password'
+      draft.submitting = false
       break
     case 'FORM_SUBMITTED':
       draft.submitting = true
@@ -44,8 +48,8 @@ const propTypes = {
 export const Login = ({ authStatus, userId }) => {
   const [state, dispatch] = useImmerReducer(actions, {
     version: 'signin',
-    loggedInSuccessfully: authStatus || false,
-    uid: userId || '',
+    loggedInSuccessfully: false,
+    uid: '',
     submitting: false
   })
 
@@ -59,6 +63,7 @@ export const Login = ({ authStatus, userId }) => {
       .then(result => {
         const { uid } = result
         dispatch({ type: 'UPDATED_UID', payload: uid })
+        dispatch({ type: 'FORM_RESET' })
       })
       .then(() => dispatch({ type: 'UPDATED_AUTH_STATUS', payload: true }))
       .catch(error => {
@@ -76,6 +81,7 @@ export const Login = ({ authStatus, userId }) => {
       .then(result => {
         const { uid } = result
         dispatch({ type: 'UPDATED_UID', payload: uid })
+        dispatch({ type: 'FORM_RESET' })
       })
       .then(() => dispatch({ type: 'UPDATED_AUTH_STATUS', payload: true }))
       .catch(error => {
@@ -89,34 +95,73 @@ export const Login = ({ authStatus, userId }) => {
 
   const handlePasswordReset = ({ email }) => {
     dispatch({ type: 'FORM_SUBMITTED' })
-    firebase.auth().sendPasswordResetEmail(email).then(() => {
-      dispatch({ type: 'FORM_RESET' })
-      dispatch({ type: 'SWITCHED_TO_SIGNIN' })
-      toast$.next({
-        type: 'SUCCESS',
-        message: 'Password reset email sent.'
+    return firebase.auth()
+      .sendPasswordResetEmail(email)
+      .then(() => {
+        dispatch({ type: 'FORM_RESET' })
+        toast$.next({
+          type: 'SUCCESS',
+          message: 'Password reset email sent.'
+        })
+        dispatch({ type: 'SWITCHED_TO_SIGNIN' })
+      }).catch(error => {
+        dispatch({ type: 'FORM_RESET' })
+        toast$.next({
+          type: 'ERROR',
+          message: error.message || error
+        })
       })
-    }).catch(error => {
-      dispatch({ type: 'FORM_RESET' })
-      toast$.next({
-        type: 'ERROR',
-        message: error.message || error
-      })
-    })
   }
 
-  if (state.loggedInSuccessfully && state.uid) {
-    return <Redirect to={`/user/${state.uid}/network`} />
+  if ((state.loggedInSuccessfully && state.uid) || (authStatus && userId)) {
+    return <Redirect to={`/user/${state.uid || userId}/network`} />
   }
 
   return (
     <div className='min-h-full flex items-center justify-center bg-gray-50 py-20 px-4 sm:px-6 lg:px-8'>
-      <div className='max-w-md w-full bg-white rounded-lg shadow-md p-5'>
-        <div>
-          <h2 className='mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900'>
-            {state.version === 'signin' ? 'Sign in to your account'
-              : state.version === 'signip' ? 'Create a new account' : 'Reset your password'}
-          </h2>
+
+      <div className='max-w-md w-full bg-white rounded-lg shadow-md p-5 '>
+        <div className=''>
+          <Transition
+            show={state.version === 'signin'}
+            enter="transition ease-in duration-1000 transform"
+            enterFrom="opacity-0 scale-95 h-0"
+            enterTo="opacity-100 scale-100 h-auto"
+            leave="transition ease-out duration-1000 transform"
+            leaveFrom="opacity-100 scale-100 h-auto mt-6"
+            leaveTo="opacity-0 scale-95 h-0 m-0"
+          >
+            <h2 className='mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900'>
+             Sign in to your account
+            </h2>
+          </Transition>
+          <Transition
+            show={state.version === 'signup'}
+            enter="transition ease-in duration-1000 transform"
+            enterFrom="opacity-0 scale-95 h-0"
+            enterTo="opacity-100 scale-100 h-auto"
+            leave="transition ease-out duration-1000 transform"
+            leaveFrom="opacity-100 scale-100 h-auto mt-6 "
+            leaveTo="opacity-0 scale-95 h-0 m-0 -translate-y-5"
+          >
+            <h2 className='mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900'>
+            Create a new account
+            </h2>
+          </Transition>
+          <Transition
+            show={state.version === 'password'}
+            enter="transition ease-in duration-100o transform"
+            enterFrom="opacity-0 scale-95 h-0"
+            enterTo="opacity-100 scale-100 h-auto"
+            leave="transition ease-out duration-1000 transform"
+            leaveFrom="opacity-100 scale-100 h-auto mt-6"
+            leaveTo="opacity-0 scale-95 h-0 m-0"
+          >
+            <h2 className='mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900'>
+            Reset your password
+            </h2>
+          </Transition>
+
           <div className='flex items-center justify-center'>
             <button onClick={() => dispatch({ type: 'SWITCHED' })}
               className='font-semibold text-base text-green-600 hover:text-green-500 focus:outline-none focus:underline transition ease-in-out duration-150 underline'>
@@ -124,17 +169,16 @@ export const Login = ({ authStatus, userId }) => {
             </button>
           </div>
         </div>
+
         <form
-          className='mt-8' onSubmit={
-            state.version === 'signin' ? handleSubmit(handleLogin)
-              : state.version === 'signup' ? handleSubmit(handleSignup)
-                : handleSubmit(handlePasswordReset)
+          className='mt-8' onSubmit={handleSubmit(state.version === 'signin' ? handleLogin : state.version === 'signup' ? handleSignup : handlePasswordReset)
+
           }
         >
           <div className='rounded-md shadow-sm'>
             <div>
               <input
-                aria-label='Email address' name='email' className='appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5' placeholder='Email address'
+                aria-label='Email address' name='email' className={ `${state.version === 'password' ? 'rounded-md' : 'rounded-t-md rounded-none'} appearance-none  relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5`} placeholder='Email address'
                 ref={register({ required: true, pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ })}
               />
             </div>
@@ -158,16 +202,26 @@ export const Login = ({ authStatus, userId }) => {
                 {state.submitting ? 'Submitting...' : state.version === 'signin' ? 'Sign in' : state.version === 'signup' ? 'Sign up' : 'Reset Password'}</span>
             </button>
 
-            <div className='mt-6 flex items-center justify-center'>
-              <div className='text-sm leading-5'>
-                {state.version === 'signin' &&
-                  <button onClick={() => dispatch({ type: 'SWITCHED_TO_PASSWORD' })} className='font-medium text-green-600 hover:text-green-500 focus:outline-none focus:underline transition ease-in-out duration-150'>
-                    Forgot your password?
-                  </button>}
-              </div>
-            </div>
           </div>
         </form>
+        <div className='mt-6 flex items-center justify-center'>
+          <div className='text-sm leading-5 h-4'>
+            <Transition
+              show={state.version === 'signin'}
+              enter="transition ease-in duration-100o transform"
+              enterFrom="opacity-0 scale-95 h-0"
+              enterTo="opacity-100 scale-100 h-auto"
+              leave="transition ease-out duration-1000 transform"
+              leaveFrom="opacity-100 scale-100 h-auto mt-6"
+              leaveTo="opacity-0 scale-95 h-0 m-0"
+            >
+              <button onClick={() => dispatch({ type: 'SWITCHED_TO_PASSWORD' })} className='font-medium text-green-600 hover:text-green-500 focus:outline-none focus:underline transition ease-in-out duration-150'>
+                    Forgot your password?
+              </button>
+            </Transition>
+
+          </div>
+        </div>
       </div>
     </div>
 

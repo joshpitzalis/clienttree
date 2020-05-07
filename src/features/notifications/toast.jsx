@@ -55,7 +55,7 @@ ${(type === 'ERROR' && ' bg-red-500 p-4') ||
             </div>
             <div className="ml-3">
               <h3 className="text-sm leading-5 font-medium text-gray-200">
-                {`${message} ${from ? `| ${from}` : null}`}
+                {`${message} ${from ? `| ${from}` : ''} `}
               </h3>
             </div>
           </div>
