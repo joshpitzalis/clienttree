@@ -2,8 +2,8 @@
   "sendgrid": {
     "template": "d-a4a25a4a6e4f49ce9b8aed156f15fb52",
     "tempate2": "d-c24a91fd567f4cd0ac659ee80fd9e173",
-    "key": "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"
+    "key": ""
   }
 }
-// firebase functions:config:set sendgrid.key="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" sendgrid.template="d-a4a25a4a6e4f49ce9b8aed156f15fb52"
+// firebase functions:config:set sendgrid.key="" sendgrid.template="d-a4a25a4a6e4f49ce9b8aed156f15fb52"
 // sendgrid.template2="d-c24a91fd567f4cd0ac659ee80fd9e173"

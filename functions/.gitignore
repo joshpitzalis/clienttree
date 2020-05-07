@@ -14,3 +14,4 @@ serviceAccount.PROD.json
 serviceAccount.DEV.json
 
 .runtimeconfig.json
+runtimeconfig.json
