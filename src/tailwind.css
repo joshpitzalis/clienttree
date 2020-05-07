@@ -1,9 +1,12 @@
-/* https://daveceddia.com/tailwind-create-react-app/ */
+@import '~antd/dist/antd.css';
 
+/* https://daveceddia.com/tailwind-create-react-app */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import '~antd/dist/antd.css';
+
+
+
 
 body {
   background-color:var(--bg-base);
@@ -23,8 +26,8 @@ body {
   --border-color-main: #44444e;
   --border-color-highlight: #64646e;
 
-  --primary: hsl(83, 70%, 34%) !important; 
-  --green: hsl(83, 70%, 34%); 
+  --primary: #2f855c !important; 
+  --green: #2f855c; 
   --blue	: #32549d;
   --indigo: #5083f4;
   --orange: #ffb42a;
@@ -272,20 +275,26 @@ details summary::-webkit-details-marker {
 
 /* The widget header displays the title for each screen */
 #cloudsponge-address-book .cloudsponge-topbar {
-  background-color: hsl(83, 70%, 34%);
+  background-color: #2f855c;
 }
 
 /* Change the colors of the .cloudsponge-export-button */
 #cloudsponge-address-book .cloudsponge-button.cloudsponge-export-button {
-  background-color: hsl(83, 70%, 34%);;
+  background-color: #2f855c;
   color: #FFFFFF;
 }
 
 #cloudsponge-address-book .cloudsponge-button.cloudsponge-export-button:hover {
-  background-color: hsl(83, 50%, 34%);;
+  background-color: #2f855c;
 }
 
 /*
 If you want to style other properties or elements, let use know.
 */
+
+.reset > * {
+  all: none;
+}
+
+
 

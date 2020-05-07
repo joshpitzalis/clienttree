@@ -8,7 +8,7 @@ import { doc, collection } from 'rxfire/firestore'
 import { useDispatch, useSelector } from 'react-redux'
 import { createSlice } from '@reduxjs/toolkit'
 import { NavPanel, NavLink, ContainerHorizontal } from '@duik/it'
-
+// import { ReminderModal } from '../features/people/components/Reminder'
 import { HelpfulTaskList as UniversalTaskList } from '../features/people/components/UniversalTaskList'
 import { SpecificTaskList } from '../features/people/components/SpecificTaskList'
 import People from '../images/People'
@@ -118,6 +118,7 @@ export const fetchUserDataEpic = (
   )
 
 /** @param {{userId: string}} [Props] */
+/* eslint-disable react/prop-types */
 export function Dashboard ({ userId }) {
   const dispatch = useDispatch()
 
@@ -135,6 +136,8 @@ export function Dashboard ({ userId }) {
   return (
     <ContainerHorizontal>
       <ConfettiBanner />
+      {/* {visible && <ReminderModal showModal={visible}
+        toggleModal={setVisibility} />} */}
       {visible && (
         <Portal onClose={() => setVisibility(false)}>
           <Modal
@@ -143,6 +146,7 @@ export function Dashboard ({ userId }) {
             onClose={() => {
               setVisibility(false)
             }}
+
           />
         </Portal>
       )}
@@ -177,11 +181,12 @@ export function Dashboard ({ userId }) {
             <>
               {selectedUserUid ? (
                 <>
+
                   <button
                     type='button'
                     data-testid='addreminder'
                     onClick={() => setVisibility(true)}
-                    className='btn2 ph4 pv3 bn pointer br1 grow b mv4'
+                    className='inline-flex items-center w-full justify-center px-6 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-50 focus:outline-none focus:border-green-300 focus:shadow-outline-green active:bg-green-200 transition ease-in-out duration-150'
                   >
                     Add A Reminder
                   </button>

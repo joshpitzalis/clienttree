@@ -1,25 +1,25 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { doc } from 'rxfire/firestore';
-import { toast$ } from '../../notifications/toast';
-import { handleAddTask } from '../peopleAPI';
-import firebase from '../../../utils/firebase';
-import { ReminderCreator } from './Reminder';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { doc } from 'rxfire/firestore'
+import { toast$ } from '../../notifications/toast'
+import { handleAddTask } from '../peopleAPI'
+import firebase from '../../../utils/firebase'
+import { ReminderCreator } from './Reminder'
 
 const modalPropTypess = {
   uid: PropTypes.string.isRequired,
   selectedUserUid: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired
   // incrementStats: PropTypes.func,
-};
+}
 const modalDefaultPropss = {
   // incrementStats: handleTracking,
-};
-
+}
+/* eslint-disable react/prop-types */
 const Modal = ({
   uid,
   selectedUserUid,
-  onClose,
+  onClose
   // incrementStats = handleTracking,
 }) => {
   const [state, setState] = React.useState({
@@ -32,8 +32,8 @@ const Modal = ({
     photoURL: '',
     imgString: '',
     activeTaskCount: 0,
-    email: '',
-  });
+    email: ''
+  })
 
   React.useEffect(() => {
     if (selectedUserUid) {
@@ -45,11 +45,11 @@ const Modal = ({
           .collection('contacts')
           .doc(selectedUserUid)
       ).subscribe(user => {
-        setState({ ...user.data() });
-      });
-      return () => subscription.unsubscribe();
+        setState({ ...user.data() })
+      })
+      return () => subscription.unsubscribe()
     }
-  }, [selectedUserUid, uid]);
+  }, [selectedUserUid, uid])
 
   const handleAddingTask = ({
     taskName,
@@ -58,7 +58,7 @@ const Modal = ({
     photoURL,
     dueDate,
     contactName,
-    email,
+    email
   }) => {
     handleAddTask({
       taskName,
@@ -67,11 +67,11 @@ const Modal = ({
       photoURL,
       dueDate,
       contactName,
-      email,
+      email
     }).catch(error =>
       toast$.next({ type: 'ERROR', message: error.message || error })
-    );
-  };
+    )
+  }
 
   return (
     <div data-testid="contactModal" className="z-999 relative">
@@ -87,9 +87,9 @@ const Modal = ({
         </div>
       </div>
     </div>
-  );
-};
-Modal.propTypes = modalPropTypess;
-Modal.defaultProps = modalDefaultPropss;
+  )
+}
+Modal.propTypes = modalPropTypess
+Modal.defaultProps = modalDefaultPropss
 
-export default Modal;
+export default Modal

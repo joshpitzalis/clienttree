@@ -6,8 +6,11 @@ import * as serviceWorker from './serviceWorker'
 import Routes from './Routes'
 import { UserProvider } from './features/auth/UserContext'
 import store from './utils/store'
-import './tailwind.generated.css'
+
 import '@duik/it/dist/styles.css'
+import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
+import 'tachyons'
+import './tailwind.generated.css'
 
 if (process.env.NODE_ENV === 'production') {
   Sentry.init({

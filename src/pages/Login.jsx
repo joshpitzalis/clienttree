@@ -5,7 +5,6 @@ import firebase from '../utils/firebase'
 import { useImmerReducer } from 'use-immer'
 import { useForm } from 'react-hook-form'
 import PropTypes from 'prop-types'
-import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import Loader from 'react-loader-spinner'
 import Transition from '../utils/transition.js'
 
