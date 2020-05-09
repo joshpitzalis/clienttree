@@ -1,19 +1,22 @@
 describe('stats box', () => {
   const fakeData = {
-    name: 'Slick Rick',
-  };
+    name: 'Slick Rick'
+  }
 
   it('lets me add stats', () => {
     cy.visit('/')
       //  create a contact
-
+      .wait(2000)
       .findByTestId(/outreachPage/i)
       .findByText(/Add someone new/i)
       .click()
       .findByTestId(/contactModal/i)
+      .wait(2000)
       .findByPlaceholderText(/Their name/i)
+
       .clear()
       .type('fakeData.name')
+      .wait(2000)
       // .pickDate()
       // .findByPlaceholderText(/click to edit/i)
       // .type(fakeData.description)
@@ -69,18 +72,19 @@ describe('stats box', () => {
       .trigger('mouseover')
       .findByText('115')
       .findByText('12')
-      .findByText('4');
-  });
+      .findByText('4')
+  })
 
   it('updates stats when I move people into or out of leads', () => {
     cy.visit('/')
-
+      .wait(5000)
       .findByTestId('outreachPage')
       .findByText(/add someone new/i)
       .click()
       .findByPlaceholderText(/their name/i)
       .clear()
       .type(fakeData.name)
+      .wait(2000)
       // .pickDate()
       .findByPlaceholderText(/click to edit/i)
       .type('this is a note')
@@ -106,8 +110,8 @@ describe('stats box', () => {
       .findByTestId('statsTitle')
       .trigger('mouseover')
       .findByText('4')
-      .findAllByText('11');
-  });
+      .findAllByText('11')
+  })
 
   it('updates stats when I move people into or out of project started', () => {
     cy.visit('/')
@@ -115,14 +119,14 @@ describe('stats box', () => {
       .findByTestId('projectPage')
       .click()
       .findByTestId('stage1')
-      .within(() => cy.findByTestId(fakeData.name));
+      .within(() => cy.findByTestId(fakeData.name))
     cy.findByTestId(fakeData.name)
       .focus()
       .type(' ')
-      .type(`{downarrow}`)
-      .type(' ');
-    cy.findByTestId('stage2').within(() => cy.findByTestId(fakeData.name));
-  });
+      .type('{downarrow}')
+      .type(' ')
+    cy.findByTestId('stage2').within(() => cy.findByTestId(fakeData.name))
+  })
 
   //   when columns are rearranged, leads are added to first column
 
@@ -137,4 +141,4 @@ describe('stats box', () => {
   // it('move stages around', () => {
   //   cy.visit('/');
   // });
-});
+})

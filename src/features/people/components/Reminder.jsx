@@ -40,7 +40,7 @@ export const ReminderCreator = ({
   )
 
   const [state, dispatch] = useImmerReducer(actions, {
-    name: '',
+    name: contact ? contact.name : '',
     task: '',
     date: +new Date() + 604800000,
     error: '',

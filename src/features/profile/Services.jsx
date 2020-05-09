@@ -1,24 +1,24 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import produce from 'immer';
-import { Redirect, Link } from 'react-router-dom';
-import { Subject } from 'rxjs';
-import { tap, debounceTime } from 'rxjs/operators';
-import { useDispatch } from 'react-redux';
+import React from 'react'
+import PropTypes from 'prop-types'
+import produce from 'immer'
+import { Redirect, Link } from 'react-router-dom'
+import { Subject } from 'rxjs'
+import { tap, debounceTime } from 'rxjs/operators'
+import { useDispatch } from 'react-redux'
 import {
   handleFirebaseUpdate,
   fetchUserData,
-  handleFirebaseDelete,
-} from './serviceAPI';
-import { toast$ } from '../notifications/toast';
-import { ONBOARDING_STEP_COMPLETED } from '../onboarding/onboardingConstants';
+  handleFirebaseDelete
+} from './serviceAPI'
+import { toast$ } from '../notifications/toast'
+import { ONBOARDING_STEP_COMPLETED } from '../onboarding/onboardingConstants'
 
-export const serviceFormUpdate$ = new Subject();
+export const serviceFormUpdate$ = new Subject()
 
 export const curriedReducer = produce((draft, action) => {
   if (action.type === 'SERVICE_ADDED') {
-    const newId = +new Date();
-    const newIdString = newId.toString();
+    const newId = +new Date()
+    const newIdString = newId.toString()
 
     draft[newIdString] = {
       id: newIdString,
@@ -26,45 +26,45 @@ export const curriedReducer = produce((draft, action) => {
       name: '',
       description: '',
       price: '',
-      link: '',
-    };
+      link: ''
+    }
   }
 
   if (action.type === 'SERVICE_NAME_CHANGED') {
-    draft[action.payload.serviceId].name = action.payload.value;
+    draft[action.payload.serviceId].name = action.payload.value
   }
 
   if (action.type === 'SERVICE_DESCRIPTION_CHANGED') {
-    draft[action.payload.serviceId].description = action.payload.value;
+    draft[action.payload.serviceId].description = action.payload.value
   }
 
   if (action.type === 'SERVICE_PRICE_CHANGED') {
-    draft[action.payload.serviceId].price = action.payload.value;
+    draft[action.payload.serviceId].price = action.payload.value
   }
 
   if (action.type === 'SERVICE_LINK_CHANGED') {
-    draft[action.payload.serviceId].link = action.payload.value;
+    draft[action.payload.serviceId].link = action.payload.value
   }
 
   if (action.type === 'HYDRATE_SERVICES') {
-    return action.payload;
+    return action.payload
   }
 
   if (action.type === 'SERVICE_DELETED') {
-    delete draft[action.payload.serviceId];
+    delete draft[action.payload.serviceId]
   }
-});
+})
 
 const propTypes = {
-  uid: PropTypes.string.isRequired,
-};
-const defaultProps = {};
+  uid: PropTypes.string.isRequired
+}
+const defaultProps = {}
 
 const Services = props => {
-  const { uid } = props;
-  const [state, dispatch] = React.useReducer(curriedReducer, {});
-  const [firstTime] = React.useState(false);
-  const reduxDispatch = useDispatch();
+  const { uid } = props
+  const [state, dispatch] = React.useReducer(curriedReducer, {})
+  const [firstTime] = React.useState(false)
+  const reduxDispatch = useDispatch()
 
   React.useEffect(() => {
     if (uid) {
@@ -72,14 +72,14 @@ const Services = props => {
         .then(data =>
           dispatch({
             type: 'HYDRATE_SERVICES',
-            payload: data && data.services && data.services,
+            payload: data && data.services && data.services
           })
         )
         .catch(error =>
           toast$.next({ type: 'ERROR', message: error.message || error })
-        );
+        )
     }
-  }, [uid]);
+  }, [uid])
 
   React.useEffect(() => {
     const updates = serviceFormUpdate$
@@ -87,27 +87,27 @@ const Services = props => {
         debounceTime(1000),
         tap(({ type, payload }) => {
           if (type === 'SERVICES_DELETED') {
-            const { userId, id } = payload;
-            handleFirebaseDelete({ id, userId });
-            return;
+            const { userId, id } = payload
+            handleFirebaseDelete({ id, userId })
+            return
           }
 
           handleFirebaseUpdate(payload)
             .then(() => {
               // track event in amplitude
-              const { analytics } = window;
-              analytics.track('Services Updated');
+              const { analytics } = window
+              analytics.track('Services Updated')
             })
             .catch(error =>
               toast$.next({ type: 'ERROR', message: error.message || error })
-            );
+            )
         })
       )
-      .subscribe();
-    return () => updates.unsubscribe();
-  }, []);
+      .subscribe()
+    return () => updates.unsubscribe()
+  }, [])
 
-  if (firstTime) return <Redirect to={`/user/${uid}/dashboard`} />;
+  if (firstTime) return <Redirect to={`/user/${uid}/dashboard`} />
 
   return (
     <div>
@@ -115,15 +115,15 @@ const Services = props => {
         <form
           className="measure mt5"
           onSubmit={e => {
-            e.preventDefault();
+            e.preventDefault()
 
             dispatch({
-              type: 'SERVICE_ADDED',
-            });
+              type: 'SERVICE_ADDED'
+            })
             reduxDispatch({
               type: ONBOARDING_STEP_COMPLETED,
-              payload: { userId: uid, onboardingStep: 'referralPageCreated' },
-            });
+              payload: { userId: uid, onboardingStep: 'referralPageCreated' }
+            })
           }}
         >
           <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
@@ -162,13 +162,13 @@ const Services = props => {
         </form>
       </main>
     </div>
-  );
-};
+  )
+}
 
-Services.propTypes = propTypes;
-Services.defaultProps = defaultProps;
+Services.propTypes = propTypes
+Services.defaultProps = defaultProps
 
-export default Services;
+export default Services
 
 const sericePropTypes = {
   dispatch: PropTypes.func.isRequired,
@@ -177,10 +177,10 @@ const sericePropTypes = {
   description: PropTypes.string.isRequired,
   price: PropTypes.string.isRequired,
   link: PropTypes.string.isRequired,
-  userId: PropTypes.string.isRequired,
-};
+  userId: PropTypes.string.isRequired
+}
 
-const serviceDefaultProps = {};
+const serviceDefaultProps = {}
 
 const IndividualService = ({
   dispatch,
@@ -189,7 +189,7 @@ const IndividualService = ({
   description,
   price,
   link,
-  userId,
+  userId
 }) => (
   <div className="mb5 pt4 bt b--light-gray" data-testid="serviceBox">
     <div className="mb4">
@@ -207,9 +207,9 @@ const IndividualService = ({
               type: 'SERVICE_NAME_CHANGED',
               payload: {
                 serviceId: id,
-                value: e.target.value,
-              },
-            });
+                value: e.target.value
+              }
+            })
             serviceFormUpdate$.next({
               type: 'SERVICES_FORM_UPDATED',
               payload: {
@@ -218,9 +218,9 @@ const IndividualService = ({
                 name: e.target.value,
                 description,
                 price,
-                link,
-              },
-            });
+                link
+              }
+            })
           }}
         />
       </label>
@@ -242,9 +242,9 @@ const IndividualService = ({
               type: 'SERVICE_DESCRIPTION_CHANGED',
               payload: {
                 serviceId: id,
-                value: e.target.value,
-              },
-            });
+                value: e.target.value
+              }
+            })
             serviceFormUpdate$.next({
               type: 'SERVICES_FORM_UPDATED',
               payload: {
@@ -253,9 +253,9 @@ const IndividualService = ({
                 name,
                 description: e.target.value,
                 price,
-                link,
-              },
-            });
+                link
+              }
+            })
           }}
         ></textarea>
       </label>
@@ -283,9 +283,9 @@ const IndividualService = ({
               type: 'SERVICE_PRICE_CHANGED',
               payload: {
                 serviceId: id,
-                value: e.target.value,
-              },
-            });
+                value: e.target.value
+              }
+            })
             serviceFormUpdate$.next({
               type: 'SERVICES_FORM_UPDATED',
               payload: {
@@ -294,9 +294,9 @@ const IndividualService = ({
                 name,
                 description,
                 price: e.target.value,
-                link,
-              },
-            });
+                link
+              }
+            })
           }}
         ></textarea>
       </label>
@@ -323,9 +323,9 @@ const IndividualService = ({
               type: 'SERVICE_LINK_CHANGED',
               payload: {
                 serviceId: id,
-                value: e.target.value,
-              },
-            });
+                value: e.target.value
+              }
+            })
             serviceFormUpdate$.next({
               type: 'SERVICES_FORM_UPDATED',
               payload: {
@@ -334,9 +334,9 @@ const IndividualService = ({
                 name,
                 description,
                 price,
-                link: e.target.value,
-              },
-            });
+                link: e.target.value
+              }
+            })
           }}
         />
       </label>
@@ -347,32 +347,32 @@ const IndividualService = ({
           type: 'SERVICES_DELETED',
           payload: {
             userId,
-            id,
-          },
-        });
+            id
+          }
+        })
         dispatch({
           type: 'SERVICE_DELETED',
           payload: {
-            serviceId: id,
-          },
-        });
+            serviceId: id
+          }
+        })
       }}
       title={name}
     />
   </div>
-);
+)
 
-IndividualService.propTypes = sericePropTypes;
-IndividualService.defaultProps = serviceDefaultProps;
+IndividualService.propTypes = sericePropTypes
+IndividualService.defaultProps = serviceDefaultProps
 
 const confirmDeletePropTypes = {
   handleDelete: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-};
-const confirmDeleteDefaultProps = {};
+  title: PropTypes.string.isRequired
+}
+const confirmDeleteDefaultProps = {}
 
 export const ConfirmDelete = ({ handleDelete, title }) => {
-  const [confirmDelete, setConfirmDelete] = React.useState(false);
+  const [confirmDelete, setConfirmDelete] = React.useState(false)
   return (
     <div>
       {confirmDelete ? (
@@ -385,6 +385,7 @@ export const ConfirmDelete = ({ handleDelete, title }) => {
               className="f6 red small-caps pointer link dim ba bw1 ph3 pv2 mb2 dib b--red"
               type="button"
               onClick={handleDelete}
+              data-testid='confirmDeleteService'
             >
               {`Delete ${title}`}
             </button>
@@ -407,8 +408,8 @@ export const ConfirmDelete = ({ handleDelete, title }) => {
         </button>
       )}
     </div>
-  );
-};
+  )
+}
 
-ConfirmDelete.propTypes = confirmDeletePropTypes;
-ConfirmDelete.defaultProps = confirmDeleteDefaultProps;
+ConfirmDelete.propTypes = confirmDeletePropTypes
+ConfirmDelete.defaultProps = confirmDeleteDefaultProps

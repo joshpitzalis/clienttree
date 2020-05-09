@@ -25,14 +25,15 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('login', () => {
-  cy.findByPlaceholderText(/Your email.../i)
+  cy.findByPlaceholderText(/email/i)
     .type('test@test.com')
-    .findByPlaceholderText(/Your password.../i)
-    .type('test123')
-    .findAllByText(/Sign in/i)
+    .findAllByPlaceholderText(/password/i)
     .first()
-    .click();
-});
+    .type('test123')
+    .findByTestId('authButton')
+    .first()
+    .click()
+})
 
 Cypress.Commands.add('pickDate', () => {
   cy.get('.ant-calendar-picker-input')
@@ -47,8 +48,8 @@ Cypress.Commands.add('pickDate', () => {
         .findAllByText(/10/i)
         .first()
         .click()
-    );
-});
+    )
+})
 
 Cypress.Commands.add('goToProfilePage', () => {
   cy.findByTestId('settings')
@@ -56,8 +57,8 @@ Cypress.Commands.add('goToProfilePage', () => {
     .findByTestId('goToProfilePage')
     .click()
     .url()
-    .should('include', 'profile');
-});
+    .should('include', 'profile')
+})
 
 // Cypress.Commands.add('drag', (testId, x, y) => {
 //   cy.findByTestId(testId)

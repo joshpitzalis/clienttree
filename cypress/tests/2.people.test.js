@@ -3,8 +3,8 @@ describe('outreach', () => {
     name: 'Sick Rick',
     lastContacted: 'about a week ago',
     description: 'Pickle',
-    updatedName: 'Skeletor',
-  };
+    updatedName: 'Skeletor'
+  }
 
   it('lets you add a contact', () => {
     cy.visit('/')
@@ -25,8 +25,8 @@ describe('outreach', () => {
       .click()
       .queryByTestId(/contactModal/i)
       .should('not.exist')
-      .findAllByText(fakeData.name);
-  });
+      .findAllByText(fakeData.name)
+  })
 
   it('lets you update a contact', () => {
     cy.visit('/')
@@ -47,8 +47,8 @@ describe('outreach', () => {
       .should('not.exist')
       .findByText(fakeData.updatedName)
       .queryByText(fakeData.name)
-      .should('not.exist');
-  });
+      .should('not.exist')
+  })
 
   it('creates a task and completes a task  ', () => {
     cy.visit('/')
@@ -74,9 +74,9 @@ describe('outreach', () => {
       .should('not.exist')
       .findByTestId('sidebar')
       .within(() => {
-        cy.findByText(fakeData.updatedName);
-      });
-  });
+        cy.findByText(fakeData.updatedName)
+      })
+  })
 
   it('create a contact note', () => {
     cy.visit('/')
@@ -86,8 +86,8 @@ describe('outreach', () => {
       .findByPlaceholderText(/click to edit/i)
       .type('example note')
       .wait(5000)
-      .findByText(/saved/i);
-  });
+      .findByText(/saved/i)
+  })
   it('update a contact note', () => {
     cy.visit('/')
       .wait(5000)
@@ -95,12 +95,13 @@ describe('outreach', () => {
       .click()
       .findByText(/example note/i)
       .click()
-      .findByText(/example note/i)
+      .get('[data-testid=notesTextarea]')
       .clear()
+      .wait(2000)
       .type('updated note')
       .wait(5000)
-      .findByText(/saved/i);
-  });
+      .findByText(/saved/i)
+  })
   it('delete a contact note', () => {
     cy.visit('/')
       .wait(5000)
@@ -113,11 +114,11 @@ describe('outreach', () => {
       .findByText(/confirm delete/i)
       .click()
       .queryByText(/updated note/i)
-      .should('not.exist');
-  });
+      .should('not.exist')
+  })
 
   it('be able to add and complete a task to existing person on mobile', () => {
-    cy.viewport('iphone-5');
+    cy.viewport('iphone-5')
     cy.visit('/')
       // .login()
       .wait(5000)
@@ -140,11 +141,11 @@ describe('outreach', () => {
       .findByText(/confirm completed/i)
       .click()
       .findByText(/due in 7 days/i)
-      .should('not.exist');
-  });
+      .should('not.exist')
+  })
 
   it('be able to add and complete a task to a new person on mobile', () => {
-    cy.viewport('iphone-5');
+    cy.viewport('iphone-5')
     cy.visit('/')
       // .login()
       .wait(5000)
@@ -165,8 +166,8 @@ describe('outreach', () => {
       .findByText(/confirm completed/i)
       .click()
       .findByText(/due in 7 days/i)
-      .should('not.exist');
-  });
+      .should('not.exist')
+  })
 
   it('check the person created on mobile shows up on desktop and lets you delete a contact', () => {
     cy.visit('/')
@@ -184,6 +185,6 @@ describe('outreach', () => {
       .queryByTestId(/contactModal/i)
       .should('not.exist')
       .queryByText('someone new')
-      .should('not.exist');
-  });
-});
+      .should('not.exist')
+  })
+})
