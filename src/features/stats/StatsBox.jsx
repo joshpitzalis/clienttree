@@ -1,14 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import { useMachine } from '@xstate/react';
-import { Machine } from 'xstate';
-import { assert } from 'chai';
-import Portal from '../../utils/Portal';
-import { GeneralForm } from './InputForm';
-import { Stats } from './StatsDetails';
-import { setStatDefaults } from './statsAPI';
-import Dollar from '../../images/Dollar';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { useSelector } from 'react-redux'
+import { useMachine } from '@xstate/react'
+import { Machine } from 'xstate'
+import { assert } from 'chai'
+import Portal from '../../utils/Portal'
+import { GeneralForm } from './InputForm'
+import { Stats } from './StatsDetails'
+import { setStatDefaults } from './statsAPI'
+import Dollar from '../../images/Dollar'
 
 export const statsMachine = Machine(
   {
@@ -18,18 +18,18 @@ export const statsMachine = Machine(
       initialising: {
         on: {
           INCOMPLETE: 'incomplete',
-          ALREADY_COMPLETE: 'complete',
-        },
+          ALREADY_COMPLETE: 'complete'
+        }
       },
       incomplete: {
         on: {
-          MODAL_OPENED: 'loading',
+          MODAL_OPENED: 'loading'
         },
         meta: {
           test: ({ getByTestId }) => {
-            assert.ok(getByTestId('incomplete-screen'));
-          },
-        },
+            assert.ok(getByTestId('incomplete-screen'))
+          }
+        }
       },
       loading: {
         invoke: {
@@ -37,12 +37,12 @@ export const statsMachine = Machine(
           src: (context, event) =>
             setStatDefaults(event.payload && event.payload.userId),
           onDone: {
-            target: 'modal',
+            target: 'modal'
           },
           onError: {
-            target: 'incomplete',
-          },
-        },
+            target: 'incomplete'
+          }
+        }
       },
       modal: {
         on: {
@@ -50,66 +50,66 @@ export const statsMachine = Machine(
             {
               target: 'complete',
               // Only transition to 'complete' if the guard (cond) evaluates to true
-              cond: 'incomeGoalsCompleted',
+              cond: 'incomeGoalsCompleted'
             },
-            { target: 'incomplete' },
+            { target: 'incomplete' }
             // {
             //   target: 'incomplete',
             //   cond: 'incomeGoalsCompleted',
             // },
             // { target: 'complete' },
-          ],
+          ]
         },
         meta: {
           test: ({ getByTestId }) => {
-            assert.ok(getByTestId('contactModal'));
-          },
-        },
+            assert.ok(getByTestId('contactModal'))
+          }
+        }
       },
       complete: {
         on: { COMPLETE_MODAL_OPENED: 'modal' },
         meta: {
           test: ({ getByTestId }) => {
-            assert.ok(getByTestId('complete-screen'));
-          },
-        },
-      },
-    },
+            assert.ok(getByTestId('complete-screen'))
+          }
+        }
+      }
+    }
   },
   {
     guards: {
       incomeGoalsCompleted: (_, { payload }) => {
         if (payload && payload.incomeGoalsCompleted) {
-          return true;
+          return true
         }
-        return false;
-      },
-    },
+        return false
+      }
+    }
   }
-);
+)
 
 const propTypes = {
-  userId: PropTypes.string.isRequired,
-};
+  userId: PropTypes.string.isRequired
+}
 
-const defaultProps = {};
+const defaultProps = {}
 
-export default function StatsBox({ userId }) {
-  const userStats = useSelector(store => store.user);
-  const [current, send] = useMachine(statsMachine);
+export default function StatsBox ({ userId }) {
+  const userStats = useSelector(store => store.user)
+  const [current, send] = useMachine(statsMachine)
 
   // if the hustle meter is already set up go straight to the complete state
   React.useEffect(() => {
     if (userStats.stats && userStats.stats.goal && userStats.stats.average) {
-      send('ALREADY_COMPLETE');
+      send('ALREADY_COMPLETE')
     }
     if (
       (userStats.stats && !userStats.stats.goal) ||
       (userStats.stats && !userStats.stats.average)
     ) {
-      send('INCOMPLETE');
+      send('INCOMPLETE')
     }
-  }, [userStats, send]);
+  }, [userStats, send])
 
   switch (current.value) {
     case 'incomplete':
@@ -130,7 +130,7 @@ export default function StatsBox({ userId }) {
             </small>
           </div>
         </button>
-      );
+      )
     case 'loading':
     case 'modal':
       return (
@@ -143,15 +143,15 @@ export default function StatsBox({ userId }) {
                 incomeGoalsCompleted:
                   userStats.stats &&
                   userStats.stats.goal &&
-                  userStats.stats.average,
-              },
+                  userStats.stats.average
+              }
             })
           }
         >
           {/* <InvoiceForm  /> */}
           <GeneralForm userId={userId} send={send} userStats={userStats} />
         </Portal>
-      );
+      )
     case 'complete':
       return (
         <Stats
@@ -159,11 +159,11 @@ export default function StatsBox({ userId }) {
           userStats={userStats}
           showModal={() => send('COMPLETE_MODAL_OPENED')}
         />
-      );
+      )
     default:
-      return null;
+      return null
   }
 }
 
-StatsBox.propTypes = propTypes;
-StatsBox.defaultProps = defaultProps;
+StatsBox.propTypes = propTypes
+StatsBox.defaultProps = defaultProps

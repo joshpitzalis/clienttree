@@ -1,6 +1,5 @@
-import React from 'react';
-import { withRouter, Link } from 'react-router-dom';
-// import PropTypes from 'prop-types';
+import React from 'react'
+import { withRouter, Link } from 'react-router-dom'
 import {
   TopBar,
   TopBarSection,
@@ -16,7 +15,7 @@ import Profile from '../../images/Profile';
 import { UserContext } from './UserContext';
 
 export const Navbar = withRouter(({ history }) => {
-  const { userId, authStatus, handleLogout } = React.useContext(UserContext);
+  const { userId, authStatus, handleLogout } = React.useContext(UserContext)
 
   return (
     <TopBar>
@@ -24,9 +23,9 @@ export const Navbar = withRouter(({ history }) => {
         <TopBarTitle>
           <Link
             to={userId ? `/user/${userId}/network` : '/'}
-            data-testid="goToHomePage"
+            data-testid='goToHomePage'
           >
-            <Tree classNames="" />
+            <Tree classNames='' />
           </Link>
         </TopBarTitle>
       </TopBarSection>
@@ -83,5 +82,12 @@ export const Navbar = withRouter(({ history }) => {
         </TopBarSection>
       )}
     </TopBar>
+<<<<<<< HEAD
+  )
+})
+
+Navbar.propTypes = propTypes
+=======
   );
 });
+>>>>>>> master

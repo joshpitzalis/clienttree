@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Progress } from '@duik/it';
-import { CSSTransition } from 'react-transition-group';
-import './statsAnimation.css';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Progress } from '@duik/it'
+import { CSSTransition } from 'react-transition-group'
+import './statsAnimation.css'
 
 const statPropTypes = {
   userStats: PropTypes.shape({
@@ -14,12 +14,12 @@ const statPropTypes = {
       leadRatio: PropTypes.number,
       leadsContacted: PropTypes.number,
       projectsCompleted: PropTypes.number,
-      activitiesCompleted: PropTypes.number,
-    }),
+      activitiesCompleted: PropTypes.number
+    })
   }).isRequired,
-  showModal: PropTypes.func.isRequired,
-};
-const statDefaultProps = {};
+  showModal: PropTypes.func.isRequired
+}
+const statDefaultProps = {}
 
 export const Stats = ({ userStats, showModal }) => {
   const {
@@ -30,18 +30,18 @@ export const Stats = ({ userStats, showModal }) => {
     leadRatio = 10,
     leadsContacted = 0,
     projectsCompleted = 0,
-    activitiesCompleted = 0,
-  } = userStats && userStats.stats;
+    activitiesCompleted = 0
+  } = userStats && userStats.stats
 
-  const projectCount = Math.ceil((goal - income) / average);
+  const projectCount = Math.ceil((goal - income) / average)
 
-  const [visibility, setVisibility] = React.useState(false);
-  const totalActivitiesNeeded = projectCount * projectRatio * leadRatio;
-  const leadsNeeded = projectCount * projectRatio;
+  const [visibility, setVisibility] = React.useState(false)
+  const totalActivitiesNeeded = projectCount * projectRatio * leadRatio
+  const leadsNeeded = projectCount * projectRatio
 
-  const activitiesLeft = totalActivitiesNeeded - activitiesCompleted;
-  const leadsLeft = leadsNeeded - leadsContacted;
-  const projectsLeft = projectCount - projectsCompleted;
+  const activitiesLeft = totalActivitiesNeeded - activitiesCompleted
+  const leadsLeft = leadsNeeded - leadsContacted
+  const projectsLeft = projectCount - projectsCompleted
 
   return (
     <article
@@ -91,7 +91,7 @@ export const Stats = ({ userStats, showModal }) => {
         data-testid="statsTitle"
         onMouseEnter={() => setVisibility(true)}
       >
-        <h1 className="f4 tl">
+        <h1 className="f4 tl text-white">
           {`$ ${income}`}
           {visibility && <small className="fw5"> / ${`${goal}`}</small>}
         </h1>
@@ -99,7 +99,8 @@ export const Stats = ({ userStats, showModal }) => {
         <Progress fill={income / goal} />
       </div>
     </article>
-  );
-};
-Stats.propTypes = statPropTypes;
-Stats.defaultProps = statDefaultProps;
+  )
+}
+
+Stats.propTypes = statPropTypes
+Stats.defaultProps = statDefaultProps

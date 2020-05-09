@@ -30,24 +30,24 @@ const peopleMachine = Machine({
   states: {
     closed: {
       on: {
-        OPENED: { target: 'opened', actions: ['setSelectedUser'] },
-      },
+        OPENED: { target: 'opened', actions: ['setSelectedUser'] }
+      }
     },
     opened: {
       on: {
-        CLOSED: { target: 'closed', actions: ['clearSelectedUser'] },
-      },
-    },
-  },
-});
+        CLOSED: { target: 'closed', actions: ['clearSelectedUser'] }
+      }
+    }
+  }
+})
 
 /**
  * @param {Date} timestamp
  */
-const isValidDate = timestamp => new Date(timestamp).getTime() > 0;
+const isValidDate = timestamp => new Date(timestamp).getTime() > 0
 
 /**
- * @param {{ 
+ * @param {{
  * uid: string,
  * contact: {
       uid: String,
@@ -58,26 +58,28 @@ const isValidDate = timestamp => new Date(timestamp).getTime() > 0;
     }
   }} [Props] There used to be more parameters thats why it is still shaped as an object
 */
+
+/* eslint-disable react/prop-types */
 export const Person = ({ contact, uid }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
   const [current, send] = useMachine(peopleMachine, {
     actions: {
       setSelectedUser: (ctx, event) =>
         dispatch({ type: 'people/setSelectedUser', payload: event.payload }),
-      clearSelectedUser: () => dispatch({ type: 'people/clearSelectedUser' }),
-    },
-  });
+      clearSelectedUser: () => dispatch({ type: 'people/clearSelectedUser' })
+    }
+  })
 
   const handleDelete = async (_name, _uid, _userId) => {
     try {
-      dispatch({ type: 'people/clearSelectedUser' });
-      await handleContactDelete(_uid, _userId);
-      send({ type: 'CLOSED' });
+      dispatch({ type: 'people/clearSelectedUser' })
+      await handleContactDelete(_uid, _userId)
+      send({ type: 'CLOSED' })
     } catch (error) {
-      toast$.next({ type: 'ERROR', message: error.message || error });
+      toast$.next({ type: 'ERROR', message: error.message || error })
     }
-  };
+  }
 
   const isOverDue = _lastContacted => {
     const sixMonthsAgo = 1.577e10;
@@ -100,7 +102,7 @@ export const Person = ({ contact, uid }) => {
           <div
             className="flex items-center lh-copy pa3 ph0-l bb b--black-10 pointer bg-white"
             onClick={() => {
-              send({ type: 'OPENED', payload: contact.uid });
+              send({ type: 'OPENED', payload: contact.uid })
             }}
             tabIndex={-1}
             onKeyPress={() => send({ type: 'OPENED', payload: contact.uid })}
@@ -130,7 +132,7 @@ export const Person = ({ contact, uid }) => {
             </div>
           </div>
         </li>
-      );
+      )
     case 'opened':
       return (
         <li key={contact.uid} className="mb3" data-testid="openedPeopleBox">
@@ -141,9 +143,9 @@ export const Person = ({ contact, uid }) => {
             handleDelete={handleDelete}
           />
         </li>
-      );
+      )
     default:
-      return null;
+      return null
     // tk throw an error here
   }
-};
+}

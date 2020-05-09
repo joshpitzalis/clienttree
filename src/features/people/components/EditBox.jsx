@@ -1,11 +1,11 @@
-import React from 'react';
-import { TextArea } from '@duik/it';
-import { Icon } from 'antd';
-import { debounceTime, filter } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import React from 'react'
+import { TextArea } from '@duik/it'
+import { Icon } from 'antd'
+import { debounceTime, filter } from 'rxjs/operators'
+import { Subject } from 'rxjs'
 
-const events$ = new Subject();
-
+const events$ = new Subject()
+/* eslint-disable react/prop-types */
 export const EditBox = ({
   note,
   notes,
@@ -13,11 +13,11 @@ export const EditBox = ({
   setState,
   state,
   theirId,
-  myId,
+  myId
 }) => {
-  const { text, lastUpdated, id } = note;
+  const { text, lastUpdated, id } = note
 
-  const [message, setMessage] = React.useState(text);
+  const [message, setMessage] = React.useState(text)
 
   React.useEffect(() => {
     const subscription = events$
@@ -26,8 +26,8 @@ export const EditBox = ({
         debounceTime(1000)
       )
       .subscribe(action => {
-        const newTimestamp = +new Date();
-        const newId = id === 9007199254740991 ? newTimestamp : id;
+        const newTimestamp = +new Date()
+        const newId = id === 9007199254740991 ? newTimestamp : id
         setState({
           ...state,
           notes: {
@@ -35,14 +35,14 @@ export const EditBox = ({
             [newId]: {
               id: newId,
               text: action.payload,
-              lastUpdated: id === 9007199254740991 ? newTimestamp : lastUpdated,
-            },
-          },
-        });
-        setActiveNote(newId);
-      });
-    return () => subscription.unsubscribe();
-  }, [id, lastUpdated, myId, notes, setActiveNote, setState, state, theirId]);
+              lastUpdated: id === 9007199254740991 ? newTimestamp : lastUpdated
+            }
+          }
+        })
+        setActiveNote(newId)
+      })
+    return () => subscription.unsubscribe()
+  }, [id, lastUpdated, myId, notes, setActiveNote, setState, state, theirId])
 
   return (
     <div>
@@ -53,15 +53,15 @@ export const EditBox = ({
         className="mb0"
         data-testid="notesTextarea"
         onChange={event => {
-          const { value } = event.target;
-          setMessage(value);
+          const { value } = event.target
+          setMessage(value)
           if (!state.saving) {
-            setState({ ...state, saving: true });
+            setState({ ...state, saving: true })
           }
           events$.next({
             type: 'people/updateNotesTextarea',
-            payload: value,
-          });
+            payload: value
+          })
         }}
         value={message}
       />
@@ -74,8 +74,8 @@ export const EditBox = ({
         />
       )}
     </div>
-  );
-};
+  )
+}
 
 // function deleteReducer(state, action) {
 //   switch (action.type) {
@@ -93,29 +93,29 @@ const handleDelete = ({
   state,
   noteId,
   setState,
-  setActiveNote,
+  setActiveNote
 }) => {
   // show deleting in progress...
-  setDeleting(true);
+  setDeleting(true)
   // actually delete note
   try {
-    const newNotes = { ...state.notes };
-    delete newNotes[noteId];
-    const newState = { ...state, notes: newNotes, saving: true };
-    setState(newState);
+    const newNotes = { ...state.notes }
+    delete newNotes[noteId]
+    const newState = { ...state, notes: newNotes, saving: true }
+    setState(newState)
     // setActive Note once the existing active note is deleted
-    setActiveNote(9007199254740991);
-    setDeleting(false);
+    setActiveNote(9007199254740991)
+    setDeleting(false)
   } catch (error) {
     // make sure to catch any unforseen errors
-    console.error({ error });
-    setDeleting(false);
+    console.error({ error })
+    setDeleting(false)
   }
-};
+}
 
-function DeleteNote({ noteId, setState, setActiveNote, state }) {
-  const [visible, setVisibility] = React.useState(false);
-  const [deleting, setDeleting] = React.useState(false);
+function DeleteNote ({ noteId, setState, setActiveNote, state }) {
+  const [visible, setVisibility] = React.useState(false)
+  const [deleting, setDeleting] = React.useState(false)
 
   // const [_state, dispatch] = React.useReducer(deleteReducer, {
   //   deleting: false,
@@ -129,9 +129,9 @@ function DeleteNote({ noteId, setState, setActiveNote, state }) {
         data-testid="deletingInProcess"
         disabled
       >
-        {`Deleting...`}
+        {'Deleting...'}
       </button>
-    );
+    )
   }
 
   return visible ? (
@@ -144,13 +144,13 @@ function DeleteNote({ noteId, setState, setActiveNote, state }) {
           handleDelete({ setDeleting, state, noteId, setState, setActiveNote })
         }
       >
-        {`Confirm Delete`}
+        {'Confirm Delete'}
       </button>
       <button
         className="f6  bn pointer ml3 "
         type="button"
         onClick={() => {
-          setVisibility(false);
+          setVisibility(false)
         }}
         // data-testid="nevermindContactDelete"
       >
@@ -165,9 +165,9 @@ function DeleteNote({ noteId, setState, setActiveNote, state }) {
         type="delete"
         onClick={() => setVisibility(true)}
         style={{
-          color: 'red',
+          color: 'red'
         }}
       />
     </div>
-  );
+  )
 }

@@ -15,11 +15,11 @@ function configureStore(initialState) {
     rootReducer,
     initialState,
     applyMiddleware(epicMiddleware)
-  );
+  )
 
-  epicMiddleware.run(rootEpic);
+  epicMiddleware.run(rootEpic)
 
-  return store;
+  return store
 }
 
 const optimizely = createInstance({
@@ -55,7 +55,7 @@ export const render = (
     renderOptions
   ),
   history,
-  store,
-});
+  store
+})
 
-// adding `history and store` to the returned utilities to allow you to reference it in our tests (just try to avoid using this to test implementation details).
+// adding `history and store` to the returned utilities to allow you to reference it in our tests ( avoid using this to test implementation details).

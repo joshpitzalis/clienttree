@@ -1,20 +1,20 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { collection } from 'rxfire/firestore';
-import { map } from 'rxjs/operators';
-import { useDispatch } from 'react-redux';
-import firebase from '../../../utils/firebase';
-import { TaskBox } from './TaskBox';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { collection } from 'rxfire/firestore'
+import { map } from 'rxjs/operators'
+import { useDispatch } from 'react-redux'
+import firebase from '../../../utils/firebase'
+import { TaskBox } from './TaskBox'
 
 const helpfulPropTypes = {
-  myUid: PropTypes.string.isRequired,
-};
-const helpfulDefaultProps = {};
+  myUid: PropTypes.string.isRequired
+}
+const helpfulDefaultProps = {}
 
 export const HelpfulTaskList = ({ myUid, insights }) => {
   const [helpfulTasks, setHelpfulTasks] = React.useState([]);
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   React.useEffect(() => {
     const subscription = collection(
       firebase
@@ -25,9 +25,9 @@ export const HelpfulTaskList = ({ myUid, insights }) => {
         .where('dateCompleted', '==', null)
     )
       .pipe(map(docs => docs.map(d => d.data())))
-      .subscribe(tasks => tasks && setHelpfulTasks(tasks));
-    return () => subscription.unsubscribe();
-  }, [myUid]);
+      .subscribe(tasks => tasks && setHelpfulTasks(tasks))
+    return () => subscription.unsubscribe()
+  }, [myUid])
 
   return (
     <div data-testid="universalTaskList" className={` ${!insights && 'pt5'}`}>
@@ -49,8 +49,8 @@ export const HelpfulTaskList = ({ myUid, insights }) => {
             )
         )}
     </div>
-  );
-};
+  )
+}
 
-HelpfulTaskList.propTypes = helpfulPropTypes;
-HelpfulTaskList.defaultProps = helpfulDefaultProps;
+HelpfulTaskList.propTypes = helpfulPropTypes
+HelpfulTaskList.defaultProps = helpfulDefaultProps

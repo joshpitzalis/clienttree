@@ -30,17 +30,17 @@ export const userSlice = createSlice({
   name: 'user',
   initialState: {},
   reducers: {
-    setProfile: (state, action) => action.payload,
-  },
-});
+    setProfile: (state, action) => action.payload
+  }
+})
 
 export const contactsSlice = createSlice({
   name: 'contacts',
   initialState: null,
   reducers: {
-    setContacts: (state, action) => action.payload,
-  },
-});
+    setContacts: (state, action) => action.payload
+  }
+})
 
 export const fetchUserDataEpic = (
   action$
@@ -50,7 +50,7 @@ export const fetchUserDataEpic = (
   action$.pipe(
     ofType('dashboard/fetchUserData'),
     switchMap(({ payload }) => {
-      const userId = payload;
+      const userId = payload
       return merge(
         doc(
           firebase
@@ -64,7 +64,7 @@ export const fetchUserDataEpic = (
               error: true,
               type: 'dashboard/userDataError',
               payload: error,
-              meta: { source: 'fetchUserDataEpic' },
+              meta: { source: 'fetchUserDataEpic' }
             })
           )
         ),
@@ -75,21 +75,21 @@ export const fetchUserDataEpic = (
             .where('connectedTo', '==', userId)
         ).pipe(
           map(docs => {
-            const helpfulTasks = docs.map(d => d.data());
+            const helpfulTasks = docs.map(d => d.data())
             const serializedTasks = helpfulTasks.map(_task => ({
               ..._task,
               dateCreated: _task.dateCreated && _task.dateCreated.nanoseconds,
               dateCompleted:
-                _task.dateCompleted && _task.dateCompleted.nanoseconds,
-            }));
-            return taskSlice.actions.setTasks(serializedTasks);
+                _task.dateCompleted && _task.dateCompleted.nanoseconds
+            }))
+            return taskSlice.actions.setTasks(serializedTasks)
           }),
           catchError(error =>
             of({
               error: true,
               type: 'dashboard/helpfulTaskError',
               payload: error,
-              meta: { source: 'fetchUserDataEpic' },
+              meta: { source: 'fetchUserDataEpic' }
             })
           )
         ),
@@ -102,54 +102,124 @@ export const fetchUserDataEpic = (
             .orderBy('lastContacted')
         ).pipe(
           map(docs => {
-            const contacts = docs.map(d => d.data());
-            return contactsSlice.actions.setContacts(contacts);
+            const contacts = docs.map(d => d.data())
+            return contactsSlice.actions.setContacts(contacts)
           }),
           catchError(error =>
             of({
               error: true,
               type: 'dashboard/contactError',
               payload: error,
-              meta: { source: 'fetchUserDataEpic' },
+              meta: { source: 'fetchUserDataEpic' }
             })
           )
         )
-      );
+      )
     })
-  );
+  )
 
+/** @param {{
+ * userId: string
+ * }} [Props] */
+
+<<<<<<< HEAD
+/* eslint-disable react/prop-types */
+export function Dashboard ({ userId }) {
+  const dispatch = useDispatch()
+=======
 /** @param {{userId: string}} [Props] */
 export function Dashboard({ userId }) {
   // const { features } = React.useContext(FeatureContext);
   // console.log({ dash: features });
 
   const dispatch = useDispatch();
+>>>>>>> master
 
   React.useEffect(() => {
     if (userId) {
-      dispatch({ type: 'dashboard/fetchUserData', payload: userId });
+      dispatch({ type: 'dashboard/fetchUserData', payload: userId })
     }
-  }, [dispatch, userId]);
+  }, [dispatch, userId])
 
   const selectedUserUid = useSelector(
     store => store.people && store.people.selectedContact
-  );
-  const [visible, setVisibility] = React.useState(false);
+  )
+  const [visible, setVisibility] = React.useState(false)
 
   return (
     <ContainerHorizontal>
       <ConfettiBanner />
+      {/* {visible && <ReminderModal showModal={visible}
+        toggleModal={setVisibility} />} */}
       {visible && (
         <Portal onClose={() => setVisibility(false)}>
           <Modal
             uid={userId}
             selectedUserUid={selectedUserUid}
             onClose={() => {
-              setVisibility(false);
+              setVisibility(false)
             }}
+
           />
         </Portal>
       )}
+<<<<<<< HEAD
+      <div className='flex flex-row-ns flex-column w-100  justify-between min-h-100 bg-base'>
+        <Navigation userId={userId} />
+        <main className='dn db-ns w-50-ns w-100 min-h-100 ml4'>
+          <Route
+            exact
+            path='/user/:uid/network'
+            render={props => <Network {...props} uid={userId} />}
+          />
+          {userId && (
+            <Route
+              exact
+              path='/user/:uid/dashboard'
+              render={props => <CRM {...props} userId={userId} />}
+            />
+          )}
+          <Route
+            exact
+            path='/user/:uid/profile'
+            render={props => <Profile {...props} />}
+          />
+        </main>
+
+        <aside
+          className='w-100 measure-narrow-ns bg-white-ns tc'
+          data-testid='sidebar'
+        >
+          <MobileReminder myUid={userId} />
+          <Onboarding uid={userId} contactSelected={selectedUserUid}>
+            <>
+              {selectedUserUid ? (
+                <>
+
+                  <button
+                    type='button'
+                    data-testid='addreminder'
+                    onClick={() => setVisibility(true)}
+                    className='inline-flex items-center w-full justify-center px-6 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-50 focus:outline-none focus:border-green-300 focus:shadow-outline-green active:bg-green-200 transition ease-in-out duration-150'
+                  >
+                    Add A Reminder
+                  </button>
+                  <SpecificTaskList
+                    myUid={userId}
+                    contactSelected={selectedUserUid}
+                  />
+                </>
+              ) : (
+                <UniversalTaskList myUid={userId} />
+              )}
+            </>
+          </Onboarding>
+          <p className='tc f6 white ma0'>
+            Version {process.env.REACT_APP_VERSION}
+          </p>
+        </aside>
+      </div>
+=======
       <OptimizelyFeature feature="workboard">
         {workboard => (
           <div
@@ -219,41 +289,42 @@ export function Dashboard({ userId }) {
           </div>
         )}
       </OptimizelyFeature>
+>>>>>>> master
     </ContainerHorizontal>
-  );
+  )
 }
 
-function Navigation({ userId }) {
-  const { pathname } = useLocation();
+function Navigation ({ userId }) {
+  const { pathname } = useLocation()
 
-  const contacts = useSelector(store => store.contacts);
+  const contacts = useSelector(store => store.contacts)
   return (
     <NavPanel
       dark
-      className="flex-ns dn flex-column justify-between min-vh-100 "
+      className='flex-ns dn flex-column justify-between min-vh-100 '
     >
-      <div className="mt5">
+      <div className='mt5'>
         <NavLink
           // rightEl="🚝"
-          leftEl={<People className="o-75 h1" />}
+          leftEl={<People className='o-75 h1' />}
           Component={Link}
           to={`/user/${userId}/network`}
           className={`${pathname === `/user/${userId}/network` &&
             'active'}  tracked pb2`}
-          data-testid="networkPage"
+          data-testid='networkPage'
         >
           People
         </NavLink>
         {contacts && !!contacts.length && (
           <NavLink
-            leftEl={<Home className="o-75 h1" />}
+            leftEl={<Home className='o-75 h1' />}
             Component={Link}
-            data-testid="projectPage"
+            data-testid='projectPage'
             to={`/user/${userId}/dashboard`}
             className={`${pathname === `/user/${userId}/dashboard` &&
               'active'}  tracked pb2 `}
           >
-            <span className="relative" style={{ bottom: '1px' }}>
+            <span className='relative' style={{ bottom: '1px' }}>
               Workboard
             </span>
           </NavLink>
@@ -263,8 +334,8 @@ function Navigation({ userId }) {
         {isEnabled => isEnabled && <StatsBox userId={userId} />}
       </OptimizelyFeature>
     </NavPanel>
-  );
+  )
 }
 
-Navigation.propTypes = { userId: PropTypes.string };
-Navigation.defaultProps = { userId: '' };
+Navigation.propTypes = { userId: PropTypes.string }
+Navigation.defaultProps = { userId: '' }

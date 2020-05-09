@@ -5,11 +5,12 @@ describe('services', () => {
     service: 'example service',
     price: 'Cost $500 and takes 5 weeks to deliver',
     link: 'xyz.com',
-    newPrice: 'Cost $600 and takes 6 weeks to deliver',
-  };
+    newPrice: 'Cost $600 and takes 6 weeks to deliver'
+  }
 
   it('lets you add a service', () => {
     cy.visit('/')
+      .wait(5000)
       .findByTestId('outreachPage')
       .goToProfilePage()
       .findByTestId('services')
@@ -33,11 +34,12 @@ describe('services', () => {
       .should('include', 'refer')
       .findByText(fakeData.title)
       .findByText(fakeData.service)
-      .findByText(fakeData.price);
-  });
+      .findByText(fakeData.price)
+  })
 
   it('lets you update a service', () => {
     cy.visit('/')
+      .wait(2000)
       .findByTestId('outreachPage')
       .goToProfilePage()
       .findByTestId('services')
@@ -50,11 +52,12 @@ describe('services', () => {
       .click()
       .url()
       .should('include', 'refer')
-      .findByText(fakeData.newPrice);
-  });
+      .findByText(fakeData.newPrice)
+  })
 
   it('lets you delete a service', () => {
     cy.visit('/')
+      .wait(2000)
       .findByTestId('outreachPage')
       .goToProfilePage()
       .findByTestId('services')
@@ -68,15 +71,15 @@ describe('services', () => {
       .wait(2000)
       .findByText(/DELETE EXAMPLE TITLE/i)
       .click()
-      .findByText(/DELETE EXAMPLE TITLE/i)
+      .findByTestId('confirmDeleteService')
       .click()
-      .wait(2000)
+      .wait(4000)
       .findByText(/Go To Your Public Referral Page/i)
       .click()
       .url()
       .should('include', 'refer')
       .findByText(fakeData.title2)
       .queryByText(fakeData.title)
-      .should('not.exist');
-  });
-});
+      .should('not.exist')
+  })
+})

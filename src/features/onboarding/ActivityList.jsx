@@ -8,22 +8,22 @@ export const completePercentage = _onboarding =>
   _onboarding &&
   Math.round(
     ((1 + Object.values(_onboarding).filter(_x => !!_x).length) / 7) * 100
-  );
+  )
 
 /** @param {{uid:string, children: JSX.Element, contactSelected: string}} [Props] */
-
-export function Onboarding({ uid, children, contactSelected }) {
+/* eslint-disable react/prop-types */
+export function Onboarding ({ uid, children, contactSelected }) {
   // gets user onboarding details
   const onboarding = useSelector(
     store => store.user && store.user.onboarding && store.user.onboarding
-  );
+  )
   const contact = useSelector(
     store =>
       store.contacts &&
       store.contacts.find(person => person.uid === contactSelected)
-  );
+  )
 
-  const onboardingComplete = onboarding && onboarding.complete === true;
+  const onboardingComplete = onboarding && onboarding.complete === true
 
   const sidebarTitle = (
     _contactSelected,
@@ -33,9 +33,9 @@ export function Onboarding({ uid, children, contactSelected }) {
   ) => {
     if (_contactSelected) {
       if (_contact && _contact.name) {
-        return _contact.name;
+        return _contact.name
       }
-      return 'Reminders';
+      return 'Reminders'
     }
     if (_onboardingComplete) {
       // return null;
@@ -76,5 +76,5 @@ export function Onboarding({ uid, children, contactSelected }) {
         )}
       </OptimizelyFeature>
     </div>
-  );
+  )
 }
