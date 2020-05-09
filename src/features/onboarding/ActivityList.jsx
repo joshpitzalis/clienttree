@@ -1,7 +1,8 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { Progress } from 'antd'
-import { GettingStarted } from './GettingStarted'
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Progress } from 'antd';
+import { OptimizelyFeature } from '@optimizely/react-sdk';
+import { GettingStarted } from './GettingStarted';
 
 export const completePercentage = _onboarding =>
   _onboarding &&
@@ -24,7 +25,12 @@ export function Onboarding ({ uid, children, contactSelected }) {
 
   const onboardingComplete = onboarding && onboarding.complete === true
 
-  const sidebarTitle = (_contactSelected, _onboardingComplete, _contact) => {
+  const sidebarTitle = (
+    _contactSelected,
+    _onboardingComplete,
+    _contact,
+    isEnabled
+  ) => {
     if (_contactSelected) {
       if (_contact && _contact.name) {
         return _contact.name
@@ -32,31 +38,43 @@ export function Onboarding ({ uid, children, contactSelected }) {
       return 'Reminders'
     }
     if (_onboardingComplete) {
-      return 'Activities'
+      // return null;
+      return 'Activities';
     }
-    return 'Getting Started'
-  }
+    if (isEnabled) {
+      return 'Getting Started';
+    }
+  };
 
   return (
-    <div className="pa4 ">
-      <fieldset className="bn ma0 pa0">
-        <details data-testid="detailBox" className="dn db-ns">
-          <summary>
-            <legend className="fw7 mb3 dib " data-testid="toggleAddBox">
-              {sidebarTitle(contactSelected, onboardingComplete, contact)}
-            </legend>
-          </summary>
-        </details>
+    <div className="pa4 fixed h-100 overflow-y-auto pb6">
+      <OptimizelyFeature feature="referralPage">
+        {isEnabled => (
+          <fieldset className="bn ma0 pa0">
+            <details data-testid="detailBox" className="dn db-ns">
+              <summary>
+                <legend className="fw7 mb3 dib " data-testid="toggleAddBox">
+                  {sidebarTitle(
+                    contactSelected,
+                    onboardingComplete,
+                    contact,
+                    isEnabled
+                  )}
+                </legend>
+              </summary>
+            </details>
 
-        {!onboardingComplete && !contactSelected && (
-          <div className="mb4 dn db-ns">
-            <Progress percent={completePercentage(onboarding)} />
-            <GettingStarted uid={uid} onboarding={onboarding} />
-          </div>
+            {!onboardingComplete && !contactSelected && isEnabled && (
+              <div className="mb4 dn db-ns">
+                <Progress percent={completePercentage(onboarding)} />
+                <GettingStarted uid={uid} onboarding={onboarding} />
+              </div>
+            )}
+
+            {children}
+          </fieldset>
         )}
-
-        {children}
-      </fieldset>
+      </OptimizelyFeature>
     </div>
   )
 }

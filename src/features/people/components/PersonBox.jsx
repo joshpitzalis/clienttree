@@ -4,6 +4,7 @@ import { Timeline } from 'antd';
 import AvatarGenerator from 'react-avatar-generator';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
+import { OptimizelyFeature } from '@optimizely/react-sdk';
 import { usePersonForm, setImage } from '../peopleHelpers/personBox';
 import { handleTracking as _handleTracking } from '../peopleAPI';
 import { EditBox } from './EditBox';
@@ -144,38 +145,53 @@ export const PersonModal = ({
               </small>
             </div>
           </div>
-          <Toggle
-            description={
-              <span className="text3">
-                {state.tracked
-                  ? 'You currently work with this person'
-                  : 'You do not work with this person'}
-              </span>
+
+          <OptimizelyFeature feature="workboard">
+            {isEnabled =>
+              isEnabled ? (
+                <Toggle
+                  description={
+                    <span className="text3">
+                      {state.tracked
+                        ? 'You currently work with this person'
+                        : 'You do not work with this person'}
+                    </span>
+                  }
+                  checked={state.tracked || null}
+                  onChange={e => {
+                    // setState({
+                    //   ...state,
+                    //   tracked: e.target.checked,
+                    //   saving: true,
+                    // });
+                    handleTracking(
+                      e.target.checked,
+                      uid,
+                      contactId,
+                      state.name,
+                      state.photoURL
+                    );
+                  }}
+                  data-testid="dashSwitch"
+                  label={
+                    <b className="text1">
+                      {state.tracked
+                        ? 'Remove from Workboard'
+                        : 'Add to Workboard'}
+                    </b>
+                  }
+                />
+              ) : (
+                <SocialLinks contact={state} setState={setState} />
+              )
             }
-            checked={state.tracked || null}
-            onChange={e => {
-              // setState({
-              //   ...state,
-              //   tracked: e.target.checked,
-              //   saving: true,
-              // });
-              handleTracking(
-                e.target.checked,
-                uid,
-                contactId,
-                state.name,
-                state.photoURL
-              );
-            }}
-            data-testid="dashSwitch"
-            label={
-              <b className="text1">
-                {state.tracked ? 'Remove from Workboard' : 'Add to Workboard'}
-              </b>
-            }
-          />
+          </OptimizelyFeature>
         </div>
-        <SocialLinks contact={state} setState={setState} />
+        <OptimizelyFeature feature="workboard">
+          {isEnabled =>
+            isEnabled && <SocialLinks contact={state} setState={setState} />
+          }
+        </OptimizelyFeature>
         <Timeline>
           {Object.values(
             state.notes

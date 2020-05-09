@@ -1,15 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
 import { toast$ } from '../notifications/toast';
 import firebase from '../../utils/firebase';
 
 const UserContext = React.createContext();
-
-const propTypes = {
-  children: PropTypes.element.isRequired,
-};
-const defaultProps = {};
 
 const UserProvider = ({ children }) => {
   const [authStatus, setAuthStatus] = React.useState(false);
@@ -70,6 +63,3 @@ const UserProvider = ({ children }) => {
 };
 
 export { UserProvider, UserContext };
-
-UserProvider.propTypes = propTypes;
-UserProvider.defaultProps = defaultProps;

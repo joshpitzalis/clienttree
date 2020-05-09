@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from 'react'
 import ReactDOM from 'react-dom'
 import * as Sentry from '@sentry/browser'
@@ -11,6 +12,18 @@ import '@duik/it/dist/styles.css'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import 'tachyons'
 import './tailwind.generated.css'
+=======
+import React from 'react';
+import ReactDOM from 'react-dom';
+import * as Sentry from '@sentry/browser';
+import { Provider } from 'react-redux';
+import * as serviceWorker from './serviceWorker';
+import Routes from './Routes';
+import { UserProvider } from './features/auth/UserContext';
+import store from './utils/store';
+import './index.css';
+import '@duik/it/dist/styles.css';
+>>>>>>> master
 
 if (process.env.NODE_ENV === 'production') {
   Sentry.init({
@@ -25,6 +38,7 @@ if (process.env.NODE_ENV === 'production') {
   var axe = require('react-axe');
   axe(React, ReactDOM, 1000, config)
 }
+console.log({ Version: process.env.REACT_APP_VERSION });
 
 const App = () => (
   <Provider store={store}>

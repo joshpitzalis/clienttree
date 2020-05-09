@@ -86,6 +86,10 @@ const App = () => {
           </div>
         </BrowserRouter>
       </ErrorBoundary>
+
+      {/* <OptimizelyFeature feature="insights">
+        {insights => insights && <Footer />}
+      </OptimizelyFeature> */}
     </OptimizelyProvider>
   )
 }

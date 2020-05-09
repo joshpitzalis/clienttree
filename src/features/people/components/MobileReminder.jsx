@@ -124,12 +124,14 @@ const ReminderCreator = ({ myUid, handleAddingTask, send }) => {
       contactName,
     });
 
+    const oneYearAgo = new Date().setFullYear(new Date().getFullYear() - 1);
+
     const payload = {
       userId,
       uid: theirUid,
       name,
       summary: '',
-      lastContacted: +new Date(),
+      lastContacted: +new Date(oneYearAgo),
       photoURL,
       downloadURL: '',
       notes: {
