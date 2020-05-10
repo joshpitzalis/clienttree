@@ -4,8 +4,8 @@ export {
   handleCompleteTask,
   inCompleteTask,
   setActiveTaskCount,
-  getActivitiesLeft,
-} from './tasksAPI';
+  getActivitiesLeft
+} from './tasksAPI'
 
 export {
   incrementStats,
@@ -16,5 +16,5 @@ export {
   handleContactDelete,
   handleTracking,
   setContact,
-  setProfileImage,
-} from './contactsAPI';
+  setProfileImage
+} from './contactsAPI'

@@ -1,15 +1,15 @@
-import React from 'react';
-import { render as rtlRender } from '@testing-library/react';
-import { Router } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
-import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
-import { createEpicMiddleware } from 'redux-observable';
-import { createInstance, OptimizelyProvider } from '@optimizely/react-sdk';
-import { rootReducer, rootEpic, dependencies } from './store';
+import React from 'react'
+import { render as rtlRender } from '@testing-library/react'
+import { Router } from 'react-router-dom'
+import { createMemoryHistory } from 'history'
+import { createStore, applyMiddleware } from 'redux'
+import { Provider } from 'react-redux'
+import { createEpicMiddleware } from 'redux-observable'
+import { createInstance, OptimizelyProvider } from '@optimizely/react-sdk'
+import { rootReducer, rootEpic, dependencies } from './store'
 
-function configureStore(initialState) {
-  const epicMiddleware = createEpicMiddleware({ dependencies });
+function configureStore (initialState) {
+  const epicMiddleware = createEpicMiddleware({ dependencies })
 
   const store = createStore(
     rootReducer,
@@ -23,8 +23,8 @@ function configureStore(initialState) {
 }
 
 const optimizely = createInstance({
-  sdkKey: process.env.REACT_APP_ROLLOUT,
-});
+  sdkKey: process.env.REACT_APP_ROLLOUT
+})
 
 export const render = (
   ui,
@@ -44,8 +44,8 @@ export const render = (
           user={{
             id: 'hiaCOgc7xWgoVf6gsqkmNIWmjgs2',
             attributes: {
-              id: 'hiaCOgc7xWgoVf6gsqkmNIWmjgs2',
-            },
+              id: 'hiaCOgc7xWgoVf6gsqkmNIWmjgs2'
+            }
           }}
         >
           {ui}

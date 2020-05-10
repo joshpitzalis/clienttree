@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
-import { ACTIVITY_COMPLETED } from '../networkConstants';
-import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { ACTIVITY_COMPLETED } from '../networkConstants'
+import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants'
 
 const helpfulTaskPropTypes = {
   taskId: PropTypes.string.isRequired,
@@ -10,28 +10,28 @@ const helpfulTaskPropTypes = {
   dateCompleted: PropTypes.string,
   myUid: PropTypes.string.isRequired,
   theirUid: PropTypes.string.isRequired,
-  _handleDeleteTask: PropTypes.func.isRequired,
-};
+  _handleDeleteTask: PropTypes.func.isRequired
+}
 const helpfulTaskDefaultProps = {
-  dateCompleted: null,
-};
+  dateCompleted: null
+}
 
-export function HelpfulTask({
+export function HelpfulTask ({
   taskId,
   name,
   dateCompleted,
   myUid,
   theirUid,
-  _handleDeleteTask,
+  _handleDeleteTask
 }) {
-  const [confirmDelete, setConfirmDelete] = React.useState(false);
-  const dispatch = useDispatch();
+  const [confirmDelete, setConfirmDelete] = React.useState(false)
+  const dispatch = useDispatch()
   return (
-    <div className="flex items-baseline mb2 lh-copy">
-      <label htmlFor={name} className="pr2">
+    <div className='flex items-baseline mb2 lh-copy'>
+      <label htmlFor={name} className='pr2'>
         <input
-          className="mr2"
-          type="checkbox"
+          className='mr2'
+          type='checkbox'
           id={name}
           value={name}
           checked={!!dateCompleted}
@@ -44,16 +44,16 @@ export function HelpfulTask({
                 completedFor: theirUid,
                 checked: !!dateCompleted,
                 setSelectedUser: () => {},
-                setVisibility: () => {},
-              },
-            });
+                setVisibility: () => {}
+              }
+            })
             dispatch({
               type: ONBOARDING_STEP_COMPLETED,
               payload: {
                 userId: myUid,
-                onboardingStep: 'helpedSomeone',
-              },
-            });
+                onboardingStep: 'helpedSomeone'
+              }
+            })
           }}
         />
         <span className={dateCompleted ? 'strike' : null}>{name}</span>
@@ -61,23 +61,23 @@ export function HelpfulTask({
 
       {confirmDelete ? (
         <button
-          className="f6 underline small-caps bn pointer red "
-          type="button"
+          className='f6 underline small-caps bn pointer red '
+          type='button'
           onClick={() => _handleDeleteTask(taskId, myUid, theirUid)}
         >
           Confirm Delete
         </button>
       ) : (
         <button
-          className="f6 underline small-caps bn pointer black-70 "
-          type="button"
+          className='f6 underline small-caps bn pointer black-70 '
+          type='button'
           onClick={() => setConfirmDelete(true)}
         >
           (Delete)
         </button>
       )}
     </div>
-  );
+  )
 }
-HelpfulTask.propTypes = helpfulTaskPropTypes;
-HelpfulTask.defaultProps = helpfulTaskDefaultProps;
+HelpfulTask.propTypes = helpfulTaskPropTypes
+HelpfulTask.defaultProps = helpfulTaskDefaultProps

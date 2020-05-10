@@ -1,8 +1,8 @@
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/firestore';
-import 'firebase/performance';
-import 'firebase/storage';
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/firestore'
+import 'firebase/performance'
+import 'firebase/storage'
 // import { toast$ } from '../features/notifications/toast.jsx';
 
 const config = {
@@ -13,13 +13,13 @@ const config = {
   storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER,
   appId: process.env.REACT_APP_APP_ID,
-  measurementId: process.env.REACT_APP_MEASUREMENT_ID,
-};
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID
+}
 
-firebase.initializeApp(config);
+firebase.initializeApp(config)
 
 // const perf = firebase.performance();
-firebase.performance();
+firebase.performance()
 
 // firebase
 //   .firestore()
@@ -41,4 +41,4 @@ firebase.performance();
 //     }
 //   });
 
-export default firebase;
+export default firebase

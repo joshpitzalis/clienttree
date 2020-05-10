@@ -54,9 +54,9 @@ describe('onboarding', () => {
       .click()
       .url()
       .should('include', 'dashboard')
-      .findByLabelText(
+      .findAllByLabelText(
         /Completed your profile and created a referrable email signature/i
-      )
+      ).first()
       .should('be.checked')
       .goToProfilePage()
       .findByText(/Go To Your Public Referral Page/i)
@@ -72,9 +72,9 @@ describe('onboarding', () => {
     cy.visit('/')
       .wait(5000)
       .findByTestId('outreachPage')
-      .findByLabelText(
+      .findAllByLabelText(
         /Completed your profile and created a referrable email signature/i
-      )
+      ).first()
       .should('be.checked')
   })
 
@@ -82,17 +82,17 @@ describe('onboarding', () => {
     cy.visit('/')
       .wait(5000)
       .findByTestId('outreachPage')
-      .findByLabelText(
+      .findAllByLabelText(
         /Completed your profile and created a referrable email signature/i
-      )
+      ).first()
       .should('be.checked')
-      .findByLabelText(
+      .findAllByLabelText(
         /Completed your profile and created a referrable email signature/i
-      )
+      ).first()
       .uncheck({ force: true })
-      .findByLabelText(
+      .findAllByLabelText(
         /Completed your profile and created a referrable email signature/i
-      )
+      ).first()
       .should('be.checked')
   })
 

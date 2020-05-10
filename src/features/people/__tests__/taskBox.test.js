@@ -1,8 +1,8 @@
-import '@testing-library/jest-dom/extend-expect';
-import React from 'react';
-import userEvent from '@testing-library/user-event';
-import { render } from '../../../utils/testSetup';
-import { TaskBox } from '../components/TaskBox';
+import '@testing-library/jest-dom/extend-expect'
+import React from 'react'
+import userEvent from '@testing-library/user-event'
+import { render } from '../../../utils/testSetup'
+import { TaskBox } from '../components/TaskBox'
 
 const mockProps = {
   taskId: '123',
@@ -15,8 +15,8 @@ const mockProps = {
   setSelectedUser: jest.fn(),
   setVisibility: jest.fn(),
   dispatch: jest.fn(),
-  setComplete: jest.fn(),
-};
+  setComplete: jest.fn()
+}
 
 describe('taskBox', () => {
   test('lets you complete a task in task box', () => {
@@ -26,47 +26,47 @@ describe('taskBox', () => {
       myUid,
       completedFor,
       setSelectedUser,
-      setVisibility,
-    } = mockProps;
+      setVisibility
+    } = mockProps
 
     const { getByTestId } = render(<TaskBox {...mockProps} />, {
-      initialState: {},
-    });
-    getByTestId('incomplete');
-    userEvent.click(getByTestId(mockProps.name));
-    getByTestId('confirmation');
-    userEvent.click(getByTestId('confirmDelete'));
+      initialState: {}
+    })
+    getByTestId('incomplete')
+    userEvent.click(getByTestId(mockProps.name))
+    getByTestId('confirmation')
+    userEvent.click(getByTestId('confirmDelete'))
     expect(mockProps.setComplete).toHaveBeenCalledWith({
       dispatch,
       taskId,
       myUid,
       completedFor,
       setSelectedUser,
-      setVisibility,
-    });
-  });
+      setVisibility
+    })
+  })
 
   test('goes straight to completed if already complete', () => {
-    const newProps = { ...mockProps, dateCompleted: 123 };
-    const { getByTestId } = render(<TaskBox {...newProps} />);
-    getByTestId('complete');
-  });
+    const newProps = { ...mockProps, dateCompleted: 123 }
+    const { getByTestId } = render(<TaskBox {...newProps} />)
+    getByTestId('complete')
+  })
 
   test('if dueDate < now then task is overdue', () => {
-    const newProps = { ...mockProps, dueDate: 123 };
-    const { getByTestId } = render(<TaskBox {...newProps} />);
-    getByTestId('overDue');
-  });
+    const newProps = { ...mockProps, dueDate: 123 }
+    const { getByTestId } = render(<TaskBox {...newProps} />)
+    getByTestId('overDue')
+  })
 
   test('if dueDate < now + oneDayInMilliseconds then task is due today', () => {
-    const newProps = { ...mockProps, dueDate: +new Date() + 100 };
-    const { getByTestId } = render(<TaskBox {...newProps} />);
-    getByTestId('dueToday');
-  });
+    const newProps = { ...mockProps, dueDate: +new Date() + 100 }
+    const { getByTestId } = render(<TaskBox {...newProps} />)
+    getByTestId('dueToday')
+  })
 
   // test.skip('lets you edit a task in task box', () => false);
   // test.skip('lets you delete a task in task box', () => false);
-});
+})
 
 // describe('create tasks', () => {
 //   // REMINDER_CREATED

@@ -6,7 +6,7 @@ describe('outreach', () => {
     updatedName: 'Skeletor'
   }
 
-  it('lets you add a contact', () => {
+  it.only('lets you add a contact', () => {
     cy.visit('/')
       .login()
       .wait(5000)

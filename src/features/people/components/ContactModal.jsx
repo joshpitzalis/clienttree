@@ -74,9 +74,9 @@ const Modal = ({
   }
 
   return (
-    <div data-testid="contactModal" className="z-999 relative">
-      <div className="flex">
-        <div className="center" style={{ width: '258px' }}>
+    <div data-testid='contactModal' className='z-999 relative'>
+      <div className='flex'>
+        <div className='center' style={{ width: '258px' }}>
           <ReminderCreator
             myUid={uid}
             theirUid={selectedUserUid}

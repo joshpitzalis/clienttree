@@ -1,16 +1,16 @@
-import firebase from '../../utils/firebase';
+import firebase from '../../utils/firebase'
 
 export const setNewContact = (userId, contact) => {
-  const { name, email, photoURL } = contact;
+  const { name, email, photoURL } = contact
 
   const newContactRef = firebase
     .firestore()
     .collection('users')
     .doc(userId)
     .collection('contacts')
-    .doc();
+    .doc()
 
-  const oneYearAgo = new Date().setFullYear(new Date().getFullYear() - 1);
+  const oneYearAgo = new Date().setFullYear(new Date().getFullYear() - 1)
 
   return newContactRef.set(
     {
@@ -18,14 +18,14 @@ export const setNewContact = (userId, contact) => {
       email,
       uid: newContactRef.id,
       lastContacted: +new Date(oneYearAgo),
-      photoURL: photoURL || `https://ui-avatars.com/api/?name=${name}`,
+      photoURL: photoURL || `https://ui-avatars.com/api/?name=${name}`
     },
     { merge: true }
-  );
-};
+  )
+}
 
 export const updateContact = (userId, contact) => {
-  const { name, email, photoURL } = contact;
+  const { name, email, photoURL } = contact
 
   return firebase
     .firestore()
@@ -37,8 +37,8 @@ export const updateContact = (userId, contact) => {
       {
         name,
         email,
-        photoURL: photoURL || `https://ui-avatars.com/api/?name=${name}`,
+        photoURL: photoURL || `https://ui-avatars.com/api/?name=${name}`
       },
       { merge: true }
-    );
-};
+    )
+}

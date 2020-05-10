@@ -1,28 +1,28 @@
-import '@testing-library/jest-dom/extend-expect';
-import React from 'react';
-import userEvent from '@testing-library/user-event';
-import { TestScheduler } from 'rxjs/testing';
-import { cleanup, wait, fireEvent, act } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect'
+import React from 'react'
+import userEvent from '@testing-library/user-event'
+import { TestScheduler } from 'rxjs/testing'
+import { cleanup, wait, fireEvent, act } from '@testing-library/react'
 // import formatDistanceToNow from 'date-fns/formatDistanceToNow';
-import { render } from '../../../utils/testSetup';
-import { Person } from '../components/Person';
-import { InnerNetwork } from '../Network';
-import { updateContactEpic } from '../networkEpics';
-import { setContact, setProfileImage, handleTracking } from '../peopleAPI';
-import { PersonModal } from '../components/PersonBox';
+import { render } from '../../../utils/testSetup'
+import { Person } from '../components/Person'
+import { InnerNetwork } from '../Network'
+import { updateContactEpic } from '../networkEpics'
+import { setContact, setProfileImage, handleTracking } from '../peopleAPI'
+import { PersonModal } from '../components/PersonBox'
 // import { Dashboard } from '../../../pages/Dashboard';
 // import { TimeUpdate } from '../components/TimeUpdate';
 
 jest.mock('../peopleAPI', () => ({
   setContact: jest.fn(),
   setProfileImage: jest.fn().mockResolvedValueOnce('photoURL'),
-  handleTracking: jest.fn(),
-}));
+  handleTracking: jest.fn()
+}))
 
 afterEach(() => {
-  cleanup();
-  jest.restoreAllMocks();
-});
+  cleanup()
+  jest.restoreAllMocks()
+})
 
 const mockData = {
   setSelectedUser: jest.fn(),
@@ -32,16 +32,16 @@ const mockData = {
     lastContacted: 0,
     activeTaskCount: 3,
     name: 'name name',
-    photoURL: 'string',
+    photoURL: 'string'
   },
   selectedUser: {
     uid: '456',
     lastContacted: false,
     activeTaskCount: 3,
     name: 'other name',
-    photoURL: 'string',
-  },
-};
+    photoURL: 'string'
+  }
+}
 
 describe('create people', () => {
   it('epic does not fire on open, it waits for a user interaction', async () => {
@@ -50,73 +50,73 @@ describe('create people', () => {
       name: null,
       lastContacted: 0,
       activeTaskCount: 3,
-      photoURL: 'string',
-    };
+      photoURL: 'string'
+    }
 
     const { getByTestId } = render(<Person contact={mockContact} />, {
       initialState: {
         user: {
-          userId: '123',
-        },
-      },
-    });
+          userId: '123'
+        }
+      }
+    })
 
-    userEvent.click(getByTestId('openBox'));
+    userEvent.click(getByTestId('openBox'))
     // userEvent.type(getByPlaceholderText('Their name...'), '');
     await wait(() => {
-      expect(setContact).not.toHaveBeenCalled();
-    });
-  });
+      expect(setContact).not.toHaveBeenCalled()
+    })
+  })
   it('epic does not fire if no uid', async () => {
     const mockContact = {
       uid: '',
       name: '',
       lastContacted: 0,
       activeTaskCount: 3,
-      photoURL: 'string',
-    };
+      photoURL: 'string'
+    }
 
     const { getByTestId, getByPlaceholderText } = render(
       <Person contact={mockContact} />,
       {
         initialState: {
           user: {
-            userId: '123',
-          },
-        },
+            userId: '123'
+          }
+        }
       }
-    );
+    )
 
-    userEvent.click(getByTestId('openBox'));
-    userEvent.type(getByPlaceholderText('Their name...'), 'lala');
+    userEvent.click(getByTestId('openBox'))
+    userEvent.type(getByPlaceholderText('Their name...'), 'lala')
     await wait(() => {
-      expect(setContact).not.toHaveBeenCalled();
-    });
-  });
+      expect(setContact).not.toHaveBeenCalled()
+    })
+  })
   it('add button creates a new person box', () => {
     const { getByTestId, queryByTestId, getByPlaceholderText } = render(
-      <InnerNetwork uid="123" />
-    );
-    getByTestId('outreachPage');
-    userEvent.click(getByTestId('addPeopleButton'));
-    getByTestId('contactModal');
-    expect(queryByTestId('addPeopleButton')).not.toBeInTheDocument();
+      <InnerNetwork uid='123' />
+    )
+    getByTestId('outreachPage')
+    userEvent.click(getByTestId('addPeopleButton'))
+    getByTestId('contactModal')
+    expect(queryByTestId('addPeopleButton')).not.toBeInTheDocument()
     // assert name is blank
-    expect(getByPlaceholderText('Their name...')).toBeEmpty();
+    expect(getByPlaceholderText('Their name...')).toBeEmpty()
 
-    userEvent.click(getByTestId('closeBox'));
-    getByTestId('outreachPage');
-  });
+    userEvent.click(getByTestId('closeBox'))
+    getByTestId('outreachPage')
+  })
   it('epic produces the correct actions', () => {
     // setContact.mockResolvedValue(of(''));
     const testScheduler = new TestScheduler((actual, expected) => {
-      expect(actual).toEqual(expected);
+      expect(actual).toEqual(expected)
       // // mock a jest function
       // expect(setContact).toHaveBeenCalled();
       // expect(setContact).toHaveBeenCalledWith({
       //   title: 'example name',
       // });
-    });
+    })
 
     testScheduler.run(({ hot, cold, expectObservable }) => {
       const action$ = hot('a', {
@@ -124,117 +124,117 @@ describe('create people', () => {
           type: 'people/updateForm',
           payload: {
             name: 'example name',
-            uid: 'xxx',
-          },
-        },
-      });
+            uid: 'xxx'
+          }
+        }
+      })
       const state$ = {
-        value: { user: { userId: '123' } },
-      };
+        value: { user: { userId: '123' } }
+      }
       const dependencies = {
         setContact: () =>
           cold('-a', {
-            a: '',
-          }),
-      };
-      const output$ = updateContactEpic(action$, state$, dependencies);
+            a: ''
+          })
+      }
+      const output$ = updateContactEpic(action$, state$, dependencies)
 
       expectObservable(output$).toBe('1000ms -c', {
         c: {
-          type: 'people/formSaved',
-        },
-      });
-    });
-  });
+          type: 'people/formSaved'
+        }
+      })
+    })
+  })
   it('epic produces the correct error', () => {
     const testScheduler = new TestScheduler((actual, expected) => {
-      expect(actual).toEqual(expected);
-    });
+      expect(actual).toEqual(expected)
+    })
 
     testScheduler.run(({ hot, cold, expectObservable }) => {
       const action$ = hot('a', {
         a: {
           type: 'people/updateForm',
           payload: {
-            name: 'example name',
-          },
-        },
-      });
+            name: 'example name'
+          }
+        }
+      })
 
       const state$ = {
-        value: { user: { userId: '123' } },
-      };
+        value: { user: { userId: '123' } }
+      }
 
       const dependencies = {
-        setContact: () => cold('#', null, 'Ooops'),
-      };
+        setContact: () => cold('#', null, 'Ooops')
+      }
 
-      const output$ = updateContactEpic(action$, state$, dependencies);
+      const output$ = updateContactEpic(action$, state$, dependencies)
 
       expectObservable(output$).toBe('1000ms a', {
         a: {
           error: true,
           type: 'people/formError',
           payload: 'Ooops',
-          meta: { source: 'updateContactEpic' },
-        },
-      });
-    });
-  });
+          meta: { source: 'updateContactEpic' }
+        }
+      })
+    })
+  })
   it('add name', async () => {
     const { getByTestId, getByPlaceholderText } = render(
-      <Person contact={mockData.contact} uid="123" />
-    );
+      <Person contact={mockData.contact} uid='123' />
+    )
 
-    userEvent.click(getByTestId('openBox'));
-    userEvent.type(getByPlaceholderText('Their name...'), 'Mr. Happy');
+    userEvent.click(getByTestId('openBox'))
+    userEvent.type(getByPlaceholderText('Their name...'), 'Mr. Happy')
 
     await wait(() =>
       expect(setContact).toHaveBeenCalledWith(
         expect.objectContaining({
           name: 'Mr. Happy',
-          userId: '123',
+          userId: '123'
         })
       )
-    );
-  });
+    )
+  })
   it('saves avatar image when name is blurred', async () => {
     const { getByTestId, getByPlaceholderText } = render(
-      <Person contact={mockData.contact} uid="123" />
-    );
+      <Person contact={mockData.contact} uid='123' />
+    )
 
-    userEvent.click(getByTestId('openBox'));
-    userEvent.type(getByPlaceholderText('Their name...'), 'x');
+    userEvent.click(getByTestId('openBox'))
+    userEvent.type(getByPlaceholderText('Their name...'), 'x')
 
     await wait(() =>
       expect(setContact).toHaveBeenCalledWith(
         expect.not.objectContaining({
-          photoURL: null,
+          photoURL: null
         })
       )
-    );
-  });
+    )
+  })
   it('no blank names', async () => {
     // @ts-ignore
-    setContact.mockReset();
+    setContact.mockReset()
     const { getByTestId, getByPlaceholderText } = render(
-      <Person contact={mockData.contact} uid="123" />
-    );
+      <Person contact={mockData.contact} uid='123' />
+    )
 
-    userEvent.click(getByTestId('openBox'));
-    userEvent.type(getByPlaceholderText('Their name...'), 'hello');
-    userEvent.type(getByTestId('contactName'), ' ');
+    userEvent.click(getByTestId('openBox'))
+    userEvent.type(getByPlaceholderText('Their name...'), 'hello')
+    userEvent.type(getByTestId('contactName'), ' ')
 
     await wait(() => {
-      expect(setContact).toHaveBeenCalled();
+      expect(setContact).toHaveBeenCalled()
       expect(setContact).toHaveBeenCalledWith(
         expect.objectContaining({
           name: 'Name cannot be blank',
-          userId: '123',
+          userId: '123'
         })
-      );
-    });
-  });
+      )
+    })
+  })
   // it('generated image by default', () => {
   //   const { container, getByTestId } = render(
   //     <PersonModal contact={mockData.contact} />
@@ -245,72 +245,72 @@ describe('create people', () => {
   //   expect(getByTestId('contactModal')).toContainElement(canvas);
   // });
   it('errors if photo file is not jpg or png', () => {
-    const { getByTestId } = render(<Person contact={mockData.contact} />);
+    const { getByTestId } = render(<Person contact={mockData.contact} />)
 
     const file = new File(['(⌐□_□)'], 'chucknorris.png', {
-      type: 'image/xxx',
-    });
+      type: 'image/xxx'
+    })
 
-    userEvent.click(getByTestId('openBox'));
+    userEvent.click(getByTestId('openBox'))
     fireEvent.change(getByTestId('profileImageUploader'), {
-      target: { files: [file] },
-    });
-    expect(setProfileImage).not.toHaveBeenCalled();
+      target: { files: [file] }
+    })
+    expect(setProfileImage).not.toHaveBeenCalled()
     expect(getByTestId('contactModal')).toHaveTextContent(
       'Images can only be jpeg, jpg, png or gif'
-    );
-  });
+    )
+  })
   it('errors if photo file is too large', () => {
-    const { getByTestId } = render(<Person contact={mockData.contact} />);
+    const { getByTestId } = render(<Person contact={mockData.contact} />)
 
-    function MockFile(name = 'mock.png', size = 1024, mimeType = 'image/png') {
-      function range(count) {
-        let output = '';
+    function MockFile (name = 'mock.png', size = 1024, mimeType = 'image/png') {
+      function range (count) {
+        let output = ''
         for (let i = 0; i < count; i += 1) {
-          output += 'a';
+          output += 'a'
         }
-        return output;
+        return output
       }
 
       /** @type {{lastModifiedDate: Date, name:string}} */
       // @ts-ignore
-      const blob = new Blob([range(size)], { type: mimeType });
-      blob.lastModifiedDate = new Date();
-      blob.name = name;
-      return blob;
+      const blob = new Blob([range(size)], { type: mimeType })
+      blob.lastModifiedDate = new Date()
+      blob.name = name
+      return blob
     }
-    const file = MockFile('mock.png', 5000001);
-    userEvent.click(getByTestId('openBox'));
+    const file = MockFile('mock.png', 5000001)
+    userEvent.click(getByTestId('openBox'))
     fireEvent.change(getByTestId('profileImageUploader'), {
-      target: { files: [file] },
-    });
-    expect(setProfileImage).not.toHaveBeenCalled();
+      target: { files: [file] }
+    })
+    expect(setProfileImage).not.toHaveBeenCalled()
     expect(getByTestId('contactModal')).toHaveTextContent(
       'Images can only be 5mb or less'
-    );
-  });
+    )
+  })
   it('lets you add a profile photo', async () => {
-    const { getByTestId } = render(<Person contact={mockData.contact} />);
+    const { getByTestId } = render(<Person contact={mockData.contact} />)
 
     const file = new File(['(⌐□_□)'], 'chucknorris.png', {
-      type: 'image/png',
-    });
+      type: 'image/png'
+    })
 
-    userEvent.click(getByTestId('openBox'));
+    userEvent.click(getByTestId('openBox'))
     fireEvent.change(getByTestId('profileImageUploader'), {
-      target: { files: [file] },
-    });
+      target: { files: [file] }
+    })
     await wait(() => {
-      expect(setProfileImage).toHaveBeenCalled();
-    });
-  });
+      expect(setProfileImage).toHaveBeenCalled()
+    })
+  })
   it('lets me add people to dashboard', () => {
     const { getByTestId } = render(
-      <Person contact={mockData.contact} uid="userId123" />,
+      <Person contact={mockData.contact} uid='userId123' />,
       {
         initialState: {
           user: {
-            userId: 'userId123',
+            userId: 'userId123'
           },
           contacts: [
             {
@@ -318,66 +318,66 @@ describe('create people', () => {
               lastContacted: false,
               activeTaskCount: 3,
               name: 'name',
-              photoURL: 'photo',
-            },
-          ],
-        },
+              photoURL: 'photo'
+            }
+          ]
+        }
       }
-    );
-    userEvent.click(getByTestId('openBox'));
+    )
+    userEvent.click(getByTestId('openBox'))
 
-    userEvent.click(getByTestId('dashSwitch'));
-    expect(handleTracking).toHaveBeenCalled();
+    userEvent.click(getByTestId('dashSwitch'))
+    expect(handleTracking).toHaveBeenCalled()
     expect(handleTracking).toHaveBeenCalledWith(
       true,
       'userId123',
       '123',
       'name',
       'photo'
-    );
-  });
+    )
+  })
   it('shows saving... and saved', async () => {
     const { getByTestId, getByPlaceholderText } = render(
       <Person contact={mockData.contact} />,
       {
         initialState: {
           user: {
-            userId: '123',
-          },
-        },
+            userId: '123'
+          }
+        }
       }
-    );
-    userEvent.click(getByTestId('openBox'));
-    userEvent.type(getByPlaceholderText('Their name...'), 'Mr. Happy');
-    expect(getByTestId('saveIndicator')).toHaveTextContent(/saving/i);
+    )
+    userEvent.click(getByTestId('openBox'))
+    userEvent.type(getByPlaceholderText('Their name...'), 'Mr. Happy')
+    expect(getByTestId('saveIndicator')).toHaveTextContent(/saving/i)
     // await wait(() => {
     //   getByTestId('saveIndicator');
     //   expect(getByTestId('saveIndicator')).toHaveTextContent(/saving/i);
     // });
-  });
+  })
   it('does not say saved for the first test', () => {
     const { queryByTestId } = render(<Person contact={mockData.contact} />, {
       initialState: {
         user: {
-          userId: '123',
-        },
-      },
-    });
-    userEvent.click(queryByTestId('openBox'));
-    expect(queryByTestId('saveIndicator')).not.toBeInTheDocument();
-  });
+          userId: '123'
+        }
+      }
+    })
+    userEvent.click(queryByTestId('openBox'))
+    expect(queryByTestId('saveIndicator')).not.toBeInTheDocument()
+  })
   it('adds a loading spinner for contacts in network page', () => {
-    const { getByTestId } = render(<InnerNetwork uid="123" />);
+    const { getByTestId } = render(<InnerNetwork uid='123' />)
 
-    expect(getByTestId('loader')).toBeInTheDocument();
-  });
+    expect(getByTestId('loader')).toBeInTheDocument()
+  })
   it('adds an empty state for contacts in network page', () => {
-    const { getByTestId } = render(<InnerNetwork uid="123" />, {
-      initialState: { contacts: [] },
-    });
+    const { getByTestId } = render(<InnerNetwork uid='123' />, {
+      initialState: { contacts: [] }
+    })
 
-    expect(getByTestId('emptyContacts')).toBeInTheDocument();
-  });
+    expect(getByTestId('emptyContacts')).toBeInTheDocument()
+  })
 
   // it.skip('when I toggle someone to workboard they do not persist when I open teh network page again', () => {});
   // it.skip('it is currently possible to add someone to teh worknboard twice if their toogle fails', () => {});
@@ -422,7 +422,7 @@ describe('create people', () => {
   // it.skip('dont show onboarding box if a contact is selected', () => false);
   // it.skip('should not let you enter a note in a new contact untill you have added a name', () => {});
   // it.skip('add last interaction details to person', () => {});
-});
+})
 
 // describe('email reminders', () => {
 //   test.skip('reminder triggers an email', () => {});
@@ -450,31 +450,31 @@ describe('update someone on the system', () => {
       //   contact={mockData.contact}
       //   selectedUser={mockData.selectedUser}
       // />
-      <InnerNetwork uid="123" />,
+      <InnerNetwork uid='123' />,
       { initialState: { contacts: [mockData.contact] } }
-    );
+    )
     // expect closed
-    expect(getByTestId('closedPeopleBox'));
+    expect(getByTestId('closedPeopleBox'))
     // userEvent click
-    userEvent.click(getByTestId('openBox'));
+    userEvent.click(getByTestId('openBox'))
     // expect open
-    expect(getByTestId('openedPeopleBox'));
+    expect(getByTestId('openedPeopleBox'))
     // click again
-    userEvent.click(getByTestId('closeBox'));
+    userEvent.click(getByTestId('closeBox'))
     // expect closed
-    expect(getByTestId('closedPeopleBox'));
-  });
+    expect(getByTestId('closedPeopleBox'))
+  })
   it('close notes calendar box by clicking outside it', async () => {
     const mockContact = {
       uid: '123',
       name: 'hello',
       lastContacted: 0,
       activeTaskCount: 3,
-      photoURL: 'string',
-    };
+      photoURL: 'string'
+    }
 
     const { getByTestId, getByText, queryByTestId } = render(
-      <Person contact={mockContact} uid="123" />,
+      <Person contact={mockContact} uid='123' />,
       {
         initialState: {
           contacts: [
@@ -485,28 +485,28 @@ describe('update someone on the system', () => {
               activeTaskCount: 3,
               photoURL: 'string',
               notes: {
-                1: { id: 1, text: 'hello', lastUpdated: 1579605299501 },
+                1: { id: 1, text: 'hello', lastUpdated: 1579605299501 }
                 // 2: { id: 2, text: 'hello two', lastUpdated: 1579605299601 },
                 // 9007199254740991: {
                 //   id: 9007199254740991,
                 //   text: '',
                 //   lastUpdated: 9007199254740991,
                 // },
-              },
-            },
-          ],
-        },
+              }
+            }
+          ]
+        }
       }
-    );
+    )
 
-    userEvent.click(getByTestId('openBox'));
-    userEvent.click(getByTestId('timeBox'));
+    userEvent.click(getByTestId('openBox'))
+    userEvent.click(getByTestId('timeBox'))
 
-    getByTestId('calendarBox');
+    getByTestId('calendarBox')
 
-    userEvent.click(getByText(/Click on image to upload/));
-    expect(queryByTestId('calendarBox')).not.toBeInTheDocument();
-  });
+    userEvent.click(getByText(/Click on image to upload/))
+    expect(queryByTestId('calendarBox')).not.toBeInTheDocument()
+  })
 
   // test.skip('change date on note', async () => {
   //   const mockContact = {
@@ -592,42 +592,42 @@ describe('update someone on the system', () => {
   // test.skip('delete notes', () => false);
   // test.skip('hide completed tasks', () => false);
   // test.skip('helping someone shoudl check the onboarding box', () => false);
-});
+})
 // and ensure box shows up if last task
 
 describe('delete details from the system', () => {
   test('delete user', () => {
-    const mockDelete = jest.fn();
+    const mockDelete = jest.fn()
 
     const { getByText } = render(
       <PersonModal
-        contactId="123"
+        contactId='123'
         handleDelete={mockDelete}
-        uid="1234"
+        uid='1234'
         onClose={jest.fn()}
         handleTracking={jest.fn()}
       />,
       {
         initialState: {
-          contacts: [mockData.contact],
-        },
+          contacts: [mockData.contact]
+        }
       }
-    );
+    )
 
-    userEvent.click(getByText(/delete name name/i));
-    getByText(/confirm delete name name/i);
+    userEvent.click(getByText(/delete name name/i))
+    getByText(/confirm delete name name/i)
     // expect(mockDelete).toBeCalledWith(55);
     // (_name, _uid, _userId)
-  });
+  })
 
   test('cannot delete user if pending tasks', () => {
-    const mockDelete = jest.fn();
+    const mockDelete = jest.fn()
 
     const { getByText } = render(
       <PersonModal
-        contactId="123"
+        contactId='123'
         handleDelete={mockDelete}
-        uid="1234"
+        uid='1234'
         onClose={jest.fn()}
         handleTracking={jest.fn()}
       />,
@@ -637,62 +637,62 @@ describe('delete details from the system', () => {
           tasks: [
             {
               completedFor: mockData.contact.uid,
-              dateCompleted: null,
-            },
-          ],
-        },
+              dateCompleted: null
+            }
+          ]
+        }
       }
-    );
+    )
 
-    userEvent.click(getByText(/delete name name/i));
+    userEvent.click(getByText(/delete name name/i))
     getByText(
       /You must complete or remove all active tasks before you can delete name name/i
-    );
+    )
     // expect(mockDelete).toBeCalledWith(55);
     // (_name, _uid, _userId)
-  });
+  })
 
   test('cannot delete a user if you are still on the dashboard', () => {
-    const mockDelete = jest.fn();
+    const mockDelete = jest.fn()
 
     const { getByText } = render(
       <PersonModal
-        contactId="123"
+        contactId='123'
         handleDelete={mockDelete}
-        uid="1234"
+        uid='1234'
         onClose={jest.fn()}
         handleTracking={jest.fn()}
       />,
       {
         initialState: {
           contacts: [{ ...mockData.contact, tracked: true }],
-          tasks: [],
-        },
+          tasks: []
+        }
       }
-    );
+    )
 
-    userEvent.click(getByText(/delete name name/i));
+    userEvent.click(getByText(/delete name name/i))
     getByText(
-      `You must remove name name from the workboard before you can delete this contact.`
-    );
+      'You must remove name name from the workboard before you can delete this contact.'
+    )
     // expect(mockDelete).toBeCalledWith(55);
     // (_name, _uid, _userId)
-  });
+  })
   // test.skip('delete text update', () => {});
   // test.skip('delete task', () => {});
   // test.skip('you shoudl be able to delete new people aswell as existing contact', () => {});
-});
+})
 
 describe('create notes', () => {
   it('edit notes on an existing contact', async () => {
-    const exampleInput = 'lalala';
+    const exampleInput = 'lalala'
     const { getByTestId, getByPlaceholderText } = render(
       <Person contact={mockData.contact} />
-    );
-    userEvent.click(getByTestId('openBox'));
-    await userEvent.type(getByPlaceholderText(/click to edit/i), exampleInput);
-    expect(getByTestId('notesTextarea')).toHaveTextContent(exampleInput);
-  });
+    )
+    userEvent.click(getByTestId('openBox'))
+    await userEvent.type(getByPlaceholderText(/click to edit/i), exampleInput)
+    expect(getByTestId('notesTextarea')).toHaveTextContent(exampleInput)
+  })
 
   // test.skip('it should add teh new note to the beginning of the timeline not the end', () => {});
   // test.skip('only one note open at a time', () => {});
@@ -701,7 +701,7 @@ describe('create notes', () => {
   // test.skip('add note alwats visible when editing a note', () => {});
   // test.skip('if no date update then it defaults to today', () => {});
   // test.skip('changing date should change the date', () => {});
-});
+})
 
 // describe('other', () => {
 //   test.skip('dont show dashboard unless there is someone on it.', () => {});

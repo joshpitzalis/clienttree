@@ -1,20 +1,20 @@
-import { useDispatch, useSelector } from 'react-redux';
-import React from 'react';
-import { toast$ } from '../../notifications/toast';
-import { setProfileImage } from '../peopleAPI';
-import { generateName } from './randomNameGenerator';
+import { useDispatch, useSelector } from 'react-redux'
+import React from 'react'
+import { toast$ } from '../../notifications/toast'
+import { setProfileImage } from '../peopleAPI'
+import { generateName } from './randomNameGenerator'
 
 /**
  * @param {string} contactId - contact Id of selected user
  */
 export const usePersonForm = (contactId, userId) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   const contact = useSelector(
     store =>
       store.contacts && store.contacts.find(person => person.uid === contactId)
-  );
+  )
 
-  const oneYearAgo = new Date().setFullYear(new Date().getFullYear() - 1);
+  const oneYearAgo = new Date().setFullYear(new Date().getFullYear() - 1)
 
   const [state, setState] = React.useState({
     userId,
@@ -25,32 +25,32 @@ export const usePersonForm = (contactId, userId) => {
       9007199254740991: {
         id: 9007199254740991,
         text: '',
-        lastUpdated: 9007199254740991,
-      },
+        lastUpdated: 9007199254740991
+      }
     },
     lastContacted: +new Date(oneYearAgo),
     tracked: false,
     saving: null,
     email: '',
-    ...contact,
-  });
+    ...contact
+  })
 
   React.useEffect(() => {
     // prevent the epic from firing when the person box first opens
     if (state.name === null) {
-      return;
+      return
     }
     if (userId) {
       dispatch({
         type: 'ONBOARDING_STEP_COMPLETED',
-        payload: { userId, onboardingStep: 'addedSomeone' },
-      });
+        payload: { userId, onboardingStep: 'addedSomeone' }
+      })
       dispatch({
         type: 'people/updateForm',
-        payload: { userId, ...state },
-      });
+        payload: { userId, ...state }
+      })
     }
-  }, [dispatch, state, userId]);
+  }, [dispatch, state, userId])
 
   React.useEffect(() => {
     setState(prevState => {
@@ -59,56 +59,56 @@ export const usePersonForm = (contactId, userId) => {
         return {
           ...prevState,
           ...contact,
-          saving: false,
-        };
+          saving: false
+        }
       }
-      return prevState;
-    });
-  }, [contact]);
+      return prevState
+    })
+  }, [contact])
 
-  return [state, setState];
-};
+  return [state, setState]
+}
 
 export const setImage = async ({
   e,
   setProgress,
   setState,
   state,
-  contactId,
+  contactId
 }) => {
-  const imageFile = e.target.files && e.target.files[0];
-  const { size, type } = imageFile;
+  const imageFile = e.target.files && e.target.files[0]
+  const { size, type } = imageFile
   if (
     type !== 'image/jpeg' &&
     type !== 'image/gif' &&
     type !== 'image/jpg' &&
     type !== 'image/png'
   ) {
-    setProgress('Images can only be jpeg, jpg, png or gif');
-    return;
+    setProgress('Images can only be jpeg, jpg, png or gif')
+    return
   }
   if (size > 5000000) {
-    setProgress('Images can only be 5mb or less');
-    return;
+    setProgress('Images can only be 5mb or less')
+    return
   }
   if (imageFile) {
     try {
-      setState(prevState => ({ ...prevState, saving: true }));
-      setProgress('Uploading...');
+      setState(prevState => ({ ...prevState, saving: true }))
+      setProgress('Uploading...')
       const photoURL = await setProfileImage({
         imageFile,
-        contactId,
-      });
-      setProgress('Click on image to upload.');
-      setState(prevState => ({ ...prevState, photoURL }));
+        contactId
+      })
+      setProgress('Click on image to upload.')
+      setState(prevState => ({ ...prevState, photoURL }))
     } catch (error) {
-      setState({ ...state, saving: false });
-      setProgress('Click on image to upload.');
+      setState({ ...state, saving: false })
+      setProgress('Click on image to upload.')
       toast$.next({
         type: 'ERROR',
         message: error,
-        from: 'PersonBox/setImagePreview',
-      });
+        from: 'PersonBox/setImagePreview'
+      })
     }
   }
-};
+}

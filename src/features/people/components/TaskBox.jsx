@@ -155,7 +155,7 @@ export const TaskBox = ({
 
   return (
     <div
-      className="mb3 pa2 taskBorder br3"
+      className='mb3 pa2 taskBorder br3'
       key={taskId}
       data-state={
         current.value && current.value.incomplete
@@ -166,54 +166,55 @@ export const TaskBox = ({
     >
       <label
         htmlFor={name}
-        className="lh-copy flex items-center justify-around  label relative pl3 pointer"
+        className='lh-copy flex items-center justify-around  label relative pl3 pointer'
         style={{ minWidth: '100%' }}
-        data-testid="incomplete"
+        data-testid='incomplete'
       >
         <input
-          className="taskBox"
-          type="checkbox"
+          className='taskBox'
+          type='checkbox'
           id={name}
           data-testid={name}
           value={name}
           checked={current.value === 'complete'}
           onChange={() => send('COMPLETED')}
         />
-        <span className="checkBox" data-state={current.value}></span>
-        <div className="ph3 tl w-100">
+        <span className='checkBox' data-state={current.value} />
+        <div className='ph3 tl w-100'>
           <p
             className={`${current.matches('complete') && 'strike'}`}
             data-testid={current.matches('complete') && 'complete'}
           >
             {name}
           </p>
-          <small className="text3">{`Due ${formatDistanceToNow(
+          <small className='text3'>{`Due ${formatDistanceToNow(
             fromUnixTime(dueDate / 1000),
             { addSuffix: true }
-          )}`}</small>
+          )}`}
+          </small>
         </div>
-        <img src={photoURL} alt={name} className="h-10 w-10 rounded-full" />
+        <img src={photoURL} alt={name} className='h-10 w-10 rounded-full' />
       </label>
       {current.matches('confirmation') && (
         <div
-          className="flex flex-column justify-center"
-          data-testid="confirmation"
+          className='flex flex-column justify-center'
+          data-testid='confirmation'
         >
           <button
-            type="button"
+            type='button'
             onClick={() => send('COMPLETED')}
-            data-testid="confirmDelete"
-            className="btn2
+            data-testid='confirmDelete'
+            className='btn2
            ph3 pv2 bn pointer br1
            grow b
-          "
+          '
           >
             Confirm Completed
           </button>
           <button
-            type="button"
+            type='button'
             onClick={() => send('CANCELLED')}
-            className="bn pointer pv2 text3 bg-white"
+            className='bn pointer pv2 text3 bg-white'
           >
             Nevermind
           </button>
