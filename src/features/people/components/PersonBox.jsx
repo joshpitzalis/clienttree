@@ -42,17 +42,18 @@ export const PersonModal = ({
   onClose,
   handleTracking = _handleTracking,
   handleDelete,
-  newPerson
+  newPerson,
+  setVisibility
 }) => {
   const dispatch = useDispatch()
   const avatarRef = React.useRef(null)
   // whenever the state of this component gets updated
   // it will debounce for one second then save the new state to firebase
   // the new state then streams in through rxjs firebase listeners setup at the root
-  const [state, setState] = usePersonForm(contactId, uid)
+  const [state, setState] = usePersonForm(contactId, uid, beta)
 
   React.useEffect(() => {
-    if (state.photoURL === null) {
+    if (beta === false && state.photoURL === null) {
       setState({ ...state, photoURL: avatarRef.current && avatarRef.current.getImageData() })
     }
   }, [avatarRef, setState, state])
@@ -74,7 +75,12 @@ export const PersonModal = ({
   ])
 
   if (beta) {
-    return <PersonCard />
+    return <PersonCard
+      setVisibility={setVisibility}
+      handleSubmit={dispatch}
+      userId={uid}
+      newPerson
+    />
   }
 
   return (

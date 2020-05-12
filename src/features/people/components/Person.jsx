@@ -30,12 +30,18 @@ const peopleMachine = Machine({
   states: {
     closed: {
       on: {
-        OPENED: { target: 'opened', actions: ['setSelectedUser'] }
+        OPENED: {
+          target: 'opened',
+          actions: ['setSelectedUser']
+        }
       }
     },
     opened: {
       on: {
-        CLOSED: { target: 'closed', actions: ['clearSelectedUser'] }
+        CLOSED: {
+          target: 'closed',
+          actions: ['clearSelectedUser']
+        }
       }
     }
   }
@@ -141,6 +147,7 @@ export const Person = ({ contact, uid }) => {
             contactId={contact.uid}
             onClose={() => send({ type: 'CLOSED' })}
             handleDelete={handleDelete}
+            setVisibility={() => send({ type: 'CLOSED' })}
           />
         </li>
       )

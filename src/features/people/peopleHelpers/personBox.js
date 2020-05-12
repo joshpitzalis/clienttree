@@ -7,7 +7,7 @@ import { generateName } from './randomNameGenerator'
 /**
  * @param {string} contactId - contact Id of selected user
  */
-export const usePersonForm = (contactId, userId) => {
+export const usePersonForm = (contactId, userId, beta) => {
   const dispatch = useDispatch()
   const contact = useSelector(
     store =>
@@ -40,7 +40,7 @@ export const usePersonForm = (contactId, userId) => {
     if (state.name === null) {
       return
     }
-    if (userId) {
+    if (beta === false && userId) {
       dispatch({
         type: 'ONBOARDING_STEP_COMPLETED',
         payload: { userId, onboardingStep: 'addedSomeone' }

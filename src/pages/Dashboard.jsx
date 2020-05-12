@@ -156,8 +156,6 @@ export function Dashboard ({ userId }) {
       )}
       <OptimizelyFeature feature='workboard'>
         {workboard => {
-          console.log({ workboard })
-
           return (
             <div
               className={`flex flex-row-ns flex-column w-100  ${

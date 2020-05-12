@@ -61,6 +61,8 @@ export const InnerNetwork = ({ uid, bulkImportFeature }) => {
                 setSelectedUser('')
               }}
               newPerson
+              setVisibility={() =>
+                setVisibility(false)}
             />
           ) : (
             <>
