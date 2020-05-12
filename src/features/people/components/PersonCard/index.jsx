@@ -26,6 +26,10 @@ function actions (draft, action) {
       draft.name = action.payload
       draft.image = `https://ui-avatars.com/api/?name=${firstLastInitial(action.payload)}`
       break
+
+    case 'EMAIL_UPDATED':
+      draft.email = action.payload
+      break
   }
 }
 /* eslint-disable react/prop-types */
@@ -34,23 +38,19 @@ export const PersonCard = ({ setVisibility, newPerson, userId }) => {
     errors: {
     },
     image: 'https://ui-avatars.com/api/?name=ct',
-    name: ''
+    name: '',
+    email: ''
   })
 
   const onSubmit = () => {
-    console.log('submited...')
-
     const newDoc = firebase
       .firestore()
       .collection('users')
       .doc(userId)
       .collection('contacts')
       .doc()
-    console.log(newDoc.id)
-    try {
-      console.log('saving to fb')
-      console.log({ ...state, userId })
 
+    try {
       firebase
         .firestore()
         .collection('users')
@@ -62,10 +62,10 @@ export const PersonCard = ({ setVisibility, newPerson, userId }) => {
           // summary,
           uid: newDoc.id,
           lastContacted: +new Date(),
-          photoURL: state.image
-        // activeTaskCount: 1,
-        // notes,
-        // email
+          photoURL: state.image,
+          // activeTaskCount: 1,
+          // notes,
+          email: state.email
         }).then(() => setVisibility(false))
     } catch (error) {
       console.error({ error })
@@ -88,7 +88,7 @@ export const PersonCard = ({ setVisibility, newPerson, userId }) => {
           <dl>
             <ImageRow dispatch={dispatch} image={state.image} />
             <NameRow dispatch={dispatch} name={state.name}/>
-            <EmailRow />
+            <EmailRow dispatch={dispatch} email={state.email}/>
             <WorkboardRow />
             <InteractionsRow />
             <FooterButtons

@@ -1,6 +1,7 @@
 describe('outreach', () => {
   const fakeData = {
     name: 'Sick Rick',
+    email: 'sick@rick.com',
     lastContacted: 'about a week ago',
     description: 'Pickle',
     updatedName: 'Skeletor'
@@ -28,12 +29,25 @@ describe('outreach', () => {
       .findByPlaceholderText(/Their name/i)
       .clear()
       .type(fakeData.name)
+      .findByPlaceholderText(/Their email/i)
+      .clear()
+      .type(fakeData.email)
+      // name validation
+      // email validation
+      // image upload
+      // add notes
+      // change note
+      // change timestamp
+      // delete notes
+      // notes validation
+      // test form submission error alert
       .findByText(/save changes/i).click()
       .findByText(/saving/i)
       // .findByText(/cancel/i).click()
       .findByTestId('personCard')
       .should('not.be.visible')
       .findAllByText(fakeData.name)
+      // open form teh check email is persisted
   })
 
   // it.todo('lets you update a contact')

@@ -14,7 +14,7 @@ export function NameRow ({ dispatch, name }) {
           <div className='w-full'>
             <label htmlFor="name" className="block text-sm font-medium leading-5 text-gray-700 hidden">Name</label>
             <div className="mt-1 rounded-md shadow-sm">
-              <input id="name" className="db border-box w-100 measure-narrow ba b--black-20 pa3 br2 mb2 " placeholder="Their name..." value={name} aria-invalid="true" aria-describedby="name"
+              <input id="name" className="db border-box w-100 measure-narrow ba b--black-20 pa3 br2 mb2 " placeholder="Their name..." value={name} aria-invalid="true" aria-describedby="name" type='text'
                 onChange={(e) =>
                   dispatch({ type: 'NAME_UPDATED', payload: e.target.value })} />
               {error && <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
