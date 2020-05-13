@@ -61,6 +61,7 @@ export const PersonCard = ({ setVisibility, newPerson, userId, contact }) => {
   const [state, dispatch] = useImmerReducer(actions, {
     errors: {
     },
+    uid: contact.uid || '',
     photoURL: contact.photoURL || 'https://ui-avatars.com/api/?name=ct',
     name: contact.name || '',
     email: contact.email || '',
@@ -69,8 +70,6 @@ export const PersonCard = ({ setVisibility, newPerson, userId, contact }) => {
       234: { id: '234', text: 'I am another note', lastUpdated: +new Date() }
     }
   })
-
-  console.log({ state })
 
   const onSubmit = () => {
     const newDoc = firebase
@@ -86,15 +85,15 @@ export const PersonCard = ({ setVisibility, newPerson, userId, contact }) => {
         .collection('users')
         .doc(userId)
         .collection('contacts')
-        .doc(newDoc.id)
+        .doc(state.uid || newDoc.id)
         .set({
           name: state.name,
-          uid: newDoc.id,
+          uid: state.uid || newDoc.id,
           lastContacted: +new Date(),
           photoURL: state.photoURL,
           notes: state.notes,
           email: state.email
-        })
+        }, { merge: true })
         .then(() => setVisibility(false))
     } catch (error) {
       console.error({ error })

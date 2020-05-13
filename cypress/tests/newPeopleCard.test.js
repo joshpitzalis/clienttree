@@ -35,30 +35,37 @@ describe('outreach', () => {
       .findByText(/Add an interaction/i).click()
       .findByPlaceholderText(/Add notes here/i).clear().type(fakeData.note)
 
-    // change note
     // change timestamp
     // delete notes
+    // upload Image
+    // add to work board
+    // remove from workboard
 
     // name validation
     // email validation
     // notes validation
-    //  image validation
+    // image validation
 
-    // image upload
+    // test form submission error alert
       .findByText(/save note/i).click()
-      // test form submission error alert
       .findByText(/save changes/i).click()
       .findByText(/saving/i)
-      // .findByText(/cancel/i).click()
       .findByTestId('personCard')
       .should('not.be.visible')
       .findAllByText(fakeData.name).first().click()
       .findByText(fakeData.email).should('exist')
       .findByText(fakeData.note).should('exist')
-      // open form teh check email is persisted
-      // check note is present
+      .findByTestId(`${fakeData.note}-edit`).click()
+      .findAllByText(fakeData.note).first().click().clear().type('updated note')
+      .findByText(/save note/i).click()
+      .findByText(/save changes/i).click()
+      .findByText(/saving/i)
+      .findByTestId('personCard')
+      .should('not.be.visible')
+      .findAllByText(fakeData.name).first().click()
+      .findByText('updated note').should('exist')
   })
-
+// it.todo('create a task on a new contact')
   // it.todo('lets you update a contact')
   // it.todo('lets you delete a contact')
 })

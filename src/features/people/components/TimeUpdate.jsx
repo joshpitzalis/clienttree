@@ -33,15 +33,14 @@ function useOutsideCloser (ref, setVisible) {
  *  lastUpdated: number
  * }}} [Props] */
 /* eslint-disable react/prop-types */
-export const TimeUpdate = ({ lastUpdated, setState, note }) => {
-  const [visible, setVisible] = React.useState(false)
+export const TimeUpdate = ({ lastUpdated, setState, note, visible, setVisible }) => {
   const [date, setDate] = React.useState(new Date(lastUpdated))
 
   // closes date picker when you click outside the component
   const wrapperRef = useRef(null)
   useOutsideCloser(wrapperRef, setVisible)
   return (
-    <div>
+    <div >
       {visible ? (
         <div
           ref={wrapperRef}
@@ -76,9 +75,9 @@ export const TimeUpdate = ({ lastUpdated, setState, note }) => {
           type='button'
           data-testid='timeBox'
           onClick={() => setVisible(true)}
-          className='bn text3 underline-hover pointer'
+          className='bn pointer text-sm text-gray-400 underline mb3'
         >
-          {lastUpdated &&
+          Added {lastUpdated &&
             formatDistanceToNow(new Date(lastUpdated), {
               addSuffix: true
             })}

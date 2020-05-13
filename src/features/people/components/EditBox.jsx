@@ -5,6 +5,7 @@ import { debounceTime, filter } from 'rxjs/operators'
 import { Subject } from 'rxjs'
 
 const events$ = new Subject()
+
 /* eslint-disable react/prop-types */
 export const EditBox = ({
   note,
