@@ -19,9 +19,9 @@ export const usePersonForm = (contactId, userId, beta) => {
   const [state, setState] = React.useState({
     userId,
     uid: contactId,
-    name: generateName(),
+    name: beta ? '' : generateName(),
     photoURL: null,
-    notes: {
+    notes: beta ? {} : {
       9007199254740991: {
         id: 9007199254740991,
         text: '',

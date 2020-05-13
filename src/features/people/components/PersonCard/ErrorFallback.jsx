@@ -17,7 +17,7 @@ export function ErrorFallback ({ error, componentStack, resetErrorBoundary }) {
         <div className="mt-5 sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:flex sm:items-center">
           <span className="inline-flex rounded-md shadow-sm">
 
-            <button type="button" className="inline-flex items-center px-6 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-50 focus:outline-none focus:border-green-300 focus:shadow-outline-green active:bg-green-200 transition ease-in-out duration-150" onClick={resetErrorBoundary}>
+            <button type="button" className="inline-flex items-center px-6 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-50 focus:outline-none focus:border-gray-300 focus:shadow-outline-gray active:bg-gray-200 transition ease-in-out duration-150" onClick={resetErrorBoundary}>
               Reset
             </button>
           </span>

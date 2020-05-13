@@ -52,7 +52,7 @@ export function ImageRow ({ dispatch, image }) {
     <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
       <dt>
         <p className="text-sm leading-5 font-medium text-gray-500">Thumbnail</p>
-        <p className="text-sm leading-5 font-medium text-gray-400">Click on image to update</p>
+        <p className="text-sm leading-5 font-medium text-gray-400">Click on the image to update</p>
       </dt>
       <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
 

@@ -30,17 +30,47 @@ function actions (draft, action) {
     case 'EMAIL_UPDATED':
       draft.email = action.payload
       break
+
+    case 'NEW_NOTE_SUBMITTED':
+      draft.notes[action.payload.id] = action.payload
+      break
   }
 }
+
+// {
+//   userId,
+//   uid: contactId,
+//   name: generateName(),
+//   photoURL: null,
+//   notes: {
+//     9007199254740991: {
+//       id: 9007199254740991,
+//       text: '',
+//       lastUpdated: 9007199254740991
+//     }
+//   },
+//   lastContacted: +new Date(oneYearAgo),
+//   tracked: false,
+//   saving: null,
+//   email: '',
+//   ...contact
+// }
+
 /* eslint-disable react/prop-types */
-export const PersonCard = ({ setVisibility, newPerson, userId }) => {
+export const PersonCard = ({ setVisibility, newPerson, userId, contact }) => {
   const [state, dispatch] = useImmerReducer(actions, {
     errors: {
     },
-    image: 'https://ui-avatars.com/api/?name=ct',
-    name: '',
-    email: ''
+    photoURL: contact.photoURL || 'https://ui-avatars.com/api/?name=ct',
+    name: contact.name || '',
+    email: contact.email || '',
+    notes: contact.notes || {
+      123: { id: '123', text: 'I am note', lastUpdated: +new Date() },
+      234: { id: '234', text: 'I am another note', lastUpdated: +new Date() }
+    }
   })
+
+  console.log({ state })
 
   const onSubmit = () => {
     const newDoc = firebase
@@ -59,14 +89,13 @@ export const PersonCard = ({ setVisibility, newPerson, userId }) => {
         .doc(newDoc.id)
         .set({
           name: state.name,
-          // summary,
           uid: newDoc.id,
           lastContacted: +new Date(),
-          photoURL: state.image,
-          // activeTaskCount: 1,
-          // notes,
+          photoURL: state.photoURL,
+          notes: state.notes,
           email: state.email
-        }).then(() => setVisibility(false))
+        })
+        .then(() => setVisibility(false))
     } catch (error) {
       console.error({ error })
     }
@@ -86,11 +115,11 @@ export const PersonCard = ({ setVisibility, newPerson, userId }) => {
           onSubmit()
         }}>
           <dl>
-            <ImageRow dispatch={dispatch} image={state.image} />
+            <ImageRow dispatch={dispatch} image={state.photoURL} />
             <NameRow dispatch={dispatch} name={state.name}/>
             <EmailRow dispatch={dispatch} email={state.email}/>
             <WorkboardRow />
-            <InteractionsRow />
+            <InteractionsRow notes={Object.values(state.notes)} dispatch={dispatch}/>
             <FooterButtons
               setVisibility={setVisibility}
               onSubmit={onSubmit}

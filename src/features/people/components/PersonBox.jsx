@@ -80,6 +80,7 @@ export const PersonModal = ({
       handleSubmit={dispatch}
       userId={uid}
       newPerson
+      contact={state}
     />
   }
 

@@ -3,7 +3,7 @@ describe('outreach', () => {
     name: 'Sick Rick',
     email: 'sick@rick.com',
     lastContacted: 'about a week ago',
-    description: 'Pickle',
+    note: 'Pickle',
     updatedName: 'Skeletor'
   }
 
@@ -32,22 +32,31 @@ describe('outreach', () => {
       .findByPlaceholderText(/Their email/i)
       .clear()
       .type(fakeData.email)
-      // name validation
-      // email validation
-      // image upload
-      // add notes
-      // change note
-      // change timestamp
-      // delete notes
-      // notes validation
+      .findByText(/Add an interaction/i).click()
+      .findByPlaceholderText(/Add notes here/i).clear().type(fakeData.note)
+
+    // change note
+    // change timestamp
+    // delete notes
+
+    // name validation
+    // email validation
+    // notes validation
+    //  image validation
+
+    // image upload
+      .findByText(/save note/i).click()
       // test form submission error alert
       .findByText(/save changes/i).click()
       .findByText(/saving/i)
       // .findByText(/cancel/i).click()
       .findByTestId('personCard')
       .should('not.be.visible')
-      .findAllByText(fakeData.name)
+      .findAllByText(fakeData.name).first().click()
+      .findByText(fakeData.email).should('exist')
+      .findByText(fakeData.note).should('exist')
       // open form teh check email is persisted
+      // check note is present
   })
 
   // it.todo('lets you update a contact')
