@@ -3,14 +3,14 @@ import React, { useState } from 'react'
 /* eslint-disable react/prop-types */
 import firebase from '../../../../utils/firebase'
 
-export function FooterButtons ({ setVisibility, newCard, onSubmit, contactId, userId }) {
+export function FooterButtons ({ setVisibility, newCard, onSubmit, contactId, userId, tracked }) {
   const [saving, setSaving] = useState(false)
   return (
     <div className="border-t border-gray-200 p-5">
       <div className="flex justify-between items-center ">
         {newCard
           ? <span ></span>
-          : <DeleteContact contactId={contactId} userId={userId} />}
+          : <DeleteContact contactId={contactId} userId={userId} tracked={tracked} />}
         <div className="">
           <span className="inline-flex rounded-md shadow-sm">
             <button type="button" className="inline-flex justify-center mt-1 py-2 px-4 border border-gray-300 rounded-md text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition duration-150 ease-in-out"
@@ -33,16 +33,16 @@ export function FooterButtons ({ setVisibility, newCard, onSubmit, contactId, us
     </div>)
 }
 
-export function DeleteContact ({ contactId, userId }) {
+export function DeleteContact ({ contactId, userId, tracked }) {
   const [confirmDelete, setConfirmDelete] = useState(false)
 
   return (
     <div className='flex items-baseline'>
       <p className='text-red cursor-pointer mt-2' onClick={() => setConfirmDelete(true)}>
-        {confirmDelete ? 'Are you absolutely sure ?' : 'Delete Contact'}
+        {confirmDelete && tracked ? 'Must remove from the workboard first' : confirmDelete ? 'Are you absolutely sure ?' : 'Delete Contact'}
       </p>
 
-      {confirmDelete &&
+      {confirmDelete && !tracked &&
         <>
           <button
             type="button"

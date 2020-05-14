@@ -47,36 +47,60 @@ describe('outreach', () => {
       .findByTestId(`${fakeData.note}-edit`).click()
       .findAllByText(fakeData.note).first().click().clear().type('updated note')
       .findByText(/save note/i).click()
+    // add to work board
+      .findByTestId('dashSwitch')
+      .check({ force: true })
       .findByText(/save changes/i).click()
       .findByText(/saving/i)
       .findByTestId('personCard')
       .should('not.be.visible')
+      // check it appears on workboard
+      .findByTestId('projectPage')
+      .click()
+      .findByTestId('stage1')
+      .within(() => cy.findByTestId(fakeData.name))
+      // remove from workboard
+      .findByTestId('networkPage')
+      .click()
       .findAllByText(fakeData.name).first().click()
-      .findByText('updated note').should('exist').trigger('mouseover')
+      .findByTestId('dashSwitch')
+      .check({ force: true })
+      .findByText(/save changes/i).click()
+      .findByText(/saving/i)
+      .findByTestId('personCard')
+      .should('not.be.visible')
+      .findByTestId('projectPage')
+      .click()
+      .findByTestId('stage1')
+      .within(() => cy.queryByTestId(fakeData.name).should('not.exist'))
+      .findByTestId('networkPage')
+      .click()
+      .findAllByText(fakeData.name).first().click()
       // delete a note
+      .findByText('updated note').should('exist').trigger('mouseover')
       .findByTestId('updated note-delete').click()
       .findByTestId('confirm-delete')
       .click()
       .queryByTestId(`${fakeData.note}-edit`)
       .should('not.exist')
+      // delete contact
       .queryByText(/Delete Contact/i).click()
       .queryByText(/Confirm Delete/i).click()
       .queryByText(fakeData.name)
       .should('not.exist')
 
-    // TK edit timestamp on a note
-    // TK upload Image
-
-    // add to work board
-    // remove from workboard
-
     // name validation
-    // email validation
-    // notes validation (depenancy injections)
-    // image validation
-
+    // delete validation
+    // notes validation
     // test form submission error alert
+
+    // workboard validations
+    // email validation
+    // image validation
+    // (depenancy injections)
     // test should work even when source data has that strange 9000 initial task in notes
     // create a task on a new contact
+    // TK edit timestamp on a note
+    // TK upload Image
   })
 })

@@ -1,5 +1,5 @@
 import { firstLastInitial } from './helpers'
-import React from 'react'
+import React, { useState } from 'react'
 import { useImmerReducer } from 'use-immer'
 import { ErrorBoundary } from 'react-error-boundary'
 import { ErrorFallback } from './ErrorFallback'
@@ -11,6 +11,8 @@ import { WorkboardRow } from './WorkboardRow'
 import { InteractionsRow } from './InteractionsRow'
 import { FooterButtons } from './FooterButtons'
 import firebase from '../../../../utils/firebase'
+import { handleTracking } from '../../peopleAPI'
+import { toast$ } from '../../../notifications/toast'
 
 function actions (draft, action) {
   switch (action.type) {
@@ -38,50 +40,50 @@ function actions (draft, action) {
     case 'note/deleted':
       delete draft.notes[action.payload]
       break
+
+    case 'contact/workboardToggle':
+      draft.tracked = !draft.tracked
+      break
   }
 }
 
-// {
-//   userId,
-//   uid: contactId,
-//   name: generateName(),
-//   photoURL: null,
-//   notes: {
-//     9007199254740991: {
-//       id: 9007199254740991,
-//       text: '',
-//       lastUpdated: 9007199254740991
-//     }
-//   },
-//   lastContacted: +new Date(oneYearAgo),
-//   tracked: false,
-//   saving: null,
-//   email: '',
-//   ...contact
-// }
-
 /* eslint-disable react/prop-types */
-export const PersonCard = ({ setVisibility, userId, contact }) => {
+export const PersonCard = ({ setVisibility, userId, contact, tracked }) => {
   const [state, dispatch] = useImmerReducer(actions, {
-    errors: {
-    },
+    ...contact,
+    userId,
     uid: contact.uid || '',
-    photoURL: contact.photoURL || 'https://ui-avatars.com/api/?name=ct',
     name: contact.name || '',
     email: contact.email || '',
+    photoURL: contact.photoURL || 'https://ui-avatars.com/api/?name=ct',
     notes: contact.notes || {
-      123: { id: '123', text: 'I am note', lastUpdated: +new Date() },
-      234: { id: '234', text: 'I am another note', lastUpdated: +new Date() }
-    }
+      9007199254740991: {
+        id: 9007199254740991,
+        text: '',
+        lastUpdated: 9007199254740991
+      }
+    },
+    tracked: contact.tracked || false,
+    lastContacted: +new Date()
   })
 
+  console.log({ state })
+
+  const [errors, setErrors] = useState({})
+
   const onSubmit = () => {
+    if (!state.name) {
+      setErrors({ ...errors, name: 'A name is required.' })
+      return
+    }
+
     const newDoc = firebase
       .firestore()
       .collection('users')
       .doc(userId)
       .collection('contacts')
       .doc()
+    const uid = state.uid || newDoc.id
 
     try {
       firebase
@@ -89,22 +91,24 @@ export const PersonCard = ({ setVisibility, userId, contact }) => {
         .collection('users')
         .doc(userId)
         .collection('contacts')
-        .doc(state.uid || newDoc.id)
+        .doc(uid)
         .set({
-          name: state.name,
-          uid: state.uid || newDoc.id,
+          ...state,
           lastContacted: +new Date(),
-          photoURL: state.photoURL,
-          notes: state.notes,
-          email: state.email
+          uid
         })
+        .then(() => handleTracking(
+          state.tracked,
+          state.userId,
+          uid,
+          state.name,
+          state.photoURL
+        ))
         .then(() => setVisibility(false))
     } catch (error) {
-      console.error({ error })
+      toast$.next({ type: 'ERROR', message: error.message || error })
     }
   }
-
-  console.log(state.uid)
 
   return (
     <ErrorBoundary
@@ -115,22 +119,31 @@ export const PersonCard = ({ setVisibility, userId, contact }) => {
       <div
         className="bg-white shadow overflow-hidden sm:rounded-lg" data-testid='personCard'>
         <HeaderRow newCard={!state.uid}/>
-        <form className="px-4 py-5 sm:p-0" onSubmit={e => {
-          e.preventDefault()
-          onSubmit()
-        }}>
+        <form
+          className="px-4 py-5 sm:p-0"
+          onSubmit={e => {
+            e.preventDefault()
+            onSubmit()
+          }}>
           <dl>
             <ImageRow dispatch={dispatch} image={state.photoURL} />
-            <NameRow dispatch={dispatch} name={state.name}/>
+            <NameRow dispatch={dispatch} name={state.name} errors={errors} setErrors={setErrors}/>
             <EmailRow dispatch={dispatch} email={state.email}/>
-            <WorkboardRow />
-            <InteractionsRow notes={Object.values(state.notes)} dispatch={dispatch}/>
+            <WorkboardRow tracked={state.tracked} dispatch={dispatch} />
+            <InteractionsRow
+              notes={
+                Object
+                  .values(state.notes)
+                  .filter(({ uid }) => uid !== 9007199254740991)
+              }
+              dispatch={dispatch}/>
             <FooterButtons
               contactId={state.uid && state.uid}
               userId={userId}
               setVisibility={setVisibility}
               onSubmit={onSubmit}
-              newCard={!state.uid}/>
+              newCard={!state.uid}
+              tracked={contact.tracked}/>
           </dl>
         </form>
       </div>

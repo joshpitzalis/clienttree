@@ -365,19 +365,17 @@ export const incrementStats = async (
   Promise.all(
     // get activities completed and current stats data
     [_getLeadsContacted(userId), _getCompletedActivityCount(userId)]
-  )
-    .then(async ([totalLeads = 0, activitiesCompleted = 0]) => {
-      const newLeadCount = totalLeads + 1
-      // increment leads acquired and update ratio
-      await _setStats(userId, newLeadCount, activitiesCompleted)
+  ).then(async ([totalLeads = 0, activitiesCompleted = 0]) => {
+    const newLeadCount = totalLeads + 1
+    // increment leads acquired and update ratio
+    await _setStats(userId, newLeadCount, activitiesCompleted)
+  }).catch(error => {
+    _toast.next({
+      type: 'ERROR',
+      message: error && error.message ? error.message : error,
+      from: 'contactsAPI/incrementStats'
     })
-    .catch(error => {
-      _toast.next({
-        type: 'ERROR',
-        message: error && error.message ? error.message : error,
-        from: 'contactsAPI/incrementStats'
-      })
-    })
+  })
 
 export const decrementStats = async (
   userId,

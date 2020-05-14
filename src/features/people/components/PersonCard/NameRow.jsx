@@ -1,9 +1,9 @@
 import React from 'react'
 import Transition from '../../../../utils/transition.js'
 /* eslint-disable react/prop-types */
-export function NameRow ({ dispatch, name }) {
+export function NameRow ({ dispatch, name, errors, setErrors }) {
   const [editable, setEditability] = React.useState(!name)
-  const [error] = React.useState('')
+  // const [errors] = React.useState('')
   return (<div className={`mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5 ${editable && 'h-32'}`}>
     <dt className="text-sm leading-5 font-medium text-gray-500">
       Name
@@ -15,16 +15,19 @@ export function NameRow ({ dispatch, name }) {
             <label htmlFor="name" className="block text-sm font-medium leading-5 text-gray-700 hidden">Name</label>
             <div className="mt-1 rounded-md shadow-sm">
               <input id="name" className="db border-box w-100 measure-narrow ba b--black-20 pa3 br2 mb2 " placeholder="Their name..." value={name} aria-invalid="true" aria-describedby="name" type='text'
-                onChange={(e) =>
-                  dispatch({ type: 'NAME_UPDATED', payload: e.target.value })} />
-              {error && <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                onChange={(e) => {
+                  setErrors({ ...errors, name: '' })
+                  dispatch({ type: 'NAME_UPDATED', payload: e.target.value })
+                }}
+              />
+              {errors.name && <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                 <svg className="h-5 w-5 text-red-500 relative" style={{ bottom: '1rem' }} fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
               </div>}
             </div>
-            {error &&
-              <p className="mt-2 text-sm text-red-600" id="email-error">{error}</p>}
+            {errors.name &&
+              <p className="mt-2 text-sm text-red-600" id="email-error">{errors.name}</p>}
           </div>
         </Transition>
 

@@ -19,6 +19,7 @@ export function EditBox ({ setEditBox, dispatch, note }) {
   const morph = useMorph()
   const [lastUpdated, setTime] = useState(note ? note.lastUpdated : +new Date())
   const [visible, setVisible] = React.useState(false)
+  const [error, setError] = useState('')
   return (
     <div className="mt-1 sm:mt-0 sm:col-span-2 p-3">
       <div className="flex justify-end">
@@ -41,12 +42,21 @@ export function EditBox ({ setEditBox, dispatch, note }) {
 
       {!visible &&
           <div {...morph} className="max-w-lg flex justify-end rounded-md shadow-sm">
-            <textarea autoFocus id="about" rows="5" className="rounded-md p-3 form-textarea block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" value={text} onChange={e => setText(e.target.value)} placeholder='Add notes here...'/>
-
+            <textarea
+              autoFocus
+              id="about"
+              rows="5"
+              className="rounded-md p-3 form-textarea block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+              value={text}
+              onChange={e => {
+                setError('')
+                setText(e.target.value)
+              }}
+              placeholder='Add notes here...'/>
           </div>}
 
-      <div className='flex justify-end items-baseline'>
-
+      <div className='flex justify-between items-baseline'>
+        {error ? <small className='text-red-500'>{error}</small> : <span/>}
         <div className='my-5'>
           <button type="button" className="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-gray-700   focus:outline-none transition ease-in-out duration-150" onClick={() => {
             setText('')
@@ -58,6 +68,10 @@ export function EditBox ({ setEditBox, dispatch, note }) {
             type="button"
             className="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-50 focus:outline-none focus:border-green-300 focus:shadow-outline-green active:bg-green-200 transition ease-in-out duration-150"
             onClick={() => {
+              if (!text) {
+                setError('Enter a value or cancel.')
+                return
+              }
               dispatch({
                 type: 'NEW_NOTE_SUBMITTED',
                 payload: { text, id: note ? note.id : +new Date(), lastUpdated }

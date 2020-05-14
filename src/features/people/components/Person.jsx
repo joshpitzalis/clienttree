@@ -12,15 +12,12 @@ import { toast$ } from '../../notifications/toast'
 
 export const lastContact = contact => {
   const { lastContacted, notes } = contact
-
-  const noteDates =
-    notes &&
+  const noteDates = notes &&
     Object.values(notes)
       .map(note => note && note.lastUpdated)
       .filter(item => item !== 9007199254740991)
 
   const mostRecentNote = noteDates && Math.max(...noteDates)
-
   return Math.max(lastContacted, mostRecentNote)
 }
 
@@ -129,7 +126,7 @@ export const Person = ({ contact, uid }) => {
               <span className='f6 db black-70 i'>
                 {contact &&
                 isValidDate(fromUnixTime(lastContact(contact) / 1000))
-                  ? `Last interaction ${formatDistanceToNow(
+                  ? `Last updated ${formatDistanceToNow(
                       fromUnixTime(lastContact(contact) / 1000),
                       { addSuffix: true }
                     )}`

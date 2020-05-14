@@ -2,8 +2,8 @@ import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import format from 'date-fns/format'
 import fromUnixTime from 'date-fns/fromUnixTime'
-
 import Transition from '../../../../utils/transition.js'
+
 /**
    * @param  { {
     * text: String,
@@ -14,10 +14,10 @@ import Transition from '../../../../utils/transition.js'
     * dispatch: (value: String) => void
     * }}
     */
+
 export function Note ({ text, lastUpdated, id, index, setEditBox, dispatch }) {
   const [deletable, setDeletability] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
-
   return (
     <li className={`${index > 0 && 'border-t border-gray-200'}  pl-3 pr-4 py-3 flex items-center justify-between text-sm leading-5`}
       onMouseEnter={() => setDeletability(true)}
@@ -31,7 +31,7 @@ export function Note ({ text, lastUpdated, id, index, setEditBox, dispatch }) {
       </svg>}
       <div className="w-0 flex-1 flex items-center">
         <span className="ml-2 flex-1 w-0 truncate">
-          {confirmDelete ? 'Are you absolutely sure ?' : text}
+          {confirmDelete ? 'Are you sure ?' : text}
         </span>
       </div>
 
@@ -61,7 +61,6 @@ export function Note ({ text, lastUpdated, id, index, setEditBox, dispatch }) {
       }
       <div> {!confirmDelete &&
         <Transition show={deletable} enter='transition ease-in duration-700 transform' enterFrom='opacity-0' enterTo='opacity-100' leave='transition ease-out duration-500 transform' leaveFrom='opacity-100' leaveTo='opacity-0'>
-
           <svg className="ml-3 mb-2 cursor-pointer flex-shrink-0 h-5 w-5 text-red-500"
             data-testid={`${text}-delete`}
             onClick={() => setConfirmDelete(true)}
