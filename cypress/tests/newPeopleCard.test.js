@@ -7,7 +7,7 @@ describe('outreach', () => {
     updatedName: 'Skeletor'
   }
 
-  it('lets you add a contact', () => {
+  it('lets you CRUD contacts', () => {
     cy.visit('/')
       .findByTestId(/outreachPage/i)
       // check card opens
@@ -34,27 +34,16 @@ describe('outreach', () => {
       .type(fakeData.email)
       .findByText(/Add an interaction/i).click()
       .findByPlaceholderText(/Add notes here/i).clear().type(fakeData.note)
-
-    // change timestamp
-    // delete notes
-    // upload Image
-    // add to work board
-    // remove from workboard
-
-    // name validation
-    // email validation
-    // notes validation
-    // image validation
-
-    // test form submission error alert
       .findByText(/save note/i).click()
       .findByText(/save changes/i).click()
       .findByText(/saving/i)
       .findByTestId('personCard')
       .should('not.be.visible')
       .findAllByText(fakeData.name).first().click()
+      // check data persisted
       .findByText(fakeData.email).should('exist')
       .findByText(fakeData.note).should('exist')
+      // update a note
       .findByTestId(`${fakeData.note}-edit`).click()
       .findAllByText(fakeData.note).first().click().clear().type('updated note')
       .findByText(/save note/i).click()
@@ -63,9 +52,31 @@ describe('outreach', () => {
       .findByTestId('personCard')
       .should('not.be.visible')
       .findAllByText(fakeData.name).first().click()
-      .findByText('updated note').should('exist')
+      .findByText('updated note').should('exist').trigger('mouseover')
+      // delete a note
+      .findByTestId('updated note-delete').click()
+      .findByTestId('confirm-delete')
+      .click()
+      .queryByTestId(`${fakeData.note}-edit`)
+      .should('not.exist')
+      .queryByText(/Delete Contact/i).click()
+      .queryByText(/Confirm Delete/i).click()
+      .queryByText(fakeData.name)
+      .should('not.exist')
+
+    // TK edit timestamp on a note
+    // TK upload Image
+
+    // add to work board
+    // remove from workboard
+
+    // name validation
+    // email validation
+    // notes validation (depenancy injections)
+    // image validation
+
+    // test form submission error alert
+    // test should work even when source data has that strange 9000 initial task in notes
+    // create a task on a new contact
   })
-// it.todo('create a task on a new contact')
-  // it.todo('lets you update a contact')
-  // it.todo('lets you delete a contact')
 })

@@ -79,7 +79,6 @@ export const PersonModal = ({
       setVisibility={setVisibility}
       handleSubmit={dispatch}
       userId={uid}
-      newPerson
       contact={state}
     />
   }

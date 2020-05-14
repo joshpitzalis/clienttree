@@ -34,6 +34,10 @@ function actions (draft, action) {
     case 'NEW_NOTE_SUBMITTED':
       draft.notes[action.payload.id] = action.payload
       break
+
+    case 'note/deleted':
+      delete draft.notes[action.payload]
+      break
   }
 }
 
@@ -57,7 +61,7 @@ function actions (draft, action) {
 // }
 
 /* eslint-disable react/prop-types */
-export const PersonCard = ({ setVisibility, newPerson, userId, contact }) => {
+export const PersonCard = ({ setVisibility, userId, contact }) => {
   const [state, dispatch] = useImmerReducer(actions, {
     errors: {
     },
@@ -93,12 +97,14 @@ export const PersonCard = ({ setVisibility, newPerson, userId, contact }) => {
           photoURL: state.photoURL,
           notes: state.notes,
           email: state.email
-        }, { merge: true })
+        })
         .then(() => setVisibility(false))
     } catch (error) {
       console.error({ error })
     }
   }
+
+  console.log(state.uid)
 
   return (
     <ErrorBoundary
@@ -108,7 +114,7 @@ export const PersonCard = ({ setVisibility, newPerson, userId, contact }) => {
     >
       <div
         className="bg-white shadow overflow-hidden sm:rounded-lg" data-testid='personCard'>
-        <HeaderRow newCard={newPerson}/>
+        <HeaderRow newCard={!state.uid}/>
         <form className="px-4 py-5 sm:p-0" onSubmit={e => {
           e.preventDefault()
           onSubmit()
@@ -120,9 +126,11 @@ export const PersonCard = ({ setVisibility, newPerson, userId, contact }) => {
             <WorkboardRow />
             <InteractionsRow notes={Object.values(state.notes)} dispatch={dispatch}/>
             <FooterButtons
+              contactId={state.uid && state.uid}
+              userId={userId}
               setVisibility={setVisibility}
               onSubmit={onSubmit}
-              newCard={newPerson}/>
+              newCard={!state.uid}/>
           </dl>
         </form>
       </div>

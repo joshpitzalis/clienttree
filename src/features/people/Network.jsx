@@ -1,12 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import './networkAnimations.css'
-import { useSelector, useDispatch } from 'react-redux'
+import {
+  useSelector
+  // useDispatch
+} from 'react-redux'
 import { OptimizelyFeature } from '@optimizely/react-sdk'
 import { Person } from './components/Person'
 import { PersonModal } from './components/PersonBox'
 import ErrorBoundary from '../../utils/ErrorBoundary'
-import firebase from '../../utils/firebase'
+// import firebase from '../../utils/firebase'
 import ImportContacts from '../contacts/Contacts'
 import { InsightsBox } from '../insights/InsightsBox'
 // import { HelpfulTaskList as UniversalTaskList } from './components/UniversalTaskList';
@@ -29,13 +32,13 @@ export const InnerNetwork = ({ uid, bulkImportFeature }) => {
     photoURL: string
   }]} contact */
   const contacts = useSelector(store => store.contacts)
-  const dispatch = useDispatch()
-  const newDoc = firebase
-    .firestore()
-    .collection('users')
-    .doc(uid)
-    .collection('contacts')
-    .doc()
+  // const dispatch = useDispatch()
+  // const newDoc = firebase
+  //   .firestore()
+  //   .collection('users')
+  //   .doc(uid)
+  //   .collection('contacts')
+  //   .doc()
 
   return (
     <ErrorBoundary fallback='Oh no! This bit is broken 🤕'>
@@ -69,11 +72,11 @@ export const InnerNetwork = ({ uid, bulkImportFeature }) => {
               <button
                 type='button'
                 onClick={() => {
-                  setSelectedUser(newDoc.id)
-                  dispatch({
-                    type: 'people/setSelectedUser',
-                    payload: newDoc.id
-                  })
+                  // setSelectedUser(newDoc.id)
+                  // dispatch({
+                  //   type: 'people/setSelectedUser',
+                  //   payload: newDoc.id
+                  // })
                   setVisibility(true)
                 }}
                 className='inline-flex items-center px-6 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green active:bg-green-700 transition ease-in-out duration-150'

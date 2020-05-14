@@ -24,6 +24,7 @@ export function InteractionsRow ({ notes, dispatch }) {
             <EditBox setEditBox={setEditBox} dispatch={dispatch}
               note={notes.find(({ id }) => id === editBox)}/>
           </Transition>
+
           <Transition show={!editBox} enter='transition ease-in duration-200 transform' enterFrom='opacity-0 scale-95 ' enterTo='opacity-100 scale-100' leave='transition ease-out duration-75 transform' leaveFrom='opacity-100' leaveTo='opacity-0'>
             <li className="pr-4 pb-3 flex items-baseline text-sm leading-5">
               <button type="button" className="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-50 focus:outline-none focus:border-green-300 focus:shadow-outline-green active:bg-green-200 transition ease-in-out duration-150" onClick={() => setEditBox(true)}>
@@ -33,12 +34,13 @@ export function InteractionsRow ({ notes, dispatch }) {
           </Transition>
         </>
         { notes && !!notes.length &&
-        <ul className="border border-gray-200 rounded-md">
+        <ul className="border border-gray-200 rounded-md" id='notesBox'>
           {notes && notes.map((note, index) => <Note
             {...note}
             key={note.id}
             index={index}
-            setEditBox={setEditBox}/>
+            setEditBox={setEditBox}
+            dispatch={dispatch}/>
           )}
         </ul>}
       </dd>

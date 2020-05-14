@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
-import { TimeUpdate } from '../TimeUpdate'
+import { TimeUpdate } from './TimeUpdate'
 import { useMorph } from 'react-morph'
+
 /**
  * @param  {{
  * setEditBox: (editBox:boolean)=> boolean,
@@ -16,8 +17,7 @@ import { useMorph } from 'react-morph'
 export function EditBox ({ setEditBox, dispatch, note }) {
   const [text, setText] = useState(note ? note.text : '')
   const morph = useMorph()
-  // const [lastUpdated, setTime] = useState(note ? note.lastUpdated : +new Date())
-  const [lastUpdated, setTime] = useState(new Date())
+  const [lastUpdated, setTime] = useState(note ? note.lastUpdated : +new Date())
   const [visible, setVisible] = React.useState(false)
   return (
     <div className="mt-1 sm:mt-0 sm:col-span-2 p-3">
@@ -32,9 +32,10 @@ export function EditBox ({ setEditBox, dispatch, note }) {
               placeholder='Add notes here...'/> }
         <TimeUpdate
           lastUpdated={lastUpdated}
-          setState={setTime}
+          setTime={setTime}
           note={note}
-          visible={visible} setVisible={setVisible}
+          visible={visible}
+          setVisible={setVisible}
         />
       </div>
 
