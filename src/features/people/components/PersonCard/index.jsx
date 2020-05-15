@@ -67,8 +67,6 @@ export const PersonCard = ({ setVisibility, userId, contact, tracked }) => {
     lastContacted: +new Date()
   })
 
-  console.log({ state })
-
   const [errors, setErrors] = useState({})
 
   const onSubmit = () => {
@@ -97,13 +95,17 @@ export const PersonCard = ({ setVisibility, userId, contact, tracked }) => {
           lastContacted: +new Date(),
           uid
         })
-        .then(() => handleTracking(
-          state.tracked,
-          state.userId,
-          uid,
-          state.name,
-          state.photoURL
-        ))
+        .then(() => {
+          if (state.tracked !== contact.tracked) {
+            return handleTracking(
+              state.tracked,
+              state.userId,
+              uid,
+              state.name,
+              state.photoURL
+            )
+          }
+        })
         .then(() => setVisibility(false))
     } catch (error) {
       toast$.next({ type: 'ERROR', message: error.message || error })
@@ -134,7 +136,7 @@ export const PersonCard = ({ setVisibility, userId, contact, tracked }) => {
               notes={
                 Object
                   .values(state.notes)
-                  .filter(({ uid }) => uid !== 9007199254740991)
+                  .filter(({ id }) => id !== 9007199254740991)
               }
               dispatch={dispatch}/>
             <FooterButtons

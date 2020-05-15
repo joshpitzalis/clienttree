@@ -31,9 +31,14 @@ export function NameRow ({ dispatch, name, errors, setErrors }) {
           </div>
         </Transition>
 
-        <Transition show={!editable} enter='transition ease-in duration-1000 transform absolute' enterFrom='opacity-0 scale-95 ' enterTo='opacity-100 scale-100 h-auto' leave='transition ease-out duration-300 transform' leaveFrom='opacity-100' leaveTo='opacity-0'><dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0
-      cursor-pointer sm:col-span-2 " onClick={() => setEditability(true)}>
-          <svg className="inline-block h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg> <p className='pl-1 pb-1 inline-block'>{name}</p></dd></Transition>
+        <Transition show={!editable} enter='transition ease-in duration-1000 transform absolute' enterFrom='opacity-0 scale-95 ' enterTo='opacity-100 scale-100 h-auto' leave='transition ease-out duration-300 transform' leaveFrom='opacity-100' leaveTo='opacity-0'>
+          <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0
+      cursor-pointer sm:col-span-2 " onClick={() => setEditability(true)} data-testid={`${name}-edit`}>
+            <svg className="inline-block h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+            </svg>
+            <p className='pl-1 pb-1 inline-block'>{name}</p>
+          </dd>
+        </Transition>
       </>
 
     </div>

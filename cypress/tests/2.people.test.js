@@ -3,10 +3,119 @@ describe('outreach', () => {
     name: 'Sick Rick',
     lastContacted: 'about a week ago',
     description: 'Pickle',
-    updatedName: 'Skeletor'
+    updatedName: 'Skeletor',
+    email: 'sick@rick.com',
+    note: 'Pickle'
   }
 
-  it('lets you add a contact', () => {
+  it('lets you CRUD contacts', () => {
+    cy
+      .visit('/')
+      .login()
+      .wait(5000)
+      .findByTestId(/outreachPage/i)
+    // check card opens
+      .findByText(/Add someone new/i)
+      .click()
+      .findByTestId(/personCard/i)
+    // is a new card type
+      .findByText(/Click on the 'Save' button at the bottom when you are done/i)
+      .queryByText(/Delete Contact/i)
+      .should('not.exist')
+    // can close card
+      .findByText(/cancel/i).click()
+      .queryByTestId(/personCard/i)
+      .should('not.exist')
+    // create card
+      .findByText(/Add someone new/i)
+      .click()
+      .findByTestId(/personCard/i)
+      .findByPlaceholderText(/Their name/i)
+      .clear()
+      .type(fakeData.name)
+      .findByPlaceholderText(/Their email/i)
+      .clear()
+      .type(fakeData.email)
+      .findByText(/Add an interaction/i).click()
+      .findByPlaceholderText(/Add notes here/i).clear().type(fakeData.note)
+      .findByText(/save note/i).click()
+      .findByText(/save changes/i).click()
+      .findByText(/saving/i)
+      .findByTestId('personCard')
+      .should('not.be.visible')
+      .findAllByText(fakeData.name).first().click()
+    // check data persisted
+      .findByText(fakeData.email).should('exist')
+      .findByText(fakeData.note).should('exist')
+    // update a note
+      .findByTestId(`${fakeData.note}-edit`).click()
+      .findAllByText(fakeData.note).first().click().clear().type('updated note')
+      .findByText(/save note/i).click()
+      // add to work board
+      .findByTestId('dashSwitch')
+      .check({ force: true })
+      .findByText(/save changes/i).click()
+      .findByText(/saving/i)
+      .findByTestId('personCard')
+      .should('not.be.visible')
+    // check it appears on workboard
+      .findByTestId('projectPage')
+      .click()
+      .findByTestId('stage1')
+      .within(() => cy.findByTestId(fakeData.name))
+    // remove from workboard
+      .findByTestId('networkPage')
+      .click()
+      .findAllByText(fakeData.name).first().click()
+      .findByTestId(/personCard/i)
+      .queryByText(/Delete Contact/i).click()
+      .findByText('Must remove from the workboard first')
+      .findByTestId('dashSwitch')
+      .uncheck({ force: true })
+      .findByText(/save changes/i).click()
+      .findByText(/saving/i)
+      .findByTestId('personCard')
+      .should('not.be.visible')
+      .findByTestId('projectPage')
+      .click()
+      .findByTestId('stage1')
+      .within(() => cy.queryByTestId(fakeData.name).should('not.exist'))
+      .findByTestId('networkPage')
+      .click()
+      .findAllByText(fakeData.name).first().click()
+    // delete a note
+      .findByText('updated note').should('exist').trigger('mouseover')
+      .findByTestId('updated note-delete').click()
+      .findByTestId('confirm-delete')
+      .click()
+      .queryByTestId(`${fakeData.note}-edit`)
+      .should('not.exist')
+    // delete contact
+
+      .findAllByText(fakeData.name).first().click()
+      .findByTestId(/personCard/i)
+      .queryByText(/Delete Contact/i).click()
+      .queryByText(/Confirm Delete/i).click()
+      .wait(2000)
+      .queryByText(fakeData.name)
+      .should('not.exist')
+
+    // name validation
+
+    // notes validation
+    // test form submission error alert
+
+    // workboard validations
+    // email validation
+    // image validation
+    // (depenancy injections)
+    // test should work even when source data has that strange 9000 initial task in notes
+    // create a task on a new contact
+    // TK edit timestamp on a note
+    // TK upload Image
+  })
+
+  it.skip('lets you add a contact', () => {
     cy.visit('/')
       .login()
       .wait(5000)
@@ -28,57 +137,30 @@ describe('outreach', () => {
       .findAllByText(fakeData.name)
   })
 
-  it('lets you update a contact', () => {
+  it.skip('lets you update a contact', () => {
     cy.visit('/')
       .wait(5000)
       .findByTestId(/outreachPage/i)
       .findByText(fakeData.name)
       .click()
-      .findByTestId(/contactModal/i)
-      .wait(2000)
-      .get('#name')
-      .click()
+
+      .findByTestId(/personCard/i)
+      .findByTestId(`${fakeData.name}-edit`).click()
       .clear()
       .type(fakeData.updatedName)
-      .findByText(/saved/i)
-      .findByText(/close/i)
-      .click()
-      .queryByTestId(/contactModal/i)
-      .should('not.exist')
+
+      .findByText(/save changes/i).click()
+      .findByText(/saving/i)
+      .findByTestId('personCard')
+      .should('not.be.visible')
+      .findAllByText(fakeData.name).first().click()
+
       .findByText(fakeData.updatedName)
       .queryByText(fakeData.name)
       .should('not.exist')
   })
 
-  it('creates a task and completes a task  ', () => {
-    cy.visit('/')
-      .wait(5000)
-      .findByTestId(/outreachPage/i)
-      .findByText(/getting started/i)
-      .wait(5000)
-      .findByText(fakeData.updatedName)
-      .click()
-      .findByTestId('addreminder')
-      .click()
-      .findByTestId('reminderBox')
-      .findByPlaceholderText('About What?')
-      .type('last task')
-      .findByText(/create reminder/i)
-      .click()
-      .findByText(/last task/i)
-      .click()
-      .findByText(/confirm completed/i)
-      .click()
-      // also assert that the name changes in the sidebar when someone is selected
-      .findByText(/getting started/i)
-      .should('not.exist')
-      .findByTestId('sidebar')
-      .within(() => {
-        cy.findByText(fakeData.updatedName)
-      })
-  })
-
-  it('create a contact note', () => {
+  it.skip('create a contact note', () => {
     cy.visit('/')
       .wait(5000)
       .findByText(fakeData.updatedName)
@@ -88,7 +170,7 @@ describe('outreach', () => {
       .wait(5000)
       .findByText(/saved/i)
   })
-  it('update a contact note', () => {
+  it.skip('update a contact note', () => {
     cy.visit('/')
       .wait(5000)
       .findByText(fakeData.updatedName)
@@ -102,7 +184,7 @@ describe('outreach', () => {
       .wait(5000)
       .findByText(/saved/i)
   })
-  it('delete a contact note', () => {
+  it.skip('delete a contact note', () => {
     cy.visit('/')
       .wait(5000)
       .findByText(fakeData.updatedName)
@@ -153,7 +235,7 @@ describe('outreach', () => {
       .click()
       .get('.ant-input')
       .click()
-      .type('someone new')
+      .type(fakeData.updatedName)
       .findByPlaceholderText(/about what/i)
       .type('new task')
       .findByText(/create reminder/i)
@@ -169,22 +251,50 @@ describe('outreach', () => {
       .should('not.exist')
   })
 
-  it('check the person created on mobile shows up on desktop and lets you delete a contact', () => {
+  it.skip('check the person created on mobile shows up on desktop and lets you delete a contact', () => {
     cy.visit('/')
       .wait(5000)
       .findByTestId(/outreachPage/i)
-      .findByText('someone new')
+      .findByText(fakeData.updatedName)
       .click()
-      .findByTestId(/contactModal/i)
+      .findByTestId('personCard')
       .findByTestId('deleteContact')
       .click()
       .findByTestId('confirmDeleteContact')
       .wait(1000)
       .click({ force: true })
       .wait(2000)
-      .queryByTestId(/contactModal/i)
+      .queryByTestId(/personCard/i)
       .should('not.exist')
-      .queryByText('someone new')
+      .queryByText(fakeData.updatedName)
       .should('not.exist')
+  })
+
+  it('check the person created on mobile shows up on desktop and lets you create a task and completes a task on desktop', () => {
+    cy.visit('/')
+      .wait(5000)
+      .findByTestId(/outreachPage/i)
+      .findByText(/getting started/i)
+      .wait(5000)
+      .findByText(fakeData.updatedName)
+      .click()
+      .findByTestId('addreminder')
+      .click()
+      .findByTestId('reminderBox')
+      .findByPlaceholderText('About What?')
+      .type('last task')
+      .findByText(/create reminder/i)
+      .click()
+      .findByText(/last task/i)
+      .click()
+      .findByText(/confirm completed/i)
+      .click()
+      // also assert that the name changes in the sidebar when someone is selected
+      .findByText(/getting started/i)
+      .should('not.exist')
+      .findByTestId('sidebar')
+      .within(() => {
+        cy.findByText(fakeData.updatedName)
+      })
   })
 })
