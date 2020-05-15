@@ -1,15 +1,16 @@
-import React from 'react';
-import { useMachine } from '@xstate/react';
-import { Machine } from 'xstate';
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
-import fromUnixTime from 'date-fns/fromUnixTime';
-import { assert } from 'chai';
-import { ACTIVITY_COMPLETED } from '../networkConstants';
-import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants';
-import { updateLastContacted } from '../peopleAPI/contactsAPI';
+import React from 'react'
+import { useMachine } from '@xstate/react'
+import { Machine } from 'xstate'
+import formatDistanceToNow from 'date-fns/formatDistanceToNow'
+import fromUnixTime from 'date-fns/fromUnixTime'
+import { assert } from 'chai'
+import { ACTIVITY_COMPLETED } from '../networkConstants'
+import { ONBOARDING_STEP_COMPLETED } from '../../onboarding/onboardingConstants'
+import { updateLastContacted } from '../peopleAPI/contactsAPI'
 
 // state visualisation:
 // https://xstate.js.org/viz/?gist=7925b7b6f194989221d4a2da62731937
+
 export const taskMachine = Machine({
   id: 'task',
   initial: 'incomplete',
@@ -19,34 +20,34 @@ export const taskMachine = Machine({
       on: {
         COMPLETED: 'confirmation',
         // DELETED: 'deletion',
-        ALREADY_COMPLETED: 'complete',
+        ALREADY_COMPLETED: 'complete'
       },
       states: {
         upcoming: {
           on: {
             TASK_OVERDUE: 'overDue',
-            TASK_DUE_TODAY: 'dueToday',
-          },
+            TASK_DUE_TODAY: 'dueToday'
+          }
         },
         dueToday: {},
-        overDue: {},
+        overDue: {}
       },
       meta: {
         test: ({ getByTestId }) => {
-          assert.ok(getByTestId('incomplete'));
-        },
-      },
+          assert.ok(getByTestId('incomplete'))
+        }
+      }
     },
     confirmation: {
       on: {
         COMPLETED: { target: 'complete', actions: 'handleComplete' },
-        CANCELLED: 'incomplete',
+        CANCELLED: 'incomplete'
       },
       meta: {
         test: ({ getByTestId }) => {
-          assert.ok(getByTestId('confirmation'));
-        },
-      },
+          assert.ok(getByTestId('confirmation'))
+        }
+      }
     },
     // deletion: {
     //   on: {
@@ -59,12 +60,12 @@ export const taskMachine = Machine({
     //     },
     //   },
     // },
-    complete: { type: 'final' },
+    complete: { type: 'final' }
     // deleted: {
     //   type: 'final',
     // },
-  },
-});
+  }
+})
 
 const handleComplete = ({
   dispatch,
@@ -72,7 +73,7 @@ const handleComplete = ({
   myUid,
   completedFor,
   setSelectedUser,
-  setVisibility,
+  setVisibility
 }) => {
   dispatch({
     type: ACTIVITY_COMPLETED,
@@ -81,19 +82,19 @@ const handleComplete = ({
       myUid,
       completedFor,
       setSelectedUser,
-      setVisibility,
-    },
-  });
+      setVisibility
+    }
+  })
   dispatch({
     type: ONBOARDING_STEP_COMPLETED,
     payload: {
       userId: myUid,
-      onboardingStep: 'helpedSomeone',
-    },
-  });
-  updateLastContacted(myUid, completedFor);
+      onboardingStep: 'helpedSomeone'
+    }
+  })
+  updateLastContacted(myUid, completedFor)
   // tk try catch
-};
+}
 /** @param {{
  taskId: string,
  name: string,
@@ -108,6 +109,7 @@ const handleComplete = ({
  setComplete?: function,
 }} [Props] */
 
+/* eslint react/prop-types: 0 */
 export const TaskBox = ({
   taskId,
   name,
@@ -119,7 +121,7 @@ export const TaskBox = ({
   photoURL,
   dispatch,
   dueDate,
-  setComplete = handleComplete,
+  setComplete = handleComplete
 }) => {
   const [current, send] = useMachine(taskMachine, {
     actions: {
@@ -130,30 +132,30 @@ export const TaskBox = ({
           myUid,
           completedFor,
           setSelectedUser,
-          setVisibility,
-        }),
-    },
-  });
+          setVisibility
+        })
+    }
+  })
 
   React.useEffect(() => {
     //
-    const now = +new Date();
-    const oneDayInMilliseconds = 86400000;
+    const now = +new Date()
+    const oneDayInMilliseconds = 86400000
     //
     if (dateCompleted) {
-      send('ALREADY_COMPLETED');
+      send('ALREADY_COMPLETED')
     }
     if (dueDate < now) {
-      send('TASK_OVERDUE');
+      send('TASK_OVERDUE')
     }
     if (dueDate < now + oneDayInMilliseconds) {
-      send('TASK_DUE_TODAY');
+      send('TASK_DUE_TODAY')
     }
-  }, [dateCompleted, dueDate, send]);
+  }, [dateCompleted, dueDate, send])
 
   return (
     <div
-      className="mb3 pa2 taskBorder br3 w5"
+      className='mb3 pa2 taskBorder br3'
       key={taskId}
       data-state={
         current.value && current.value.incomplete
@@ -164,59 +166,60 @@ export const TaskBox = ({
     >
       <label
         htmlFor={name}
-        className="lh-copy flex items-center justify-around  label relative pl3 pointer"
+        className='lh-copy flex items-center justify-around  label relative pl3 pointer'
         style={{ minWidth: '100%' }}
-        data-testid="incomplete"
+        data-testid='incomplete'
       >
         <input
-          className="taskBox"
-          type="checkbox"
+          className='taskBox'
+          type='checkbox'
           id={name}
           data-testid={name}
           value={name}
           checked={current.value === 'complete'}
           onChange={() => send('COMPLETED')}
         />
-        <span className="checkBox" data-state={current.value}></span>
-        <div className="ph3 tl w-100">
+        <span className='checkBox' data-state={current.value} />
+        <div className='ph3 tl w-100'>
           <p
             className={`${current.matches('complete') && 'strike'}`}
             data-testid={current.matches('complete') && 'complete'}
           >
             {name}
           </p>
-          <small className="text3">{`Due ${formatDistanceToNow(
+          <small className='text3'>{`Due ${formatDistanceToNow(
             fromUnixTime(dueDate / 1000),
             { addSuffix: true }
-          )}`}</small>
+          )}`}
+          </small>
         </div>
-        <img src={photoURL} alt={name} height="25" className="br-100" />
+        <img src={photoURL} alt={name} className='h-10 w-10 rounded-full' />
       </label>
       {current.matches('confirmation') && (
         <div
-          className="flex flex-column justify-center"
-          data-testid="confirmation"
+          className='flex flex-column justify-center'
+          data-testid='confirmation'
         >
           <button
-            type="button"
+            type='button'
             onClick={() => send('COMPLETED')}
-            data-testid="confirmDelete"
-            className="btn2 
-           ph3 pv2 bn pointer br1 
+            data-testid='confirmDelete'
+            className='btn2
+           ph3 pv2 bn pointer br1
            grow b
-          "
+          '
           >
             Confirm Completed
           </button>
           <button
-            type="button"
+            type='button'
             onClick={() => send('CANCELLED')}
-            className="bn pointer pv2 text3 bg-white"
+            className='bn pointer pv2 text3 bg-white'
           >
             Nevermind
           </button>
         </div>
       )}
     </div>
-  );
-};
+  )
+}

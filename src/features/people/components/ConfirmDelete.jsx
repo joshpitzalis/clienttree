@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 // import PropTypes from 'prop-types';
 
 // export const confirmDeletePropTypes = {
@@ -8,15 +8,16 @@ import React from 'react';
 // };
 // export const confirmDeleteDefaultProps = {};
 
+/* eslint-disable react/prop-types */
 export const ConfirmDelete = ({
   handleDelete,
   title,
   activeTaskCount,
   className,
   testid,
-  tracked,
+  tracked
 }) => {
-  const [confirmDelete, setConfirmDelete] = React.useState(false);
+  const [confirmDelete, setConfirmDelete] = React.useState(false)
   return (
     <div>
       {confirmDelete ? (
@@ -30,7 +31,7 @@ export const ConfirmDelete = ({
       ) : (
         <button
           className={className}
-          type="button"
+          type='button'
           onClick={() => setConfirmDelete(true)}
           data-testid={testid}
         >
@@ -38,8 +39,8 @@ export const ConfirmDelete = ({
         </button>
       )}
     </div>
-  );
-};
+  )
+}
 // ConfirmDelete.propTypes = confirmDeletePropTypes;
 // ConfirmDelete.defaultProps = confirmDeleteDefaultProps;
 
@@ -52,54 +53,54 @@ export const ConfirmDelete = ({
 
 // const confirmationDefaultProps = {};
 
-function Confirmation({
+function Confirmation ({
   title,
   handleDelete,
   setConfirmDelete,
   activeTaskCount,
-  tracked,
+  tracked
 }) {
   if (tracked) {
     return (
-      <small className="f6 black-70 small-caps" data-testid="deleteGuard">
+      <small className='f6 black-70 small-caps' data-testid='deleteGuard'>
         {`You must remove ${title} from the workboard before you can delete this contact.`}
       </small>
-    );
+    )
   }
   if (activeTaskCount) {
     return (
-      <small className="f6 black-70 small-caps" data-testid="deleteGuard">
+      <small className='f6 black-70 small-caps' data-testid='deleteGuard'>
         {`You must complete or remove all active tasks before you can delete ${title}.`}
       </small>
-    );
+    )
   }
   return (
     <div>
       {/* <small className="f6 black-70 small-caps">
         {`Are you sure you want to delete ${title} ?`}
       </small> */}
-      <div className="mv3">
+      <div className='mv3'>
         <button
-          className="f6 red small-caps pointer link dim ba bw1 ph3 pv2 mb2 dib b--red"
-          type="button"
+          className='f6 red small-caps pointer link dim ba bw1 ph3 pv2 mb2 dib b--red'
+          type='button'
           onClick={handleDelete}
-          data-testid="confirmDeleteContact"
+          data-testid='confirmDeleteContact'
         >
           {`Confirm Delete ${title}`}
         </button>
         <button
-          className="f6 small-caps bn pointer ml3 black-70"
-          type="button"
+          className='f6 small-caps bn pointer ml3 black-70'
+          type='button'
           onClick={() => {
-            setConfirmDelete(false);
+            setConfirmDelete(false)
           }}
-          data-testid="nevermindContactDelete"
+          data-testid='nevermindContactDelete'
         >
           Nevermind
         </button>
       </div>
     </div>
-  );
+  )
 }
 
 // Confirmation.propTypes = confirmationPropTypes;

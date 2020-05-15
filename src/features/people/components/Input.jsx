@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { DatePicker } from 'antd';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { DatePicker } from 'antd'
 
-const moment = require('moment');
+const moment = require('moment')
 
 const inputPropTypes = {
   setState: PropTypes.func.isRequired,
@@ -18,73 +18,73 @@ const inputPropTypes = {
       .isRequired,
     contactId: PropTypes.string,
     photoURL: PropTypes.string,
-    imgString: PropTypes.string,
+    imgString: PropTypes.string
   }),
   type: PropTypes.string,
-  className: PropTypes.string,
-};
+  className: PropTypes.string
+}
 const inputDefaultProps = {
   type: 'text',
   state: {},
-  className: 'mb4',
-};
+  className: 'mb4'
+}
 
-function isValidDate(date) {
+function isValidDate (date) {
   return (
     date &&
     Object.prototype.toString.call(date) === '[object Date]' &&
     !Number.isNaN(date)
-  );
+  )
 }
 
-export function Input({
+export function Input ({
   setState,
   state,
   value,
   name,
   placeholder,
   type,
-  className,
+  className
 }) {
   if (type === 'date') {
     return (
       <div className={` ${className}`}>
         <DatePicker
-          size="large"
-          format="DD-MM-YYYY"
+          size='large'
+          format='DD-MM-YYYY'
           onChange={date => setState({ ...state, [name]: moment(date).unix() })}
           value={isValidDate(new Date(value)) ? moment.unix(value) : null}
           disabledDate={date => date > moment()}
         />
       </div>
-    );
+    )
   }
   if (type === 'textarea') {
     return (
       <div className={` ${className}`}>
-        <label htmlFor={name} className="f6 b db mb2 text3">
+        <label htmlFor={name} className='f6 b db mb2 text3'>
           {name}
           <textarea
             name={name}
             id={name}
-            rows="5"
-            className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2"
+            rows='5'
+            className='db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2'
             aria-describedby={name}
             placeholder={placeholder}
             value={value}
             onChange={e => setState({ ...state, [name]: e.target.value })}
-          ></textarea>
+          />
         </label>
       </div>
-    );
+    )
   }
   return (
     <div className={`mt3  ${className}`}>
-      <label className="db fw6 lh-copy f6 ttc " htmlFor={name}>
+      <label className='db fw6 lh-copy f6 ttc ' htmlFor={name}>
         {name}
         <input
-          className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2"
-          type="text"
+          className='db border-box hover-black w-100 measure-narrow ba b--black-20 pa2 br2 mb2'
+          type='text'
           name={name}
           id={name}
           placeholder={placeholder}
@@ -93,7 +93,7 @@ export function Input({
         />
       </label>
     </div>
-  );
+  )
 }
-Input.propTypes = inputPropTypes;
-Input.defaultProps = inputDefaultProps;
+Input.propTypes = inputPropTypes
+Input.defaultProps = inputDefaultProps

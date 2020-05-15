@@ -1,6 +1,6 @@
 export const generateName = () => {
-  function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
+  function getRandomInt (min, max) {
+    return Math.floor(Math.random() * (max - min)) + min
   }
 
   const name2 = [
@@ -3010,8 +3010,8 @@ export const generateName = () => {
     'Zoila',
     'Zola',
     'Zora',
-    'Zula',
-  ];
+    'Zula'
+  ]
 
   const adjectives = [
     'Black',
@@ -3540,8 +3540,8 @@ export const generateName = () => {
     'Bristle',
     'Ripple',
     'Glow',
-    'Zenith',
-  ];
+    'Zenith'
+  ]
 
   const nouns = [
     'head',
@@ -3907,11 +3907,11 @@ export const generateName = () => {
     'sargent',
     'snagglefoot',
     'carpet',
-    'curtain',
-  ];
+    'curtain'
+  ]
 
   const name = `${adjectives[getRandomInt(0, adjectives.length + 1)]}${
     nouns[getRandomInt(0, nouns.length + 1)]
-  } ${name2[getRandomInt(0, name2.length + 1)]}`;
-  return name;
-};
+  } ${name2[getRandomInt(0, name2.length + 1)]}`
+  return name
+}

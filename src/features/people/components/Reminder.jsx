@@ -1,130 +1,176 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Datepicker, DatepickerContainer } from '@duik/it';
-import format from 'date-fns/format';
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { Datepicker, DatepickerContainer } from '@duik/it'
+import format from 'date-fns/format'
+import Loader from 'react-loader-spinner'
+import { useImmerReducer } from 'use-immer'
 
+// checkout ./NewReminderModal for a possible revamp
+function actions (draft, action) {
+  switch (action.type) {
+    case 'FORM_SUBMITTED':
+      draft.submitting = true
+      break
+    case 'FORM_ERRORED':
+      draft.submitting = false
+      draft.error = action.payload
+      break
+    case 'FORM_RESET':
+      draft.task = ''
+      draft.submitting = false
+      break
+    case 'FIELD_UPDATED':
+      draft.error = ''
+      draft[action.payload.type] = action.payload.value
+      break
+  }
+}
+/* eslint-disable react/prop-types */
 export const ReminderCreator = ({
   myUid,
   theirUid,
   handleAddingTask,
   photoURL,
-  onClose,
+  onClose
 }) => {
+  // if you have the contacts uid then prefill the name field and disable it
   const contact = useSelector(
     store =>
       store.contacts && store.contacts.find(person => person.uid === theirUid)
-  );
-  const [email] = React.useState(contact ? contact.email : '');
-  const [name, setName] = React.useState(contact && contact.name);
-  const [task, setTask] = React.useState('');
-  const [date, setDate] = React.useState(+new Date() + 604800000);
-  const [error, setError] = React.useState('');
-  // if you have the contacts uid then prefill the name field and disable it
-  const handleAddReminder = (contactName, taskName, dueDate) => {
-    handleAddingTask({
+  )
+
+  const [state, dispatch] = useImmerReducer(actions, {
+    name: contact ? contact.name : '',
+    task: '',
+    date: +new Date() + 604800000,
+    error: '',
+    submitting: false,
+    email: contact ? contact.email : ''
+  })
+
+  const handleAddReminder = async (contactName, taskName, dueDate) => {
+    dispatch({ type: 'FORM_SUBMITTED' })
+
+    if (!taskName) {
+      dispatch({ type: 'FORM_ERRORED', payload: 'You must enter a task.' })
+      return
+    }
+    if (!contactName) {
+      dispatch({ type: 'FORM_ERRORED', payload: 'You must enter a contact name.' })
+      return
+    }
+    if (!dueDate) {
+      dispatch({ type: 'FORM_ERRORED', payload: 'You must enter a due date.' })
+      return
+    }
+
+    await handleAddingTask({
       taskName,
       myUid,
       theirUid,
       photoURL,
       dueDate,
       contactName,
-      email,
-    });
-  };
+      email: state.email
+    })
+
+    dispatch({ type: 'FORM_RESET' })
+    onClose()
+  }
 
   return (
-    <div className="center pt3 pb4">
+    <div className='center pt3 pb4'>
       <form
-        className=""
+        className=''
         onSubmit={e => {
-          e.stopPropagation();
-          e.preventDefault();
-          // handleAddingTask(task, myUid, theirUid, photoURL);
-          handleAddReminder(name, task, date);
-          setTask('');
-          onClose();
+          e.stopPropagation()
+          e.preventDefault()
+          handleAddReminder(state.name, state.task, state.date)
         }}
       >
         <fieldset
-          id="help"
-          className="ba b--transparent ph0 mh0"
-          data-testid="reminderBox"
+          id='help'
+          className='ba b--transparent ph0 mh0'
+          data-testid='reminderBox'
         >
-          <legend className="ph0 mh0 fw6 ">Follow up with...</legend>
-          <div className="">
-            <label className="db fw4 lh-copy f6 " htmlFor="name">
-              {/* <span className="db b">Ways you can help this person</span> */}
+          <legend className='ph0 mh0 fw6 '>Follow up with...</legend>
+          <div className=''>
+            <label className='db fw4 lh-copy f6 ' htmlFor='name'>
               <input
                 disabled
-                className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa3 br2 mb2"
-                placeholder="Who?"
-                type="text"
-                name="name"
-                id="name"
-                value={name}
-                onChange={e => setName(e.target.value)}
+                className='db border-box hover-black w-100 measure-narrow ba b--black-20 pa3 br2 mb2'
+                placeholder='Who?'
+                type='text'
+                name='name'
+                id='name'
+                value={state.name}
+                onChange={e => dispatch({ type: 'FIELD_UPDATED', payload: { value: e.target.value, type: 'name' } })}
               />
             </label>
           </div>
-          <div className="">
-            <label className="db fw4 lh-copy f6 " htmlFor="task">
+          <div className=''>
+            <label className='db fw4 lh-copy f6 ' htmlFor='task'>
               {/* <span className="db b">Ways you can help this person</span> */}
               <input
-                className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa3 br2 mb2 "
-                placeholder="About What?"
-                type="text"
-                name="task"
-                id="task"
-                value={task}
+                className='db border-box hover-black w-100 measure-narrow ba b--black-20 pa3 br2 mb2 '
+                placeholder='About What?'
+                type='text'
+                name='task'
+                id='task'
+                value={state.task}
                 onChange={e => {
-                  setError('');
-                  setTask(e.target.value);
+                  dispatch({ type: 'FIELD_UPDATED', payload: { value: e.target.value, type: 'task' } })
                 }}
               />
             </label>
           </div>
-          <div className="mb2">
-            <DateBox date={date} setDate={setDate} setError={setError} />
+          <div className='mb2 center'>
+            <DateBox date={state.date} dispatch={dispatch} />
           </div>
-          {error && <small className="red center db mb3"> {error}</small>}
-          <input
-            type="submit"
-            value="Create Reminder"
-            className="btn2 w-100 pv3 bn pointer br1 grow b mb3"
-          />
+          {state.error && <small className='red center db mb3'> {state.error}</small>}
+
+          <button type='submit' className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-green-700 hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green active:bg-green-700 transition duration-150 ease-in-out'>
+            {state.submitting && <Loader
+              type='Oval'
+              color='#FFF'
+              height={20}
+              width={20}
+            />}
+            <span className='pl-2'>
+              {state.submitting ? 'Submitting...' : 'Create Reminder'}
+            </span>
+          </button>
         </fieldset>
       </form>
     </div>
-  );
-};
+  )
+}
 
-function DateBox({ date, setDate, setError }) {
-  const [visible, setVisible] = React.useState(false);
+function DateBox ({ date, dispatch }) {
+  const [visible, setVisible] = React.useState(false)
 
   return visible ? (
     <DatepickerContainer>
       <Datepicker
-        value={new Date(date)}
+        value={new Date(date + 86400)}
         onDateChange={value => {
-          setError('');
-          setDate(+new Date(value));
-          setVisible(false);
+          dispatch({ type: 'FIELD_UPDATED', payload: { value: +new Date(value), type: 'date' } })
+          setVisible(false)
         }}
         minDate={new Date()}
       />
     </DatepickerContainer>
   ) : (
-    <label className="db fw4 lh-copy f6 " htmlFor="date">
+    <label className='db fw4 lh-copy f6 ' htmlFor='date'>
       <input
-        className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa3 br2 mb3"
-        placeholder="When?"
-        type="text"
-        name="date"
-        id="date"
+        className='border-gray-300 focus:outline-none focus:shadow-outline-blue focus:border-blue-300  appearance-none rounded-md relative block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 focus:z-10 sm:text-sm sm:leading-5'
+        placeholder='When?'
+        type='text'
+        name='date'
+        id='date'
         onClick={() => setVisible(true)}
         value={format(date, 'EEEE do MMMM yyyy')}
-        onChange={e => setDate(e.target.value)}
       />
     </label>
-  );
+  )
 }

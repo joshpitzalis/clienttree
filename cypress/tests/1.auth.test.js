@@ -4,7 +4,7 @@ describe('authentication', () => {
       .visit('/')
       .login()
       .wait(5000)
-      .findByTestId('outreachPage'));
+      .findByTestId('outreachPage'))
   it('nav takes you to dashboard', () =>
     cy
       .visit('/')
@@ -18,7 +18,7 @@ describe('authentication', () => {
       .click()
       .findByText(/Logout/i)
       .click()
-      .findByPlaceholderText(/Your email.../i));
+      .findByPlaceholderText(/email/i))
   it('when logged out nav takes you to login', () =>
     cy
       .visit('/')
@@ -28,5 +28,5 @@ describe('authentication', () => {
       .findByTestId('goToHomePage')
       .click()
       .queryByTestId('outreachPage')
-      .should('not.exist'));
-});
+      .should('not.exist'))
+})

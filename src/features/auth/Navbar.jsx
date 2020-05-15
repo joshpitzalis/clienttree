@@ -1,22 +1,22 @@
-import React from 'react';
-import { withRouter, Link } from 'react-router-dom';
-// import PropTypes from 'prop-types';
+import React from 'react'
+import { withRouter, Link } from 'react-router-dom'
 import {
   TopBar,
   TopBarSection,
   TopBarTitle,
   Dropdown,
-  DropdownItem,
-} from '@duik/it';
-import { OptimizelyFeature } from '@optimizely/react-sdk';
+  DropdownItem
+} from '@duik/it'
+import { OptimizelyFeature } from '@optimizely/react-sdk'
 
-import Tree from '../../images/Tree';
-import Logout from '../../images/Logout';
-import Profile from '../../images/Profile';
-import { UserContext } from './UserContext';
+import Tree from '../../images/Tree'
+import Logout from '../../images/Logout'
+import Profile from '../../images/Profile'
+import { UserContext } from './UserContext'
 
+/* eslint-disable react/prop-types */
 export const Navbar = withRouter(({ history }) => {
-  const { userId, authStatus, handleLogout } = React.useContext(UserContext);
+  const { userId, authStatus, handleLogout } = React.useContext(UserContext)
 
   return (
     // <OptimizelyFeature feature="workboard">
@@ -27,9 +27,9 @@ export const Navbar = withRouter(({ history }) => {
         <TopBarTitle>
           <Link
             to={userId ? `/user/${userId}/network` : '/'}
-            data-testid="goToHomePage"
+            data-testid='goToHomePage'
           >
-            <Tree classNames="" />
+            <Tree classNames='' />
           </Link>
         </TopBarTitle>
       </TopBarSection>
@@ -47,7 +47,7 @@ export const Navbar = withRouter(({ history }) => {
                       data-testid="settings"
                       buttonProps={{
                         clear: true,
-                        closeOnOptionClick: true,
+                        closeOnOptionClick: true
                       }}
                     >
                       {({ handleClose }) => (
@@ -69,7 +69,7 @@ export const Navbar = withRouter(({ history }) => {
                         </div>
                       )}
                     </Dropdown>
-                  );
+                  )
                 }
                 return (
                   <button
@@ -79,30 +79,12 @@ export const Navbar = withRouter(({ history }) => {
                   >
                     <p className="tracked">Logout</p>
                   </button>
-                );
+                )
               }}
             </OptimizelyFeature>
           </TopBarTitle>
         </TopBarSection>
       )}
     </TopBar>
-    //     ) : (
-    //       <TopBar>
-    //         <TopBarSection></TopBarSection>
-    //         <TopBarSection>
-    //           <TopBarTitle>
-    //             <Link
-    //               to={userId ? `/user/${userId}/network` : '/'}
-    //               data-testid="goToHomePage"
-    //             >
-    //               <Tree classNames="" />
-    //             </Link>
-    //           </TopBarTitle>
-    //         </TopBarSection>
-    //         <TopBarSection></TopBarSection>
-    //       </TopBar>
-    //     )
-    //   }
-    // </OptimizelyFeature>
-  );
-});
+  )
+})

@@ -1,6 +1,7 @@
 describe('cms', () => {
   it('add a new stage', () => {
     cy.visit('/')
+      .wait(5000)
       .findByTestId('outreachPage')
       .findByTestId('projectPage')
       .click()
@@ -11,11 +12,12 @@ describe('cms', () => {
       .click()
       .findByPlaceholderText(/name your new stage/i)
       .type('example{enter}')
-      .findByText(/example/i);
-  });
+      .findByText(/example/i)
+  })
 
   it('edit name of a stage', () => {
     cy.visit('/')
+      .wait(2000)
       .findByTestId('outreachPage')
       .findByTestId('projectPage')
       .click()
@@ -26,11 +28,12 @@ describe('cms', () => {
       .findByTestId('editableTitle')
       .clear()
       .type('updated{enter}')
-      .findByText(/updated/i);
-  });
+      .findByText(/updated/i)
+  })
 
   it('delete a stage', () => {
     cy.visit('/')
+      .wait(2000)
       .findByTestId('outreachPage')
       .findByTestId('projectPage')
       .click()
@@ -41,10 +44,11 @@ describe('cms', () => {
       .findByText(/confirm destruction/i)
       .click()
       .queryByText(/updated/i)
-      .should('not.exist');
-  });
+      .should('not.exist')
+  })
   it('cannot remove stage if someone is on it', () => {
     cy.visit('/')
+      .wait(2000)
       .findByTestId('outreachPage')
       .findByTestId('projectPage')
       .click()
@@ -54,8 +58,8 @@ describe('cms', () => {
       .click()
       .findByText(
         /Remove all people from this stage before you can delete it/i
-      );
-  });
+      )
+  })
 
   it.skip('move a stage', () => {
     // cy.visit('/')
@@ -66,9 +70,9 @@ describe('cms', () => {
     //   .focus()
     //   .type(' ')
     //   .type(`{downarrow}{esc}`);
-  });
+  })
 
   it.skip('reorder people within a stage', () => {
-    cy.visit('/');
-  });
-});
+    cy.visit('/')
+  })
+})

@@ -1,19 +1,19 @@
-import React from 'react';
-import { collection } from 'rxfire/firestore';
-import { map } from 'rxjs/operators';
-import { useDispatch } from 'react-redux';
-import firebase from '../../../utils/firebase';
+import React from 'react'
+import { collection } from 'rxfire/firestore'
+import { map } from 'rxjs/operators'
+import { useDispatch } from 'react-redux'
+import firebase from '../../../utils/firebase'
 // import Modal from './ContactModal';
 // import Portal from '../../../utils/Portal';
-import { TaskBox } from './TaskBox';
+import { TaskBox } from './TaskBox'
 
 /** @param {{
   myUid: string,
   contactSelected: string
   }} [Props] */
-
+/* eslint-disable react/prop-types */
 export const SpecificTaskList = ({ myUid, contactSelected }) => {
-  const [helpfulTasks, setHelpfulTasks] = React.useState([]);
+  const [helpfulTasks, setHelpfulTasks] = React.useState([])
 
   React.useEffect(() => {
     const subscription = collection(
@@ -27,16 +27,16 @@ export const SpecificTaskList = ({ myUid, contactSelected }) => {
         .orderBy('dueDate')
     )
       .pipe(map(docs => docs.map(d => d.data())))
-      .subscribe(tasks => tasks && setHelpfulTasks(tasks));
-    return () => subscription.unsubscribe();
-  }, [contactSelected, myUid]);
+      .subscribe(tasks => tasks && setHelpfulTasks(tasks))
+    return () => subscription.unsubscribe()
+  }, [contactSelected, myUid])
 
-  const [, setVisibility] = React.useState(false);
+  const [, setVisibility] = React.useState(false)
 
-  const [, setSelectedUser] = React.useState('');
-  const dispatch = useDispatch();
+  const [, setSelectedUser] = React.useState('')
+  const dispatch = useDispatch()
   return (
-    <div data-testid="specificTaskList">
+    <div data-testid='specificTaskList'>
       {/* i think this feature was for adding teh next task when there are no tasks left */}
       {/* {visible && (
         <Portal
@@ -77,5 +77,5 @@ export const SpecificTaskList = ({ myUid, contactSelected }) => {
             )
         )}
     </div>
-  );
-};
+  )
+}

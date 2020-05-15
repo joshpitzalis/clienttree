@@ -1,4 +1,4 @@
-import firebase from '../../utils/firebase';
+import firebase from '../../utils/firebase'
 
 export const handleFirebaseDelete = ({ id, userId }) =>
   firebase
@@ -8,14 +8,14 @@ export const handleFirebaseDelete = ({ id, userId }) =>
     .set(
       {
         services: {
-          [id]: firebase.firestore.FieldValue.delete(),
-        },
+          [id]: firebase.firestore.FieldValue.delete()
+        }
       },
       { merge: true }
-    );
+    )
 
 export const handleFirebaseProfileUpdate = payload => {
-  const { userId, name, designation, website, clients, service } = payload;
+  const { userId, name, designation, website, clients, service } = payload
 
   return firebase
     .firestore()
@@ -24,11 +24,11 @@ export const handleFirebaseProfileUpdate = payload => {
     .set(
       { name, designation, website, clients, service, userId },
       { merge: true }
-    );
-};
+    )
+}
 
 export const handleFirebaseUpdate = payload => {
-  const { id, userId, name, description, price, link } = payload;
+  const { id, userId, name, description, price, link } = payload
   return firebase
     .firestore()
     .collection('users')
@@ -41,13 +41,13 @@ export const handleFirebaseUpdate = payload => {
             name,
             description,
             price,
-            link,
-          },
-        },
+            link
+          }
+        }
       },
       { merge: true }
-    );
-};
+    )
+}
 
 export const fetchUserData = uid =>
   firebase
@@ -55,4 +55,4 @@ export const fetchUserData = uid =>
     .collection('users')
     .doc(uid)
     .get()
-    .then(doc => doc.data());
+    .then(doc => doc.data())

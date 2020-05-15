@@ -1,12 +1,11 @@
 describe('onboarding', () => {
   it('shows first task completed when you start', () => {
     cy.visit('/')
-
       .wait(5000)
       .findByTestId('outreachPage')
       .findByLabelText(/Sign up to Client Tree/i)
-      .should('be.checked');
-  });
+      .should('be.checked')
+  })
 
   it('lets you create an email signature', () => {
     const fakeData = {
@@ -14,8 +13,8 @@ describe('onboarding', () => {
       designation: 'Pickle',
       clients: 'bears',
       problem: 'traps',
-      website: 'abc.com',
-    };
+      website: 'abc.com'
+    }
 
     cy.visit('/')
       .wait(5000)
@@ -55,9 +54,9 @@ describe('onboarding', () => {
       .click()
       .url()
       .should('include', 'dashboard')
-      .findByLabelText(
+      .findAllByLabelText(
         /Completed your profile and created a referrable email signature/i
-      )
+      ).first()
       .should('be.checked')
       .goToProfilePage()
       .findByText(/Go To Your Public Referral Page/i)
@@ -66,36 +65,36 @@ describe('onboarding', () => {
       .should('include', 'refer')
       .findByText(fakeData.name)
       .findByText(fakeData.designation)
-      .findByText('I specialise in helping bears with traps .');
-  });
+      .findByText('I specialise in helping bears with traps .')
+  })
 
   it('once you have create a signature the onboarding task is marked complete and this change is persisted', () => {
     cy.visit('/')
       .wait(5000)
       .findByTestId('outreachPage')
-      .findByLabelText(
+      .findAllByLabelText(
         /Completed your profile and created a referrable email signature/i
-      )
-      .should('be.checked');
-  });
+      ).first()
+      .should('be.checked')
+  })
 
   it('you cannot uncheck signature step once persisted', () => {
     cy.visit('/')
       .wait(5000)
       .findByTestId('outreachPage')
-      .findByLabelText(
+      .findAllByLabelText(
         /Completed your profile and created a referrable email signature/i
-      )
+      ).first()
       .should('be.checked')
-      .findByLabelText(
+      .findAllByLabelText(
         /Completed your profile and created a referrable email signature/i
-      )
+      ).first()
       .uncheck({ force: true })
-      .findByLabelText(
+      .findAllByLabelText(
         /Completed your profile and created a referrable email signature/i
-      )
-      .should('be.checked');
-  });
+      ).first()
+      .should('be.checked')
+  })
 
   context('can complete onboarding', () => {
     it('lets me mark send email complete', () => {
@@ -108,8 +107,8 @@ describe('onboarding', () => {
         .check()
         .wait(5000)
         .findByTestId('email')
-        .should('be.checked');
-    });
+        .should('be.checked')
+    })
 
     it('lets me mark outreach complete', () => {
       cy.visit('/')
@@ -119,16 +118,17 @@ describe('onboarding', () => {
         .should('not.be.checked')
         .findByTestId('reachOut')
         .check()
-        .wait(5000);
-    });
+        .wait(5000)
+    })
 
     it('hides onboarding box when complete', () => {
       cy.visit('/')
+        .wait(2000)
         .findByTestId(/outreachPage/i)
         .wait(5000)
         .queryByText(/getting started/i)
         .should('not.exist')
-        .findByText(/activities/i);
-    });
-  });
-});
+        .findByText(/activities/i)
+    })
+  })
+})

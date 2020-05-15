@@ -6,7 +6,9 @@ typings/
 node_modules/
 
 serviceAccount.json
-serviceAccount.json.DEV
-serviceAccount.json.PROD
+serviceAccount.prod.json
+serviceAccount.dev.json
+serviceAccount.PROD.json
+serviceAccount.DEV.json
 
 .runtimeconfig.json

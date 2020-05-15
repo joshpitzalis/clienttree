@@ -1,14 +1,14 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Progress } from 'antd';
-import { OptimizelyFeature } from '@optimizely/react-sdk';
-import { GettingStarted } from './GettingStarted';
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { Progress } from 'antd'
+import { OptimizelyFeature } from '@optimizely/react-sdk'
+import { GettingStarted } from './GettingStarted'
 
 export const completePercentage = _onboarding =>
   _onboarding &&
   Math.round(
     ((1 + Object.values(_onboarding).filter(_x => !!_x).length) / 7) * 100
-  );
+  )
 
 /** @param {{uid:string, children: JSX.Element, contactSelected: string, workboard:Boolean}} [Props] */
 
@@ -16,14 +16,14 @@ export function Onboarding({ uid, children, contactSelected, workboard }) {
   // gets user onboarding details
   const onboarding = useSelector(
     store => store.user && store.user.onboarding && store.user.onboarding
-  );
+  )
   const contact = useSelector(
     store =>
       store.contacts &&
       store.contacts.find(person => person.uid === contactSelected)
-  );
+  )
 
-  const onboardingComplete = onboarding && onboarding.complete === true;
+  const onboardingComplete = onboarding && onboarding.complete === true
 
   const sidebarTitle = (
     _contactSelected,
@@ -33,27 +33,27 @@ export function Onboarding({ uid, children, contactSelected, workboard }) {
   ) => {
     if (_contactSelected) {
       if (_contact && _contact.name) {
-        return _contact.name;
+        return _contact.name
       }
-      return 'Reminders';
+      return 'Reminders'
     }
     if (workboard && _onboardingComplete) {
       // return null;
-      return 'Activities';
+      return 'Activities'
     }
     if (workboard && isEnabled) {
       return 'Getting Started';
     }
-  };
+  }
 
   return (
-    <div className="pa4 fixed h-100 overflow-y-auto pb6">
-      <OptimizelyFeature feature="referralPage">
+    <div className='pa4 fixed h-100 overflow-y-auto pb6'>
+      <OptimizelyFeature feature='referralPage'>
         {isEnabled => (
-          <fieldset className="bn ma0 pa0">
-            <details data-testid="detailBox" className="dn db-ns">
+          <fieldset className='bn ma0 pa0'>
+            <details data-testid='detailBox' className='dn db-ns'>
               <summary>
-                <legend className="fw7 mb3 dib " data-testid="toggleAddBox">
+                <legend className='fw7 mb3 dib ' data-testid='toggleAddBox'>
                   {sidebarTitle(
                     contactSelected,
                     onboardingComplete,
@@ -65,7 +65,7 @@ export function Onboarding({ uid, children, contactSelected, workboard }) {
             </details>
 
             {!onboardingComplete && !contactSelected && isEnabled && (
-              <div className="mb4 dn db-ns">
+              <div className='mb4 dn db-ns'>
                 <Progress percent={completePercentage(onboarding)} />
                 <GettingStarted uid={uid} onboarding={onboarding} />
               </div>
@@ -76,5 +76,5 @@ export function Onboarding({ uid, children, contactSelected, workboard }) {
         )}
       </OptimizelyFeature>
     </div>
-  );
+  )
 }

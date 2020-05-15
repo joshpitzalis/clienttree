@@ -1,67 +1,58 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
-import Close from '../images/Close';
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types'
+import Close from '../images/Close'
 
-let portalRoot = document.getElementById('portal');
+let portalRoot = document.getElementById('portal')
 
 if (!portalRoot) {
-  portalRoot = document.createElement('div');
-  portalRoot.setAttribute('id', 'portal');
-  document.body.appendChild(portalRoot);
+  portalRoot = document.createElement('div')
+  portalRoot.setAttribute('id', 'portal')
+  document.body.appendChild(portalRoot)
 }
 
-export default class Portal extends Component {
-  static propTypes = {
-    children: PropTypes.element.isRequired,
-    onClose: PropTypes.func,
-  };
-
-  static defaultProps = {
-    onClose: () => {},
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {};
-    this.el = document.createElement('div');
+class Portal extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {}
+    this.el = document.createElement('div')
   }
 
-  componentDidMount() {
-    portalRoot.appendChild(this.el);
+  componentDidMount () {
+    portalRoot.appendChild(this.el)
   }
 
-  componentWillUnmount() {
-    portalRoot.removeChild(this.el);
+  componentWillUnmount () {
+    portalRoot.removeChild(this.el)
   }
 
-  render() {
-    const { children, onClose } = this.props;
+  render () {
+    const { children, onClose } = this.props
 
     return ReactDOM.createPortal(
       <div
-        className="fixed h-100 w-100 bg-black-50 flex items-center justify-center z-2"
+        className='fixed h-100 w-100 bg-black-50 flex items-center justify-center z-2'
         onClick={onClose}
         onKeyPress={onClose}
-        role="button"
+        role='button'
         tabIndex={-1}
-        data-testid="close-button"
+        data-testid='close-button'
       >
-        <article className="bg-base w-50-ns w-75 center pa3-ns tc ma3 flex flex-column justify-center br2 br--bottom bt-green">
+        <article className='bg-base w-50-ns w-75 center pa3-ns tc ma3 flex flex-column justify-center br2 br--bottom bt-green'>
           {onClose && (
             <button
-              type="button"
+              type='button'
               onClick={onClose}
-              className="fr bn link bg-transparent pointer self-end pointer"
-              data-testid="closeModal"
+              className='fr bn link bg-transparent pointer self-end pointer'
+              data-testid='closeModal'
             >
               <Close />
             </button>
           )}
 
           <div
-            role="button"
-            className="center w-100"
+            role='button'
+            className='center w-100'
             tabIndex={-1}
             onClick={e => e.stopPropagation()}
             onKeyPress={e => e.stopPropagation()}
@@ -71,6 +62,17 @@ export default class Portal extends Component {
         </article>
       </div>,
       this.el
-    );
+    )
   }
 }
+
+Portal.propTypes = {
+  children: PropTypes.element.isRequired,
+  onClose: PropTypes.func
+}
+
+Portal.defaultProps = {
+  onClose: () => {}
+}
+
+export default Portal

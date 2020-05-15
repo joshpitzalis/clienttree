@@ -1,17 +1,17 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
 const peopleSlice = createSlice({
   name: 'people',
   initialState: { selectedContact: '' },
   reducers: {
-    setSelectedUser(state, action) {
-      const { payload } = action;
-      state.selectedContact = payload;
+    setSelectedUser (state, action) {
+      const { payload } = action
+      state.selectedContact = payload
     },
-    clearSelectedUser(state) {
-      state.selectedContact = '';
-    },
-  },
-});
+    clearSelectedUser (state) {
+      state.selectedContact = ''
+    }
+  }
+})
 
-export default peopleSlice;
+export default peopleSlice
