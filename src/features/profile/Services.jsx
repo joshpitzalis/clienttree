@@ -111,9 +111,9 @@ const Services = props => {
 
   return (
     <div>
-      <main className="pa4 pl0 pt0 black-80">
+      <main className='pa4 pl0 pt0 black-80'>
         <form
-          className="measure mt5"
+          className='measure mt5'
           onSubmit={e => {
             e.preventDefault()
 
@@ -126,17 +126,17 @@ const Services = props => {
             })
           }}
         >
-          <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
-            <legend className="f4 fw6 ph0 mh0" data-testid="services">
+          <fieldset id='sign_up' className='ba b--transparent ph0 mh0'>
+            <legend className='f4 fw6 ph0 mh0' data-testid='services'>
               Services
             </legend>
 
-            <p className=" black-60 ">
+            <p className=' black-60 '>
               A little introduction to what productizing services even means.
             </p>
 
             <br />
-            <Link className="blue db mb5" to={`/refer/${uid}`}>
+            <Link className='blue db mb5' to={`/refer/${uid}`}>
               Go To Your Public Referral Page
             </Link>
           </fieldset>
@@ -154,10 +154,10 @@ const Services = props => {
               ))}
 
           <input
-            className="mt3  b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
-            type="submit"
-            value="+ Add a service"
-            data-testid="addService"
+            className='mt3  b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib'
+            type='submit'
+            value='+ Add a service'
+            data-testid='addService'
           />
         </form>
       </main>
@@ -191,16 +191,16 @@ const IndividualService = ({
   link,
   userId
 }) => (
-  <div className="mb5 pt4 bt b--light-gray" data-testid="serviceBox">
-    <div className="mb4">
-      <label className="db fw6 lh-copy f6" htmlFor="serviceName">
+  <div className='mb5 pt4 bt b--light-gray' data-testid='serviceBox'>
+    <div className='mb4'>
+      <label className='db fw6 lh-copy f6' htmlFor='serviceName'>
         Service Name
         <input
-          className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
-          type="text"
-          name="serviceName"
-          id="serviceName"
-          placeholder="What should people ask for ?"
+          className='mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2'
+          type='text'
+          name='serviceName'
+          id='serviceName'
+          placeholder='What should people ask for ?'
           value={name}
           onChange={e => {
             dispatch({
@@ -226,16 +226,16 @@ const IndividualService = ({
       </label>
     </div>
 
-    <div className="mb4">
-      <label htmlFor="comment" className="f6 b db mb2">
+    <div className='mb4'>
+      <label htmlFor='comment' className='f6 b db mb2'>
         Service Description
         <textarea
-          rows="10"
-          id="comment"
-          name="comment"
-          className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
-          aria-describedby="comment-desc"
-          placeholder="What do people get?"
+          rows='10'
+          id='comment'
+          name='comment'
+          className='mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2'
+          aria-describedby='comment-desc'
+          placeholder='What do people get?'
           value={description}
           onChange={e => {
             dispatch({
@@ -257,7 +257,7 @@ const IndividualService = ({
               }
             })
           }}
-        ></textarea>
+        />
       </label>
       {/* tk */}
       {/* <small id="comment-desc" className="f6 black-60">
@@ -267,17 +267,17 @@ const IndividualService = ({
         </small> */}
     </div>
 
-    <div className="mb4">
-      <label htmlFor="comment" className="f6 b db mb2">
+    <div className='mb4'>
+      <label htmlFor='comment' className='f6 b db mb2'>
         Price & Duration
         <textarea
-          rows="5"
-          id="comment"
-          name="comment"
-          className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
-          aria-describedby="comment-desc"
+          rows='5'
+          id='comment'
+          name='comment'
+          className='mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2'
+          aria-describedby='comment-desc'
           value={price}
-          placeholder="How much?"
+          placeholder='How much?'
           onChange={e => {
             dispatch({
               type: 'SERVICE_PRICE_CHANGED',
@@ -298,7 +298,7 @@ const IndividualService = ({
               }
             })
           }}
-        ></textarea>
+        />
       </label>
       {/* tk */}
       {/* <small id="comment-desc" className="f6 black-60">
@@ -308,15 +308,15 @@ const IndividualService = ({
         </small> */}
     </div>
 
-    <div className="mt3 mb4">
-      <label className="db fw6 lh-copy f6" htmlFor="email-address">
+    <div className='mt3 mb4'>
+      <label className='db fw6 lh-copy f6' htmlFor='email-address'>
         Link
         <input
-          className="mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"
-          type="text"
-          name="email-address"
-          id="email-address"
-          placeholder="How do I find out more?"
+          className='mt1 db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2'
+          type='text'
+          name='email-address'
+          id='email-address'
+          placeholder='How do I find out more?'
           value={link}
           onChange={e => {
             dispatch({
@@ -377,21 +377,21 @@ export const ConfirmDelete = ({ handleDelete, title }) => {
     <div>
       {confirmDelete ? (
         <div>
-          <small className="f6 black-70 small-caps">
+          <small className='f6 black-70 small-caps'>
             Are you sure you want to delete this service?
           </small>
-          <div className="mv3">
+          <div className='mv3'>
             <button
-              className="f6 red small-caps pointer link dim ba bw1 ph3 pv2 mb2 dib b--red"
-              type="button"
+              className='f6 red small-caps pointer link dim ba bw1 ph3 pv2 mb2 dib b--red'
+              type='button'
               onClick={handleDelete}
               data-testid='confirmDeleteService'
             >
               {`Delete ${title}`}
             </button>
             <button
-              className="f6 small-caps bn pointer ml3 black-70"
-              type="button"
+              className='f6 small-caps bn pointer ml3 black-70'
+              type='button'
               onClick={() => setConfirmDelete(false)}
             >
               Nevermind
@@ -400,8 +400,8 @@ export const ConfirmDelete = ({ handleDelete, title }) => {
         </div>
       ) : (
         <button
-          className="f6 red small-caps bn pointer"
-          type="button"
+          className='f6 red small-caps bn pointer'
+          type='button'
           onClick={() => setConfirmDelete(true)}
         >
           {`Delete ${title}`}

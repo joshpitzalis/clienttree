@@ -1,34 +1,35 @@
-import React from 'react';
-import Portal from '../../../utils/Portal';
-import { MergeManager } from './MergeManager';
+import React from 'react'
+import Portal from '../../../utils/Portal'
+import { MergeManager } from './MergeManager'
 
+/* eslint-disable react/prop-types */
 export const ConflictScreen = ({
   send,
   duplicates,
   existingContacts,
-  setDuplicates,
+  setDuplicates
 }) => {
   const handleDuplicateSelection = payload => {
     send({
       type: 'DUPLICATE_SELECTED',
-      payload,
-    });
-  };
+      payload
+    })
+  }
 
   const handleExistingSelection = payload => {
     send({
       type: 'EXISTING_SELECTED',
-      payload,
-    });
-  };
+      payload
+    })
+  }
 
   // fire on unmount only
-  React.useEffect(() => () => setDuplicates([]), [setDuplicates]);
+  React.useEffect(() => () => setDuplicates([]), [setDuplicates])
 
   return (
     <Portal
       onClose={() => {
-        send('CLOSED');
+        send('CLOSED')
       }}
     >
       <MergeManager
@@ -39,5 +40,5 @@ export const ConflictScreen = ({
         handleExistingSelection={handleExistingSelection}
       />
     </Portal>
-  );
-};
+  )
+}

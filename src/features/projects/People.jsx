@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Draggable } from 'react-beautiful-dnd';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Draggable } from 'react-beautiful-dnd'
 
 const peoplesPropTypes = {
   id: PropTypes.string.isRequired,
@@ -8,34 +8,35 @@ const peoplesPropTypes = {
   photoURL: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   setSelectedUser: PropTypes.func.isRequired,
-  setVisibility: PropTypes.func.isRequired,
-};
-const peoplesDefaultProps = {};
-export function Peoples({
+  setVisibility: PropTypes.func.isRequired
+}
+const peoplesDefaultProps = {}
+
+export function Peoples ({
   id,
   index,
   photoURL,
   name,
   setSelectedUser,
-  setVisibility,
+  setVisibility
 }) {
   return (
     <Draggable draggableId={id} index={index}>
       {(provided, snapshot) => (
         <div
-          className="tc"
+          className='tc'
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
           onKeyPress={() => {
-            setVisibility(true);
-            setSelectedUser(id);
+            setVisibility(true)
+            setSelectedUser(id)
           }}
           onClick={() => {
-            setVisibility(true);
-            setSelectedUser(id);
+            setVisibility(true)
+            setSelectedUser(id)
           }}
-          role="button"
+          role='button'
           tabIndex={index}
           data-testid={name}
         >
@@ -49,7 +50,7 @@ export function Peoples({
         </div>
       )}
     </Draggable>
-  );
+  )
 }
-Peoples.propTypes = peoplesPropTypes;
-Peoples.defaultProps = peoplesDefaultProps;
+Peoples.propTypes = peoplesPropTypes
+Peoples.defaultProps = peoplesDefaultProps

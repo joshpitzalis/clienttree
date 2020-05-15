@@ -1,23 +1,23 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 // import { CSSTransition } from 'react-transition-group';
 
-export function AddButton({
-  setVisibility,
+export function AddButton ({
+  setVisibility
   //  contactCount
 }) {
   const [
     ,
     // revealSupportText
-    setRevealSupportText,
-  ] = React.useState(false);
+    setRevealSupportText
+  ] = React.useState(false)
   return (
     <div>
       <button
-        type="button"
+        type='button'
         onClick={() => setVisibility(true)}
-        className="btn1 b grow  ph3 pv2  pointer bn br1 white"
-        data-testid="addPeopleButton"
+        className='btn1 b grow  ph3 pv2  pointer bn br1 white'
+        data-testid='addPeopleButton'
         onMouseEnter={() => setRevealSupportText(true)}
         onMouseLeave={() => setRevealSupportText(false)}
       >
@@ -40,12 +40,12 @@ export function AddButton({
         </p>
       </CSSTransition> */}
     </div>
-  );
+  )
 }
 AddButton.propTypes = {
-  setVisibility: PropTypes.func.isRequired,
+  setVisibility: PropTypes.func.isRequired
   // contactCount: PropTypes.number,
-};
+}
 AddButton.defaultProps = {
   // contactCount: 0,
-};
+}

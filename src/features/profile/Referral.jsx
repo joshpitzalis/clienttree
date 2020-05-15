@@ -1,37 +1,37 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { toast$ } from '../notifications/toast';
-import { fetchUserData } from './serviceAPI';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { toast$ } from '../notifications/toast'
+import { fetchUserData } from './serviceAPI'
 
 const propTypes = {
-  userId: PropTypes.string.isRequired,
-};
+  userId: PropTypes.string.isRequired
+}
 
-const defaultProps = {};
+const defaultProps = {}
 
-export default function Referral({ userId }) {
-  const [profileData, setProfileData] = React.useState({});
+export default function Referral ({ userId }) {
+  const [profileData, setProfileData] = React.useState({})
   React.useEffect(() => {
     if (userId) {
       fetchUserData(userId)
         .then(data => setProfileData(data))
         .catch(error =>
           toast$.next({ type: 'ERROR', message: error.message || error })
-        );
+        )
     }
-  }, [userId]);
+  }, [userId])
 
   return (
-    <article className="pa3 pa5-ns">
-      <h1 className="f3 f1-m f-headline-l" id="services">
+    <article className='pa3 pa5-ns'>
+      <h1 className='f3 f1-m f-headline-l' id='services'>
         {profileData.name && profileData.name}
       </h1>
 
-      <p className="measure lh-copy b i">
+      <p className='measure lh-copy b i'>
         {profileData.designation && profileData.designation}
       </p>
       {/* <p className="measure lh-copy  gray">Next Available February 2020</p> */}
-      <p className="lh-copy measure">
+      <p className='lh-copy measure'>
         {`I specialise in helping
         ${profileData.clients && profileData.clients}
         with
@@ -39,10 +39,10 @@ export default function Referral({ userId }) {
         .`}
       </p>
       <a
-        type="button"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mb4 black link mt3 b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
+        type='button'
+        target='_blank'
+        rel='noopener noreferrer'
+        className='mb4 black link mt3 b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib'
         href={profileData.website && profileData.website}
       >
         Contact
@@ -69,38 +69,38 @@ export default function Referral({ userId }) {
 
       {profileData &&
         profileData.services &&
-        Object.values(profileData.services).map(service => (
-          <Service {...service} />
+        Object.values(profileData.services).map((service, index) => (
+          <Service {...service} key={index} />
         ))}
     </article>
-  );
+  )
 }
-Referral.propTypes = propTypes;
-Referral.defaultProps = defaultProps;
+Referral.propTypes = propTypes
+Referral.defaultProps = defaultProps
 
 const servicePropTypes = {
   name: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   price: PropTypes.string.isRequired,
-  link: PropTypes.string.isRequired,
-};
+  link: PropTypes.string.isRequired
+}
 
-const serviceDefaultProps = {};
+const serviceDefaultProps = {}
 
-function Service({ name, description, price, link }) {
+function Service ({ name, description, price, link }) {
   return (
     <div>
-      <h3 className="f3 f2-m f1-l">{name}</h3>
-      <p className="measure lh-copy">{description}</p>
+      <h3 className='f3 f2-m f1-l'>{name}</h3>
+      <p className='measure lh-copy'>{description}</p>
 
-      <p className="measure lh-copy ">{price}</p>
+      <p className='measure lh-copy '>{price}</p>
 
-      <a href={link} className="measure lh-copy blue">
+      <a href={link} className='measure lh-copy blue'>
         Learn More...
       </a>
     </div>
-  );
+  )
 }
 
-Service.propTypes = servicePropTypes;
-Service.defaultProps = serviceDefaultProps;
+Service.propTypes = servicePropTypes
+Service.defaultProps = serviceDefaultProps

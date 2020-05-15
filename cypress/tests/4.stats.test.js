@@ -10,22 +10,14 @@ describe('stats box', () => {
       .findByTestId(/outreachPage/i)
       .findByText(/Add someone new/i)
       .click()
-      .findByTestId(/contactModal/i)
-      .wait(2000)
+      .findByTestId(/personCard/i)
       .findByPlaceholderText(/Their name/i)
-
       .clear()
       .type('fakeData.name')
-      .wait(2000)
-      // .pickDate()
-      // .findByPlaceholderText(/click to edit/i)
-      // .type(fakeData.description)
-      .findByText(/saved/i)
-      .findByText(/close/i)
-      .click()
-      .queryByTestId(/contactModal/i)
-      .should('not.exist')
-
+      .findByText(/save changes/i).click()
+      .findByText(/saving/i)
+      .findByTestId('personCard')
+      .should('not.be.visible')
       .findByText('fakeData.name')
       .click()
 
@@ -42,10 +34,7 @@ describe('stats box', () => {
       .click()
       .findByText(/confirm completed/i)
       .click()
-
-      .findByText(/close/i)
-      .click()
-      // proceed to hustle
+      // proceed to hustle meter
 
       .findByText(/configure your hustle meter/i)
       .click()
@@ -84,25 +73,12 @@ describe('stats box', () => {
       .findByPlaceholderText(/their name/i)
       .clear()
       .type(fakeData.name)
-      .wait(2000)
-      // .pickDate()
-      .findByPlaceholderText(/click to edit/i)
-      .type('this is a note')
-      // .queryByTestId('leadToggle')
-      // .should('not.exist')
-      // .findByText(/save/i)
-      // .click()
-      // .wait(5000)
-      // .queryByTestId(/contactModal/i)
-      // .should('not.exist')
-      // .findAllByText(fakeData.name)
-      // .first()
-      // .click()
+
       .findByTestId('dashSwitch')
       .check({ force: true })
-      .wait(1000)
-      .findByTestId('closeBox')
-      .click({ force: true })
+
+      .findByText(/save changes/i).click()
+      .findByText(/saving/i)
       .get('[data-testid=projectPage] > .nav-link-text')
       .click()
       .findAllByTestId(fakeData.name)
@@ -113,7 +89,7 @@ describe('stats box', () => {
       .findAllByText('11')
   })
 
-  it('updates stats when I move people into or out of project started', () => {
+  it(' move people into or out of project started', () => {
     cy.visit('/')
       .wait(5000)
       .findByTestId('projectPage')
@@ -127,6 +103,7 @@ describe('stats box', () => {
       .type(' ')
     cy.findByTestId('stage2').within(() => cy.findByTestId(fakeData.name))
   })
+  it.skip('updates stats when I move people into or out of project started')
 
   //   when columns are rearranged, leads are added to first column
 

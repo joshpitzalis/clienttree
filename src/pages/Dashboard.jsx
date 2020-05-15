@@ -1,30 +1,30 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Route, Link, useLocation } from 'react-router-dom';
-import { ofType } from 'redux-observable';
-import { map, catchError, switchMap } from 'rxjs/operators';
-import { of, merge } from 'rxjs';
-import { doc, collection } from 'rxfire/firestore';
-import { useDispatch, useSelector } from 'react-redux';
-import { createSlice } from '@reduxjs/toolkit';
-import { NavPanel, NavLink, ContainerHorizontal } from '@duik/it';
-import { OptimizelyFeature } from '@optimizely/react-sdk';
-import { HelpfulTaskList as UniversalTaskList } from '../features/people/components/UniversalTaskList';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Route, Link, useLocation } from 'react-router-dom'
+import { ofType } from 'redux-observable'
+import { map, catchError, switchMap } from 'rxjs/operators'
+import { of, merge } from 'rxjs'
+import { doc, collection } from 'rxfire/firestore'
+import { useDispatch, useSelector } from 'react-redux'
+import { createSlice } from '@reduxjs/toolkit'
+import { NavPanel, NavLink, ContainerHorizontal } from '@duik/it'
+import { OptimizelyFeature } from '@optimizely/react-sdk'
+import { HelpfulTaskList as UniversalTaskList } from '../features/people/components/UniversalTaskList'
 // import { FeatureContext } from '../features/featureboard';
-import { SpecificTaskList } from '../features/people/components/SpecificTaskList';
-import People from '../images/People';
-import Home from '../images/Home';
-import firebase from '../utils/firebase';
-import { Network } from '../features/people/Network';
-import { Profile } from '../features/profile/Profile';
-import { CRM } from '../features/projects/dashboard';
-import { ConfettiBanner } from '../features/onboarding/confetti';
-import { Onboarding } from '../features/onboarding/ActivityList';
-import StatsBox from '../features/stats/StatsBox';
-import { taskSlice } from '../features/people/taskSlice';
-import Modal from '../features/people/components/ContactModal';
-import Portal from '../utils/Portal';
-import { MobileReminder } from '../features/people/components/MobileReminder';
+import { SpecificTaskList } from '../features/people/components/SpecificTaskList'
+import People from '../images/People'
+import Home from '../images/Home'
+import firebase from '../utils/firebase'
+import { Network } from '../features/people/Network'
+import { Profile } from '../features/profile/Profile'
+import { CRM } from '../features/projects/dashboard'
+import { ConfettiBanner } from '../features/onboarding/confetti'
+import { Onboarding } from '../features/onboarding/ActivityList'
+import StatsBox from '../features/stats/StatsBox'
+import { taskSlice } from '../features/people/taskSlice'
+import Modal from '../features/people/components/ContactModal'
+import Portal from '../utils/Portal'
+import { MobileReminder } from '../features/people/components/MobileReminder'
 
 export const userSlice = createSlice({
   name: 'user',
@@ -122,18 +122,9 @@ export const fetchUserDataEpic = (
  * userId: string
  * }} [Props] */
 
-<<<<<<< HEAD
 /* eslint-disable react/prop-types */
 export function Dashboard ({ userId }) {
   const dispatch = useDispatch()
-=======
-/** @param {{userId: string}} [Props] */
-export function Dashboard({ userId }) {
-  // const { features } = React.useContext(FeatureContext);
-  // console.log({ dash: features });
-
-  const dispatch = useDispatch();
->>>>>>> master
 
   React.useEffect(() => {
     if (userId) {
@@ -163,133 +154,77 @@ export function Dashboard({ userId }) {
           />
         </Portal>
       )}
-<<<<<<< HEAD
-      <div className='flex flex-row-ns flex-column w-100  justify-between min-h-100 bg-base'>
-        <Navigation userId={userId} />
-        <main className='dn db-ns w-50-ns w-100 min-h-100 ml4'>
-          <Route
-            exact
-            path='/user/:uid/network'
-            render={props => <Network {...props} uid={userId} />}
-          />
-          {userId && (
-            <Route
-              exact
-              path='/user/:uid/dashboard'
-              render={props => <CRM {...props} userId={userId} />}
-            />
-          )}
-          <Route
-            exact
-            path='/user/:uid/profile'
-            render={props => <Profile {...props} />}
-          />
-        </main>
-
-        <aside
-          className='w-100 measure-narrow-ns bg-white-ns tc'
-          data-testid='sidebar'
-        >
-          <MobileReminder myUid={userId} />
-          <Onboarding uid={userId} contactSelected={selectedUserUid}>
-            <>
-              {selectedUserUid ? (
-                <>
-
-                  <button
-                    type='button'
-                    data-testid='addreminder'
-                    onClick={() => setVisibility(true)}
-                    className='inline-flex items-center w-full justify-center px-6 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-50 focus:outline-none focus:border-green-300 focus:shadow-outline-green active:bg-green-200 transition ease-in-out duration-150'
-                  >
-                    Add A Reminder
-                  </button>
-                  <SpecificTaskList
-                    myUid={userId}
-                    contactSelected={selectedUserUid}
-                  />
-                </>
-              ) : (
-                <UniversalTaskList myUid={userId} />
-              )}
-            </>
-          </Onboarding>
-          <p className='tc f6 white ma0'>
-            Version {process.env.REACT_APP_VERSION}
-          </p>
-        </aside>
-      </div>
-=======
-      <OptimizelyFeature feature="workboard">
-        {workboard => (
-          <div
-            className={`flex flex-row-ns flex-column w-100  ${
+      <OptimizelyFeature feature='workboard'>
+        {workboard => {
+          return (
+            <div
+              className={`flex flex-row-ns flex-column w-100  ${
               workboard ? 'justify-between' : 'justify-end'
             }  min-h-100 bg-base`}
-          >
-            {workboard && <Navigation userId={userId} />}
+            >
+              {workboard && <Navigation userId={userId} />}
 
-            <main
-              className={`dn db-ns w-50-ns w-100 min-h-100 ml4 ${
+              <main
+                className={`dn db-ns w-50-ns w-100 min-h-100 ml4 ${
                 workboard ? 'justify-between' : 'justify-end'
               }`}
-            >
-              <Route
-                exact
-                path="/user/:uid/network"
-                render={props => <Network {...props} uid={userId} />}
-              />
-              {userId && (
+              >
                 <Route
                   exact
-                  path="/user/:uid/dashboard"
-                  render={props => <CRM {...props} userId={userId} />}
+                  path='/user/:uid/network'
+                  render={props => <Network {...props} uid={userId} />}
                 />
-              )}
-              <Route
-                exact
-                path="/user/:uid/profile"
-                render={props => <Profile {...props} />}
-              />
-            </main>
+                {userId && (
+                  <Route
+                    exact
+                    path='/user/:uid/dashboard'
+                    render={props => <CRM {...props} userId={userId} />}
+                  />
+                )}
+                <Route
+                  exact
+                  path='/user/:uid/profile'
+                  render={props => <Profile {...props} />}
+                />
+              </main>
 
-            <aside
-              className="w-100 measure-narrow-ns bg-transparent tc"
-              data-testid="sidebar"
-            >
-              <MobileReminder myUid={userId} />
-              <Onboarding uid={userId} contactSelected={selectedUserUid}>
-                <>
-                  {selectedUserUid ? (
-                    <>
-                      <button
-                        type="button"
-                        data-testid="addreminder"
-                        onClick={() => setVisibility(true)}
-                        className="btn2 ph4 pv3 bn pointer br1 grow b mv4"
-                      >
+              <aside
+                className='w-100 measure-narrow-ns bg-transparent tc'
+                data-testid='sidebar'
+              >
+                <MobileReminder myUid={userId} />
+                <Onboarding uid={userId} contactSelected={selectedUserUid}>
+                  <>
+                    {selectedUserUid ? (
+                      <>
+                        <button
+                          type='button'
+                          data-testid='addreminder'
+                          onClick={() => setVisibility(true)}
+                          className='btn2 ph4 pv3 bn pointer br1 grow b mv4'
+                        >
                         Add A Reminder
-                      </button>
-                      <SpecificTaskList
-                        myUid={userId}
-                        contactSelected={selectedUserUid}
-                      />
-                    </>
-                  ) : (
+                        </button>
+                        <SpecificTaskList
+                          myUid={userId}
+                          contactSelected={selectedUserUid}
+                        />
+                      </>
+                    ) : (
                     // <OptimizelyFeature feature="insights">
                     //   {insights =>
                     //     !insights && <UniversalTaskList myUid={userId} />
                     //   }
                     // </OptimizelyFeature>
-                    <UniversalTaskList myUid={userId} />
-                  )}
-                </>
-              </Onboarding>
-            </aside>
-          </div>
-        )}
+                      <UniversalTaskList myUid={userId} />
+                    )}
+                  </>
+                </Onboarding>
+              </aside>
+            </div>
+          )
+        }}
       </OptimizelyFeature>
->>>>>>> master
     </ContainerHorizontal>
   )
 }
@@ -330,7 +265,7 @@ function Navigation ({ userId }) {
           </NavLink>
         )}
       </div>
-      <OptimizelyFeature feature="workboard">
+      <OptimizelyFeature feature='workboard'>
         {isEnabled => isEnabled && <StatsBox userId={userId} />}
       </OptimizelyFeature>
     </NavPanel>

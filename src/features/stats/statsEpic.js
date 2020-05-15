@@ -4,17 +4,17 @@ import {
   mapTo,
   catchError,
   debounceTime,
-  switchMap,
-} from 'rxjs/operators';
-import { collection } from 'rxfire/firestore';
-import { ofType } from 'redux-observable';
-import { toast$ } from '../notifications/toast';
-import { FORM_SUBMITTED } from './statsConstants';
-import firebase from '../../utils/firebase';
+  switchMap
+} from 'rxjs/operators'
+import { collection } from 'rxfire/firestore'
+import { ofType } from 'redux-observable'
+import { toast$ } from '../notifications/toast'
+import { FORM_SUBMITTED } from './statsConstants'
+import firebase from '../../utils/firebase'
 
 export const leadContacted = (action$, state$) => {
   const calculateLeadRatio = (_leadsContacted, _activitiesCompleted) =>
-    Math.ceil(_activitiesCompleted / _leadsContacted + 1);
+    Math.ceil(_activitiesCompleted / _leadsContacted + 1)
 
   return action$.pipe(
     ofType('crm/newleadContacted'),
@@ -30,9 +30,9 @@ export const leadContacted = (action$, state$) => {
     ),
     map(docs => docs.map(d => d.data())),
     tap(tasks => {
-      const { userId } = state$.value.user;
-      const { leadsContacted = 1 } = state$.value.user.stats;
-      const activitiesCompleted = tasks.length;
+      const { userId } = state$.value.user
+      const { leadsContacted = 1 } = state$.value.user.stats
+      const activitiesCompleted = tasks.length
       return firebase
         .firestore()
         .collection('users')
@@ -44,31 +44,31 @@ export const leadContacted = (action$, state$) => {
               leadRatio: calculateLeadRatio(
                 leadsContacted,
                 activitiesCompleted
-              ),
-            },
+              )
+            }
           },
           { merge: true }
-        );
+        )
     }),
     catchError(error =>
       toast$.next({ type: 'ERROR', message: error.message || error })
     ),
     mapTo({ type: 'DONE' })
-  );
-};
+  )
+}
 
 export const projectCompleted = (action$, state$) => {
   const calculateProjectRatio = (_leadsContacted, _projectsCompleted) =>
-    Math.ceil(_leadsContacted / _projectsCompleted + 1);
+    Math.ceil(_leadsContacted / _projectsCompleted + 1)
 
   return action$.pipe(
     ofType('crm/newProjectCompleted'),
     tap(() => {
-      const { userId } = state$.value.user;
+      const { userId } = state$.value.user
       const {
         projectsCompleted = 1,
-        leadsContacted = 1,
-      } = state$.value.user.stats;
+        leadsContacted = 1
+      } = state$.value.user.stats
 
       return firebase
         .firestore()
@@ -81,36 +81,36 @@ export const projectCompleted = (action$, state$) => {
               projectRatio: calculateProjectRatio(
                 leadsContacted,
                 projectsCompleted
-              ),
-            },
+              )
+            }
           },
           { merge: true }
-        );
+        )
     }),
     catchError(error =>
       toast$.next({ type: 'ERROR', message: error.message || error })
     ),
     mapTo({ type: 'DONE' })
-  );
-};
+  )
+}
 
 export const updateStatsDetails = action$ =>
   action$.pipe(
     ofType(FORM_SUBMITTED),
     debounceTime(1000),
     tap(e => {
-      const { userId, name, value } = e.payload;
+      const { userId, name, value } = e.payload
       firebase
         .firestore()
         .collection('users')
         .doc(userId)
-        .set({ stats: { [name]: value } }, { merge: true });
+        .set({ stats: { [name]: value } }, { merge: true })
     }),
     catchError(error =>
       toast$.next({ type: 'ERROR', message: error.message || error })
     ),
     mapTo({ type: 'hustle form updated' })
-  );
+  )
 
 // export const updateUserDetails = action$ =>
 // action$.pipe(

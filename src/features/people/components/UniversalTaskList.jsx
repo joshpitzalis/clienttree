@@ -11,8 +11,9 @@ const helpfulPropTypes = {
 }
 const helpfulDefaultProps = {}
 
+/* eslint-disable react/prop-types */
 export const HelpfulTaskList = ({ myUid, insights }) => {
-  const [helpfulTasks, setHelpfulTasks] = React.useState([]);
+  const [helpfulTasks, setHelpfulTasks] = React.useState([])
 
   const dispatch = useDispatch()
   React.useEffect(() => {
@@ -30,7 +31,7 @@ export const HelpfulTaskList = ({ myUid, insights }) => {
   }, [myUid])
 
   return (
-    <div data-testid="universalTaskList" className={` ${!insights && 'pt5'}`}>
+    <div data-testid='universalTaskList' className={` ${!insights && 'pt5'}`}>
       {helpfulTasks &&
         helpfulTasks.map(
           ({ taskId, name, dateCompleted, completedFor, photoURL, dueDate }) =>

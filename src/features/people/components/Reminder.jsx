@@ -79,9 +79,9 @@ export const ReminderCreator = ({
   }
 
   return (
-    <div className="center pt3 pb4">
+    <div className='center pt3 pb4'>
       <form
-        className=""
+        className=''
         onSubmit={e => {
           e.stopPropagation()
           e.preventDefault()
@@ -89,34 +89,34 @@ export const ReminderCreator = ({
         }}
       >
         <fieldset
-          id="help"
-          className="ba b--transparent ph0 mh0"
-          data-testid="reminderBox"
+          id='help'
+          className='ba b--transparent ph0 mh0'
+          data-testid='reminderBox'
         >
-          <legend className="ph0 mh0 fw6 ">Follow up with...</legend>
-          <div className="">
-            <label className="db fw4 lh-copy f6 " htmlFor="name">
+          <legend className='ph0 mh0 fw6 '>Follow up with...</legend>
+          <div className=''>
+            <label className='db fw4 lh-copy f6 ' htmlFor='name'>
               <input
                 disabled
-                className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa3 br2 mb2"
-                placeholder="Who?"
-                type="text"
-                name="name"
-                id="name"
+                className='db border-box hover-black w-100 measure-narrow ba b--black-20 pa3 br2 mb2'
+                placeholder='Who?'
+                type='text'
+                name='name'
+                id='name'
                 value={state.name}
                 onChange={e => dispatch({ type: 'FIELD_UPDATED', payload: { value: e.target.value, type: 'name' } })}
               />
             </label>
           </div>
-          <div className="">
-            <label className="db fw4 lh-copy f6 " htmlFor="task">
+          <div className=''>
+            <label className='db fw4 lh-copy f6 ' htmlFor='task'>
               {/* <span className="db b">Ways you can help this person</span> */}
               <input
-                className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa3 br2 mb2 "
-                placeholder="About What?"
-                type="text"
-                name="task"
-                id="task"
+                className='db border-box hover-black w-100 measure-narrow ba b--black-20 pa3 br2 mb2 '
+                placeholder='About What?'
+                type='text'
+                name='task'
+                id='task'
                 value={state.task}
                 onChange={e => {
                   dispatch({ type: 'FIELD_UPDATED', payload: { value: e.target.value, type: 'task' } })
@@ -124,20 +124,21 @@ export const ReminderCreator = ({
               />
             </label>
           </div>
-          <div className="mb2 center">
+          <div className='mb2 center'>
             <DateBox date={state.date} dispatch={dispatch} />
           </div>
-          {state.error && <small className="red center db mb3"> {state.error}</small>}
+          {state.error && <small className='red center db mb3'> {state.error}</small>}
 
           <button type='submit' className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-green-700 hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green active:bg-green-700 transition duration-150 ease-in-out'>
             {state.submitting && <Loader
-              type="Oval"
-              color="#FFF"
+              type='Oval'
+              color='#FFF'
               height={20}
               width={20}
             />}
-            <span className="pl-2">
-              {state.submitting ? 'Submitting...' : 'Create Reminder'}</span>
+            <span className='pl-2'>
+              {state.submitting ? 'Submitting...' : 'Create Reminder'}
+            </span>
           </button>
         </fieldset>
       </form>
@@ -160,13 +161,13 @@ function DateBox ({ date, dispatch }) {
       />
     </DatepickerContainer>
   ) : (
-    <label className="db fw4 lh-copy f6 " htmlFor="date">
+    <label className='db fw4 lh-copy f6 ' htmlFor='date'>
       <input
-        className="border-gray-300 focus:outline-none focus:shadow-outline-blue focus:border-blue-300  appearance-none rounded-md relative block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 focus:z-10 sm:text-sm sm:leading-5"
-        placeholder="When?"
-        type="text"
-        name="date"
-        id="date"
+        className='border-gray-300 focus:outline-none focus:shadow-outline-blue focus:border-blue-300  appearance-none rounded-md relative block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 focus:z-10 sm:text-sm sm:leading-5'
+        placeholder='When?'
+        type='text'
+        name='date'
+        id='date'
         onClick={() => setVisible(true)}
         value={format(date, 'EEEE do MMMM yyyy')}
       />

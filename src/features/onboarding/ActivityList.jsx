@@ -1,8 +1,8 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Progress } from 'antd';
-import { OptimizelyFeature } from '@optimizely/react-sdk';
-import { GettingStarted } from './GettingStarted';
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { Progress } from 'antd'
+import { OptimizelyFeature } from '@optimizely/react-sdk'
+import { GettingStarted } from './GettingStarted'
 
 export const completePercentage = _onboarding =>
   _onboarding &&
@@ -39,21 +39,21 @@ export function Onboarding ({ uid, children, contactSelected }) {
     }
     if (_onboardingComplete) {
       // return null;
-      return 'Activities';
+      return 'Activities'
     }
     if (isEnabled) {
-      return 'Getting Started';
+      return 'Getting Started'
     }
-  };
+  }
 
   return (
-    <div className="pa4 fixed h-100 overflow-y-auto pb6">
-      <OptimizelyFeature feature="referralPage">
+    <div className='pa4 fixed h-100 overflow-y-auto pb6'>
+      <OptimizelyFeature feature='referralPage'>
         {isEnabled => (
-          <fieldset className="bn ma0 pa0">
-            <details data-testid="detailBox" className="dn db-ns">
+          <fieldset className='bn ma0 pa0'>
+            <details data-testid='detailBox' className='dn db-ns'>
               <summary>
-                <legend className="fw7 mb3 dib " data-testid="toggleAddBox">
+                <legend className='fw7 mb3 dib ' data-testid='toggleAddBox'>
                   {sidebarTitle(
                     contactSelected,
                     onboardingComplete,
@@ -65,7 +65,7 @@ export function Onboarding ({ uid, children, contactSelected }) {
             </details>
 
             {!onboardingComplete && !contactSelected && isEnabled && (
-              <div className="mb4 dn db-ns">
+              <div className='mb4 dn db-ns'>
                 <Progress percent={completePercentage(onboarding)} />
                 <GettingStarted uid={uid} onboarding={onboarding} />
               </div>

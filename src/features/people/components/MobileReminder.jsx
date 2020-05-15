@@ -1,21 +1,21 @@
-import React from 'react';
-import { useMachine } from '@xstate/react';
-import { Machine } from 'xstate';
+import React from 'react'
+import { useMachine } from '@xstate/react'
+import { Machine } from 'xstate'
 // import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 // import fromUnixTime from 'date-fns/fromUnixTime';
-import { assert } from 'chai';
-import { Datepicker, DatepickerContainer } from '@duik/it';
-import format from 'date-fns/format';
+import { assert } from 'chai'
+import { Datepicker, DatepickerContainer } from '@duik/it'
+import format from 'date-fns/format'
 
 // import { useImmerReducer } from 'use-immer';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux'
 // import AvatarGenerator from 'react-avatar-generator';
-import { AutoComplete } from 'antd';
+import { AutoComplete } from 'antd'
 // import { collection } from 'rxfire/firestore';
 // import { map, catchError } from 'rxjs/operators';
-import { toast$ } from '../../notifications/toast';
-import { handleAddTask } from '../peopleAPI';
-import firebase from '../../../utils/firebase';
+import { toast$ } from '../../notifications/toast'
+import { handleAddTask } from '../peopleAPI'
+import firebase from '../../../utils/firebase'
 
 // state visualisation:
 // https://xstate.js.org/viz/?gist=7925b7b6f194989221d4a2da62731937
@@ -30,28 +30,28 @@ export const taskMachine = Machine({
   states: {
     closed: {
       on: {
-        OPENED: 'open',
+        OPENED: 'open'
       },
       meta: {
         test:
           // check('mobileAddreminder'),
           ({ getByTestId }) => {
-            assert.ok(getByTestId('mobileAddreminder'));
-          },
-      },
+            assert.ok(getByTestId('mobileAddreminder'))
+          }
+      }
     },
     open: {
       on: {
-        CLOSED: 'closed',
+        CLOSED: 'closed'
       },
       meta: {
         test: ({ getByTestId }) => {
-          assert.ok(getByTestId('open'));
-        },
-      },
-    },
-  },
-});
+          assert.ok(getByTestId('open'))
+        }
+      }
+    }
+  }
+})
 
 export const MobileReminder = ({ myUid }) => {
   const [current, send] = useMachine(taskMachine, {
@@ -59,22 +59,22 @@ export const MobileReminder = ({ myUid }) => {
       handleAddingTask: (ctx, { payload }) =>
         handleAddTask(payload).catch(error =>
           toast$.next({ type: 'ERROR', message: error.message || error })
-        ),
-    },
-  });
+        )
+    }
+  })
 
   if (current.matches('closed')) {
     return (
       <button
-        type="button"
-        data-testid="mobileAddreminder"
+        type='button'
+        data-testid='mobileAddreminder'
         onClick={() => send('OPENED')}
-        className="btn2 ph5 pv4 bn pointer br1 grow b mt4 dn-ns center"
+        className='btn2 ph5 pv4 bn pointer br1 grow b mt4 dn-ns center'
         style={{ maxWidth: '20em' }}
       >
         Add A Reminder
       </button>
-    );
+    )
   }
 
   if (current.matches('open')) {
@@ -84,33 +84,34 @@ export const MobileReminder = ({ myUid }) => {
         handleAddingTask={handleAddTask}
         myUid={myUid}
       />
-    );
+    )
   }
-};
+}
 
+/* eslint-disable react/prop-types */
 const ReminderCreator = ({ myUid, handleAddingTask, send }) => {
   const newDoc = firebase
     .firestore()
     .collection('users')
     .doc(myUid)
     .collection('contacts')
-    .doc();
+    .doc()
 
-  const [theirUid, setTheirUid] = React.useState(newDoc.id);
+  const [theirUid, setTheirUid] = React.useState(newDoc.id)
 
-  const contacts = useSelector(store => store.contacts);
+  const contacts = useSelector(store => store.contacts)
 
-  const [name, setName] = React.useState('');
-  const [task, setTask] = React.useState('');
-  const [date, setDate] = React.useState(+new Date() + 604800000);
+  const [name, setName] = React.useState('')
+  const [task, setTask] = React.useState('')
+  const [date, setDate] = React.useState(+new Date() + 604800000)
 
-  const photoURL = `https://ui-avatars.com/api/?name=${name}`;
+  const photoURL = `https://ui-avatars.com/api/?name=${name}`
 
-  const [allContacts, setAllContacts] = React.useState([]);
-  const dispatch = useDispatch();
+  const [allContacts, setAllContacts] = React.useState([])
+  const dispatch = useDispatch()
 
   const handleAddReminder = (contactName, taskName, dueDate, userId) => {
-    const existingContact = contacts.find(contact => contact.name === name);
+    const existingContact = contacts.find(contact => contact.name === name)
 
     handleAddingTask({
       taskName,
@@ -121,10 +122,10 @@ const ReminderCreator = ({ myUid, handleAddingTask, send }) => {
           ? existingContact.photoURL
           : photoURL,
       dueDate,
-      contactName,
-    });
+      contactName
+    })
 
-    const oneYearAgo = new Date().setFullYear(new Date().getFullYear() - 1);
+    const oneYearAgo = new Date().setFullYear(new Date().getFullYear() - 1)
 
     const payload = {
       userId,
@@ -138,65 +139,65 @@ const ReminderCreator = ({ myUid, handleAddingTask, send }) => {
         9007199254740991: {
           id: 9007199254740991,
           text: '',
-          lastUpdated: 9007199254740991,
-        },
+          lastUpdated: 9007199254740991
+        }
       },
       tracked: false,
-      email: '',
-    };
+      email: ''
+    }
 
     if (!existingContact) {
       dispatch({
         type: 'ONBOARDING_STEP_COMPLETED',
-        payload: { userId: myUid, onboardingStep: 'addedSomeone' },
-      });
+        payload: { userId: myUid, onboardingStep: 'addedSomeone' }
+      })
       dispatch({
         type: 'people/updateForm',
-        payload,
-      });
+        payload
+      })
     }
-  };
+  }
 
-  const [error, setError] = React.useState('');
+  const [error, setError] = React.useState('')
 
   return (
-    <div className="center pt3 pb4" data-testid="open">
+    <div className='center pt3 pb4' data-testid='open'>
       <form
-        className=""
+        className=''
         onSubmit={e => {
-          e.stopPropagation();
-          e.preventDefault();
+          e.stopPropagation()
+          e.preventDefault()
           if (!name) {
-            setError('Tasks must be connected to someone.');
-            return;
+            setError('Tasks must be connected to someone.')
+            return
           }
           if (!task) {
-            setError('Tasks must have a name.');
-            return;
+            setError('Tasks must have a name.')
+            return
           }
 
-          handleAddReminder(name, task, date, myUid);
-          setTask('');
-          setName('');
-          setDate(+new Date() + 604800000);
-          send('CLOSED');
+          handleAddReminder(name, task, date, myUid)
+          setTask('')
+          setName('')
+          setDate(+new Date() + 604800000)
+          send('CLOSED')
         }}
       >
         <fieldset
-          id="help"
-          className="ba b--transparent ph0 mh0"
-          data-testid="reminderBox"
+          id='help'
+          className='ba b--transparent ph0 mh0'
+          data-testid='reminderBox'
         >
-          <legend className="ph0 mh0 fw6 ">Follow up with...</legend>
-          <div className="autoComplete">
+          <legend className='ph0 mh0 fw6 '>Follow up with...</legend>
+          <div className='autoComplete'>
             <AutoComplete
               dataSource={allContacts}
               onSelect={value => {
-                setName(value);
+                setName(value)
                 const existingContact = contacts.find(
                   contact => contact.name === value
-                );
-                setTheirUid(existingContact.uid);
+                )
+                setTheirUid(existingContact.uid)
               }}
               style={{
                 backgroundColor: 'hsl(0, 0%, 88%)',
@@ -207,7 +208,7 @@ const ReminderCreator = ({ myUid, handleAddingTask, send }) => {
                 width: '100%',
                 padding: '.5rem 0',
                 margin: '0 auto .5rem auto',
-                maxWidth: '20em',
+                maxWidth: '20em'
               }}
               onSearch={searchText => {
                 const results = !searchText
@@ -221,84 +222,84 @@ const ReminderCreator = ({ myUid, handleAddingTask, send }) => {
                             .toLowerCase()
                             .includes(searchText.toLowerCase())
                       )
-                      .map(item => item.name);
-                setAllContacts(results);
+                      .map(item => item.name)
+                setAllContacts(results)
               }}
-              placeholder="Who?"
+              placeholder='Who?'
               value={name}
               onChange={value => {
-                setError('');
-                setName(value);
+                setError('')
+                setName(value)
               }}
-            ></AutoComplete>
+            />
           </div>
-          <div className="">
-            <label className="db fw4 lh-copy f6" htmlFor="task">
+          <div className=''>
+            <label className='db fw4 lh-copy f6' htmlFor='task'>
               <input
-                className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa3 br2 mb2 center"
-                placeholder="About What?"
-                type="text"
-                name="task"
-                id="task"
+                className='db border-box hover-black w-100 measure-narrow ba b--black-20 pa3 br2 mb2 center'
+                placeholder='About What?'
+                type='text'
+                name='task'
+                id='task'
                 value={task}
                 onChange={e => {
-                  setError('');
-                  setTask(e.target.value);
+                  setError('')
+                  setTask(e.target.value)
                 }}
               />
             </label>
           </div>
-          <div className="mb2">
+          <div className='mb2'>
             <DateBox date={date} setDate={setDate} setError={setError} />
           </div>
-          {error && <small className="red center db mb3"> {error}</small>}
+          {error && <small className='red center db mb3'> {error}</small>}
           <input
-            type="submit"
-            value="Create Reminder"
-            className="btn2 w-100 pv3 bn pointer br1 grow b mb3"
+            type='submit'
+            value='Create Reminder'
+            className='btn2 w-100 pv3 bn pointer br1 grow b mb3'
           />
         </fieldset>
       </form>
       <button
-        type="button"
+        type='button'
         onClick={() => send('CLOSED')}
-        className="bn pointer bg-transparent"
+        className='bn pointer bg-transparent'
       >
         Close
       </button>
     </div>
-  );
-};
-
-function DateBox({ date, setDate, setError }) {
-  const [visible, setVisible] = React.useState(false);
+  )
+}
+/* eslint-disable react/prop-types */
+function DateBox ({ date, setDate, setError }) {
+  const [visible, setVisible] = React.useState(false)
 
   return visible ? (
     <DatepickerContainer>
       <Datepicker
         value={new Date(date)}
         onDateChange={value => {
-          setError('');
-          setDate(+new Date(value));
-          setVisible(false);
+          setError('')
+          setDate(+new Date(value))
+          setVisible(false)
         }}
         minDate={new Date()}
       />
     </DatepickerContainer>
   ) : (
-    <label className="db fw4 lh-copy f6 " htmlFor="date">
+    <label className='db fw4 lh-copy f6 ' htmlFor='date'>
       <input
-        className="db border-box hover-black w-100 measure-narrow ba b--black-20 pa3 br2 mb3 center"
-        placeholder="When?"
-        type="text"
-        name="date"
-        id="date"
+        className='db border-box hover-black w-100 measure-narrow ba b--black-20 pa3 br2 mb3 center'
+        placeholder='When?'
+        type='text'
+        name='date'
+        id='date'
         onClick={() => setVisible(true)}
         value={format(date, 'EEEE do MMMM yyyy')}
         onChange={e => setDate(e.target.value)}
       />
     </label>
-  );
+  )
 }
 
 // // autocoplete to find existing users

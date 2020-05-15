@@ -137,9 +137,9 @@ const ImportContacts = ({
     return (
       <button
         onClick={() => send('CLICKED')}
-        type="button"
-        className="btn3 grow  ph3 pv2  pointer bn br1 white"
-        data-testid="importContacts"
+        type='button'
+        className='btn3 grow  ph3 pv2  pointer bn br1 white'
+        data-testid='importContacts'
       >
         Import Contacts
       </button>

@@ -35,8 +35,10 @@ describe('login page', () => {
     await findByText(/Submitting/i)
 
     // mock login
-    rerender(<Login authStatus={true}
-      userId='abc123' />)
+    rerender(<Login
+      authStatus
+      userId='abc123'
+    />)
 
     // assert redirect
     expect(MockRedirect).toHaveBeenCalled()

@@ -1,7 +1,7 @@
 describe('cms', () => {
   it('add a new stage', () => {
     cy.visit('/')
-      .wait(2000)
+      .wait(5000)
       .findByTestId('outreachPage')
       .findByTestId('projectPage')
       .click()
@@ -52,7 +52,7 @@ describe('cms', () => {
       .findByTestId('outreachPage')
       .findByTestId('projectPage')
       .click()
-      .findByText(/Potential Projects/i)
+      .findByText(/contacted/i)
       .dblclick()
       .findByText(/remove stage/i)
       .click()

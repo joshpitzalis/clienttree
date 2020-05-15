@@ -5,6 +5,7 @@ import { debounceTime, filter } from 'rxjs/operators'
 import { Subject } from 'rxjs'
 
 const events$ = new Subject()
+
 /* eslint-disable react/prop-types */
 export const EditBox = ({
   note,
@@ -47,11 +48,11 @@ export const EditBox = ({
   return (
     <div>
       <TextArea
-        placeholder="Click to edit..."
+        placeholder='Click to edit...'
         rows={10}
-        aria-label="note"
-        className="mb0"
-        data-testid="notesTextarea"
+        aria-label='note'
+        className='mb0'
+        data-testid='notesTextarea'
         onChange={event => {
           const { value } = event.target
           setMessage(value)
@@ -124,9 +125,9 @@ function DeleteNote ({ noteId, setState, setActiveNote, state }) {
   if (deleting) {
     return (
       <button
-        className="f6 red pointer link dim bn ph3 pv2 mb2 dib"
-        type="button"
-        data-testid="deletingInProcess"
+        className='f6 red pointer link dim bn ph3 pv2 mb2 dib'
+        type='button'
+        data-testid='deletingInProcess'
         disabled
       >
         {'Deleting...'}
@@ -137,18 +138,17 @@ function DeleteNote ({ noteId, setState, setActiveNote, state }) {
   return visible ? (
     <div>
       <button
-        className="f6 red pointer link dim bn ph3 pv2 mb2 dib"
-        type="button"
+        className='f6 red pointer link dim bn ph3 pv2 mb2 dib'
+        type='button'
         // data-testid="confirmDeleteContact"
         onClick={() =>
-          handleDelete({ setDeleting, state, noteId, setState, setActiveNote })
-        }
+          handleDelete({ setDeleting, state, noteId, setState, setActiveNote })}
       >
         {'Confirm Delete'}
       </button>
       <button
-        className="f6  bn pointer ml3 "
-        type="button"
+        className='f6  bn pointer ml3 '
+        type='button'
         onClick={() => {
           setVisibility(false)
         }}
@@ -158,11 +158,11 @@ function DeleteNote ({ noteId, setState, setActiveNote, state }) {
       </button>
     </div>
   ) : (
-    <div className="flex justify-between items-start mt0 pa0 mb3">
+    <div className='flex justify-between items-start mt0 pa0 mb3'>
       <Icon
-        data-testid="deleteNote"
-        className="o-50"
-        type="delete"
+        data-testid='deleteNote'
+        className='o-50'
+        type='delete'
         onClick={() => setVisibility(true)}
         style={{
           color: 'red'

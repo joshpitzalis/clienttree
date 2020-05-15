@@ -1,27 +1,27 @@
-import { Datepicker, DatepickerContainer } from '@duik/it';
-import React, { useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import { Datepicker, DatepickerContainer } from '@duik/it'
+import React, { useRef, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
-function useOutsideCloser(ref, setVisible) {
+function useOutsideCloser (ref, setVisible) {
   /**
    * Alert if clicked on outside of element
    */
-  function handleClickOutside(event) {
+  function handleClickOutside (event) {
     if (ref.current && !ref.current.contains(event.target)) {
-      setVisible(false);
+      setVisible(false)
     }
   }
 
   useEffect(() => {
     // Bind the event listener
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside)
     return () => {
       // Unbind the event listener on clean up
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  });
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  })
 }
 
 /** @param {{
@@ -32,40 +32,39 @@ function useOutsideCloser(ref, setVisible) {
  *  text: string,
  *  lastUpdated: number
  * }}} [Props] */
-
-export const TimeUpdate = ({ lastUpdated, setState, note }) => {
-  const [visible, setVisible] = React.useState(false);
-  const [date, setDate] = React.useState(new Date(lastUpdated));
+/* eslint-disable react/prop-types */
+export const TimeUpdate = ({ lastUpdated, setState, note, visible, setVisible }) => {
+  const [date, setDate] = React.useState(new Date(lastUpdated))
 
   // closes date picker when you click outside the component
-  const wrapperRef = useRef(null);
-  useOutsideCloser(wrapperRef, setVisible);
+  const wrapperRef = useRef(null)
+  useOutsideCloser(wrapperRef, setVisible)
   return (
-    <div>
+    <div >
       {visible ? (
         <div
           ref={wrapperRef}
-          className="mb3"
+          className='mb3'
           style={{ width: '250px' }}
-          data-testid="calendarBox"
+          data-testid='calendarBox'
         >
           <DatepickerContainer>
             <Datepicker
               value={date}
               onDateChange={value => {
-                setDate(new Date(value));
+                setDate(new Date(value))
                 setState(prevState => ({
                   ...prevState,
                   notes: {
                     ...prevState.notes,
                     [note.id]: {
                       ...note,
-                      lastUpdated: +new Date(value),
-                    },
+                      lastUpdated: +new Date(value)
+                    }
                   },
-                  saving: true,
-                }));
-                setVisible(false);
+                  saving: true
+                }))
+                setVisible(false)
               }}
               maxDate={new Date()}
             />
@@ -73,23 +72,23 @@ export const TimeUpdate = ({ lastUpdated, setState, note }) => {
         </div>
       ) : (
         <button
-          type="button"
-          data-testid="timeBox"
+          type='button'
+          data-testid='timeBox'
           onClick={() => setVisible(true)}
-          className="bn text3 underline-hover pointer"
+          className='bn pointer text-sm text-gray-400 underline mb3'
         >
-          {lastUpdated &&
+          Added {lastUpdated &&
             formatDistanceToNow(new Date(lastUpdated), {
-              addSuffix: true,
+              addSuffix: true
             })}
         </button>
       )}
     </div>
-  );
-};
+  )
+}
 
 TimeUpdate.propTypes = {
-  lastUpdated: PropTypes.number.isRequired,
-};
+  lastUpdated: PropTypes.number.isRequired
+}
 
-TimeUpdate.defaultProps = {};
+TimeUpdate.defaultProps = {}

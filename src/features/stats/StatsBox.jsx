@@ -116,15 +116,15 @@ export default function StatsBox ({ userId }) {
       return (
         <button
           onClick={() => send({ type: 'MODAL_OPENED', payload: { userId } })}
-          type="button"
-          className="bn tl pa2 pointer bg-base br3 black w5 fixed mt7 ml2 br--top"
+          type='button'
+          className='bn tl pa2 pointer bg-base br3 black w5 fixed mt7 ml2 br--top'
           style={{ bottom: 0 }}
-          data-testid="incomplete-screen"
+          data-testid='incomplete-screen'
         >
-          <p className="b pointer"> Configure Your Hustle Meter</p>
-          <div className="flex">
-            <Dollar className="w3" />
-            <small className="pl2">
+          <p className='b pointer'> Configure Your Hustle Meter</p>
+          <div className='flex'>
+            <Dollar className='w3' />
+            <small className='pl2'>
               Figure out how many people you need to help if you want to reach
               your income goals this year.
             </small>
@@ -145,8 +145,7 @@ export default function StatsBox ({ userId }) {
                   userStats.stats.goal &&
                   userStats.stats.average
               }
-            })
-          }
+            })}
         >
           {/* <InvoiceForm  /> */}
           <GeneralForm userId={userId} send={send} userStats={userStats} />

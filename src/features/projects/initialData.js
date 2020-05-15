@@ -4,51 +4,51 @@ export const initialData = {
     stage1: {
       id: 'stage1',
       title: 'Potential Projects',
-      subtitle: ``,
-      people: [],
+      subtitle: '',
+      people: []
     },
     stage2: {
       id: 'stage2',
       title: 'Contacted',
-      subtitle: ``,
-      people: [],
+      subtitle: '',
+      people: []
     },
     stage3: {
       id: 'stage3',
       title: 'Brief Established',
-      subtitle: ``,
-      people: [],
+      subtitle: '',
+      people: []
     },
     stage4: {
       id: 'stage4',
       title: 'Invoice Sent',
-      subtitle: ``,
-      people: [],
+      subtitle: '',
+      people: []
     },
     stage5: {
       id: 'stage5',
       title: 'Proposal Sent',
-      subtitle: ``,
-      people: [],
+      subtitle: '',
+      people: []
     },
     stage6: {
       id: 'stage6',
       title: 'Project Started',
-      subtitle: ``,
-      people: [],
+      subtitle: '',
+      people: []
     },
     stage7: {
       id: 'stage7',
       title: 'Handover Complete',
-      subtitle: ``,
-      people: [],
+      subtitle: '',
+      people: []
     },
     stage8: {
       id: 'stage8',
       title: 'Testimonial Received',
-      subtitle: ``,
-      people: [],
-    },
+      subtitle: '',
+      people: []
+    }
   },
   stageOrder: [
     'stage1',
@@ -58,6 +58,6 @@ export const initialData = {
     'stage5',
     'stage6',
     'stage7',
-    'stage8',
-  ],
-};
+    'stage8'
+  ]
+}

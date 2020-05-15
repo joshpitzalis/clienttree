@@ -1,4 +1,4 @@
-import firebase from '../../utils/firebase';
+import firebase from '../../utils/firebase'
 
 export const setStateToDB = (userId, state) =>
   firebase
@@ -7,10 +7,10 @@ export const setStateToDB = (userId, state) =>
     .doc(userId)
     .set(
       {
-        dashboard: state,
+        dashboard: state
       },
       { merge: true }
-    );
+    )
 
 export const setChallenge = ({ title, link, id, userId, stageId }) =>
   firebase
@@ -25,14 +25,14 @@ export const setChallenge = ({ title, link, id, userId, stageId }) =>
               challenges: firebase.firestore.FieldValue.arrayUnion({
                 title,
                 link,
-                id,
-              }),
-            },
-          },
-        },
+                id
+              })
+            }
+          }
+        }
       },
       { merge: true }
-    );
+    )
 
 export const removeChallenge = ({ title, link, id, userId, stageId }) =>
   firebase
@@ -47,20 +47,20 @@ export const removeChallenge = ({ title, link, id, userId, stageId }) =>
               challenges: firebase.firestore.FieldValue.arrayRemove({
                 title,
                 link,
-                id,
-              }),
-            },
-          },
-        },
+                id
+              })
+            }
+          }
+        }
       },
       { merge: true }
-    );
+    )
 
 export const updateUserProfile = payload => {
-  const { dashboard, userId } = payload;
+  const { dashboard, userId } = payload
   return firebase
     .firestore()
     .collection('users')
     .doc(userId)
-    .set({ dashboard }, { merge: true });
-};
+    .set({ dashboard }, { merge: true })
+}

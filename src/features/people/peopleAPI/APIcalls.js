@@ -1,4 +1,4 @@
-import firebase from '../../../utils/firebase';
+import firebase from '../../../utils/firebase'
 
 export const helpfulTaskRef = (userId, contactUid) =>
   firebase
@@ -8,7 +8,7 @@ export const helpfulTaskRef = (userId, contactUid) =>
     .collection('contacts')
     .doc(contactUid)
     .collection('helpfulTasks')
-    .doc();
+    .doc()
 
 export const newDocRef = userId =>
   firebase
@@ -16,7 +16,7 @@ export const newDocRef = userId =>
     .collection('users')
     .doc(userId)
     .collection('contacts')
-    .doc();
+    .doc()
 
 export const setTaskDetails = ({
   userId,
@@ -26,7 +26,7 @@ export const setTaskDetails = ({
   taskId,
   taskName,
   photoURL,
-  dueDate,
+  dueDate
 }) =>
   firebase
     .firestore()
@@ -48,7 +48,7 @@ export const setTaskDetails = ({
         userId,
         userEmail,
         contactName,
-        dueDate,
+        dueDate
       },
       { merge: true }
-    );
+    )
