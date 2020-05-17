@@ -1,5 +1,5 @@
 {
-  "name": "clienttree",
+  "name": "ClientTree",
   "version": "0.1.0",
   "private": true,
   "homepage": "http://clienttree.io",
@@ -122,7 +122,9 @@
     "test": "node scripts/test.js",
     "docz": "docz dev",
     "docz:build": "docz build",
-    "docz:serve": "docz build && docz serve"
+    "docz:serve": "docz build && docz serve",
+    "indexes": "firebase deploy --only firestore:indexes",
+    "guide": "npx styleguidist server"
   },
   "eslintConfig": {
     "extends": [
@@ -232,7 +234,9 @@
     "eslint-plugin-react-hooks": "^1.7.0",
     "eslint-plugin-standard": "^4.0.1",
     "jsdoc-react-proptypes": "^1.0.3",
-    "react-axe": "^3.4.1",
-    "start-server-and-test": "^1.11.0"
+    "prettier": "^1.18.2",
+    "react-axe": "^3.3.0",
+    "react-styleguidist": "^10.6.2",
+    "start-server-and-test": "^1.10.3"
   }
 }

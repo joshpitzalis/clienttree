@@ -27,7 +27,7 @@ class Portal extends Component {
   }
 
   render () {
-    const { children, onClose } = this.props
+    const { children, onClose, fullwidth } = this.props
 
     return ReactDOM.createPortal(
       <div
@@ -38,28 +38,32 @@ class Portal extends Component {
         tabIndex={-1}
         data-testid='close-button'
       >
-        <article className='bg-base w-50-ns w-75 center pa3-ns tc ma3 flex flex-column justify-center br2 br--bottom bt-green'>
-          {onClose && (
-            <button
-              type='button'
-              onClick={onClose}
-              className='fr bn link bg-transparent pointer self-end pointer'
-              data-testid='closeModal'
-            >
-              <Close />
-            </button>
-          )}
+        {fullwidth ? (
+          <div>{children}</div>
+        ) : (
+          <article className="bg-base w-50-ns w-75 center pa3-ns tc ma3 flex flex-column justify-center br2 br--bottom bt-green">
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="fr bn link bg-transparent pointer self-end pointer"
+                data-testid="closeModal"
+              >
+                <Close />
+              </button>
+            )}
 
-          <div
-            role='button'
-            className='center w-100'
-            tabIndex={-1}
-            onClick={e => e.stopPropagation()}
-            onKeyPress={e => e.stopPropagation()}
-          >
-            {children}
-          </div>
-        </article>
+            <div
+              role="button"
+              className="center w-100"
+              tabIndex={-1}
+              onClick={e => e.stopPropagation()}
+              onKeyPress={e => e.stopPropagation()}
+            >
+              {children}
+            </div>
+          </article>
+        )}
       </div>,
       this.el
     )

@@ -146,4 +146,81 @@ export const contactCleaner = connections => {
     residence: getData(person, 'residences', 'value'),
     phoneNumber: getData(person, 'phoneNumbers', 'value')
   }))
-}
+};
+
+export const brandyNewContacts = (_new, _existing) =>
+  _new.reduce((total, item) => {
+    const nameMatch = _existing.some(element => element.name === item.name)
+
+    const emailMatch = _existing.some(element => element.email === item.email)
+
+    if ((!nameMatch && !emailMatch) || (!nameMatch && !item.email)) {
+      total.push(item)
+    }
+
+    return total
+  }, [])
+
+export const findConflict = (newContacts, old) => {
+  // NAME_MATCHES      EMAIL_MATCHES    CONFLICT
+  // true              true             false (identical)
+  // true              false            true
+  // false             true             true
+  // false             false            false
+
+  const findMatch = (_new, _old, matcher) =>
+    _old && _old.find(element => element[matcher] === _new[matcher])
+
+  const duplicates =
+    newContacts &&
+    newContacts.filter(
+      item => findMatch(item, old, 'name') !== findMatch(item, old, 'email')
+    )
+  return duplicates.filter(
+    // only return duplicates that have an email and name field
+    // so no blank fields on incoming conflicts
+    _item =>
+      // (_item.email !== '' || _item.email !== null) &&
+      // (_item.name !== '' || _item.name !== null)
+      _item.email && _item.name
+  )
+};
+export const contactCardSelect = ({
+  setIndex,
+  existing,
+  selector,
+  contact,
+  isLastContact,
+  send
+}) => {
+  setIndex(prev => prev + 1)
+  if (isLastContact) {
+    send('COMPLETED')
+  }
+  if (existing) {
+    selector({ ...contact, uid: existing.uid })
+    return;
+  }
+  if (isLastContact) {
+    send('COMPLETED')
+  }
+  return selector(contact)
+};
+
+export const findMatchingExistingContact = (_duplicate, _existingContacts) => {
+  const cleanName = contact =>
+    contact && contact.name && contact.name.toLowerCase().trim()
+
+  const cleanEmail = contact =>
+    contact && contact.email && contact.email.toLowerCase().trim()
+
+  const bothNotBlank = (contact, duplicate) => !!contact && !!duplicate // only match if the name or the email are the same, but not the same because they are both blank fields for either case
+
+  const match = _contact =>
+    (bothNotBlank(cleanName(_contact), cleanName(_duplicate)) &&
+      cleanName(_contact) === cleanName(_duplicate)) ||
+    (bothNotBlank(cleanEmail(_contact), cleanEmail(_duplicate)) &&
+      cleanEmail(_contact) === cleanEmail(_duplicate))
+
+  return _existingContacts && _existingContacts.find(match)
+};

@@ -84,10 +84,10 @@ export const PersonModal = ({
   }
 
   return (
-    <div>
+    <div className="w-100">
       <div
-        data-testid='contactModal'
-        className={`pa4 br2-bottom bg-layer1 ${
+        data-testid="contactModal"
+        className={`w-100  pa4 br2-bottom bg-layer1 ${
           state && state.saving && state.saving ? 'bt-orange' : 'bt-green'
         }`}
       >

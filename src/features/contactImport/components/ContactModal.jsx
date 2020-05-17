@@ -1,24 +1,34 @@
-import React from 'react';
-import { Machine } from 'xstate';
 // import { assert } from 'chai';
 import { useMachine } from '@xstate/react';
-import { FixedSizeList } from 'react-window';
+import React from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import {
-  _activateContact,
-  _archiveContact,
-  _trashContact,
-} from '../contacts.api';
+import { FixedSizeList } from 'react-window';
+import { Machine } from 'xstate';
 
-export const NewPeopleBox = ({ contacts, userId }) => {
+export const NewPeopleBox = ({
+  contacts,
+  userId,
+  contactsToAdd,
+  setContacts,
+  deleteContact,
+  activeContacts,
+  setActiveContacts,
+  setContactsToArchive,
+}) => {
   const Row = ({ index, style }) => (
     <Contact
       style={style}
       contact={contacts[index]}
       userId={userId}
-      activateContact={_activateContact}
-      archiveContact={_archiveContact}
-      trashContact={_trashContact}
+      // activateContact={_activateContact}
+      // archiveContact={_archiveContact}
+      // trashContact={_trashContact}
+      contactsToAdd={contactsToAdd}
+      setContacts={setContacts}
+      deleteContact={deleteContact}
+      activeContacts={activeContacts}
+      setActiveContacts={setActiveContacts}
+      setContactsToArchive={setContactsToArchive}
     />
   );
 
@@ -32,19 +42,6 @@ export const NewPeopleBox = ({ contacts, userId }) => {
           itemSize={80}
           width={width}
         >
-          {/* // <main className="center"> */}
-          {/* {contacts &&
-      contacts.map(contact => (
-        <Contact
-          key={contact.uid}
-          contact={contact}
-          userId={userId}
-          activateContact={_activateContact}
-          archiveContact={_archiveContact}
-          trashContact={_trashContact}
-        />
-      ))} */}
-          {/* // </main> */}
           {Row}
         </FixedSizeList>
       )}
@@ -59,13 +56,13 @@ export const contactMachine = Machine({
     archived: {
       on: {
         ALREADY_ACTIVATED: 'active',
-        ACTIVATED: { target: 'active', actions: ['activateContact'] },
+        ACTIVATED: { target: 'active', actions: ['addContact'] },
         TRASHED: { target: 'trashed', actions: ['trashContact'] },
       },
     },
     active: {
       on: {
-        ARCHIVED: { target: 'archived', actions: ['archiveContact'] },
+        ARCHIVED: { target: 'archived', actions: ['removeContact'] },
       },
     },
     trashed: {
@@ -77,33 +74,67 @@ export const contactMachine = Machine({
 export const Contact = ({
   contact,
   userId,
-  activateContact,
-  archiveContact,
-  trashContact,
+  // activateContact,
+  // archiveContact,
+  // trashContact,
   style,
+  setContacts,
+  deleteContact,
+  contactsToAdd,
+  activeContacts,
+  setActiveContacts,
+  setContactsToArchive,
 }) => {
   const [current, send] = useMachine(contactMachine, {
     actions: {
-      activateContact,
-      archiveContact,
-      trashContact,
+      // activateContact,
+      // archiveContact,
+      // trashContact,
+      deleteContact: (_, { payload }) =>
+        deleteContact(prev => [...prev, payload]),
+      addContact: (_, { payload }) => {
+        setContacts(prev => [...prev, payload]);
+        setContactsToArchive(prev =>
+          prev.filter(item => item.uid !== payload.uid)
+        );
+      },
+      removeContact: (_, { payload }) => {
+        setContacts(prev => prev.filter(item => item.uid !== payload.uid));
+        setActiveContacts(prev =>
+          prev.filter(item => item.uid !== payload.uid)
+        );
+        setContactsToArchive(prev => [...prev, payload]);
+      },
     },
   });
 
-  const { uid, bucket, photoURL, name, handle } = contact;
+  const { uid, photoURL, name, handle } = contact;
 
-  const checkifAlreadyActivated = React.useCallback((_bucket, _send) => {
-    if (!_bucket || _bucket === 'active') {
-      return _send('ALREADY_ACTIVATED');
-    }
-  }, []);
+  const checkifAdded = React.useCallback(
+    (_contact, _send, _contactsToAdd) => {
+      if (
+        _contactsToAdd.some(item => item.uid === _contact.uid) ||
+        activeContacts.some(item => item.uid === _contact.uid)
+      ) {
+        return _send('ALREADY_ACTIVATED');
+      }
+      return null;
+    },
+    [activeContacts]
+  );
 
   React.useEffect(() => {
-    checkifAlreadyActivated(bucket, send);
-  }, [bucket, send, checkifAlreadyActivated]);
+    checkifAdded(contact, send, contactsToAdd);
+  }, [contact, send, contactsToAdd, checkifAdded]);
+
   if (current.matches('trashed')) {
     return null;
   }
+
+  const handleClick = () =>
+    current.matches('active')
+      ? send({ type: 'ARCHIVED', payload: { uid, userId } })
+      : send({ type: 'ACTIVATED', payload: { uid, userId } });
 
   return (
     <article
@@ -133,7 +164,7 @@ export const Contact = ({
                   send({ type: 'TRASHED', payload: { uid, userId } })
                 }
               >
-                🗑
+                <small className="red">Remove from this list</small>
               </button>
             )}
           </div>
@@ -154,38 +185,10 @@ export const Contact = ({
             data-testid={name}
             value={current.matches('active')}
             checked={current.matches('active')}
-            onChange={() =>
-              current.matches('active')
-                ? send({ type: 'ARCHIVED', payload: { uid, userId } })
-                : send({ type: 'ACTIVATED', payload: { uid, userId } })
-            }
+            onChange={handleClick}
           />
           <span className="checkBox" data-state={current.matches('active')} />
         </label>
-        {/* {current.matches('active') && (
-            <button
-              className="bn pointer tr f2"
-              type="submit"
-              data-testid="archiveContact"
-              onClick={() =>
-                send({ type: 'ARCHIVED', payload: { uid, userId } })
-              }
-            >
-              ❌
-            </button>
-          )}
-          {current.matches('archived') && (
-            <button
-              className="bn pointer tr f2"
-              type="submit"
-              data-testid="activateContact"
-              onClick={() =>
-                send({ type: 'ACTIVATED', payload: { uid, userId } })
-              }
-            >
-              ✅
-            </button>
-          )} */}
       </div>
     </article>
   );

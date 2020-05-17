@@ -14,51 +14,14 @@ import { HelpfulTaskList } from './components/UniversalTaskList'
 import GoogleImport from '../contacts/components/GoogleImport'
 import { ConflictScreen } from '../contacts/components/ConflictScreen'
 import { updateContact } from '../contacts/contacts.api.js'
+import { ContactImporter } from '../contactImport/ContactImporter'
+
+import { sortContacts } from './peopleHelpers/network.helpers'
 
 const networkPropTypes = {
   uid: PropTypes.string.isRequired
 }
 const networkDefaultProps = {}
-
-const sortContacts = contacts => {
-  const lastContact = contact => {
-    const { lastContacted, notes } = contact
-
-    const noteDates =
-      notes &&
-      Object.values(notes)
-        .map(note => note && note.lastUpdated)
-        .filter(item => item !== 9007199254740991)
-
-    const mostRecentNote = noteDates && Math.max(...noteDates)
-
-    return Math.max(lastContacted, mostRecentNote)
-  }
-
-  const compare = (a, b) => {
-    if (lastContact(a) < lastContact(b)) {
-      return -1
-    }
-    if (lastContact(a) > lastContact(b)) {
-      return 1
-    }
-    return 0
-  }
-
-  return (
-    contacts &&
-    contacts
-      .filter(
-        item =>
-          !!item.lastContacted && (!item.bucket || item.bucket === 'active')
-      )
-      .sort(compare)
-  )
-}
-
-// const sortImportedContacts = contacts =>
-//   contacts &&
-//   contacts.filter(item => !!item.lastContacted && item.bucket === 'archived');
 
 /* eslint-disable react/prop-types */
 export const InnerNetwork = ({ uid, contactChunks }) => {
@@ -66,15 +29,20 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
   const [contactPicker, setContactPicker] = React.useState(false)
   const [visible, setVisibility] = React.useState(false)
   const [selectedUser, setSelectedUser] = React.useState('')
+
   const contacts = useSelector(
     store => store && store.contacts && sortContacts(store.contacts)
   )
+
   const allContacts = useSelector(
     store =>
       store &&
       store.contacts &&
       store.contacts.filter(contact => contact && contact.uid)
   )
+
+  // sortContacts(store.contacts.filter(contact => contact && contact.uid))
+
   const dispatch = useDispatch()
   const newDoc = firebase
     .firestore()
@@ -154,8 +122,85 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
   }
 
   return (
-    <ErrorBoundary fallback='Oh no! This bit is broken 🤕'>
+    <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
+      <>
+        <OptimizelyFeature feature="insights">
+          {insights => insights && <InsightsBox />}
+        </OptimizelyFeature>
+        {visible ? (
+          <PersonModal
+            uid={uid}
+            contactId={selectedUser}
+            onClose={() => {
+              setVisibility(false)
+              setSelectedUser('')
+            }}
+            newPerson
+          />
+        ) : (
+          <ContactImporter uid={uid} allContacts={allContacts}>
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedUser(newDoc.id)
+                dispatch({
+                  type: 'people/setSelectedUser',
+                  payload: newDoc.id
+                })
+                setVisibility(true)
+              }}
+              className="btn3 b grow black tl pv2  pointer bn br1 white"
+              data-testid="addPeopleButton"
+            >
+              Add Someone New
+            </button>
+          </ContactImporter>
+        )}
+        <ActiveContactList contacts={allContacts} uid={uid} />
+      </>
+    </ErrorBoundary>
+  )
 
+}
+
+InnerNetwork.propTypes = networkPropTypes
+InnerNetwork.defaultProps = networkDefaultProps
+
+const WrappedNetwork = props => (
+  <OptimizelyFeature feature='contactsSync'>
+    {isEnabled => <InnerNetwork {...props} bulkImportFeature={isEnabled} />}
+  </OptimizelyFeature>
+)
+
+export const Network = React.memo(WrappedNetwork)
+
+const ActiveContactList = ({ contacts, uid }) => {
+  if (!contacts) {
+    return <p data-testid='loader'>Loading...</p>
+  }
+  return (
+    <>
+      {contacts.length ? (
+        <ul className='list pl0 mt0'>
+          {contacts && contacts.map(
+            contact =>
+              contact.uid && (
+                <Person key={contact.uid} contact={contact} uid={uid} />
+              )
+          )}
+        </ul>
+      ) : (
+        <p data-testid='emptyContacts'>No Contacts Yet.</p>
+      )}
+    </>
+  )
+}
+
+/* eslint-disable react/prop-types */
+
+export default function ContactsBox ({ contacts, uid }) {
+  return (
+    <ErrorBoundary fallback='Oh no! This bit is broken 🤕'>
       {conflicts && !!conflicts.length && (
         <ConflictScreen
           send={dispatcher}
@@ -193,7 +238,6 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
           !workboard && <HelpfulTaskList myUid={uid} insights={workboard} />
         }
       </OptimizelyFeature>
-
       <NewImport
         visible={visible}
         uid={uid}
@@ -202,79 +246,56 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
         setSelectedUser={setSelectedUser}
         menu={menu}
       />
-
       <ContactsBox contacts={contacts} uid={uid} />
-
     </ErrorBoundary>
   )
 }
 
-InnerNetwork.propTypes = networkPropTypes
-InnerNetwork.defaultProps = networkDefaultProps
-
-const WrappedNetwork = props => (
-  <OptimizelyFeature feature='contactsSync'>
-    {isEnabled => <InnerNetwork {...props} bulkImportFeature={isEnabled} />}
-  </OptimizelyFeature>
-)
-
-export const Network = React.memo(WrappedNetwork)
-
-/* eslint-disable react/prop-types */
-export default function ContactsBox ({ contacts, uid }) {
-  if (!contacts) {
-    return <p data-testid='loader'>Loading...</p>
-  }
-  return (
-    <>
-      {contacts.length ? (
-        <ul className='list pl0 mt0'>
-          {contacts && contacts.map(
-            contact =>
-              contact.uid && (
-                <Person key={contact.uid} contact={contact} uid={uid} />
-              )
-          )}
-        </ul>
-      ) : (
-        <p data-testid='emptyContacts'>No Contacts Yet.</p>
-      )}
-    </>
-  )
-}
-
-function NewImport ({
-  visible,
-  uid,
-  selectedUser,
-  setVisibility,
-  setSelectedUser,
-  menu
-}) {
-  return (
-    <div className="pv4 flex " data-testid="outreachPage">
-      {visible ? (
-        <PersonModal
-          uid={uid}
-          contactId={selectedUser}
-          onClose={() => {
-            setVisibility(false)
-            setSelectedUser('')
-          }}
-          newPerson
-        />
-      ) : (
-        <Dropdown overlay={menu} trigger={['click']}>
-          <button
-            type="button"
-            className="btn2 b grow  ph3 pv2  pointer bn br1 white ant-dropdown-link"
-            onClick={e => e.preventDefault()}
-          >
+  function NewImport ({
+    visible,
+    uid,
+    selectedUser,
+    setVisibility,
+    setSelectedUser,
+    menu
+  }) {
+    return (
+      <div className="pv4 flex " data-testid="outreachPage">
+        {visible ? (
+          <PersonModal
+            uid={uid}
+            contactId={selectedUser}
+            onClose={() => {
+              setVisibility(false)
+              setSelectedUser('')
+            }}
+            newPerson
+          />
+        ) : (
+          <Dropdown overlay={menu} trigger={['click']}>
+            <button
+              type="button"
+              className="btn2 b grow  ph3 pv2  pointer bn br1 white ant-dropdown-link"
+              onClick={e => e.preventDefault()}
+            >
             Add People
-            <Icon type="plus" className="pl1" />
-          </button>
-        </Dropdown>
-      )}
-    </div>
-  )
-}
+              <Icon type="plus" className="pl1" />
+            </button>
+          </Dropdown>
+        )}
+      </div>
+    )
+  }
+
+  if (contacts.length) {
+    return (
+      <ul className="list pl0 mt0 pb4">
+        {contacts.map(contact => (
+          <Person key={contact.uid} contact={contact} uid={uid} />
+        ))}
+      </ul>
+    )
+  }
+
+  return <p data-testid="emptyContacts">No Contacts Yet.</p>
+};
