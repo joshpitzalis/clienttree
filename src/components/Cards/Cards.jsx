@@ -1,13 +1,13 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import 'tachyons';
-import '../../index.css';
+import PropTypes from 'prop-types'
+import React from 'react'
+import 'tachyons'
+import '../../tailwind.generated.css'
 
 const propTypes = {
   contact: PropTypes.shape({
     photoURL: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired
   }),
   testid: PropTypes.string,
 
@@ -17,14 +17,14 @@ const propTypes = {
   selector: PropTypes.func,
   setIndex: PropTypes.func,
   send: PropTypes.func.isRequired,
-  selectCard: PropTypes.func.isRequired,
-};
+  selectCard: PropTypes.func.isRequired
+}
 
 const defaultProps = {
   contact: {
     photoURL: 'http://tachyons.io/img/avatar_1.jpg',
     name: 'Example',
-    email: 'Exa@mp.le',
+    email: 'Exa@mp.le'
   },
   testid: 'mockTestId',
 
@@ -32,8 +32,8 @@ const defaultProps = {
   isLastContact: false,
 
   selector: () => {},
-  setIndex: () => {},
-};
+  setIndex: () => {}
+}
 
 export const ContactCard = ({
   contact,
@@ -43,14 +43,14 @@ export const ContactCard = ({
   existing,
   isLastContact,
   send,
-  selectCard,
+  selectCard
 }) => {
   const avatarCreator = _contact =>
     _contact && _contact.photoURL
       ? _contact.photoURL
       : `https://ui-avatars.com/api/?name=${
           _contact && _contact.name ? _contact.name : 'Jane Doe'
-        }`;
+        }`
 
   return (
     <div style={{ height: '350px' }}>
@@ -63,7 +63,7 @@ export const ContactCard = ({
             selector,
             contact,
             isLastContact,
-            send,
+            send
           })
         }
         className="w5 center bg-white br4  mb4 ba grow b--black-10 pointer b--green-hover"
@@ -84,8 +84,8 @@ export const ContactCard = ({
         </div>
       </button>
     </div>
-  );
-};
+  )
+}
 
-ContactCard.propTypes = propTypes;
-ContactCard.defaultProps = defaultProps;
+ContactCard.propTypes = propTypes
+ContactCard.defaultProps = defaultProps

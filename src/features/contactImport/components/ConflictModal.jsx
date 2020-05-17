@@ -1,20 +1,20 @@
-import React from 'react';
-import { ContactCard } from '../../../components/Cards/Cards';
-import Portal from '../../../utils/Portal';
+import React from 'react'
+import { ContactCard } from '../../../components/Cards/Cards'
+import Portal from '../../../utils/Portal'
 import {
   contactCardSelect,
-  findMatchingExistingContact,
-} from '../contacts.helpers';
-
+  findMatchingExistingContact
+} from '../contacts.helpers'
+/* eslint-disable react/prop-types */
 export const MergeManager = ({
   send,
   duplicates,
   existingContacts,
   handleDuplicateSelection,
-  handleExistingSelection,
+  handleExistingSelection
 }) => {
-  const [index, setIndex] = React.useState(0);
-  const lastcontact = index + 1 === duplicates.length;
+  const [index, setIndex] = React.useState(0)
+  const lastcontact = index + 1 === duplicates.length
 
   return (
     <div
@@ -80,36 +80,36 @@ export const MergeManager = ({
         </button>
       </div>
     </div>
-  );
-};
-
+  )
+}
+/* eslint-disable react/prop-types */
 export const ConflictScreen = ({
   send,
   duplicates,
   existingContacts,
-  setDuplicates,
+  setDuplicates
 }) => {
   const handleDuplicateSelection = payload => {
     send({
       type: 'MERGE_ONE',
-      payload,
-    });
-  };
+      payload
+    })
+  }
 
   const handleExistingSelection = payload => {
     send({
       type: 'SKIP_ONE',
-      payload,
-    });
-  };
+      payload
+    })
+  }
 
   // fire on unmount only
-  React.useEffect(() => () => setDuplicates([]), [setDuplicates]);
+  React.useEffect(() => () => setDuplicates([]), [setDuplicates])
 
   return (
     <Portal
       onClose={() => {
-        send('CLOSED');
+        send('CLOSED')
       }}
     >
       <MergeManager
@@ -120,5 +120,5 @@ export const ConflictScreen = ({
         handleExistingSelection={handleExistingSelection}
       />
     </Portal>
-  );
-};
+  )
+}

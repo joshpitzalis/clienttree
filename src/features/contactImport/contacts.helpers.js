@@ -146,7 +146,7 @@ export const contactCleaner = connections => {
     residence: getData(person, 'residences', 'value'),
     phoneNumber: getData(person, 'phoneNumbers', 'value')
   }))
-};
+}
 
 export const brandyNewContacts = (_new, _existing) =>
   _new.reduce((total, item) => {
@@ -184,7 +184,7 @@ export const findConflict = (newContacts, old) => {
       // (_item.name !== '' || _item.name !== null)
       _item.email && _item.name
   )
-};
+}
 export const contactCardSelect = ({
   setIndex,
   existing,
@@ -199,13 +199,13 @@ export const contactCardSelect = ({
   }
   if (existing) {
     selector({ ...contact, uid: existing.uid })
-    return;
+    return
   }
   if (isLastContact) {
     send('COMPLETED')
   }
   return selector(contact)
-};
+}
 
 export const findMatchingExistingContact = (_duplicate, _existingContacts) => {
   const cleanName = contact =>
@@ -223,4 +223,4 @@ export const findMatchingExistingContact = (_duplicate, _existingContacts) => {
       cleanEmail(_contact) === cleanEmail(_duplicate))
 
   return _existingContacts && _existingContacts.find(match)
-};
+}

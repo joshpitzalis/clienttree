@@ -11,6 +11,7 @@ if (!portalRoot) {
   document.body.appendChild(portalRoot)
 }
 
+/* eslint-disable react/prop-types */
 class Portal extends Component {
   constructor (props) {
     super(props)

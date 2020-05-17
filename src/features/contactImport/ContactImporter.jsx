@@ -1,17 +1,17 @@
-import { useMachine } from '@xstate/react';
-import { Dropdown, Icon, Menu } from 'antd';
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Machine } from 'xstate';
-import Portal from '../../utils/Portal';
-import { ConflictScreen } from './components/ConflictModal';
-import { NewPeopleBox } from './components/ContactModal';
+import { useMachine } from '@xstate/react'
+import { Dropdown, Icon, Menu } from 'antd'
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { Machine } from 'xstate'
+import Portal from '../../utils/Portal'
+import { ConflictScreen } from './components/ConflictModal'
+import { NewPeopleBox } from './components/ContactModal'
 import {
   fetchContacts,
   handleContactsUpdate,
   mergeAllConflicts,
-  updateContact,
-} from './contacts.api';
+  updateContact
+} from './contacts.api'
 
 // https://xstate.js.org/viz/?gist=8d51d699c694c3ee9ab2804ceaedf702
 const contactMachine = Machine({
@@ -24,20 +24,20 @@ const contactMachine = Machine({
         IMPORT: [
           {
             target: 'contactModal',
-            cond: 'checkifImported',
+            cond: 'checkifImported'
           },
-          { target: 'loadingButton' },
+          { target: 'loadingButton' }
         ],
 
-        ALREADY_FETCHED: 'contactModal',
-      },
+        ALREADY_FETCHED: 'contactModal'
+      }
     },
     loadingButton: {
       onEntry: ['handleImport'],
       on: {
         CONFLICTS_FOUND: 'conflictModal',
-        NO_CONFLICTS_FOUND: 'contactModal',
-      },
+        NO_CONFLICTS_FOUND: 'contactModal'
+      }
     },
     conflictModal: {
       on: {
@@ -45,56 +45,57 @@ const contactMachine = Machine({
         COMPLETED: 'contactModal',
         MERGE_ONE: {
           target: 'conflictModal',
-          actions: ['updateContact'],
+          actions: ['updateContact']
         },
         SKIP_ONE: 'conflictModal',
         SKIP_ALL: 'contactModal',
-        MERGE_ALL: { target: 'contactModal', actions: ['mergeAllConflicts'] },
-      },
+        MERGE_ALL: { target: 'contactModal', actions: ['mergeAllConflicts'] }
+      }
     },
     contactModal: {
       on: {
         SAVED: { target: 'importButton', actions: ['handleSave'] },
         CLOSED: 'importButton',
-        IMPORT_NEW: 'contactModal',
-      },
+        IMPORT_NEW: 'contactModal'
+      }
       // onExit: ['updateContactCounts'],
     },
     errorMessage: {
       on: {
-        RETRIED: 'loadingButton',
-      },
-    },
-  },
-});
+        RETRIED: 'loadingButton'
+      }
+    }
+  }
+})
 
+/* eslint-disable react/prop-types */
 export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
   const activeContactss =
     allContacts &&
-    allContacts.filter(item => !item.bucket || item.bucket === 'active').length;
+    allContacts.filter(item => !item.bucket || item.bucket === 'active').length
 
   const archivedContacts =
     allContacts &&
-    allContacts.filter(item => item.bucket === 'archived').length;
+    allContacts.filter(item => item.bucket === 'archived').length
 
-  const totalContacts = allContacts && allContacts.length;
+  const totalContacts = allContacts && allContacts.length
   const [activeContacts, setActiveContacts] = React.useState(
-    allContacts.filter(item => !item.bucket || item.bucket === 'active')
-  );
-  const [contactsToArchive, setContactsToArchive] = React.useState([]);
-  const [conflicts, setConflicts] = React.useState([]);
-  const [contactsToAdd, setContacts] = React.useState([]);
-  const [contactsToDelete, deleteContact] = React.useState([]);
+    allContacts && allContacts.filter(item => !item.bucket || item.bucket === 'active')
+  )
+  const [contactsToArchive, setContactsToArchive] = React.useState([])
+  const [conflicts, setConflicts] = React.useState([])
+  const [contactsToAdd, setContacts] = React.useState([])
+  const [contactsToDelete, deleteContact] = React.useState([])
 
   const alreadyImported = useSelector(
     store => store.user && store.user.contactsImported
-  );
+  )
 
   const [current, send] = useMachine(contactMachine, {
     actions: {
       handleImport: () => {
-        const { gapi } = window;
-        const googleAuth = gapi && gapi.auth2 && gapi.auth2.getAuthInstance();
+        const { gapi } = window
+        const googleAuth = gapi && gapi.auth2 && gapi.auth2.getAuthInstance()
         googleAuth
           .signIn()
           .then(() =>
@@ -102,10 +103,10 @@ export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
               _gapi: gapi,
               existingContacts: allContacts,
               userId: uid,
-              send,
+              send
             })
           )
-          .catch(error => console.log({ error }));
+          .catch(error => console.log({ error }))
       },
 
       updateContact: (_, { payload }) => updateContact(uid, payload),
@@ -119,13 +120,13 @@ export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
           uid,
           activeContacts: activeContactss,
           archivedContacts,
-          totalContacts,
-        }),
+          totalContacts
+        })
     },
     guards: {
-      checkifImported: () => !!alreadyImported,
-    },
-  });
+      checkifImported: () => !!alreadyImported
+    }
+  })
 
   const menu = (
     <Menu>
@@ -143,7 +144,7 @@ export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
         </button>
       </Menu.Item>
     </Menu>
-  );
+  )
 
   if (current.matches('importButton')) {
     return (
@@ -159,7 +160,7 @@ export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
           </button>
         </Dropdown>
       </div>
-    );
+    )
   }
 
   if (current.matches('loadingButton')) {
@@ -173,7 +174,7 @@ export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
           Importing...
         </button>
       </div>
-    );
+    )
   }
 
   if (current.matches('conflictModal')) {
@@ -188,7 +189,7 @@ export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
           ></ConflictScreen>
         )}
       </div>
-    );
+    )
   }
 
   if (current.matches('contactModal')) {
@@ -207,7 +208,7 @@ export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
           contactsToArchive={contactsToArchive}
         />
       </Portal>
-    );
+    )
   }
 
   if (current.matches('error')) {
@@ -220,11 +221,11 @@ export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
       >
         Error
       </button>
-    );
+    )
   }
 
-  return null;
-});
+  return null
+})
 
 const ContactModal = ({
   allContacts,
@@ -235,7 +236,7 @@ const ContactModal = ({
   contactsToAdd,
   activeContacts,
   setActiveContacts,
-  setContactsToArchive,
+  setContactsToArchive
 }) => (
   <>
     <p className="f3 fw6 w-50 dib-l w-auto-l lh-title"> Select Contacts</p>
@@ -258,8 +259,8 @@ const ContactModal = ({
               occupation,
               organization,
               email,
-              phoneNumber,
-            } = contact;
+              phoneNumber
+            } = contact
             return {
               photoURL,
               name,
@@ -269,8 +270,8 @@ const ContactModal = ({
                 email ||
                 phoneNumber,
               bucket,
-              uid: contact.uid,
-            };
+              uid: contact.uid
+            }
           })
         }
       />
@@ -284,9 +285,9 @@ const ContactModal = ({
       {/* if total operations exceed 500 you must stop */}
       {contactsToAdd && contactsToAdd.length
         ? `Add ${contactsToAdd.length} ${
-            contactsToAdd.length === 1 ? `Contact` : `Contacts`
+            contactsToAdd.length === 1 ? 'Contact' : 'Contacts'
           }`
-        : `Done for Now`}
+        : 'Done for Now'}
     </button>
   </>
-);
+)

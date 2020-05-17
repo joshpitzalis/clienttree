@@ -39,8 +39,8 @@ export const render = (
     user = {
       id: 'hiaCOgc7xWgoVf6gsqkmNIWmjgs2',
       attributes: {
-        id: 'hiaCOgc7xWgoVf6gsqkmNIWmjgs2',
-      },
+        id: 'hiaCOgc7xWgoVf6gsqkmNIWmjgs2'
+      }
     },
     ...renderOptions
   } = {}

@@ -1,10 +1,11 @@
 // import { assert } from 'chai';
-import { useMachine } from '@xstate/react';
-import React from 'react';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import { FixedSizeList } from 'react-window';
-import { Machine } from 'xstate';
+import { useMachine } from '@xstate/react'
+import React from 'react'
+import AutoSizer from 'react-virtualized-auto-sizer'
+import { FixedSizeList } from 'react-window'
+import { Machine } from 'xstate'
 
+/* eslint-disable react/prop-types */
 export const NewPeopleBox = ({
   contacts,
   userId,
@@ -13,7 +14,7 @@ export const NewPeopleBox = ({
   deleteContact,
   activeContacts,
   setActiveContacts,
-  setContactsToArchive,
+  setContactsToArchive
 }) => {
   const Row = ({ index, style }) => (
     <Contact
@@ -30,7 +31,7 @@ export const NewPeopleBox = ({
       setActiveContacts={setActiveContacts}
       setContactsToArchive={setContactsToArchive}
     />
-  );
+  )
 
   return (
     <AutoSizer>
@@ -46,8 +47,8 @@ export const NewPeopleBox = ({
         </FixedSizeList>
       )}
     </AutoSizer>
-  );
-};
+  )
+}
 
 export const contactMachine = Machine({
   id: 'contact',
@@ -57,20 +58,21 @@ export const contactMachine = Machine({
       on: {
         ALREADY_ACTIVATED: 'active',
         ACTIVATED: { target: 'active', actions: ['addContact'] },
-        TRASHED: { target: 'trashed', actions: ['trashContact'] },
-      },
+        TRASHED: { target: 'trashed', actions: ['trashContact'] }
+      }
     },
     active: {
       on: {
-        ARCHIVED: { target: 'archived', actions: ['removeContact'] },
-      },
+        ARCHIVED: { target: 'archived', actions: ['removeContact'] }
+      }
     },
     trashed: {
-      type: 'final',
-    },
-  },
-});
+      type: 'final'
+    }
+  }
+})
 
+/* eslint-disable react/prop-types */
 export const Contact = ({
   contact,
   userId,
@@ -83,7 +85,7 @@ export const Contact = ({
   contactsToAdd,
   activeContacts,
   setActiveContacts,
-  setContactsToArchive,
+  setContactsToArchive
 }) => {
   const [current, send] = useMachine(contactMachine, {
     actions: {
@@ -93,48 +95,48 @@ export const Contact = ({
       deleteContact: (_, { payload }) =>
         deleteContact(prev => [...prev, payload]),
       addContact: (_, { payload }) => {
-        setContacts(prev => [...prev, payload]);
+        setContacts(prev => [...prev, payload])
         setContactsToArchive(prev =>
-          prev.filter(item => item.uid !== payload.uid)
-        );
+          prev && prev.filter(item => item.uid !== payload.uid)
+        )
       },
       removeContact: (_, { payload }) => {
-        setContacts(prev => prev.filter(item => item.uid !== payload.uid));
+        setContacts(prev => prev && prev.filter(item => item.uid !== payload.uid))
         setActiveContacts(prev =>
-          prev.filter(item => item.uid !== payload.uid)
-        );
-        setContactsToArchive(prev => [...prev, payload]);
-      },
-    },
-  });
+          prev && prev.filter(item => item.uid !== payload.uid)
+        )
+        setContactsToArchive(prev => [...prev, payload])
+      }
+    }
+  })
 
-  const { uid, photoURL, name, handle } = contact;
+  const { uid, photoURL, name, handle } = contact
 
   const checkifAdded = React.useCallback(
     (_contact, _send, _contactsToAdd) => {
       if (
-        _contactsToAdd.some(item => item.uid === _contact.uid) ||
-        activeContacts.some(item => item.uid === _contact.uid)
+        (_contactsToAdd && _contactsToAdd.some(item => item.uid === _contact.uid)) ||
+        (activeContacts && activeContacts.some(item => item.uid === _contact.uid))
       ) {
-        return _send('ALREADY_ACTIVATED');
+        return _send('ALREADY_ACTIVATED')
       }
-      return null;
+      return null
     },
     [activeContacts]
-  );
+  )
 
   React.useEffect(() => {
-    checkifAdded(contact, send, contactsToAdd);
-  }, [contact, send, contactsToAdd, checkifAdded]);
+    checkifAdded(contact, send, contactsToAdd)
+  }, [contact, send, contactsToAdd, checkifAdded])
 
   if (current.matches('trashed')) {
-    return null;
+    return null
   }
 
   const handleClick = () =>
     current.matches('active')
       ? send({ type: 'ARCHIVED', payload: { uid, userId } })
-      : send({ type: 'ACTIVATED', payload: { uid, userId } });
+      : send({ type: 'ACTIVATED', payload: { uid, userId } })
 
   return (
     <article
@@ -191,5 +193,5 @@ export const Contact = ({
         </label>
       </div>
     </article>
-  );
-};
+  )
+}

@@ -1,7 +1,7 @@
 // import GoogleContacts from 'react-google-contacts';
 import React from 'react'
 import { Icon } from 'antd'
-import { contactCleaner } from '../contacts.helpers.js'
+import { contactCleaner } from '../../contactImport/contacts.helpers'
 import { saveImportedContacts, markImported } from '../contacts.api.js'
 
 export const brandNewContacts = (_new, _existing) =>

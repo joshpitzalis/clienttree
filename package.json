@@ -140,7 +140,8 @@
       "react-hooks"
     ],
     "env": {
-      "cypress/globals": true
+      "cypress/globals": true,
+      "jest/globals": true
     },
     "settings": {
       "react": {
@@ -226,7 +227,7 @@
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-html": "^5.0.5",
     "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-jest": "^23.10.0",
+    "eslint-plugin-jest": "^23.13.0",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",

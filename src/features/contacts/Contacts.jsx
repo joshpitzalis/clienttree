@@ -11,7 +11,8 @@ import {
   handleError as error,
   handleSuccessfulCompletion as success,
   handlePending as pending
-} from './contacts.helpers.js'
+} from '../contactImport/contacts.helpers'
+
 import { setNewContact as set, updateContact } from './contacts.api.js'
 import { ConflictScreen } from './components/ConflictScreen'
 

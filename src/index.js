@@ -11,9 +11,6 @@ import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import 'tachyons'
 import './tailwind.generated.css'
 
-import './index.css'
-
-
 if (process.env.NODE_ENV === 'production') {
   Sentry.init({
     dsn: process.env.REACT_APP_SENTRY_DSN,

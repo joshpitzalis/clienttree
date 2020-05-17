@@ -1,3 +1,4 @@
+
 export const sortContacts = contacts => {
   const lastContact = contact => {
     const { lastContacted, notes } = contact
@@ -11,7 +12,7 @@ export const sortContacts = contacts => {
     const mostRecentNote = noteDates && Math.max(...noteDates)
 
     return Math.max(lastContacted, mostRecentNote)
-  };
+  }
 
   const compare = (a, b) => {
     if (lastContact(a) < lastContact(b)) {
@@ -21,7 +22,7 @@ export const sortContacts = contacts => {
       return 1
     }
     return 0
-  };
+  }
 
   return (
     contacts &&
@@ -32,4 +33,4 @@ export const sortContacts = contacts => {
       )
       .sort(compare)
   )
-};
+}
