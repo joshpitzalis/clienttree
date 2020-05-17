@@ -111,8 +111,8 @@ export const handleAddition = ({
 
   return Promise.all(writeOps)
     .then(success)
-    .catch(_error => error(_error, 'contacts/handleAddition'));
-};
+    .catch(_error => error(_error, 'contacts/handleAddition'))
+}
 
 export const contactCleaner = connections => {
   const getData = (person, field, key) => {
@@ -122,15 +122,15 @@ export const contactCleaner = connections => {
         person[field].length > 0 &&
         person[field][0]
         ? person[field][0][key]
-        : null;
+        : null
     }
     return person &&
       person[field] &&
       person[field].length > 0 &&
       person[field][0]
       ? person[field][0]
-      : null;
-  };
+      : null
+  }
 
   return connections.map(person => ({
     resourceName: person.resourceName,
@@ -144,6 +144,6 @@ export const contactCleaner = connections => {
     occupation: getData(person, 'occupations', 'value'),
     organization: getData(person, 'organizations'),
     residence: getData(person, 'residences', 'value'),
-    phoneNumber: getData(person, 'phoneNumbers', 'value'),
-  }));
-};
+    phoneNumber: getData(person, 'phoneNumbers', 'value')
+  }))
+}

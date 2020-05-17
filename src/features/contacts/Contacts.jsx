@@ -12,7 +12,6 @@ import {
   handleSuccessfulCompletion as success,
   handlePending as pending
 } from './contacts.helpers.js'
-
 import { setNewContact as set, updateContact } from './contacts.api.js'
 import { ConflictScreen } from './components/ConflictScreen'
 
@@ -141,8 +140,8 @@ const ImportContacts = ({
         className='btn3 grow  ph3 pv2  pointer bn br1 white'
         data-testid='importContacts'
       >
-        Import from
-        <Icon type="google" className="pl2" />
+        Import from Google
+        {/* <Icon type="google" className="pl2" /> */}
       </button>
     )
   }

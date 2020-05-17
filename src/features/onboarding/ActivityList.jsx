@@ -10,9 +10,14 @@ export const completePercentage = _onboarding =>
     ((1 + Object.values(_onboarding).filter(_x => !!_x).length) / 7) * 100
   )
 
-/** @param {{uid:string, children: JSX.Element, contactSelected: string, workboard:Boolean}} [Props] */
+/** @param {{
+ * uid:string,
+ * children: JSX.Element,
+ * contactSelected: string,
+ * workboard:Boolean}} [Props] */
 
-export function Onboarding({ uid, children, contactSelected, workboard }) {
+/* eslint-disable react/prop-types */
+export function Onboarding ({ uid, children, contactSelected, workboard }) {
   // gets user onboarding details
   const onboarding = useSelector(
     store => store.user && store.user.onboarding && store.user.onboarding
@@ -42,7 +47,7 @@ export function Onboarding({ uid, children, contactSelected, workboard }) {
       return 'Activities'
     }
     if (workboard && isEnabled) {
-      return 'Getting Started';
+      return 'Getting Started'
     }
   }
 

@@ -82,6 +82,7 @@
     "react-use": "^12.2.2",
     "react-virtualized-auto-sizer": "^1.0.2",
     "react-window": "^1.8.5",
+    "recoil": "0.0.7",
     "redux": "^4.0.4",
     "redux-immutable-state-invariant": "^2.1.0",
     "redux-observable": "^1.2.0",

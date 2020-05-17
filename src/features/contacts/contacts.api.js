@@ -40,8 +40,8 @@ export const updateContact = (userId, contact) => {
         photoURL: photoURL || `https://ui-avatars.com/api/?name=${name}`
       },
       { merge: true }
-    );
-};
+    )
+}
 
 export const saveImportedContacts = (importedContacts, userId) => {
   const set = async (_contact, _userId, _batch) => {
@@ -50,43 +50,43 @@ export const saveImportedContacts = (importedContacts, userId) => {
       .collection('users')
       .doc(_userId)
       .collection('contacts')
-      .doc();
+      .doc()
 
-    const oneYearAgo = new Date().setFullYear(new Date().getFullYear() - 1);
-    const lastContacted = +new Date(oneYearAgo);
+    const oneYearAgo = new Date().setFullYear(new Date().getFullYear() - 1)
+    const lastContacted = +new Date(oneYearAgo)
 
     const ref = firebase
       .firestore()
       .collection('users')
       .doc(_userId)
       .collection('contacts')
-      .doc(newDoc.id);
+      .doc(newDoc.id)
 
     _batch.set(ref, {
       uid: newDoc.id,
       lastContacted,
       bucket: 'archived',
-      ..._contact,
-    });
-  };
+      ..._contact
+    })
+  }
 
   // pending();
 
-  const batch = firebase.firestore().batch();
+  const batch = firebase.firestore().batch()
 
   // const writeOps = importedContacts.map(contact => set(contact, userId, batch));
-  importedContacts.forEach(contact => set(contact, userId, batch));
+  importedContacts.forEach(contact => set(contact, userId, batch))
 
   // Promise.all(writeOps)
 
   return batch
     .commit()
     .then(() => console.log({ success: importedContacts }))
-    .catch(error => console.log({ error }));
-};
+    .catch(error => console.log({ error }))
+}
 
 export const _activateContact = (ctx, { payload }) => {
-  const { userId, uid } = payload;
+  const { userId, uid } = payload
   return firebase
     .firestore()
     .collection('users')
@@ -95,13 +95,13 @@ export const _activateContact = (ctx, { payload }) => {
     .doc(uid)
     .set(
       {
-        bucket: 'active',
+        bucket: 'active'
       },
       { merge: true }
-    );
-};
+    )
+}
 export const _archiveContact = (ctx, { payload }) => {
-  const { userId, uid } = payload;
+  const { userId, uid } = payload
 
   return firebase
     .firestore()
@@ -111,21 +111,21 @@ export const _archiveContact = (ctx, { payload }) => {
     .doc(uid)
     .set(
       {
-        bucket: 'archived',
+        bucket: 'archived'
       },
       { merge: true }
-    );
-};
+    )
+}
 export const _trashContact = (ctx, { payload }) => {
-  const { userId, uid } = payload;
+  const { userId, uid } = payload
   return firebase
     .firestore()
     .collection('users')
     .doc(userId)
     .collection('contacts')
     .doc(uid)
-    .delete();
-};
+    .delete()
+}
 
 export const markImported = userId =>
   firebase
@@ -134,13 +134,13 @@ export const markImported = userId =>
     .doc(userId)
     .set(
       {
-        contactsImported: true,
+        contactsImported: true
       },
       { merge: true }
-    );
+    )
 
 export const updateContactCount = (userId, contactStats) => {
-  const { activeContacts, archivedContacts, totalContacts } = contactStats;
+  const { activeContacts, archivedContacts, totalContacts } = contactStats
 
   return firebase
     .firestore()
@@ -150,8 +150,8 @@ export const updateContactCount = (userId, contactStats) => {
       {
         activeContacts,
         archivedContacts,
-        totalContacts,
+        totalContacts
       },
       { merge: true }
-    );
-};
+    )
+}

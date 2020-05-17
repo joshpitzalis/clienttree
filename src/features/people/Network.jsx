@@ -1,19 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import './networkAnimations.css';
-import { useSelector, useDispatch } from 'react-redux';
-import { OptimizelyFeature } from '@optimizely/react-sdk';
-import { Menu, Dropdown, Icon } from 'antd';
-import ImportContacts, { PickContacts } from '../contacts/Contacts';
-import { Person } from './components/Person';
-import { PersonModal } from './components/PersonBox';
-import ErrorBoundary from '../../utils/ErrorBoundary';
-import firebase from '../../utils/firebase';
-import { InsightsBox } from '../insights/InsightsBox';
-import { HelpfulTaskList } from './components/UniversalTaskList';
-import GoogleImport from '../contacts/components/GoogleImport';
-import { ConflictScreen } from '../contacts/components/ConflictScreen';
-import { updateContact } from '../contacts/contacts.api.js';
+import React from 'react'
+import PropTypes from 'prop-types'
+import './networkAnimations.css'
+import { useSelector, useDispatch } from 'react-redux'
+import { OptimizelyFeature } from '@optimizely/react-sdk'
+import { Menu, Dropdown, Icon } from 'antd'
+import ImportContacts from '../contacts/Contacts'
+import { Person } from './components/Person'
+import { PersonModal } from './components/PersonBox'
+import ErrorBoundary from '../../utils/ErrorBoundary'
+import firebase from '../../utils/firebase'
+import { InsightsBox } from '../insights/InsightsBox'
+import { HelpfulTaskList } from './components/UniversalTaskList'
+import GoogleImport from '../contacts/components/GoogleImport'
+import { ConflictScreen } from '../contacts/components/ConflictScreen'
+import { updateContact } from '../contacts/contacts.api.js'
 
 const networkPropTypes = {
   uid: PropTypes.string.isRequired
@@ -22,28 +22,28 @@ const networkDefaultProps = {}
 
 const sortContacts = contacts => {
   const lastContact = contact => {
-    const { lastContacted, notes } = contact;
+    const { lastContacted, notes } = contact
 
     const noteDates =
       notes &&
       Object.values(notes)
         .map(note => note && note.lastUpdated)
-        .filter(item => item !== 9007199254740991);
+        .filter(item => item !== 9007199254740991)
 
-    const mostRecentNote = noteDates && Math.max(...noteDates);
+    const mostRecentNote = noteDates && Math.max(...noteDates)
 
-    return Math.max(lastContacted, mostRecentNote);
-  };
+    return Math.max(lastContacted, mostRecentNote)
+  }
 
   const compare = (a, b) => {
     if (lastContact(a) < lastContact(b)) {
-      return -1;
+      return -1
     }
     if (lastContact(a) > lastContact(b)) {
-      return 1;
+      return 1
     }
-    return 0;
-  };
+    return 0
+  }
 
   return (
     contacts &&
@@ -53,48 +53,49 @@ const sortContacts = contacts => {
           !!item.lastContacted && (!item.bucket || item.bucket === 'active')
       )
       .sort(compare)
-  );
-};
+  )
+}
 
 // const sortImportedContacts = contacts =>
 //   contacts &&
 //   contacts.filter(item => !!item.lastContacted && item.bucket === 'archived');
 
+/* eslint-disable react/prop-types */
 export const InnerNetwork = ({ uid, contactChunks }) => {
-  const [conflicts, setConflicts] = React.useState([]);
-  const [contactPicker, setContactPicker] = React.useState(false);
-  const [visible, setVisibility] = React.useState(false);
-  const [selectedUser, setSelectedUser] = React.useState('');
+  const [conflicts, setConflicts] = React.useState([])
+  const [contactPicker, setContactPicker] = React.useState(false)
+  const [visible, setVisibility] = React.useState(false)
+  const [selectedUser, setSelectedUser] = React.useState('')
   const contacts = useSelector(
     store => store && store.contacts && sortContacts(store.contacts)
-  );
+  )
   const allContacts = useSelector(
     store =>
       store &&
       store.contacts &&
       store.contacts.filter(contact => contact && contact.uid)
-  );
-  const dispatch = useDispatch();
+  )
+  const dispatch = useDispatch()
   const newDoc = firebase
     .firestore()
     .collection('users')
     .doc(uid)
     .collection('contacts')
-    .doc();
+    .doc()
 
   React.useEffect(() => {
-    const { gapi } = window;
+    const { gapi } = window
     gapi.load('client', () =>
       gapi.client.init({
         apiKey: process.env.REACT_APP_API_KEY,
         clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
         discoveryDocs: [
-          'https://www.googleapis.com/discovery/v1/apis/people/v1/rest',
+          'https://www.googleapis.com/discovery/v1/apis/people/v1/rest'
         ],
-        scope: 'https://www.googleapis.com/auth/contacts.readonly',
+        scope: 'https://www.googleapis.com/auth/contacts.readonly'
       })
-    );
-  }, []);
+    )
+  }, [])
 
   const menu = (
     <Menu>
@@ -102,12 +103,12 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
         <button
           type="button"
           onClick={() => {
-            setSelectedUser(newDoc.id);
+            setSelectedUser(newDoc.id)
             dispatch({
               type: 'people/setSelectedUser',
-              payload: newDoc.id,
-            });
-            setVisibility(true);
+              payload: newDoc.id
+            })
+            setVisibility(true)
           }}
           className="btn3 b grow  tl pv2  pointer bn br1 white"
           data-testid="addPeopleButton"
@@ -116,14 +117,6 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
         </button>
       </Menu.Item>
       <Menu.Item key="1">
-        {/* <PickContacts
-          userId={uid}
-          allContacts={allContacts}
-          count={
-            allContacts &&
-            allContacts.filter(item => item.bucket === 'archived').length
-          }
-        /> */}
         <GoogleImport
           userId={uid}
           existingContacts={allContacts}
@@ -133,146 +126,89 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
           <ImportContacts userId={uid} existingContacts={contacts} />
         </GoogleImport>
       </Menu.Item>
-      {/* <Menu.Divider />
-      <GoogleImport
-        userId={uid}
-        existingContacts={allContacts}
-        setConflicts={setConflicts}
-        setContactPicker={setContactPicker}
-      >
-        <ImportContacts userId={uid} existingContacts={contacts} />
-      </GoogleImport> */}
+
     </Menu>
-  );
+  )
 
   const dispatcher = _value => {
-    console.log({ _value });
-
     if (_value === 'CLOSED') {
-      setConflicts([]);
+      setConflicts([])
     }
 
     if (_value === 'COMPLETED') {
-      setConflicts([]);
-      setContactPicker(true);
+      setConflicts([])
+      setContactPicker(true)
     }
 
     if (_value.type === 'DUPLICATE_SELECTED') {
-      const { payload } = _value;
+      const { payload } = _value
 
-      updateContact(uid, payload);
+      updateContact(uid, payload)
     }
 
     if (_value.type === 'EXISTING_SELECTED') {
-      return null;
+      return null
     }
 
-    return null;
-  };
+    return null
+  }
 
   return (
     <ErrorBoundary fallback='Oh no! This bit is broken 🤕'>
-      <>
-        {conflicts && !!conflicts.length && (
-          <ConflictScreen
-            send={dispatcher}
-            duplicates={conflicts}
-            existingContacts={allContacts}
-            setDuplicates={setConflicts}
-          ></ConflictScreen>
-        )}
 
-        <OptimizelyFeature feature="insights">
-          {insights =>
-            insights && (
-              <article className='text2'>
-                <InsightsBox />
-                {/* <h1 className="text2">This Week</h1>
+      {conflicts && !!conflicts.length && (
+        <ConflictScreen
+          send={dispatcher}
+          duplicates={conflicts}
+          existingContacts={allContacts}
+          setDuplicates={setConflicts}
+        ></ConflictScreen>
+      )}
+
+      <OptimizelyFeature feature="insights">
+        {insights =>
+          insights && (
+            <article className='text2'>
+              <InsightsBox />
+              {/* <h1 className="text2">This Week</h1>
                 <UniversalTaskList myUid={uid} insights={insights} /> */}
-              </article>
-            )}
-        </OptimizelyFeature>
-        <>
-          {contactPicker && (
-            <PickContacts
-              userId={uid}
-              allContacts={allContacts}
-              alreadyImported
-              count={
-                allContacts &&
-                allContacts.filter(item => item.bucket === 'archived').length
-              }
-            />
-
-        <div className='pv4 flex justify-between' data-testid='outreachPage'>
-          {visible ? (
-            <PersonModal
-              uid={uid}
-              contactId={selectedUser}
-              onClose={() => {
-                setVisibility(false)
-                setSelectedUser('')
-              }}
-              newPerson
-              setVisibility={() =>
-                setVisibility(false)}
-            />
-          ) : (
-            <>
-              <button
-                type='button'
-                onClick={() => {
-                  // setSelectedUser(newDoc.id)
-                  // dispatch({
-                  //   type: 'people/setSelectedUser',
-                  //   payload: newDoc.id
-                  // })
-                  setVisibility(true)
-                }}
-                className='inline-flex items-center px-6 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green active:bg-green-700 transition ease-in-out duration-150'
-                data-testid='addPeopleButton'
-              >
-                Add Someone New
-              </button>
-              {bulkImportFeature && (
-                <ImportContacts userId={uid} existingContacts={contacts} />
-              )}
-            </>
+            </article>
           )}
-        </>
-        <OptimizelyFeature feature="workboard">
-          {workboard =>
-            !workboard && <HelpfulTaskList myUid={uid} insights={workboard} />
-          }
-        </OptimizelyFeature>
+      </OptimizelyFeature>
+      <>
+        {contactPicker && (<>
+          {/* <PickContacts
+            userId={uid}
+            allContacts={allContacts}
+            alreadyImported
+            count={
+              allContacts &&
+                allContacts.filter(item => item.bucket === 'archived').length
+            }
+          /> */}
+        </>)}</>
 
-        {contactChunks ? (
-          <NewImport
-            visible={visible}
-            uid={uid}
-            selectedUser={selectedUser}
-            setVisibility={setVisibility}
-            setSelectedUser={setSelectedUser}
-            menu={menu}
-          />
-        ) : (
-          <OldImport
-            visible={visible}
-            uid={uid}
-            selectedUser={selectedUser}
-            setVisibility={setVisibility}
-            setSelectedUser={setSelectedUser}
-            dispatch={dispatch}
-            contacts={contacts}
-            newDoc={newDoc}
-          />
-        )}
+      <OptimizelyFeature feature="workboard">
+        {workboard =>
+          !workboard && <HelpfulTaskList myUid={uid} insights={workboard} />
+        }
+      </OptimizelyFeature>
 
-        <ContactsBox contacts={contacts} uid={uid} />
-      </>
+      <NewImport
+        visible={visible}
+        uid={uid}
+        selectedUser={selectedUser}
+        setVisibility={setVisibility}
+        setSelectedUser={setSelectedUser}
+        menu={menu}
+      />
+
+      <ContactsBox contacts={contacts} uid={uid} />
+
     </ErrorBoundary>
   )
 }
+
 InnerNetwork.propTypes = networkPropTypes
 InnerNetwork.defaultProps = networkDefaultProps
 
@@ -307,59 +243,13 @@ export default function ContactsBox ({ contacts, uid }) {
   )
 }
 
-function OldImport({
+function NewImport ({
   visible,
   uid,
   selectedUser,
   setVisibility,
   setSelectedUser,
-  dispatch,
-  contacts,
-  newDoc,
-}) {
-  return (
-    <div className="pv4 flex justify-between" data-testid="outreachPage">
-      {visible ? (
-        <PersonModal
-          uid={uid}
-          contactId={selectedUser}
-          onClose={() => {
-            setVisibility(false);
-            setSelectedUser('');
-          }}
-          newPerson
-        />
-      ) : (
-        <>
-          <button
-            type="button"
-            onClick={() => {
-              setSelectedUser(newDoc.id);
-              dispatch({
-                type: 'people/setSelectedUser',
-                payload: newDoc.id,
-              });
-              setVisibility(true);
-            }}
-            className="btn2 b grow  ph3 pv2  pointer bn br1 white"
-            data-testid="addPeopleButton"
-          >
-            Add New Person
-          </button>
-          <ImportContacts userId={uid} existingContacts={contacts} />
-        </>
-      )}
-    </div>
-  );
-}
-
-function NewImport({
-  visible,
-  uid,
-  selectedUser,
-  setVisibility,
-  setSelectedUser,
-  menu,
+  menu
 }) {
   return (
     <div className="pv4 flex " data-testid="outreachPage">
@@ -368,8 +258,8 @@ function NewImport({
           uid={uid}
           contactId={selectedUser}
           onClose={() => {
-            setVisibility(false);
-            setSelectedUser('');
+            setVisibility(false)
+            setSelectedUser('')
           }}
           newPerson
         />
@@ -386,5 +276,5 @@ function NewImport({
         </Dropdown>
       )}
     </div>
-  );
+  )
 }
