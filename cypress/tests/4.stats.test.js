@@ -1,3 +1,5 @@
+Cypress.on('uncaught:exception', () => false)
+
 describe('stats box', () => {
   const fakeData = {
     name: 'Slick Rick'
@@ -8,6 +10,7 @@ describe('stats box', () => {
       //  create a contact
       .wait(2000)
       .findByTestId(/outreachPage/i)
+      .findByTestId(/addPeopleButton/i).click()
       .findByText(/Add someone new/i)
       .click()
       .findByTestId(/personCard/i)
@@ -68,7 +71,8 @@ describe('stats box', () => {
     cy.visit('/')
       .wait(5000)
       .findByTestId('outreachPage')
-      .findByText(/add someone new/i)
+      .findByTestId(/addPeopleButton/i).click()
+      .findByText(/Add someone new/i)
       .click()
       .findByPlaceholderText(/their name/i)
       .clear()

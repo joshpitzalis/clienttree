@@ -1,3 +1,5 @@
+Cypress.on('uncaught:exception', () => false)
+
 describe('outreach', () => {
   const fakeData = {
     name: 'Sick Rick',
@@ -15,6 +17,8 @@ describe('outreach', () => {
       .wait(5000)
       .findByTestId(/outreachPage/i)
     // check card opens
+
+      .findByTestId(/addPeopleButton/i).click()
       .findByText(/Add someone new/i)
       .click()
       .findByTestId(/personCard/i)
@@ -27,6 +31,7 @@ describe('outreach', () => {
       .queryByTestId(/personCard/i)
       .should('not.exist')
     // create card
+      .findByTestId(/addPeopleButton/i).click()
       .findByText(/Add someone new/i)
       .click()
       .findByTestId(/personCard/i)
@@ -51,7 +56,7 @@ describe('outreach', () => {
       .findByTestId(`${fakeData.note}-edit`).click()
       .findAllByText(fakeData.note).first().click().clear().type('updated note')
       .findByText(/save note/i).click()
-      // add to work board
+    // add to work board
       .findByTestId('dashSwitch')
       .check({ force: true })
       .findByText(/save changes/i).click()
@@ -105,14 +110,14 @@ describe('outreach', () => {
     // notes validation
     // test form submission error alert
 
-    // workboard validations
-    // email validation
-    // image validation
-    // (depenancy injections)
-    // test should work even when source data has that strange 9000 initial task in notes
-    // create a task on a new contact
-    // TK edit timestamp on a note
-    // TK upload Image
+  // workboard validations
+  // email validation
+  // image validation
+  // (depenancy injections)
+  // test should work even when source data has that strange 9000 initial task in notes
+  // create a task on a new contact
+  // TK edit timestamp on a note
+  // TK upload Image
   })
 
   it.skip('lets you add a contact', () => {
@@ -120,15 +125,16 @@ describe('outreach', () => {
       .login()
       .wait(5000)
       .findByTestId(/outreachPage/i)
+      .findByTestId(/addPeopleButton/i).click()
       .findByText(/Add someone new/i)
       .click()
       .findByTestId(/contactModal/i)
       .findByPlaceholderText(/Their name/i)
       .clear()
       .type(fakeData.name)
-      // .pickDate()
-      // .findByPlaceholderText(/click to edit/i)
-      // .type(fakeData.description)
+    // .pickDate()
+    // .findByPlaceholderText(/click to edit/i)
+    // .type(fakeData.description)
       .findByText(/saved/i)
       .findByText(/close/i)
       .click()
@@ -202,7 +208,7 @@ describe('outreach', () => {
   it('be able to add and complete a task to existing person on mobile', () => {
     cy.viewport('iphone-5')
     cy.visit('/')
-      // .login()
+    // .login()
       .wait(5000)
       .findByText(/add a reminder/i)
       .click()
@@ -229,7 +235,7 @@ describe('outreach', () => {
   it('be able to add and complete a task to a new person on mobile', () => {
     cy.viewport('iphone-5')
     cy.visit('/')
-      // .login()
+    // .login()
       .wait(5000)
       .findByText(/add a reminder/i)
       .click()
@@ -289,7 +295,7 @@ describe('outreach', () => {
       .click()
       .findByText(/confirm completed/i)
       .click()
-      // also assert that the name changes in the sidebar when someone is selected
+    // also assert that the name changes in the sidebar when someone is selected
       .findByText(/getting started/i)
       .should('not.exist')
       .findByTestId('sidebar')

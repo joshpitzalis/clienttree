@@ -164,9 +164,10 @@ export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
             type="button"
             className="btn2 green b  grow  ph3 pv2  pointer bn br1 white ant-dropdown-link"
             onClick={e => e.preventDefault()}
+            data-testid='addPeopleButton'
           >
             Add People
-            <Icon type="plus" className="pl1" />
+            {/* <Icon type="plus" className="pl1" /> */}
           </button>
         </Dropdown>
       </div>

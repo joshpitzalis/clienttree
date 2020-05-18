@@ -1,3 +1,5 @@
+Cypress.on('uncaught:exception', () => false)
+
 describe('services', () => {
   const fakeData = {
     title: 'example title',

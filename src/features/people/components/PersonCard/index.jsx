@@ -67,6 +67,8 @@ export const PersonCard = ({ setVisibility, userId, contact, tracked }) => {
     lastContacted: +new Date()
   })
 
+  console.log({ contact, state })
+
   const [errors, setErrors] = useState({})
 
   const onSubmit = () => {
@@ -119,7 +121,7 @@ export const PersonCard = ({ setVisibility, userId, contact, tracked }) => {
       // onReset={() => { }}
     >
       <div
-        className="bg-white shadow overflow-hidden sm:rounded-lg" data-testid='personCard'>
+        className="bg-white shadow overflow-hidden sm:rounded-lg my-6" data-testid='personCard'>
         <HeaderRow newCard={!state.uid}/>
         <form
           className="px-4 py-5 sm:p-0"

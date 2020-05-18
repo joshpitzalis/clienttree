@@ -42,11 +42,11 @@ export function Onboarding ({ uid, children, contactSelected, workboard }) {
       }
       return 'Reminders'
     }
-    if (workboard && _onboardingComplete) {
+    if (_onboardingComplete) {
       // return null;
       return 'Activities'
     }
-    if (workboard && isEnabled) {
+    if (isEnabled) {
       return 'Getting Started'
     }
   }

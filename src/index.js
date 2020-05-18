@@ -27,16 +27,19 @@ if (process.env.NODE_ENV === 'production') {
   var axe = require("react-axe");
   axe(React, ReactDOM, 1000, config)
 }
+
 console.log({ Version: process.env.REACT_APP_VERSION })
 
 const App = () => (
-  <RecoilRoot>
-    <Provider store={store}>
-      <UserProvider>
+
+  <Provider store={store}>
+    <UserProvider>
+      <RecoilRoot>
         <Routes />
-      </UserProvider>
-    </Provider>
-  </RecoilRoot>
+      </RecoilRoot>
+    </UserProvider>
+  </Provider>
+
 )
 
 ReactDOM.render(<App />, document.getElementById('root'))

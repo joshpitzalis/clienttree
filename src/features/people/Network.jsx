@@ -1,16 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import './networkAnimations.css'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { OptimizelyFeature } from '@optimizely/react-sdk'
 import { Person } from './components/Person'
 import { PersonModal } from './components/PersonBox'
 import ErrorBoundary from '../../utils/ErrorBoundary'
-import firebase from '../../utils/firebase'
+// import firebase from '../../utils/firebase'
 import { InsightsBox } from '../insights/InsightsBox'
 import { HelpfulTaskList } from './components/UniversalTaskList'
-import { ConflictScreen } from '../contacts/components/ConflictScreen'
-import { updateContact } from '../contacts/contacts.api.js'
+// import { ConflictScreen } from '../contacts/components/ConflictScreen'
+// import { updateContact } from '../contacts/contacts.api.js'
 import { ContactImporter } from '../contactImport/ContactImporter'
 // import { sortContacts } from './peopleHelpers/network.helpers'
 
@@ -21,8 +21,8 @@ const networkDefaultProps = {}
 
 /* eslint-disable react/prop-types */
 export const InnerNetwork = ({ uid, contactChunks }) => {
-  const [conflicts, setConflicts] = React.useState([])
-  const [, setContactPicker] = React.useState(false)
+  // const [conflicts, setConflicts] = React.useState([])
+  // const [, setContactPicker] = React.useState(false)
   const [visible, setVisibility] = React.useState(false)
   const [selectedUser, setSelectedUser] = React.useState('')
 
@@ -34,13 +34,13 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
 
   // sortContacts(store.contacts.filter(contact => contact && contact.uid))
 
-  const dispatch = useDispatch()
-  const newDoc = firebase
-    .firestore()
-    .collection('users')
-    .doc(uid)
-    .collection('contacts')
-    .doc()
+  // const dispatch = useDispatch()
+  // const newDoc = firebase
+  //   .firestore()
+  //   .collection('users')
+  //   .doc(uid)
+  //   .collection('contacts')
+  //   .doc()
 
   React.useEffect(() => {
     const { gapi } = window
@@ -56,40 +56,40 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
     )
   }, [])
 
-  const dispatcher = _value => {
-    if (_value === 'CLOSED') {
-      setConflicts([])
-    }
+  // const dispatcher = _value => {
+  //   if (_value === 'CLOSED') {
+  //     setConflicts([])
+  //   }
 
-    if (_value === 'COMPLETED') {
-      setConflicts([])
-      setContactPicker(true)
-    }
+  //   if (_value === 'COMPLETED') {
+  //     setConflicts([])
+  //     setContactPicker(true)
+  //   }
 
-    if (_value.type === 'DUPLICATE_SELECTED') {
-      const { payload } = _value
+  //   if (_value.type === 'DUPLICATE_SELECTED') {
+  //     const { payload } = _value
 
-      updateContact(uid, payload)
-    }
+  //     updateContact(uid, payload)
+  //   }
 
-    if (_value.type === 'EXISTING_SELECTED') {
-      return null
-    }
+  //   if (_value.type === 'EXISTING_SELECTED') {
+  //     return null
+  //   }
 
-    return null
-  }
+  //   return null
+  // }
 
   return (
     <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
-      <>
-        {conflicts && !!conflicts.length && (
+      <div data-testid="outreachPage">
+        {/* {conflicts && !!conflicts.length && (
           <ConflictScreen
             send={dispatcher}
             duplicates={conflicts}
             existingContacts={allContacts}
             setDuplicates={setConflicts}
           ></ConflictScreen>
-        )}
+        )} */}
 
         <OptimizelyFeature feature="insights">
           {insights => insights && <InsightsBox />}
@@ -110,17 +110,20 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
               setSelectedUser('')
             }}
             newPerson
+
+            setVisibility={() =>
+              setVisibility(false)}
           />
         ) : (
           <ContactImporter uid={uid} allContacts={allContacts}>
             <button
               type="button"
               onClick={() => {
-                setSelectedUser(newDoc.id)
-                dispatch({
-                  type: 'people/setSelectedUser',
-                  payload: newDoc.id
-                })
+                // setSelectedUser(newDoc.id)
+                // dispatch({
+                //   type: 'people/setSelectedUser',
+                //   payload: newDoc.id
+                // })
                 setVisibility(true)
               }}
               className="btn3 b grow black tl pv2  pointer bn br1 white"
@@ -133,7 +136,7 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
         <ActiveContactList contacts={allContacts} uid={uid} />
         {/* <ContactsBox contacts={contacts} uid={uid} /> */}
 
-      </>
+      </div>
     </ErrorBoundary>
   )
 }
