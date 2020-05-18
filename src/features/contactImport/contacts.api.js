@@ -233,7 +233,7 @@ const getAllContacts = async (_people, _token, _gapi) => {
   getAllContacts(people, nextPageToken, _gapi)
 }
 
-export const fetchContacts = ({ _gapi, existingContacts, userId, send }) =>
+export const fetchContacts = ({ _gapi, existingContacts, userId, send, setContacts }) =>
   _gapi.client.people.people.connections
     .list({
       resourceName: 'people/me',
@@ -262,9 +262,10 @@ export const fetchContacts = ({ _gapi, existingContacts, userId, send }) =>
       }
 
       return brandNew
-    })
-    .then(contacts => saveImportedContacts(contacts, userId))
-    .then(() => markImported(userId))
+    }).then(contacts => setContacts(contacts))
+
+    // .then(contacts => saveImportedContacts(contacts, userId))
+    // .then(() => markImported(userId))
     .catch(console.error)
 
 export const mergeAllConflicts = ({ conflicts, uid, _updateContact }) => {

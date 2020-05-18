@@ -8,16 +8,27 @@ import { ConflictScreen } from './components/ConflictModal'
 import { NewPeopleBox } from './components/ContactModal'
 import {
   fetchContacts,
-  handleContactsUpdate,
+  saveImportedContacts,
+  // handleContactsUpdate,
   mergeAllConflicts,
   updateContact
 } from './contacts.api'
+import { useRecoilState, atom } from 'recoil'
+
+const contactState = atom({
+  key: 'contactState',
+  default: []
+})
+
+const newContacts = atom({
+  key: 'newContacts',
+  default: []
+})
 
 // https://xstate.js.org/viz/?gist=8d51d699c694c3ee9ab2804ceaedf702
 const contactMachine = Machine({
   id: 'contacts',
   initial: 'importButton',
-
   states: {
     importButton: {
       on: {
@@ -28,7 +39,6 @@ const contactMachine = Machine({
           },
           { target: 'loadingButton' }
         ],
-
         ALREADY_FETCHED: 'contactModal'
       }
     },
@@ -54,8 +64,8 @@ const contactMachine = Machine({
     },
     contactModal: {
       on: {
-        SAVED: { target: 'importButton', actions: ['handleSave'] },
-        CLOSED: 'importButton',
+        SAVED: { target: 'importButton', actions: ['handleSave', 'clear'] },
+        CLOSED: { target: 'importButton', actions: ['clear'] },
         IMPORT_NEW: 'contactModal'
       }
       // onExit: ['updateContactCounts'],
@@ -70,22 +80,25 @@ const contactMachine = Machine({
 
 /* eslint-disable react/prop-types */
 export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
-  const activeContactss =
-    allContacts &&
-    allContacts.filter(item => !item.bucket || item.bucket === 'active').length
+  const [contacts, setPotentialContacts] = useRecoilState(contactState)
+  const [newContactList, setNewContactList] = useRecoilState(newContacts)
 
-  const archivedContacts =
-    allContacts &&
-    allContacts.filter(item => item.bucket === 'archived').length
+  // const activeContactss =
+  //   allContacts &&
+  //   allContacts.filter(item => !item.bucket || item.bucket === 'active').length
 
-  const totalContacts = allContacts && allContacts.length
-  const [activeContacts, setActiveContacts] = React.useState(
-    allContacts && allContacts.filter(item => !item.bucket || item.bucket === 'active')
-  )
+  // const archivedContacts =
+  //   allContacts &&
+  //   allContacts.filter(item => item.bucket === 'archived').length
+
+  // const totalContacts = allContacts && allContacts.length
+  // const [activeContacts, setActiveContacts] = React.useState(
+  //   allContacts && allContacts.filter(item => !item.bucket || item.bucket === 'active')
+  // )
   const [contactsToArchive, setContactsToArchive] = React.useState([])
   const [conflicts, setConflicts] = React.useState([])
   const [contactsToAdd, setContacts] = React.useState([])
-  const [contactsToDelete, deleteContact] = React.useState([])
+  // const [contactsToDelete, deleteContact] = React.useState([])
 
   const alreadyImported = useSelector(
     store => store.user && store.user.contactsImported
@@ -103,7 +116,8 @@ export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
               _gapi: gapi,
               existingContacts: allContacts,
               userId: uid,
-              send
+              send,
+              setContacts: setPotentialContacts
             })
           )
           .catch(error => console.log({ error }))
@@ -112,16 +126,12 @@ export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
       updateContact: (_, { payload }) => updateContact(uid, payload),
       mergeAllConflicts: () =>
         mergeAllConflicts({ conflicts, uid, _updateContact: updateContact }),
-      handleSave: () =>
-        handleContactsUpdate({
-          contactsToAdd,
-          contactsToDelete,
-          contactsToArchive,
-          uid,
-          activeContacts: activeContactss,
-          archivedContacts,
-          totalContacts
-        })
+      handleSave: () => saveImportedContacts(newContactList, uid),
+      clear: () => {
+        setPotentialContacts([])
+        setNewContactList([])
+      }
+
     },
     guards: {
       checkifImported: () => !!alreadyImported
@@ -139,7 +149,7 @@ export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
           data-testid="importContacts"
         >
           Import
-          <Icon type="google" className="pl1" />
+          <Icon type="google" className="pl1 pb-1" />
           oogle Contacts
         </button>
       </Menu.Item>
@@ -196,16 +206,15 @@ export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
     return (
       <Portal onClose={() => send('CLOSED')}>
         <ContactModal
-          allContacts={allContacts}
+          allContacts={contacts}
           uid={uid}
           send={send}
           setContacts={setContacts}
-          deleteContact={deleteContact}
           contactsToAdd={contactsToAdd}
-          activeContacts={activeContacts}
-          setActiveContacts={setActiveContacts}
           setContactsToArchive={setContactsToArchive}
           contactsToArchive={contactsToArchive}
+          setNewContactList={setNewContactList}
+          newContactList={newContactList}
         />
       </Portal>
     )
@@ -223,7 +232,6 @@ export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
       </button>
     )
   }
-
   return null
 })
 
@@ -236,7 +244,9 @@ const ContactModal = ({
   contactsToAdd,
   activeContacts,
   setActiveContacts,
-  setContactsToArchive
+  setContactsToArchive,
+  setNewContactList,
+  newContactList
 }) => (
   <>
     <p className="f3 fw6 w-50 dib-l w-auto-l lh-title"> Select Contacts</p>
@@ -249,31 +259,34 @@ const ContactModal = ({
         setActiveContacts={setActiveContacts}
         activeContacts={activeContacts}
         setContactsToArchive={setContactsToArchive}
-        contacts={
-          allContacts &&
-          allContacts.map(contact => {
-            const {
-              photoURL,
-              name,
-              bucket,
-              occupation,
-              organization,
-              email,
-              phoneNumber
-            } = contact
-            return {
-              photoURL,
-              name,
-              handle:
-                occupation ||
-                (organization && organization.title) ||
-                email ||
-                phoneNumber,
-              bucket,
-              uid: contact.uid
-            }
-          })
-        }
+        setNewContactList={setNewContactList}
+        newContactList={newContactList}
+        contacts={allContacts}
+        // contacts={
+        //   allContacts &&
+        //   allContacts.map(contact => {
+        //     const {
+        //       photoURL,
+        //       name,
+        //       bucket,
+        //       occupation,
+        //       organization,
+        //       email,
+        //       phoneNumber
+        //     } = contact
+        //     return {
+        //       photoURL,
+        //       name,
+        //       handle:
+        //         occupation ||
+        //         (organization && organization.title) ||
+        //         email ||
+        //         phoneNumber,
+        //       bucket,
+        //       uid: contact.uid
+        //     }
+        //   })
+        // }
       />
     </div>
 

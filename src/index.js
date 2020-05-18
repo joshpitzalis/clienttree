@@ -10,6 +10,9 @@ import '@duik/it/dist/styles.css'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import 'tachyons'
 import './tailwind.generated.css'
+import {
+  RecoilRoot
+} from 'recoil'
 
 if (process.env.NODE_ENV === 'production') {
   Sentry.init({
@@ -27,11 +30,13 @@ if (process.env.NODE_ENV === 'production') {
 console.log({ Version: process.env.REACT_APP_VERSION })
 
 const App = () => (
-  <Provider store={store}>
-    <UserProvider>
-      <Routes />
-    </UserProvider>
-  </Provider>
+  <RecoilRoot>
+    <Provider store={store}>
+      <UserProvider>
+        <Routes />
+      </UserProvider>
+    </Provider>
+  </RecoilRoot>
 )
 
 ReactDOM.render(<App />, document.getElementById('root'))
