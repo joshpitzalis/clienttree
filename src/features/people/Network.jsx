@@ -6,23 +6,18 @@ import { OptimizelyFeature } from '@optimizely/react-sdk'
 import { Person } from './components/Person'
 import { PersonModal } from './components/PersonBox'
 import ErrorBoundary from '../../utils/ErrorBoundary'
-// import firebase from '../../utils/firebase'
 import { InsightsBox } from '../insights/InsightsBox'
 import { HelpfulTaskList } from './components/UniversalTaskList'
-// import { ConflictScreen } from '../contacts/components/ConflictScreen'
-// import { updateContact } from '../contacts/contacts.api.js'
-import { ContactImporter } from '../contactImport/ContactImporter'
-// import { sortContacts } from './peopleHelpers/network.helpers'
+import { ContactImporter } from '../googleImport'
 
 const networkPropTypes = {
   uid: PropTypes.string.isRequired
 }
+
 const networkDefaultProps = {}
 
 /* eslint-disable react/prop-types */
 export const InnerNetwork = ({ uid, contactChunks }) => {
-  // const [conflicts, setConflicts] = React.useState([])
-  // const [, setContactPicker] = React.useState(false)
   const [visible, setVisibility] = React.useState(false)
   const [selectedUser, setSelectedUser] = React.useState('')
 
@@ -31,16 +26,6 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
       store &&
       store.contacts &&
       store.contacts.filter(contact => contact && contact.uid))
-
-  // sortContacts(store.contacts.filter(contact => contact && contact.uid))
-
-  // const dispatch = useDispatch()
-  // const newDoc = firebase
-  //   .firestore()
-  //   .collection('users')
-  //   .doc(uid)
-  //   .collection('contacts')
-  //   .doc()
 
   React.useEffect(() => {
     const { gapi } = window
@@ -56,40 +41,9 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
     )
   }, [])
 
-  // const dispatcher = _value => {
-  //   if (_value === 'CLOSED') {
-  //     setConflicts([])
-  //   }
-
-  //   if (_value === 'COMPLETED') {
-  //     setConflicts([])
-  //     setContactPicker(true)
-  //   }
-
-  //   if (_value.type === 'DUPLICATE_SELECTED') {
-  //     const { payload } = _value
-
-  //     updateContact(uid, payload)
-  //   }
-
-  //   if (_value.type === 'EXISTING_SELECTED') {
-  //     return null
-  //   }
-
-  //   return null
-  // }
-
   return (
     <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
       <div data-testid="outreachPage">
-        {/* {conflicts && !!conflicts.length && (
-          <ConflictScreen
-            send={dispatcher}
-            duplicates={conflicts}
-            existingContacts={allContacts}
-            setDuplicates={setConflicts}
-          ></ConflictScreen>
-        )} */}
 
         <OptimizelyFeature feature="insights">
           {insights => insights && <InsightsBox />}
@@ -118,14 +72,7 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
           <ContactImporter uid={uid} allContacts={allContacts}>
             <button
               type="button"
-              onClick={() => {
-                // setSelectedUser(newDoc.id)
-                // dispatch({
-                //   type: 'people/setSelectedUser',
-                //   payload: newDoc.id
-                // })
-                setVisibility(true)
-              }}
+              onClick={() => setVisibility(true)}
               className="btn3 b grow black tl pv2  pointer bn br1 white"
               data-testid="addPeopleButton"
             >
@@ -134,8 +81,6 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
           </ContactImporter>
         )}
         <ActiveContactList contacts={allContacts} uid={uid} />
-        {/* <ContactsBox contacts={contacts} uid={uid} /> */}
-
       </div>
     </ErrorBoundary>
   )
