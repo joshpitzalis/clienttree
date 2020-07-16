@@ -31,13 +31,15 @@ export const HelpfulTaskList = ({ myUid, insights }) => {
   }, [myUid])
 
   return (
-    <div className={!insights && 'bt b--black-10 pb3'}>
-      {/* {!insights && !!helpfulTasks.length && (
+    <div
+    // className={!insights && 'bt b--black-10 pb3'}
+    >
+      {!insights && !!helpfulTasks.length && (
         <p className="f4 b ml0 text2 pt4">Follow Ups</p>
-      )} */}
+      )}
       <div
         data-testid="universalTaskList"
-        className={!insights && 'h5 overflow-y-auto'}
+        className={!insights && 'h-auto overflow-y-auto'}
       >
         {helpfulTasks &&
           helpfulTasks.map(

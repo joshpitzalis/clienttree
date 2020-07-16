@@ -123,16 +123,26 @@ export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
 
   if (current.matches('importButton')) {
     return (
-      <div className="mv4">
+      <div className="mv4 flex justify-center  ">
         <Dropdown overlay={menu} trigger={['click']}>
-          <button
+          {/* <button
             type="button"
             className="btn2 green b  grow  ph3 pv2  pointer bn br1 white ant-dropdown-link"
             onClick={e => e.preventDefault()}
             data-testid='addPeopleButton'
           >
             Add People
-          </button>
+          </button> */}
+
+          <span className="inline-flex rounded-md shadow-sm">
+            <button
+              type="button"
+              onClick={e => e.preventDefault()}
+              data-testid='addPeopleButton'
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green active:bg-green-700 transition ease-in-out duration-150">
+  Add People
+            </button>
+          </span>
         </Dropdown>
       </div>
     )

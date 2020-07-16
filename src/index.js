@@ -28,7 +28,11 @@ if (process.env.NODE_ENV === 'production') {
   axe(React, ReactDOM, 1000, config)
 }
 
-console.log({ Version: process.env.REACT_APP_VERSION })
+console.log({
+  Build: process.env.REACT_APP_URL,
+  Version: process.env.REACT_APP_VERSION,
+  Dev: process.env.REACT_APP_DEVELOPMENT
+})
 
 const App = () => (
 

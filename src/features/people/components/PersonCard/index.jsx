@@ -7,7 +7,7 @@ import { ImageRow } from './ImageRow'
 import { NameRow } from './NameRow'
 import { HeaderRow } from './HeaderRow'
 import { EmailRow } from './EmailRow'
-import { WorkboardRow } from './WorkboardRow'
+// import { WorkboardRow } from './WorkboardRow'
 import { InteractionsRow } from './InteractionsRow'
 import { FooterButtons } from './FooterButtons'
 import firebase from '../../../../utils/firebase'
@@ -67,7 +67,7 @@ export const PersonCard = ({ setVisibility, userId, contact, tracked }) => {
     lastContacted: +new Date()
   })
 
-  console.log({ contact, state })
+  // console.log({ contact, state })
 
   const [errors, setErrors] = useState({})
 
@@ -133,7 +133,7 @@ export const PersonCard = ({ setVisibility, userId, contact, tracked }) => {
             <ImageRow dispatch={dispatch} image={state.photoURL} />
             <NameRow dispatch={dispatch} name={state.name} errors={errors} setErrors={setErrors}/>
             <EmailRow dispatch={dispatch} email={state.email}/>
-            <WorkboardRow tracked={state.tracked} dispatch={dispatch} />
+            {/* <WorkboardRow tracked={state.tracked} dispatch={dispatch} /> */}
             <InteractionsRow
               notes={
                 Object

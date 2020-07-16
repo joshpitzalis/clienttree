@@ -46,7 +46,8 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
       <div data-testid="outreachPage">
 
         <OptimizelyFeature feature="insights">
-          {insights => insights && <InsightsBox />}
+          {insights => insights &&
+         <InsightsBox />}
         </OptimizelyFeature>
 
         <OptimizelyFeature feature="workboard">
@@ -76,7 +77,6 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
               className="btn3 b grow black tl pv2  pointer bn br1 white"
               data-testid="addPeopleButton"
             >
-              Add Someone New
             </button>
           </ContactImporter>
         )}
