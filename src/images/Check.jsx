@@ -1,4 +1,10 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
+const propTypes = {
+  className: PropTypes.string.isRequired,
+  color: PropTypes.string.isRequired
+}
 
 export default function Check ({ className, color }) {
   return (
@@ -20,3 +26,5 @@ export default function Check ({ className, color }) {
     </>
   )
 }
+
+Check.propTypes = propTypes

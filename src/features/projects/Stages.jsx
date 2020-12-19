@@ -61,8 +61,10 @@ export function Stages ({
                 provided={provided}
                 stage={stage}
               />
+
             )}
           </Droppable>
+
         </div>
       )}
     </Draggable>
@@ -106,21 +108,25 @@ export const SingleStage = ({
               transition: 'background-color 1s ease'
             }}
           >
-            {people && people.length
-              ? people
-                .filter(peep => peep && peep.id)
-                .map(({ id, name, photoURL }, _index) => (
-                  <Peoples
-                    id={id}
-                    key={id}
-                    index={_index}
-                    photoURL={photoURL}
-                    name={name}
-                    setSelectedUser={setSelectedUser}
-                    setVisibility={setVisibility}
-                  />
-                ))
-              : null}
+            <>
+              {people && people.length
+                ? people
+                  .filter(peep => peep && peep.id)
+                  .map(({ id, name, photoURL }, _index) => (
+                    <Peoples
+                      id={id}
+                      key={id}
+                      index={_index}
+                      photoURL={photoURL}
+                      name={name}
+                      setSelectedUser={setSelectedUser}
+                      setVisibility={setVisibility}
+                    />
+                  ))
+                : null}
+              {/* <button className='w-100 pointer tc silver'
+                onClick={() => setVisibility(true)}>+</button> */}
+            </>
           </div>
         </>
       </summary>

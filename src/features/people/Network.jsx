@@ -9,10 +9,6 @@ import ErrorBoundary from '../../utils/ErrorBoundary'
 import { InsightsBox } from '../insights/InsightsBox'
 import { HelpfulTaskList } from './components/UniversalTaskList'
 import { ContactImporter } from '../googleImport'
-import {
-  useRecoilState
-} from 'recoil'
-import { reminderModalState } from '../../pages/Dashboard'
 
 const networkPropTypes = {
   uid: PropTypes.string.isRequired
@@ -22,7 +18,7 @@ const networkDefaultProps = {}
 
 /* eslint-disable react/prop-types */
 export const InnerNetwork = ({ uid, contactChunks }) => {
-  const [visible, setVisibility] = useRecoilState(reminderModalState)
+  const [visible, setVisibility] = React.useState(false)
   const [selectedUser, setSelectedUser] = React.useState('')
 
   const allContacts = useSelector(
@@ -60,34 +56,26 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
           }
         </OptimizelyFeature>
 
-        {visible ? (
-          <PersonModal
-            uid={uid}
-            contactId={selectedUser}
-            onClose={() => {
-              setVisibility(false)
-              setSelectedUser('')
-            }}
-            newPerson
-            setVisibility={() =>
-              setVisibility(false)}
-          />
-        ) : (
-          <ContactImporter uid={uid} allContacts={allContacts}>
-            <button
-              type="button"
-              onClick={() => setVisibility(true)}
-              className="btn3 b grow black tl pv2  pointer bn br1 white"
-              data-testid="addPeopleButton"
-            >
-              Add Someone New
-            </button>
-          </ContactImporter>
-        )}
-        <ActiveContactList contacts={allContacts} uid={uid} />
+        <AddPeople visible={visible} uid={uid} selectedUser={selectedUser} setVisibility={setVisibility} setSelectedUser={setSelectedUser} allContacts={allContacts} />
+
       </div>
     </ErrorBoundary>
   )
+}
+
+function AddPeople ({ visible, uid, selectedUser, setVisibility, setSelectedUser, allContacts }) {
+  return (<div>{visible
+    ? <PersonModal uid={uid} contactId={selectedUser} onClose={() => {
+      setVisibility(false)
+      setSelectedUser('')
+    }} newPerson setVisibility={() => setVisibility(false)} />
+    : <ContactImporter uid={uid} allContacts={allContacts}>
+      <button type="button" onClick={() => setVisibility(true)} className="btn3 b grow black tl pv2  pointer bn br1 white" data-testid="addPeopleButton">
+          Add Someone New
+      </button>
+    </ContactImporter>}
+  <ActiveContactList contacts={allContacts} uid={uid} />
+  </div>)
 }
 
 InnerNetwork.propTypes = networkPropTypes

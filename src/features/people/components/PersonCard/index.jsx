@@ -63,7 +63,7 @@ export const PersonCard = ({ setVisibility, userId, contact, tracked }) => {
         lastUpdated: 9007199254740991
       }
     },
-    tracked: contact.tracked || false,
+    tracked: contact.tracked || true,
     lastContacted: +new Date()
   })
 

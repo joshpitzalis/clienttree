@@ -152,7 +152,7 @@ const updateSelectedUser = (_userId, _contactId, tracked) =>
       })
     )
 
-const updateDashboardState = async (
+export const updateDashboardState = async (
   _userId,
   tracked,
   _contactId,

@@ -14,6 +14,7 @@ import { OptimizelyFeature } from '@optimizely/react-sdk'
 // import { SpecificTaskList } from '../features/people/components/SpecificTaskList'
 import People from '../images/People'
 import Home from '../images/Home'
+import Check from '../images/Check'
 import firebase from '../utils/firebase'
 import { Network } from '../features/people/Network'
 import { Profile } from '../features/profile/Profile'
@@ -171,7 +172,6 @@ export function Dashboard ({ userId }) {
             }  min-h-100 bg-base`}
             >
               {workboard && <Navigation userId={userId} />}
-
               <main
                 className={`dn db-ns  w-100 min-h-100 ml4 ${
                 workboard ? 'justify-between' : 'justify-end'
@@ -249,28 +249,42 @@ function Navigation ({ userId }) {
     >
       <div className='mt5'>
         <NavLink
-          // rightEl="🚝"
-          leftEl={<People className='o-75 h1' />}
+          leftEl={<Home className='o-75 h1' />}
           Component={Link}
-          to={`/user/${userId}/network`}
-          className={`${pathname === `/user/${userId}/network` &&
-            'active'}  tracked pb2`}
-          data-testid='networkPage'
+          data-testid='projectPage'
+          to={`/user/${userId}/dashboard`}
+          className={`${pathname === `/user/${userId}/dashboard` &&
+              'active'}  tracked pb2 `}
         >
-          People
+          <span className='relative' style={{ bottom: '1px' }}>
+              Pipeline
+          </span>
         </NavLink>
+
+        <NavLink
+          leftEl={<Check className='o-75 h1' color='currentColor' />}
+          Component={Link}
+          data-testid='projectPage'
+          to={`/user/${userId}/tasks`}
+          className={`${pathname === `/user/${userId}/tasks` &&
+              'active'}  tracked pb2 `}
+        >
+          <span className='relative' style={{ bottom: '1px' }}>
+              Actions
+          </span>
+        </NavLink>
+
         {contacts && !!contacts.length && (
           <NavLink
-            leftEl={<Home className='o-75 h1' />}
+          // rightEl="🚝"
+            leftEl={<People className='o-75 h1' />}
             Component={Link}
-            data-testid='projectPage'
-            to={`/user/${userId}/dashboard`}
-            className={`${pathname === `/user/${userId}/dashboard` &&
-              'active'}  tracked pb2 `}
+            to={`/user/${userId}/network`}
+            className={`${pathname === `/user/${userId}/network` &&
+            'active'} tracked pb2`}
+            data-testid='networkPage'
           >
-            <span className='relative' style={{ bottom: '1px' }}>
-              Workboard
-            </span>
+          People
           </NavLink>
         )}
       </div>

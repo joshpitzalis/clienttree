@@ -4,6 +4,9 @@ import { Datepicker, DatepickerContainer } from '@duik/it'
 import format from 'date-fns/format'
 import Loader from 'react-loader-spinner'
 import { useImmerReducer } from 'use-immer'
+import firebase from '../../../utils/firebase'
+
+import { updateDashboardState } from '../peopleAPI/contactsAPI'
 
 // checkout ./NewReminderModal for a possible revamp
 function actions (draft, action) {
@@ -30,6 +33,7 @@ export const ReminderCreator = ({
   myUid,
   theirUid,
   handleAddingTask,
+  newContact,
   photoURL,
   onClose
 }) => {
@@ -64,11 +68,37 @@ export const ReminderCreator = ({
       return
     }
 
+    if (newContact) {
+      await firebase
+        .firestore()
+        .collection('users')
+        .doc(myUid)
+        .collection('contacts')
+        .doc(theirUid)
+        .set({
+          uid: myUid,
+          name: contactName,
+          email: '',
+          photoURL: `https://ui-avatars.com/api/?name=${contactName}`,
+          notes: { },
+          tracked: true,
+          lastContacted: +new Date()
+        }).then(() =>
+          updateDashboardState(
+            myUid,
+            true,
+            theirUid,
+            contactName,
+          `https://ui-avatars.com/api/?name=${contactName}`
+          )
+        )
+    }
+
     await handleAddingTask({
       taskName,
       myUid,
       theirUid,
-      photoURL,
+      photoURL: `https://ui-avatars.com/api/?name=${contactName}`,
       dueDate,
       contactName,
       email: state.email
@@ -93,11 +123,10 @@ export const ReminderCreator = ({
           className='ba b--transparent ph0 mh0'
           data-testid='reminderBox'
         >
-          <legend className='ph0 mh0 fw6 '>Follow up with...</legend>
+          {/* <legend className='ph0 mh0 fw6 '>Follow up with...</legend> */}
           <div className=''>
             <label className='db fw4 lh-copy f6 ' htmlFor='name'>
               <input
-                disabled
                 className='db border-box hover-black w-100 measure-narrow ba b--black-20 pa3 br2 mb2'
                 placeholder='Who?'
                 type='text'
@@ -113,7 +142,7 @@ export const ReminderCreator = ({
               {/* <span className="db b">Ways you can help this person</span> */}
               <input
                 className='db border-box hover-black w-100 measure-narrow ba b--black-20 pa3 br2 mb2 '
-                placeholder='About What?'
+                placeholder='Action?'
                 type='text'
                 name='task'
                 id='task'

@@ -26,7 +26,7 @@ const Modal = ({
     userId: uid,
     name: '',
     summary: '',
-    tracked: false,
+    tracked: true,
     lastContacted: '',
     contactId: '',
     photoURL: '',
@@ -48,6 +48,15 @@ const Modal = ({
         setState({ ...user.data() })
       })
       return () => subscription.unsubscribe()
+    } else {
+      // create New User
+      const newDoc = firebase
+        .firestore()
+        .collection('users')
+        .doc(uid)
+        .collection('contacts')
+        .doc()
+      setState({ ...state, contactId: newDoc.id })
     }
   }, [selectedUserUid, uid])
 
@@ -79,7 +88,8 @@ const Modal = ({
         <div className='center' style={{ width: '258px' }}>
           <ReminderCreator
             myUid={uid}
-            theirUid={selectedUserUid}
+            newContact={!selectedUserUid}
+            theirUid={selectedUserUid || state.contactId}
             handleAddingTask={handleAddingTask}
             photoURL={state.photoURL}
             onClose={onClose}

@@ -35,7 +35,7 @@ export const Stats = ({ userStats, showModal }) => {
 
   const projectCount = Math.ceil((goal - income) / average)
 
-  const [visibility, setVisibility] = React.useState(false)
+  const [visibility, setVisibility] = React.useState(true)
   const totalActivitiesNeeded = projectCount * projectRatio * leadRatio
   const leadsNeeded = projectCount * projectRatio
 
@@ -48,7 +48,7 @@ export const Stats = ({ userStats, showModal }) => {
       className='w5 pl4 fixed pt5 mw-100'
       style={{ bottom: 0 }}
       data-testid='complete-screen'
-      onMouseLeave={() => setVisibility(false)}
+      // onMouseLeave={() => setVisibility(false)}
     >
       <CSSTransition
         in={income < goal && visibility}
@@ -71,14 +71,14 @@ export const Stats = ({ userStats, showModal }) => {
           {/* <small className="fw5 small-caps o-50">Which means...</small> */}
           <dl className='db mr5 mt3'>
             <dd className='f3 f2-ns b ml0 mb0'>{leadsLeft}</dd>
-            <dd className='f6 f5-ns  ml0'>Potential Projects</dd>
+            <dd className='f6 f5-ns  ml0'>Leads to find</dd>
           </dl>
           {/* <small className="fw5 small-caps o-50">Which means...</small> */}
           <dl className='db mr5 mt3'>
             <dd className='f3 f2-ns b ml0 mb0'>
               {activitiesLeft < leadsLeft ? leadsLeft : activitiesLeft}
             </dd>
-            <dd className='f6 f5-ns  ml0'>Activities To Complete</dd>
+            <dd className='f6 f5-ns  ml0'>Actions To Complete</dd>
           </dl>
         </div>
       </CSSTransition>

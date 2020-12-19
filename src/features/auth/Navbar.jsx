@@ -26,7 +26,7 @@ export const Navbar = withRouter(({ history }) => {
       <TopBarSection>
         <TopBarTitle>
           <Link
-            to={userId ? `/user/${userId}/network` : '/'}
+            to={userId ? `/user/${userId}/dashboard` : '/'}
             data-testid='goToHomePage'
           >
             <Tree classNames='' />
