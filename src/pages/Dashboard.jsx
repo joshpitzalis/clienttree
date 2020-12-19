@@ -9,9 +9,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { createSlice } from '@reduxjs/toolkit'
 import { NavPanel, NavLink, ContainerHorizontal } from '@duik/it'
 import { OptimizelyFeature } from '@optimizely/react-sdk'
-import { HelpfulTaskList as UniversalTaskList } from '../features/people/components/UniversalTaskList'
+// import { HelpfulTaskList as UniversalTaskList } from '../features/people/components/UniversalTaskList'
 // import { FeatureContext } from '../features/featureboard';
-import { SpecificTaskList } from '../features/people/components/SpecificTaskList'
+// import { SpecificTaskList } from '../features/people/components/SpecificTaskList'
 import People from '../images/People'
 import Home from '../images/Home'
 import firebase from '../utils/firebase'
@@ -19,12 +19,21 @@ import { Network } from '../features/people/Network'
 import { Profile } from '../features/profile/Profile'
 import { CRM } from '../features/projects/dashboard'
 import { ConfettiBanner } from '../features/onboarding/confetti'
-import { Onboarding } from '../features/onboarding/ActivityList'
+// import { Onboarding } from '../features/onboarding/ActivityList'
 import StatsBox from '../features/stats/StatsBox'
 import { taskSlice } from '../features/people/taskSlice'
 import Modal from '../features/people/components/ContactModal'
 import Portal from '../utils/Portal'
 import { MobileReminder } from '../features/people/components/MobileReminder'
+import {
+  useRecoilState,
+  atom
+} from 'recoil'
+
+export const reminderModalState = atom({
+  key: 'reminderModalState', // unique ID (with respect to other atoms/selectors)
+  default: false // default value (aka initial value)
+})
 
 export const userSlice = createSlice({
   name: 'user',
@@ -134,7 +143,7 @@ export function Dashboard ({ userId }) {
   const selectedUserUid = useSelector(
     store => store.people && store.people.selectedContact
   )
-  const [visible, setVisibility] = React.useState(false)
+  const [visible, setVisibility] = useRecoilState(reminderModalState)
 
   return (
     <ContainerHorizontal>
@@ -164,14 +173,15 @@ export function Dashboard ({ userId }) {
               {workboard && <Navigation userId={userId} />}
 
               <main
-                className={`dn db-ns w-50-ns w-100 min-h-100 ml4 ${
+                className={`dn db-ns  w-100 min-h-100 ml4 ${
                 workboard ? 'justify-between' : 'justify-end'
               }`}
               >
                 <Route
                   exact
                   path='/user/:uid/network'
-                  render={props => <Network {...props} uid={userId} />}
+                  render={props => <Network {...props} uid={userId}
+                  />}
                 />
                 {userId && (
                   <Route
@@ -188,12 +198,12 @@ export function Dashboard ({ userId }) {
               </main>
 
               <aside
-                className='w-100 measure-narrow-ns bg-transparent tc'
+                className='w-100 dn-ns bg-transparent tc'
                 data-testid='sidebar'
               >
                 <MobileReminder myUid={userId} />
-                <Onboarding uid={userId} contactSelected={selectedUserUid}>
-                  <>
+                {/* <Onboarding uid={userId} contactSelected={selectedUserUid}> */}
+                {/* <>
                     {selectedUserUid ? (
                       <>
                         <button
@@ -217,8 +227,8 @@ export function Dashboard ({ userId }) {
                     // </OptimizelyFeature>
                       <UniversalTaskList myUid={userId} />
                     )}
-                  </>
-                </Onboarding>
+                  </> */}
+                {/* </Onboarding> */}
               </aside>
             </div>
           )

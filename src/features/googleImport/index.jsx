@@ -1,5 +1,9 @@
 import { useMachine } from '@xstate/react'
-import { Dropdown, Icon, Menu } from 'antd'
+import {
+  Dropdown,
+  // Icon,
+  Menu
+} from 'antd'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Machine } from 'xstate'
@@ -114,8 +118,8 @@ export const ContactImporter = React.memo(({ uid, allContacts, children }) => {
           data-testid="importContacts"
         >
           Import
-          <Icon type="google" className="pl1 mb-2" />
-          oogle Contacts
+         Your
+          Google Contacts
         </button>
       </Menu.Item>
     </Menu>

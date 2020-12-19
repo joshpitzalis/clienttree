@@ -9,6 +9,8 @@ import { PersonModal } from './PersonBox'
 import { handleContactDelete } from '../peopleAPI'
 import { toast$ } from '../../notifications/toast'
 // import Check from '../../../images/Check';
+import { useRecoilState } from 'recoil'
+import { reminderModalState } from '../../../pages/Dashboard'
 
 export const lastContact = contact => {
   const { lastContacted, notes } = contact
@@ -155,36 +157,41 @@ export const Person = ({ contact, uid }) => {
   }
 }
 
-const MiniPerson = ({ contact, uid, send }) => <li className=" flex items-center bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden "
-  data-testid='closedPeopleBox'
->
+const MiniPerson = ({ contact, uid, send }) => {
+  const [, setVisibility] = useRecoilState(reminderModalState)
+  return (
+    <li className=" flex items-center bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden "
+      data-testid='closedPeopleBox'
+      onDoubleClick={() => setVisibility(true)}
+    >
 
-  <img
-    alt={`${contact.name} avatar`}
-    className="w-18 h-18 object-cover"
-    src={contact.photoURL}
-    style={{ margin: 0 }}
-  />
-  <div className="flex-1 px-4 py-2 truncate">
-    <a href="#" className="text-gray-900 text-sm leading-5 font-medium hover:text-gray-600 transition ease-in-out duration-150">{contact.name}</a>
-    <p className="text-sm leading-5 text-gray-500">
-      {contact &&
+      <img
+        alt={`${contact.name} avatar`}
+        className="w-18 h-18 object-cover"
+        src={contact.photoURL}
+        style={{ margin: 0 }}
+      />
+      <div className="flex-1 px-4 py-2 truncate">
+        <a href="#" className="text-gray-900 text-sm leading-5 font-medium hover:text-gray-600 transition ease-in-out duration-150">{contact.name}</a>
+        <p className="text-sm leading-5 text-gray-500">
+          {contact &&
                 isValidDate(fromUnixTime(lastContact(contact) / 1000))
-        ? `Last updated ${formatDistanceToNow(
+            ? `Last updated ${formatDistanceToNow(
                       fromUnixTime(lastContact(contact) / 1000),
                       { addSuffix: true }
                     )}`
-        : 'Contact them in 3 months'}
-    </p>
-  </div>
-  <div className="flex-shrink-0 pr-2">
-    <button className="w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 focus:outline-none focus:text-gray-500 focus:bg-gray-100 transition ease-in-out duration-150"
-      onClick={() => send({ type: 'OPENED', payload: contact.uid })
-      }
-    >
-      <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-      </svg>
-    </button>
-  </div>
-</li>
+            : 'Contact them in 3 months'}
+        </p>
+      </div>
+      <div className="flex-shrink-0 pr-2">
+        <button className="w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 focus:outline-none focus:text-gray-500 focus:bg-gray-100 transition ease-in-out duration-150"
+          onClick={() => send({ type: 'OPENED', payload: contact.uid })
+          }
+        >
+          <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+          </svg>
+        </button>
+      </div>
+    </li>)
+}

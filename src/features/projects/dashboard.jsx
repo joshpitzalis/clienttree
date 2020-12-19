@@ -87,7 +87,7 @@ export function CRM ({ userId }) {
         <Droppable droppableId='allStages' type='stages'>
           {({ droppableProps, innerRef, placeholder }) => (
             <div ref={innerRef} {...droppableProps}>
-              <ul className='list pl0 pt4' ref={innerRef} {...droppableProps}>
+              <ul className='list pl0 pt4 flex justify-around vh-75' ref={innerRef} {...droppableProps}>
                 {state &&
                   state.stageOrder &&
                   state.stageOrder.map((stageId, index) => {

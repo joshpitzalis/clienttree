@@ -49,7 +49,7 @@ export function Stages ({
           ref={provided.innerRef}
           className='bg-white-80 br3'
         >
-          <Droppable droppableId={stageId} direction='horizontal' type='people'>
+          <Droppable droppableId={stageId} direction='vertical' type='people' >
             {({ droppableProps, innerRef }, snapshot) => (
               <SingleStage
                 innerRef={innerRef}
@@ -82,13 +82,13 @@ export const SingleStage = ({
   stage
 }) => (
   <li
-    className='pa3 pa4-ns bb b--black-10'
+    className='bb b--black-10 w4 h-100'
     ref={innerRef}
     {...droppableProps}
     data-testid={stage.id}
   >
     <details>
-      <summary>
+      <summary className='h-100' >
         <>
           <EditableTitle
             dragHandleProps={provided.dragHandleProps}
@@ -100,8 +100,8 @@ export const SingleStage = ({
           </small> */}
 
           <div
-            className={`br3 flex ${snapshot.isDraggingOver &&
-              'bg-light-blue h4'}`}
+            className={`br3 flex flex-column ${snapshot.isDraggingOver &&
+              'bg-light-blue vh-50'}`}
             style={{
               transition: 'background-color 1s ease'
             }}
@@ -173,7 +173,7 @@ export const EditableTitle = ({ dragHandleProps, stage }) => {
   return (
     <>
       {editable ? (
-        <div className='w-100 flex justify-between'>
+        <div className='w-100 flex justify-between '>
           <div className=''>
             <input
               // eslint-disable-next-line jsx-a11y/no-autofocus
@@ -250,9 +250,9 @@ export const EditableTitle = ({ dragHandleProps, stage }) => {
         <button
           type='button'
           onDoubleClick={() => setEditable(true)}
-          className='bn'
+          className='bn tc w-100'
         >
-          <b className='db f3 mb1' {...dragHandleProps}>
+          <b className='db f6 mb1' {...dragHandleProps}>
             {title}
           </b>
         </button>

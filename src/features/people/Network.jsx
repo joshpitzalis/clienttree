@@ -9,6 +9,10 @@ import ErrorBoundary from '../../utils/ErrorBoundary'
 import { InsightsBox } from '../insights/InsightsBox'
 import { HelpfulTaskList } from './components/UniversalTaskList'
 import { ContactImporter } from '../googleImport'
+import {
+  useRecoilState
+} from 'recoil'
+import { reminderModalState } from '../../pages/Dashboard'
 
 const networkPropTypes = {
   uid: PropTypes.string.isRequired
@@ -18,7 +22,7 @@ const networkDefaultProps = {}
 
 /* eslint-disable react/prop-types */
 export const InnerNetwork = ({ uid, contactChunks }) => {
-  const [visible, setVisibility] = React.useState(false)
+  const [visible, setVisibility] = useRecoilState(reminderModalState)
   const [selectedUser, setSelectedUser] = React.useState('')
 
   const allContacts = useSelector(
@@ -65,7 +69,6 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
               setSelectedUser('')
             }}
             newPerson
-
             setVisibility={() =>
               setVisibility(false)}
           />
@@ -77,6 +80,7 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
               className="btn3 b grow black tl pv2  pointer bn br1 white"
               data-testid="addPeopleButton"
             >
+              Add Someone New
             </button>
           </ContactImporter>
         )}
