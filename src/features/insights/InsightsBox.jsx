@@ -3,9 +3,9 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { Tooltip } from 'antd'
 
-function percentage (value, total) {
-  return Math.round((value / total) * 100)
-}
+// function percentage (value, total) {
+//   return Math.round((value / total) * 100)
+// }
 /* eslint-disable react/prop-types */
 export const findRecentlyContacted = (contacts, timePeriod) => {
   const recentlyContacted = (_lastContacted, _threshold) => {
@@ -68,6 +68,58 @@ export function InsightsBox () {
 
 export const Counters = ({ people, inTouchWith, thisWeek }) => (
   <div className=''>
+    {!!thisWeek && (
+      <dl className='dib mr5 w4 pt5'>
+        <div>
+          <Tooltip
+            title={
+              <p className='white'>
+                Staying in touch with 150 in a year means reaching out to 3 new
+                people each week. Reach out to more if you can but consistently
+                reaching out to 3 new people a week is a good goal to start
+                with.
+              </p>
+            }
+          >
+            <dd className='f6 f5-ns b ml0'>Connected</dd>
+            <dd className='f3 f2-ns b ml0'>
+              <span data-testid='contacted7Days'> {thisWeek}</span>
+              <small className='text3 f6  pl3'>/ 56</small>
+            </dd>
+          </Tooltip>
+        </div>
+        {/* <SparkLine data={[0, thisWeek]} /> */}
+      </dl>
+    )}
+    {!!inTouchWith && !!people && (
+      <dl className='dib mr5 w4 pt5'>
+        <div>
+          <Tooltip
+            title={
+              <p className='white'>
+                If you have added a note to a contact or completed a reminder
+                connected to a contact in the last 6 months then it will count
+                as being in touch with that contact. Gradually work toward
+                staying in touch with more than 80% of your network at all
+                times.
+              </p>
+            }
+          >
+            <dd className='f6 f5-ns b ml0'>Contacted</dd>
+            <dd className='f3 f2-ns b ml0'>
+              <span data-testid='inTouchWith'>{inTouchWith}</span>
+              {/* <small className='text3 f6 pl3'>
+                {percentage(inTouchWith, people)}%
+              </small> */}
+              <small className='text3 f6'>/ 56</small>
+            </dd>
+          </Tooltip>
+        </div>
+        {/* <SparkLine data={[13, 3, 5, 7, 3, 3, 5, 7, 3]} /> */}
+        {/* <SparkLine data={[0, inTouchWith]} /> */}
+      </dl>
+    )}
+
     {!!people && (
       <dl className='dib mr5 w4 pt5'>
         <div>
@@ -85,65 +137,17 @@ export const Counters = ({ people, inTouchWith, thisWeek }) => (
               </p>
             }
           >
-            <dd className='f6 f5-ns b ml0'>People</dd>
+            <dd className='f6 f5-ns b ml0'>Cleaned</dd>
             <dd className='f3 f2-ns b ml0'>
-              {people} <small className='text3 f6'>/ 150</small>
+              {people}
+              <small className='text3 f6'>/ 56</small>
             </dd>
           </Tooltip>
         </div>
         {/* <SparkLine data={[0, people]} /> */}
       </dl>
     )}
-    {!!inTouchWith && !!people && (
-      <dl className='dib mr5 w4 pt5'>
-        <div>
-          <Tooltip
-            title={
-              <p className='white'>
-                If you have added a note to a contact or completed a reminder
-                connected to a contact in the last 6 months then it will count
-                as being in touch with that contact. Gradually work toward
-                staying in touch with more than 80% of your network at all
-                times.
-              </p>
-            }
-          >
-            <dd className='f6 f5-ns b ml0'>In Touch With</dd>
-            <dd className='f3 f2-ns b ml0'>
-              <span data-testid='inTouchWith'>{inTouchWith}</span>
-              <small className='text3 f6 pl3'>
-                {percentage(inTouchWith, people)}%
-              </small>
-            </dd>
-          </Tooltip>
-        </div>
-        {/* <SparkLine data={[13, 3, 5, 7, 3, 3, 5, 7, 3]} /> */}
-        {/* <SparkLine data={[0, inTouchWith]} /> */}
-      </dl>
-    )}
-    {!!thisWeek && (
-      <dl className='dib mr5 w4 pt5'>
-        <div>
-          <Tooltip
-            title={
-              <p className='white'>
-                Staying in touch with 150 in a year means reaching out to 3 new
-                people each week. Reach out to more if you can but consistently
-                reaching out to 3 new people a week is a good goal to start
-                with.
-              </p>
-            }
-          >
-            <dd className='f6 f5-ns b ml0'>Last 7 Days</dd>
-            <dd className='f3 f2-ns b ml0'>
-              <span data-testid='contacted7Days'> {thisWeek}</span>
-              <small className='text3 f6  pl3'>/ 3</small>
-            </dd>
-          </Tooltip>
-        </div>
-        {/* <SparkLine data={[0, thisWeek]} /> */}
-      </dl>
-    )}
+
   </div>
 )
 

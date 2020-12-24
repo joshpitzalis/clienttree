@@ -34,9 +34,10 @@ export const HelpfulTaskList = ({ myUid, insights }) => {
     <div
     // className={!insights && 'bt b--black-10 pb3'}
     >
-      {!insights && !!helpfulTasks.length && (
+      <p className="f4 b ml0 text2 pt4">Follow Ups ({helpfulTasks.length})</p>
+      {/* {!insights && !!helpfulTasks.length && (
         <p className="f4 b ml0 text2 pt4">Follow Ups</p>
-      )}
+      )} */}
       <div
         data-testid="universalTaskList"
         className={!insights && 'h-auto overflow-y-auto'}
@@ -50,8 +51,8 @@ export const HelpfulTaskList = ({ myUid, insights }) => {
               completedFor,
               photoURL,
               dueDate
-            }) =>
-              completedFor && (
+            }, index) =>
+              completedFor && index < 5 && (
                 <TaskBox
                   key={taskId}
                   taskId={taskId}

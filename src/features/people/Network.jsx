@@ -6,8 +6,8 @@ import { OptimizelyFeature } from '@optimizely/react-sdk'
 import { Person } from './components/Person'
 import { PersonModal } from './components/PersonBox'
 import ErrorBoundary from '../../utils/ErrorBoundary'
-import { InsightsBox } from '../insights/InsightsBox'
-import { HelpfulTaskList } from './components/UniversalTaskList'
+// import { InsightsBox } from '../insights/InsightsBox'
+// import { HelpfulTaskList } from './components/UniversalTaskList'
 import { ContactImporter } from '../googleImport'
 
 const networkPropTypes = {
@@ -45,16 +45,20 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
     <ErrorBoundary fallback="Oh no! This bit is broken 🤕">
       <div data-testid="outreachPage">
 
-        <OptimizelyFeature feature="insights">
+        {/* <InsightsBox /> */}
+
+        {/* <OptimizelyFeature feature="insights">
           {insights => insights &&
          <InsightsBox />}
-        </OptimizelyFeature>
+        </OptimizelyFeature> */}
 
-        <OptimizelyFeature feature="workboard">
+        {/* <HelpfulTaskList myUid={uid} insights={true} /> */}
+
+        {/* <OptimizelyFeature feature="workboard">
           {workboard =>
             !workboard && <HelpfulTaskList myUid={uid} insights={workboard} />
           }
-        </OptimizelyFeature>
+        </OptimizelyFeature> */}
 
         {visible ? (
           <PersonModal
@@ -77,6 +81,7 @@ export const InnerNetwork = ({ uid, contactChunks }) => {
               className="btn3 b grow black tl pv2  pointer bn br1 white"
               data-testid="addPeopleButton"
             >
+              Add Someone
             </button>
           </ContactImporter>
         )}
