@@ -1,4 +1,7 @@
+/* https://daveceddia.com/tailwind-create-react-app/ */
+
 @import '~antd/dist/antd.css';
+@import './inter.css';
 
 /* https://daveceddia.com/tailwind-create-react-app */
 @tailwind base;
@@ -10,7 +13,6 @@
 
 body {
   background-color:var(--bg-base);
-  font-size: 18px;
   color: hsl(0, 0%, 13%);
   
   --text-base: hsl(0, 0%, 13%);
@@ -41,11 +43,14 @@ body {
 
   --orange: hsl(22, 78%, 55%);
  
-  font-family: 'Roboto',-apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-size: 18px;
+  
+  font-family: 'Inter', 'Roboto',-apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 
 ul .ant-timeline *:not(:last-child) {
   margin-bottom: 0px !important;
@@ -73,7 +78,9 @@ textarea{
   background-color:var(--black) !important;
 }
 
-
+.black{
+  color: var(--text-secondary) !important;
+}
 
 .green {
   color: var(--primary) !important;
@@ -165,6 +172,7 @@ outline: none;
 overflow: hidden;
 padding: 0 6px;
 margin: 0 2px;
+-webkit-transition: box-shadow 150ms cubic-bezier(.2, .6, .6, 1), opacity 150ms cubic-bezier(.2, .6, .6, 1);
 transition: box-shadow 150ms cubic-bezier(.2, .6, .6, 1), opacity 150ms cubic-bezier(.2, .6, .6, 1);
 vertical-align: middle;
 white-space: nowrap;
@@ -253,7 +261,6 @@ details summary::-webkit-details-marker {
   border: solid white;
   border-width: 0 3px 3px 0;
   -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
 
@@ -278,7 +285,7 @@ details summary::-webkit-details-marker {
 }
 
 .ant-tooltip-inner {
-  background-color: #44444e !important ;
+  background-color:  var(--border-color-base) !important ;
 }
 
 
@@ -313,5 +320,19 @@ If you want to style other properties or elements, let use know.
   all: none;
 }
 
-
-
+.button2 {
+vertical-align: top;
+height: 50px;
+padding: 0px 30px;
+border-radius: 50px;
+font-size: 18px;
+font-weight: 500;
+text-align: center;
+background: transparent;
+-webkit-transition: all 0.25s;
+transition: all 0.25s;
+color: var(--text-secondary);
+line-height: 46px;
+border: 2px solid var(--border-color-base) !important;
+cursor: pointer;
+}

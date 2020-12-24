@@ -7,7 +7,7 @@ import { ImageRow } from './ImageRow'
 import { NameRow } from './NameRow'
 import { HeaderRow } from './HeaderRow'
 import { EmailRow } from './EmailRow'
-import { WorkboardRow } from './WorkboardRow'
+// import { WorkboardRow } from './WorkboardRow'
 import { InteractionsRow } from './InteractionsRow'
 import { FooterButtons } from './FooterButtons'
 import firebase from '../../../../utils/firebase'
@@ -67,6 +67,8 @@ export const PersonCard = ({ setVisibility, userId, contact, tracked }) => {
     lastContacted: +new Date()
   })
 
+  // console.log({ contact, state })
+
   const [errors, setErrors] = useState({})
 
   const onSubmit = () => {
@@ -119,7 +121,7 @@ export const PersonCard = ({ setVisibility, userId, contact, tracked }) => {
       // onReset={() => { }}
     >
       <div
-        className="bg-white shadow overflow-hidden sm:rounded-lg" data-testid='personCard'>
+        className="bg-white shadow overflow-hidden sm:rounded-lg my-6" data-testid='personCard'>
         <HeaderRow newCard={!state.uid}/>
         <form
           className="px-4 py-5 sm:p-0"
@@ -131,7 +133,7 @@ export const PersonCard = ({ setVisibility, userId, contact, tracked }) => {
             <ImageRow dispatch={dispatch} image={state.photoURL} />
             <NameRow dispatch={dispatch} name={state.name} errors={errors} setErrors={setErrors}/>
             <EmailRow dispatch={dispatch} email={state.email}/>
-            <WorkboardRow tracked={state.tracked} dispatch={dispatch} />
+            {/* <WorkboardRow tracked={state.tracked} dispatch={dispatch} /> */}
             <InteractionsRow
               notes={
                 Object

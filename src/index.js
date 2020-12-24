@@ -6,11 +6,13 @@ import * as serviceWorker from './serviceWorker'
 import Routes from './Routes'
 import { UserProvider } from './features/auth/UserContext'
 import store from './utils/store'
-
 import '@duik/it/dist/styles.css'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import 'tachyons'
 import './tailwind.generated.css'
+import {
+  RecoilRoot
+} from 'recoil'
 
 if (process.env.NODE_ENV === 'production') {
   Sentry.init({
@@ -22,17 +24,26 @@ if (process.env.NODE_ENV === 'production') {
     rules: [{ id: 'radiogroup', enabled: true }]
   }
   // eslint-disable-next-line
-  var axe = require('react-axe');
+  var axe = require("react-axe");
   axe(React, ReactDOM, 1000, config)
 }
-console.log({ Version: process.env.REACT_APP_VERSION })
+
+console.log({
+  Build: process.env.REACT_APP_URL,
+  Version: process.env.REACT_APP_VERSION,
+  Dev: process.env.REACT_APP_DEVELOPMENT
+})
 
 const App = () => (
+
   <Provider store={store}>
     <UserProvider>
-      <Routes />
+      <RecoilRoot>
+        <Routes />
+      </RecoilRoot>
     </UserProvider>
   </Provider>
+
 )
 
 ReactDOM.render(<App />, document.getElementById('root'))

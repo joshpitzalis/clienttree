@@ -25,3 +25,8 @@
 1. npm run build
 2. `firebase functions:config:set sendgrid.key=YOUR_KEY sendgrid.template=TEMPLATE_ID`
 3. npm run deploy
+
+## Running Cloud Functions locally
+firebase functions:config:get > .runtimeconfig.json
+npm run shell
+https://firebase.google.com/docs/functions/local-shell

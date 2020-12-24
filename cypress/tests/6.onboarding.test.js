@@ -1,3 +1,5 @@
+Cypress.on('uncaught:exception', () => false)
+
 describe('onboarding', () => {
   it('shows first task completed when you start', () => {
     cy.visit('/')

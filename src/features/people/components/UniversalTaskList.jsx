@@ -31,24 +31,42 @@ export const HelpfulTaskList = ({ myUid, insights }) => {
   }, [myUid])
 
   return (
-    <div data-testid='universalTaskList' className={` ${!insights && 'pt5'}`}>
-      {helpfulTasks &&
-        helpfulTasks.map(
-          ({ taskId, name, dateCompleted, completedFor, photoURL, dueDate }) =>
-            completedFor && (
-              <TaskBox
-                key={taskId}
-                taskId={taskId}
-                name={name}
-                dateCompleted={dateCompleted}
-                myUid={myUid}
-                completedFor={completedFor}
-                photoURL={photoURL}
-                dispatch={dispatch}
-                dueDate={dueDate}
-              />
-            )
-        )}
+    <div
+    // className={!insights && 'bt b--black-10 pb3'}
+    >
+      <p className="f4 b ml0 text2 pt4">Follow Ups ({helpfulTasks.length})</p>
+      {/* {!insights && !!helpfulTasks.length && (
+        <p className="f4 b ml0 text2 pt4">Follow Ups</p>
+      )} */}
+      <div
+        data-testid="universalTaskList"
+        className={!insights && 'h-auto overflow-y-auto'}
+      >
+        {helpfulTasks &&
+          helpfulTasks.map(
+            ({
+              taskId,
+              name,
+              dateCompleted,
+              completedFor,
+              photoURL,
+              dueDate
+            }, index) =>
+              completedFor && index < 5 && (
+                <TaskBox
+                  key={taskId}
+                  taskId={taskId}
+                  name={name}
+                  dateCompleted={dateCompleted}
+                  myUid={myUid}
+                  completedFor={completedFor}
+                  photoURL={photoURL}
+                  dispatch={dispatch}
+                  dueDate={dueDate}
+                />
+              )
+          )}
+      </div>
     </div>
   )
 }

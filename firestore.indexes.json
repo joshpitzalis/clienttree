@@ -45,6 +45,20 @@
           "order": "ASCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "contactsImported",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "archivedContacts",
+          "order": "ASCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": []

@@ -13,7 +13,6 @@ const handleClick = ({
   if (isLastContact) {
     send('CLOSED')
   }
-
   if (existing) {
     selector({ ...contact, uid: existing.uid })
     return

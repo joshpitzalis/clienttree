@@ -36,7 +36,7 @@ export const handleSignup = ({ email, password }, dispatch, firebase, toast$) =>
     })
 }
 
-export const handlePasswordReset = ({ email, dispatch }, firebase, toast$) => {
+export const handlePasswordReset = ({ email }, dispatch, firebase, toast$) => {
   dispatch({ type: 'FORM_SUBMITTED' })
   return firebase.auth()
     .sendPasswordResetEmail(email)

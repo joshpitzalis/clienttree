@@ -19,6 +19,9 @@ export const Navbar = withRouter(({ history }) => {
   const { userId, authStatus, handleLogout } = React.useContext(UserContext)
 
   return (
+    // <OptimizelyFeature feature="workboard">
+    //   {workboard =>
+    //     workboard ? (
     <TopBar>
       <TopBarSection>
         <TopBarTitle>

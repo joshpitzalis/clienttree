@@ -1,3 +1,7 @@
+Cypress.on('uncaught:exception', (err, runnable) => {
+  console.log({ err })
+  return false
+})
 describe('authentication', () => {
   it('lets you sign in and logout', () =>
     cy
@@ -5,6 +9,7 @@ describe('authentication', () => {
       .login()
       .wait(5000)
       .findByTestId('outreachPage'))
+
   it('nav takes you to dashboard', () =>
     cy
       .visit('/')

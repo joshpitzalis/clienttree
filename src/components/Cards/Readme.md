@@ -1,0 +1,7 @@
+```js
+<ContactCard
+  send={ () => {}}
+  selectCard={ () => {}}
+
+   />
+```

@@ -1,10 +1,9 @@
 {
   "name": "functions",
   "scripts": {
-    "lint": "tslint --project tsconfig.json",
-    "build": "tsc",
-    "serve": "npm run build && firebase serve --only functions",
-    "shell": "npm run build && firebase functions:shell",
+    "lint": "./node_modules/.bin/eslint --max-warnings=0 .",
+    "serve": " firebase serve --only functions",
+    "shell": " firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
@@ -12,7 +11,7 @@
   "engines": {
     "node": "10"
   },
-  "main": "lib/index.js",
+  "main": "index.js",
   "dependencies": {
     "@sendgrid/mail": "^6.5.0",
     "@types/request": "^2.48.4",
@@ -20,9 +19,12 @@
     "firebase-functions": "^3.3.0"
   },
   "devDependencies": {
-    "tslint": "^5.12.0",
-    "typescript": "^3.2.2",
-    "firebase-functions-test": "^0.1.6"
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-promise": "^4.2.1",
+    "firebase-functions-test": "^0.1.6",
+    "prettier": "^1.19.1"
   },
   "private": true
 }

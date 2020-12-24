@@ -26,6 +26,9 @@ const optimizely = createInstance({
   sdkKey: process.env.REACT_APP_ROLLOUT
 })
 
+// var didSetVariation = optimizely.setForcedVariation('testExperiment', 'testUser', 'control');
+// https://docs.developers.optimizely.com/full-stack/v2.1/docs/set-forced-variation
+
 export const render = (
   ui,
   {
@@ -33,6 +36,12 @@ export const render = (
     history = createMemoryHistory({ initialEntries: [route] }),
     initialState = {},
     store = configureStore(initialState),
+    user = {
+      id: 'hiaCOgc7xWgoVf6gsqkmNIWmjgs2',
+      attributes: {
+        id: 'hiaCOgc7xWgoVf6gsqkmNIWmjgs2'
+      }
+    },
     ...renderOptions
   } = {}
 ) => ({

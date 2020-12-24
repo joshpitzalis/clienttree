@@ -1,18 +1,18 @@
 import React from 'react'
-import { BrowserRouter, Route } from 'react-router-dom'
-// import PropTypes from 'prop-types';
-// import ReactRouterPropTypes from 'react-router-prop-types';
-
-import { createInstance, OptimizelyProvider } from '@optimizely/react-sdk'
 import { Navbar } from './features/auth/Navbar'
 import { Login } from './pages/Login'
 import { Dashboard } from './pages/Dashboard'
-// import { PrivateRoute } from './features/auth/PrivateRoute';
 import Refer from './features/profile/Referral'
 import { UserContext } from './features/auth/UserContext'
 import Banner from './features/notifications/toast'
 import { NetworkProvider } from './features/people/NetworkContext'
 import ErrorBoundary from './utils/ErrorBoundary'
+import {
+  createInstance,
+  OptimizelyProvider
+} from '@optimizely/react-sdk'
+import { BrowserRouter, Route } from 'react-router-dom'
+import 'tachyons'
 
 const propTypes = {
   // location: ReactRouterPropTypes.location.isRequired,
@@ -84,12 +84,9 @@ const App = () => {
               />
             </main>
           </div>
+          {/* <Footer /> */}
         </BrowserRouter>
       </ErrorBoundary>
-
-      {/* <OptimizelyFeature feature="insights">
-        {insights => insights && <Footer />}
-      </OptimizelyFeature> */}
     </OptimizelyProvider>
   )
 }

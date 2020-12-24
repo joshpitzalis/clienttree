@@ -1,3 +1,5 @@
+Cypress.on('uncaught:exception', () => false)
+
 describe('cms', () => {
   it('add a new stage', () => {
     cy.visit('/')

@@ -205,6 +205,7 @@ function TransitionHeader ({ version }) {
     </Transition>
   </>)
 }
+
 TransitionHeader.propTypes = {
   version: PropTypes.string
 }

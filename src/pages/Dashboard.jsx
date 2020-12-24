@@ -9,9 +9,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { createSlice } from '@reduxjs/toolkit'
 import { NavPanel, NavLink, ContainerHorizontal } from '@duik/it'
 import { OptimizelyFeature } from '@optimizely/react-sdk'
-import { HelpfulTaskList as UniversalTaskList } from '../features/people/components/UniversalTaskList'
+// import { HelpfulTaskList as UniversalTaskList } from '../features/people/components/UniversalTaskList'
 // import { FeatureContext } from '../features/featureboard';
-import { SpecificTaskList } from '../features/people/components/SpecificTaskList'
+// import { SpecificTaskList } from '../features/people/components/SpecificTaskList'
 import People from '../images/People'
 import Home from '../images/Home'
 import firebase from '../utils/firebase'
@@ -19,12 +19,12 @@ import { Network } from '../features/people/Network'
 import { Profile } from '../features/profile/Profile'
 import { CRM } from '../features/projects/dashboard'
 import { ConfettiBanner } from '../features/onboarding/confetti'
-import { Onboarding } from '../features/onboarding/ActivityList'
+// import { Onboarding } from '../features/onboarding/ActivityList'
 import StatsBox from '../features/stats/StatsBox'
 import { taskSlice } from '../features/people/taskSlice'
 import Modal from '../features/people/components/ContactModal'
 import Portal from '../utils/Portal'
-import { MobileReminder } from '../features/people/components/MobileReminder'
+// import { MobileReminder } from '../features/people/components/MobileReminder'
 
 export const userSlice = createSlice({
   name: 'user',
@@ -99,7 +99,6 @@ export const fetchUserDataEpic = (
             .collection('users')
             .doc(userId)
             .collection('contacts')
-            .orderBy('lastContacted')
         ).pipe(
           map(docs => {
             const contacts = docs.map(d => d.data())
@@ -158,16 +157,17 @@ export function Dashboard ({ userId }) {
         {workboard => {
           return (
             <div
-              className={`flex flex-row-ns flex-column w-100  ${
-              workboard ? 'justify-between' : 'justify-end'
-            }  min-h-100 bg-base`}
+              className={`flex flex-row-ns flex-column w-100 justify-between
+            min-h-100 bg-base`}
+            // ${
+            //   workboard ? 'justify-between' : 'justify-end'
+            // }
             >
-              {workboard && <Navigation userId={userId} />}
+              {/* {workboard && <Navigation userId={userId} />} */}
 
               <main
-                className={`dn db-ns w-50-ns w-100 min-h-100 ml4 ${
-                workboard ? 'justify-between' : 'justify-end'
-              }`}
+                className={'dn db-ns w-50-ns w-100 min-h-100 ml4 center'}
+              //  ${workboard ? 'justify-between' : 'justify-end'}
               >
                 <Route
                   exact
@@ -188,7 +188,7 @@ export function Dashboard ({ userId }) {
                 />
               </main>
 
-              <aside
+              {/* <aside
                 className='w-100 measure-narrow-ns bg-transparent tc'
                 data-testid='sidebar'
               >
@@ -220,7 +220,7 @@ export function Dashboard ({ userId }) {
                     )}
                   </>
                 </Onboarding>
-              </aside>
+              </aside> */}
             </div>
           )
         }}

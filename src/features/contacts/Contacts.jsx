@@ -1,4 +1,3 @@
-// import GoogleContacts from 'react-google-contacts';
 // import Avatar from 'react-avatar';
 
 import React, { useState } from 'react'
@@ -12,7 +11,7 @@ import {
   handleError as error,
   handleSuccessfulCompletion as success,
   handlePending as pending
-} from './contacts.helpers.js'
+} from '../contactImport/contacts.helpers'
 
 import { setNewContact as set, updateContact } from './contacts.api.js'
 import { ConflictScreen } from './components/ConflictScreen'
@@ -101,6 +100,7 @@ export const mergeMachine = Machine({
     conflictScreen: {
       on: {
         COMPLETED: 'addButton',
+
         CLOSED: 'addButton',
         DUPLICATE_SELECTED: {
           target: 'conflictScreen',
@@ -141,7 +141,8 @@ const ImportContacts = ({
         className='btn3 grow  ph3 pv2  pointer bn br1 white'
         data-testid='importContacts'
       >
-        Import Contacts
+        Import from Google
+        {/* <Icon type="google" className="pl2" /> */}
       </button>
     )
   }
